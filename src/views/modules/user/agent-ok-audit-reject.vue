@@ -323,9 +323,9 @@
                                     this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
                                 }
                                 if (data.data.rightDisplay == 0) {
-                                    this.customerDataForm.browserDisplay = true
-                                } else if (data.data.rightDisplay == 1) {
                                     this.customerDataForm.browserDisplay = false
+                                } else if (data.data.rightDisplay == 1) {
+                                    this.customerDataForm.browserDisplay = true
                                 }
                             }
 

@@ -515,9 +515,9 @@
                                 this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
                             }
                             if (data.data.rightDisplay == 0) {
-                                this.customerDataForm.browserDisplay = true
-                            } else if (data.data.rightDisplay == 1) {
                                 this.customerDataForm.browserDisplay = false
+                            } else if (data.data.rightDisplay == 1) {
+                                this.customerDataForm.browserDisplay = true
                             }
                         } else {
                             this.customerDataForm.kfLine = ""
@@ -544,7 +544,7 @@
                                 'meiqiaEntid': this.customerDataForm.beautyID,
                                 'hotline': this.customerDataForm.kfLine,
                                 'weixinUrl': this.wxUrl,
-                                'rightDisplay': (this.customerDataForm.browserDisplay) == true ? 0 : 1
+                                'rightDisplay': (this.customerDataForm.browserDisplay) == true ? 1 : 0
                             })
                         }).then(({ data }) => {
                             // console.log(data)
