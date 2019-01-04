@@ -90,6 +90,9 @@
                 <div v-if="active === 1" style="padding: 30px 30px;">
                     <el-form label-width="110px" :model="customerDataForm" :rules="customerDatarules" ref="customerdataList"
                         class="demo-ruleForm">
+                        <el-form-item label="浏览器右侧显示">
+                            <el-switch v-model="customerDataForm.browserDisplay" @change="changeSwitch()"></el-switch>
+                        </el-form-item>
                         <el-form-item label="客服热线" prop="kfLine">
                             <el-input v-model="customerDataForm.kfLine" placeholder="客服热线"></el-input>
                         </el-form-item>
@@ -102,6 +105,17 @@
                         <el-form-item label="商务合作号" prop="businNO">
                             <el-input v-model="customerDataForm.businNO" placeholder="商务合作号"></el-input>
                         </el-form-item>
+                        <el-form-item label="微信二维码" id="wxImgSize">
+                            <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionWx()"
+                                :on-success="handleAvatarSuccessWx" :on-error="errorWx" :on-progress="onProgressWx"
+                                :before-upload="beforeAvatarUploadWx" :data="wxQueryParams" enctype="multipart/form-data"
+                                :limit="1">
+                                <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
+                                <i class="el-icon-plus "></i>
+                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长140px，宽36px，（再次上传请删除上一次上传）</div>
+                                <input type="hidden" v-model="customerDataForm.imageUrlWx" />
+                            </el-upload>
+                        </el-form-item><br />
                         <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
                         <el-button style="margin-top: 12px;" @click="nextcustomer">下一步</el-button>
                     </el-form>
@@ -274,6 +288,9 @@
 
                 <el-collapse-item title="客服资料 ✚" name="2">
                     <el-form label-width="110px" :model="customerDataForm" ref="customerdataList" class="demo-ruleForm">
+                        <el-form-item label="浏览器右侧显示">
+                            <el-switch v-model="customerDataForm.browserDisplay" disabled></el-switch>
+                        </el-form-item>
                         <el-form-item label="客服热线：">
                             <el-input v-model="customerDataForm.kfLine" placeholder="客服热线" readonly></el-input>
                         </el-form-item>
@@ -285,6 +302,12 @@
                         </el-form-item>
                         <el-form-item label="商务合作号：">
                             <el-input v-model="customerDataForm.businNO" placeholder="商务合作号" readonly></el-input>
+                        </el-form-item>
+                        <el-form-item label="微信二维码：">
+                            <el-upload class="avatar-uploader" action="" :show-file-list="false" disabled>
+                                <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
                         </el-form-item>
                     </el-form>
                 </el-collapse-item>
@@ -404,6 +427,7 @@
                 activeNames: ['1'],
                 active: 0,
                 dataList: [],
+                wxUrl: '',
                 logoUrl: '',
                 iconUrl: '',
                 signUrl: '',
@@ -482,7 +506,9 @@
                     keyqq: '',
                     businNO: '',
                     beautyID: '',//美洽id
-                    id: ''  //后端返回的id
+                    id: '',  //后端返回的id
+                    browserDisplay: true,  //浏览器右侧显示
+                    imageUrlWx: "",
                 },
                 customerDatarules: {
                     kfLine: [
@@ -574,17 +600,22 @@
                     agentId: null,
                     file: null
                 },
-                iconQueryParams: {//icon上传参数
+                wxQueryParams: {  //logo上传参数
+                    imageType: 5,
+                    agentId: null,
+                    file: null
+                },
+                iconQueryParams: { //icon上传参数
                     imageType: 4,
                     agentId: null,
                     file: null
                 },
-                SignaturesQueryParams: {//代表签字
+                SignaturesQueryParams: { //代表签字
                     imageType: 1,
                     agentId: null,
                     file: null
                 },
-                ChapterQueryParams: {//公司红章
+                ChapterQueryParams: { //公司红章
                     imageType: 2,
                     agentId: null,
                     file: null
@@ -595,6 +626,9 @@
             this.getBasicInfo()
         },
         methods: {
+            changeSwitch() {
+                this.customerDataForm.browserDisplay = this.customerDataForm.browserDisplay
+            },
             getBasicInfo() {
                 this.logoUrl = '',
                     this.iconUrl = '',
@@ -666,6 +700,7 @@
             // 获取客服资料
             getkfinfo() {
                 this.customerDataForm.id = ""
+                this.customerDataForm.imageUrlWx = ""
                 this.$http({
                     url: this.$http.adornUrl(`agent/set/findCustService?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
                     method: 'post',
@@ -678,6 +713,14 @@
                             this.customerDataForm.beautyID = data.data.meiqiaEntid
                             this.customerDataForm.businNO = data.data.bizNo
                             this.customerDataForm.id = data.data.id
+                            if (data.data.weixinUrl) {
+                                this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
+                            }
+                            if (data.data.rightDisplay == 0) {
+                                this.customerDataForm.browserDisplay = true
+                            } else if (data.data.rightDisplay == 1) {
+                                this.customerDataForm.browserDisplay = false
+                            }
                         } else {
                             this.customerDataForm.kfLine = ""
                             this.customerDataForm.keyqq = ""
@@ -701,7 +744,9 @@
                                 'bizNo': this.customerDataForm.businNO,
                                 'qq': this.customerDataForm.keyqq,
                                 'meiqiaEntid': this.customerDataForm.beautyID,
-                                'hotline': this.customerDataForm.kfLine
+                                'hotline': this.customerDataForm.kfLine,
+                                'weixinUrl': this.wxUrl,
+                                'rightDisplay': (this.customerDataForm.browserDisplay) == true ? 0 : 1
                             })
                         }).then(({ data }) => {
                             // console.log(data)
@@ -1028,6 +1073,57 @@
                 this.active--;
             },
             closeDialog() { },
+            // 上传微信二维码
+            actionWx() {
+                let url = this.$http.adornUrl(`file/image/upload?imageType=7&token=${this.$cookie.get('token')}`);
+                return url;
+            },
+            beforeAvatarUploadWx(file) {
+                const isJPG = (file.type == 'image/png');
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG) {
+                    this.$message.error("上传微信图片只能是背景为透明的png 格式!");
+                    return false;
+                }
+                if (!isLt2M) {
+                    this.$message.error("上传微信图片大小不能超过 2MB!");
+                    return false;
+                }
+                var _this = this;
+                const imgSize = new Promise(function (resolve, reject) {
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        var image = new Image();
+                        image.onload = function () {
+                            var width = this.width;
+                            var height = this.height;
+                            if (width !== 140) {
+                                _this.$alert('图片长必须为140!', '提示', { confirmButtonText: '确定' });
+                                reject();
+                            }
+                            if (height !== 36) {
+                                _this.$alert('图片宽必须为36!', '提示', { confirmButtonText: '确定' });
+                                reject();
+                            }
+                            resolve();
+                        };
+                        image.src = event.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                });
+
+                return isJPG && isLt2M && imgSize;
+            },
+            handleAvatarSuccessWx(res, file) {
+                this.wxUrl = res.data.licenseUrl
+                this.customerDataForm.imageUrlWx = URL.createObjectURL(file.raw);
+            },
+            errorWx() {
+                console.log("yyyyyy");
+            },
+            onProgressWx() {
+                console.log("上传中");
+            },
             //上传 执行顺序：beforeAvatarUpload ---执行action提交----执行handleAvatarSuccess or uploadError
             actionLogo() {
                 let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}`);
@@ -1037,12 +1133,16 @@
             beforeAvatarUploadLogo(file) {
                 const isJPG = (file.type == 'image/png');
                 const isLt2M = file.size / 1024 / 1024 < 2;
+
                 if (!isJPG) {
                     this.$message.error("上传logo图片只能是背景为透明的png 格式!");
+                    return false;
                 }
                 if (!isLt2M) {
                     this.$message.error("上传logo图片大小不能超过 2MB!");
+                    return false;
                 }
+
                 var _this = this;
                 const imgSize = new Promise(function (resolve, reject) {
                     var reader = new FileReader();
@@ -1088,9 +1188,11 @@
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isJPG) {
                     this.$message.error("上传icon图片只能是背景为透明的png 格式!");
+                    return false;
                 }
                 if (!isLt2M) {
                     this.$message.error("上传icon图片大小不能超过 2MB!");
+                    return false;
                 }
                 var _this = this;
                 const imgSize = new Promise(function (resolve, reject) {
@@ -1139,9 +1241,11 @@
 
                 if (!isJPG) {
                     this.$message.error("上传代表签字图片只能是背景为透明的png 格式!");
+                    return false;
                 }
                 if (!isLt2M) {
                     this.$message.error("上传代表签字图片大小不能超过 2MB!");
+                    return false;
                 }
                 var _this = this;
                 const imgSize = new Promise(function (resolve, reject) {
@@ -1191,9 +1295,11 @@
 
                 if (!isJPG) {
                     this.$message.error("上传公司红章图片只能是背景为透明的png 格式!");
+                    return false;
                 }
                 if (!isLt2M) {
                     this.$message.error("上传公司红章图片大小不能超过 2MB!");
+                    return false;
                 }
 
                 var _this = this;
@@ -1237,6 +1343,7 @@
                     this.customerDataForm.keyqq = ""
                     this.customerDataForm.businNO = ""
                     this.customerDataForm.beautyID = ""
+                    this.customerDataForm.browserDisplay = ""
                     this.$http({
                         url: this.$http.adornUrl(`agent/set/findCustService?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
                         method: 'post',
@@ -1247,6 +1354,14 @@
                                 this.customerDataForm.keyqq = data.data.qq
                                 this.customerDataForm.beautyID = data.data.meiqiaEntid
                                 this.customerDataForm.businNO = data.data.bizNo
+                                if (data.data.weixinUrl) {
+                                    this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
+                                }
+                                if (data.data.rightDisplay == 0) {
+                                    this.customerDataForm.browserDisplay = true
+                                } else if (data.data.rightDisplay == 1) {
+                                    this.customerDataForm.browserDisplay = false
+                                }
                             }
 
                         }

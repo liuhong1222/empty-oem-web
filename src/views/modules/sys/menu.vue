@@ -28,7 +28,8 @@
       </el-table-column>
       <el-table-column prop="url" header-align="center" align="center" width="150" :show-overflow-tooltip="true" label="菜单URL">
       </el-table-column>
-      <el-table-column prop="perms" header-align="center" align="center" width="150" :show-overflow-tooltip="true" label="授权标识">
+      <el-table-column prop="perms" header-align="center" align="center" width="150" :show-overflow-tooltip="true"
+        label="授权标识">
       </el-table-column>
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">

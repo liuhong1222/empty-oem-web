@@ -36,7 +36,7 @@
       <el-col :span="12">
         <div class="grid-content bg-purple">
           <h2>我的客户</h2>
-          <ul class="cf customerList">
+          <ul class="customerList">
             <li v-for="(item,index) in customMy" :key="index">
               <p>{{item.title}}</p>
               <p>{{item.counts}}</p>
@@ -58,6 +58,16 @@
               <span class="label" v-else>/{{item.number}}万条</span>
             </li>
           </ul>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="grid-content bg-purple">
+          <h2>注册赠送</h2>
+          <div class="giveCounts">
+            <span>自动赠送</span>
+            <el-switch v-model="giveSwitch"></el-switch>
+            <span>（关闭后，系统将不会自动赠送5000条）</span>
+          </div>
         </div>
       </el-col>
       <el-col :span="12" v-if="myReject">
@@ -217,6 +227,7 @@
       }
       return {
         remarksCon: '',
+        giveSwitch: true,
         myReject: false,  //我的代办
         updatePwdVisible: false,
         rejectDialogVisible: false,
@@ -424,9 +435,9 @@
 
       rejectVisibie() {
         if ((sessionStorage.getItem('isExamine')) && (sessionStorage.getItem('isExamine') == 'reject')) {
-          this.myReject = true
-        } else {
           this.myReject = false
+        } else {
+          this.myReject = true
         }
       },
 
@@ -957,5 +968,15 @@
     color: #fff;
     border-color: #4680FF;
     cursor: pointer
+  }
+
+  .giveCounts {
+    margin-top: 20px;
+    margin-left: 60px
+  }
+
+  .giveCounts span {
+    font-size: 16px;
+    margin: 10px;
   }
 </style>
