@@ -1357,6 +1357,7 @@
                                 if (data.data.weixinUrl) {
                                     this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
                                 }
+                                // 0 关  1 开
                                 if (data.data.rightDisplay == 0) {
                                     this.customerDataForm.browserDisplay = false
                                 } else if (data.data.rightDisplay == 1) {

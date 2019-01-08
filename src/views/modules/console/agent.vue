@@ -65,7 +65,7 @@
           <h2>注册赠送</h2>
           <div class="giveCounts">
             <span>自动赠送</span>
-            <el-switch v-model="giveSwitch"></el-switch>
+            <el-switch v-model="giveSwitch" @change="checkSwitch"></el-switch>
             <span>（关闭后，系统将不会自动赠送5000条）</span>
           </div>
         </div>
@@ -607,6 +607,12 @@
           method: 'post',
         }).then(({ data }) => {
           if (data && data.code === 0) {
+            // 0不自动赠送，1自动赠送
+            if (data.data.autoPresentCfg == 1) {
+              this.giveSwitch = true
+            } else if (data.data.autoPresentCfg == 0) {
+              this.giveSwitch = false
+            }
             this.copyinput = data.data.referralLink
             this.chdataForm.chPrice = data.data.price
             this.basicList[0].counts = data.data.price
@@ -623,6 +629,25 @@
           }
         })
       },
+
+      //  控制赠送开关
+      checkSwitch(val) {
+        //0不自动赠送，1自动赠送
+        this.$http({
+          url: this.$http.adornUrl(`/agent/desk/updateAutoPresentCfg?token=${this.$cookie.get('token')}`),
+          method: 'post',
+          params: this.$http.adornParams({
+            'autoPresentCfg': val == true ? 1 : 0,
+          })
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message.success('成功');
+          } else {
+            this.$message.error('失败');
+          }
+        })
+      },
+
       // 充值记录
       myRechargeList() {
         this.$http({

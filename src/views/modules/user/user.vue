@@ -53,12 +53,13 @@
         </el-table-column>
         <el-table-column prop="account" label="剩余条数" align="center">
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="220">
+        <el-table-column fixed="right" label="操作" align="center" width="260">
           <template slot-scope="scope">
             <el-button @click="perPriseSee(scope.row)" type="text" size="small">查看</el-button>
             <el-button type="text" size="small" @click="rechargedataBtn(scope.row)" :disabled="regDisabled">充值</el-button>
             <el-button type="text" size="small" @click="refundBtn(scope.row)" :disabled="refundDisabled">退款</el-button>
             <el-button type="text" size="small" @click="transferAgent(scope.row)" :disabled="transferDisabled">转代理商</el-button>
+            <el-button type="text" size="small" v-if="giveVisible">注册赠送</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -90,6 +91,7 @@
   export default {
     data() {
       return {
+        giveVisible: false,
         disabled: false,
         seeVisible: false,
         updateVisible: false,
@@ -182,16 +184,18 @@
       },
       // 获取客户列表
       getCustomList() {
-        if (sessionStorage.getItem('msjRoleName') == '2') {
+        if (sessionStorage.getItem('msjRoleName') == '2') { //代理商
           this.disableAgent = false
           this.disableAgentName = false
           this.regDisabled = false;
           this.refundDisabled = false;
           this.transferDisabled = true
+          this.giveVisible = true  // 注册赠送
         } else if (sessionStorage.getItem('msjRoleName') == '1') {  //管理员
           this.regDisabled = true;
           this.refundDisabled = true;
           this.transferDisabled = false
+          this.giveVisible = false
         }
         this.dataListLoading = true
         this.$http({
