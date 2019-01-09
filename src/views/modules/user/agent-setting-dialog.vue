@@ -105,7 +105,7 @@
                             :limit="1">
                             <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
                             <i class="el-icon-plus "></i>
-                            <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长140px，宽36px，（再次上传请删除上一次上传）</div>
+                            <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长100px，宽100px，（再次上传请删除上一次上传）</div>
                             <input type="hidden" v-model="customerDataForm.imageUrlWx" />
                         </el-upload>
                     </el-form-item><br />
@@ -898,12 +898,12 @@
                         image.onload = function () {
                             var width = this.width;
                             var height = this.height;
-                            if (width !== 140) {
-                                _this.$alert('图片长必须为140!', '提示', { confirmButtonText: '确定' });
+                            if (width !== 100) {
+                                _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
                                 reject();
                             }
-                            if (height !== 36) {
-                                _this.$alert('图片宽必须为36!', '提示', { confirmButtonText: '确定' });
+                            if (height !== 100) {
+                                _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
                                 reject();
                             }
                             resolve();
