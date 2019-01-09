@@ -59,7 +59,8 @@
             <el-button type="text" size="small" @click="rechargedataBtn(scope.row)" :disabled="regDisabled">充值</el-button>
             <el-button type="text" size="small" @click="refundBtn(scope.row)" :disabled="refundDisabled">退款</el-button>
             <el-button type="text" size="small" @click="transferAgent(scope.row)" :disabled="transferDisabled">转代理商</el-button>
-            <el-button type="text" size="small" v-if="giveVisible">注册赠送</el-button>
+            <el-button type="text" size="small" v-if="scope.row.canPresent == 'false'" disabled>注册赠送</el-button>
+            <el-button type="text" size="small" v-else>注册赠送</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -91,7 +92,6 @@
   export default {
     data() {
       return {
-        giveVisible: false,
         disabled: false,
         seeVisible: false,
         updateVisible: false,
@@ -190,12 +190,10 @@
           this.regDisabled = false;
           this.refundDisabled = false;
           this.transferDisabled = true
-          this.giveVisible = true  // 注册赠送
         } else if (sessionStorage.getItem('msjRoleName') == '1') {  //管理员
           this.regDisabled = true;
           this.refundDisabled = true;
           this.transferDisabled = false
-          this.giveVisible = false
         }
         this.dataListLoading = true
         this.$http({

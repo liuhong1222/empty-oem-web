@@ -87,10 +87,10 @@
                         <el-switch v-model="customerDataForm.browserDisplay"></el-switch>
                     </el-form-item>
                     <el-form-item label="客服热线" prop="kfLine">
-                        <el-input v-model="customerDataForm.kfLine" placeholder="客服热线"></el-input>
+                        <el-input v-model="customerDataForm.kfLine" placeholder="客服热线 (最大输入长度为24)" maxlength="24"></el-input>
                     </el-form-item>
                     <el-form-item label="客服qq" prop="keyqq">
-                        <el-input v-model="customerDataForm.keyqq" placeholder="客服qq"></el-input>
+                        <el-input v-model="customerDataForm.keyqq" placeholder="客服qq (最大输入长度为24)" maxlength="24"></el-input>
                     </el-form-item>
                     <el-form-item label="美洽ID" prop="beautyID">
                         <el-input v-model="customerDataForm.beautyID" placeholder="美洽ID"></el-input>
