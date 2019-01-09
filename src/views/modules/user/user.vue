@@ -60,7 +60,7 @@
             <el-button type="text" size="small" @click="refundBtn(scope.row)" :disabled="refundDisabled">退款</el-button>
             <el-button type="text" size="small" @click="transferAgent(scope.row)" :disabled="transferDisabled">转代理商</el-button>
             <el-button type="text" size="small" v-if="scope.row.canPresent == 'false'" disabled>注册赠送</el-button>
-            <el-button type="text" size="small" v-else>注册赠送</el-button>
+            <el-button type="text" size="small" @click="canPresentBtn(scope.row.creUserId)" v-else>注册赠送</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -224,6 +224,23 @@
             this.totalPage = 0
           }
           this.dataListLoading = false
+        })
+      },
+      // 注册赠送
+      canPresentBtn(userId) {
+        this.$http({
+          url: this.$http.adornUrl(`agent/cust/presentNum?token=${this.$cookie.get('token')}`),
+          method: 'post',
+          params: this.$http.adornParams({
+            'userId': userId
+          })
+        }).then(({ data }) => {
+          if (data.code = "0") {
+            this.$message.success(data.msg);
+            this.getCustomList();
+          } else {
+            this.$message.error(data.msg);
+          }
         })
       },
       // 每页数
