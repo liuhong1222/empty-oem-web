@@ -235,7 +235,7 @@
             'userId': userId
           })
         }).then(({ data }) => {
-          if (data.code = "0") {
+          if (data.code == "0") {
             this.$message.success(data.msg);
             this.getCustomList();
           } else {
