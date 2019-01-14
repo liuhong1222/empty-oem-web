@@ -99,10 +99,13 @@
                         <el-input v-model="customerDataForm.businNO" placeholder="商务合作号"></el-input>
                     </el-form-item>
                     <el-form-item label="微信二维码" id="wxImgSize">
+                        <div class="delWXimg" v-show="delWXimgVisible">
+                            <img src="~@/assets/img/delWX.png" alt="" @click="delWXimgBtn">&nbsp;<span>（删除后可重新上传）</span>
+                        </div>
                         <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionWx()"
                             :on-success="handleAvatarSuccessWx" :on-error="errorWx" :on-progress="onProgressWx"
                             :before-upload="beforeAvatarUploadWx" :data="wxQueryParams" enctype="multipart/form-data"
-                            :limit="1">
+                            :limit="1" :file-list="fileList2">
                             <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
                             <i class="el-icon-plus "></i>
                             <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长100px，宽100px，（再次上传请删除上一次上传）</div>
@@ -212,9 +215,6 @@
                     <el-button style="margin-top: 12px;" @click="submitweixin">下一步</el-button>
                 </el-form>
             </div>
-
-
-
             <!-- 微信登录资料 -->
             <div class="weixinLoginInfo" v-if="active === 6">
                 <el-form :model="wxLoginForm" ref="wxLoginFormref" label-width="110px" class="demo-ruleForm">
@@ -237,6 +237,8 @@
     export default {
         data() {
             return {
+                delWXimgVisible: false,
+                fileList2: [],
                 visible: false,
                 agentId: null,
                 active: 0,
@@ -464,6 +466,25 @@
                     }
                 })
             },
+            // 删除图片
+            delWXimgBtn() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/set/delAgentWeixinImage?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'agentId': this.agentId,
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.fileList2 = [];
+                        this.wxUrl = "";
+                        this.customerDataForm.imageUrlWx = ""
+                        this.delWXimgVisible = false;
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
             next() {  //点击基本信息
                 this.$refs['basicdataList'].validate((valid) => {
                     if (valid) {
@@ -513,6 +534,9 @@
                             this.customerDataForm.id = data.data.id
                             if (data.data.weixinUrl) {
                                 this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
+                                this.delWXimgVisible = true
+                            } else {
+                                this.delWXimgVisible = false
                             }
                             if (data.data.rightDisplay == 0) {
                                 this.customerDataForm.browserDisplay = false
@@ -918,6 +942,7 @@
             handleAvatarSuccessWx(res, file) {
                 this.wxUrl = res.data.licenseUrl
                 this.customerDataForm.imageUrlWx = URL.createObjectURL(file.raw);
+                this.delWXimgVisible = true
             },
             errorWx() {
                 console.log("yyyyyy");
@@ -1236,5 +1261,17 @@
         font-size: 24px;
         color: #999;
         line-height: 182px;
+    }
+
+    .delWXimg {
+        position: absolute;
+        left: 190px;
+        top: 79px;
+        z-index: 999;
+    }
+
+    .delWXimg img {
+        vertical-align: text-top !important;
+        cursor: pointer;
     }
 </style>
