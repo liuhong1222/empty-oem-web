@@ -53,12 +53,14 @@
         </el-table-column>
         <el-table-column prop="account" label="剩余条数" align="center">
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center" width="220">
+        <el-table-column fixed="right" label="操作" align="center" width="260">
           <template slot-scope="scope">
             <el-button @click="perPriseSee(scope.row)" type="text" size="small">查看</el-button>
             <el-button type="text" size="small" @click="rechargedataBtn(scope.row)" :disabled="regDisabled">充值</el-button>
             <el-button type="text" size="small" @click="refundBtn(scope.row)" :disabled="refundDisabled">退款</el-button>
             <el-button type="text" size="small" @click="transferAgent(scope.row)" :disabled="transferDisabled">转代理商</el-button>
+            <el-button type="text" size="small" v-if="scope.row.canPresent == 'false'" disabled>注册赠送</el-button>
+            <el-button type="text" size="small" @click="canPresentBtn(scope.row.creUserId)" v-else>注册赠送</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -182,7 +184,7 @@
       },
       // 获取客户列表
       getCustomList() {
-        if (sessionStorage.getItem('msjRoleName') == '2') {
+        if (sessionStorage.getItem('msjRoleName') == '2') { //代理商
           this.disableAgent = false
           this.disableAgentName = false
           this.regDisabled = false;
@@ -222,6 +224,23 @@
             this.totalPage = 0
           }
           this.dataListLoading = false
+        })
+      },
+      // 注册赠送
+      canPresentBtn(userId) {
+        this.$http({
+          url: this.$http.adornUrl(`agent/cust/presentNum?token=${this.$cookie.get('token')}`),
+          method: 'post',
+          params: this.$http.adornParams({
+            'userId': userId
+          })
+        }).then(({ data }) => {
+          if (data.code == "0") {
+            this.$message.success(data.msg);
+            this.getCustomList();
+          } else {
+            this.$message.error(data.msg);
+          }
         })
       },
       // 每页数

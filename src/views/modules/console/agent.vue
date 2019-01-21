@@ -36,7 +36,7 @@
       <el-col :span="12">
         <div class="grid-content bg-purple">
           <h2>我的客户</h2>
-          <ul class="cf customerList">
+          <ul class="customerList">
             <li v-for="(item,index) in customMy" :key="index">
               <p>{{item.title}}</p>
               <p>{{item.counts}}</p>
@@ -58,6 +58,16 @@
               <span class="label" v-else>/{{item.number}}万条</span>
             </li>
           </ul>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="grid-content bg-purple">
+          <h2>注册赠送</h2>
+          <div class="giveCounts">
+            <span>自动赠送</span>
+            <el-switch v-model="giveSwitch" @change="checkSwitch"></el-switch>
+            <span>（关闭后，系统将不会自动赠送5000条）</span>
+          </div>
         </div>
       </el-col>
       <el-col :span="12" v-if="myReject">
@@ -217,6 +227,7 @@
       }
       return {
         remarksCon: '',
+        giveSwitch: true,
         myReject: false,  //我的代办
         updatePwdVisible: false,
         rejectDialogVisible: false,
@@ -424,9 +435,9 @@
 
       rejectVisibie() {
         if ((sessionStorage.getItem('isExamine')) && (sessionStorage.getItem('isExamine') == 'reject')) {
-          this.myReject = true
-        } else {
           this.myReject = false
+        } else {
+          this.myReject = true
         }
       },
 
@@ -596,6 +607,12 @@
           method: 'post',
         }).then(({ data }) => {
           if (data && data.code === 0) {
+            // 0不自动赠送，1自动赠送
+            if (data.data.autoPresentCfg == 1) {
+              this.giveSwitch = true
+            } else if (data.data.autoPresentCfg == 0) {
+              this.giveSwitch = false
+            }
             this.copyinput = data.data.referralLink
             this.chdataForm.chPrice = data.data.price
             this.basicList[0].counts = data.data.price
@@ -612,6 +629,25 @@
           }
         })
       },
+
+      //  控制赠送开关
+      checkSwitch(val) {
+        //0不自动赠送，1自动赠送
+        this.$http({
+          url: this.$http.adornUrl(`/agent/desk/updateAutoPresentCfg?token=${this.$cookie.get('token')}`),
+          method: 'post',
+          params: this.$http.adornParams({
+            'autoPresentCfg': val == true ? 1 : 0,
+          })
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message.success('成功');
+          } else {
+            this.$message.error('失败');
+          }
+        })
+      },
+
       // 充值记录
       myRechargeList() {
         this.$http({
@@ -957,5 +993,15 @@
     color: #fff;
     border-color: #4680FF;
     cursor: pointer
+  }
+
+  .giveCounts {
+    margin-top: 20px;
+    margin-left: 60px
+  }
+
+  .giveCounts span {
+    font-size: 16px;
+    margin: 10px;
   }
 </style>

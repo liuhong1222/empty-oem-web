@@ -49,6 +49,9 @@
                 </el-collapse-item>
                 <el-collapse-item title="客服资料 ✚" name="2">
                     <el-form label-width="110px" :model="customerDataForm" ref="customerdataList" class="demo-ruleForm">
+                        <el-form-item label="浏览器右侧显示">
+                            <el-switch v-model="customerDataForm.browserDisplay" disabled></el-switch>
+                        </el-form-item>
                         <el-form-item label="客服热线：">
                             <el-input v-model="customerDataForm.kfLine" placeholder="客服热线" readonly></el-input>
                         </el-form-item>
@@ -60,6 +63,12 @@
                         </el-form-item>
                         <el-form-item label="商务合作号：">
                             <el-input v-model="customerDataForm.businNO" placeholder="商务合作号" readonly></el-input>
+                        </el-form-item>
+                        <el-form-item label="微信二维码：">
+                            <el-upload class="avatar-uploader" action="" :show-file-list="false" disabled>
+                                <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
                         </el-form-item>
                     </el-form>
                 </el-collapse-item>
@@ -78,10 +87,12 @@
                             <el-input v-model="domainDataForm.telservice" placeholder="增值电信业务经营许可证" readonly></el-input>
                         </el-form-item>
                         <el-form-item label="ICP备案：">
-                            <el-input v-model="domainDataForm.icpInfo" placeholder="请输入ICP备案，例：沪ICP备案：15046301号-2" readonly></el-input>
+                            <el-input v-model="domainDataForm.icpInfo" placeholder="请输入ICP备案，例：沪ICP备案：15046301号-2"
+                                readonly></el-input>
                         </el-form-item>
                         <el-form-item label="公安备案：">
-                            <el-input v-model="domainDataForm.secrecord" placeholder="请输入公安备案，例：沪公网安备案 31011702001190号" readonly></el-input>
+                            <el-input v-model="domainDataForm.secrecord" placeholder="请输入公安备案，例：沪公网安备案 31011702001190号"
+                                readonly></el-input>
                         </el-form-item>
                     </el-form>
                 </el-collapse-item>
@@ -215,7 +226,9 @@
                     kfLine: '',
                     keyqq: '',
                     beautyID: '',
-                    businNO: ''
+                    businNO: '',
+                    browserDisplay: false,  //开关
+                    imageUrlWx: ''
                 },
                 contractdataForm: {  //合同信息
                     comName: '',
@@ -306,6 +319,14 @@
                                 this.customerDataForm.keyqq = data.data.qq
                                 this.customerDataForm.beautyID = data.data.meiqiaEntid
                                 this.customerDataForm.businNO = data.data.bizNo
+                                if (data.data.weixinUrl) {
+                                    this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
+                                }
+                                if (data.data.rightDisplay == 0) {
+                                    this.customerDataForm.browserDisplay = false
+                                } else if (data.data.rightDisplay == 1) {
+                                    this.customerDataForm.browserDisplay = true
+                                }
                             }
 
                         }
