@@ -125,7 +125,7 @@
                     allowCounts: '',
                     shortName: '',
                     priseimageUrl: ''
-
+                    
                 },
                 datarules: {
                     // agentNumber: [
