@@ -741,6 +741,7 @@
                                 this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
                                 this.delWXimgVisible = true
                             } else {
+                                this.wxUrl = ""
                                 this.delWXimgVisible = false
                             }
                             if (data.data.rightDisplay == 0) {
