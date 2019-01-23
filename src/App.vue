@@ -10,12 +10,12 @@
 </script>
 
 <style>
-.el-table {
-  min-height: 600px;
-}
-.el-table , .el-button{
-  font-size: 12px;
-}
+  .el-table {
+    min-height: 600px;
+  }
 
+  .el-table,
+  .el-button {
+    font-size: 12px;
+  }
 </style>
-

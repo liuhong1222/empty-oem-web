@@ -409,6 +409,7 @@
             closeDialog() {
                 this.activeNames = []
                 this.activeNames.push('1')  //获取第一步  关闭之前
+                this.customerDataForm.imageUrlWx = ""
             }
         }
     }
