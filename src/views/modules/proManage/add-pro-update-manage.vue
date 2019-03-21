@@ -1,18 +1,16 @@
 <template>
     <div>
         <el-dialog title="添加/编辑" :close-on-click-modal="false" :visible.sync="visible" width="850px" :before-close="closeNewsSeeDialod">
-            <el-form :model="peoAUDataForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="产品线名称：">
-                    <el-input v-model="peoAUDataForm.proLineName"></el-input>
+            <el-form :model="peoAUDataForm" label-width="110px" :rules="peoAUDataRules" ref="peoAUDataRef" class="demo-ruleForm">
+                <el-form-item label="产品线名称：" prop="proLineName">
+                    <el-input v-model="peoAUDataForm.proLineName" placeholder="请输入产品线名称……"></el-input>
                 </el-form-item>
-                <el-form-item label="产品名称：">
-                    <el-input v-model="peoAUDataForm.proName"></el-input>
+                <el-form-item label="产品名称：" prop="proName">
+                    <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称……"></el-input>
                 </el-form-item>
-                <el-form-item label="产品名称：">
-                    <el-input v-model="peoAUDataForm.proName"></el-input>
-                </el-form-item>
-                <el-form-item label="描述：">
-                    <el-input type="textarea" v-model="peoAUDataForm.describe"></el-input>
+                <el-form-item label="描述：" prop="describe">
+                    <el-input type="textarea" v-model="peoAUDataForm.describe" placeholder="请简要描述下产品,最多输入50个字符……"
+                        maxlength="50"></el-input>
                 </el-form-item>
                 <el-form-item label="icon" id="iconImgSize" prop="imageUrlIcon">
                     <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
@@ -24,30 +22,30 @@
                         <input type="hidden" v-model="peoAUDataForm.imageUrlIcon" />
                     </el-upload>
                 </el-form-item><br />
-                <el-form-item label="状态：">
+                <el-form-item label="状态：" prop="status">
                     <el-select v-model="peoAUDataForm.status" placeholder="请选择审核状态">
                         <el-option v-for="(item,index) in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="排序：">
+                <el-form-item label="排序：" prop="orderNum">
                     <el-input-number v-model="peoAUDataForm.orderNum" controls-position="right" :min="0" label="排序号"></el-input-number>
                 </el-form-item>
-                <el-form-item label="特殊资源">
+                <el-form-item label="跳转方式" prop="methods">
                     <el-radio-group v-model="peoAUDataForm.methods">
                         <el-radio label="内部编辑"></el-radio>
                         <el-radio label="外部地址"></el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="链接地址：">
-                    <el-input v-model="peoAUDataForm.adress"></el-input>
+                <el-form-item label="链接地址：" prop="adress">
+                    <el-input v-model="peoAUDataForm.adress" placeholder="请输入您要跳转的地址链接"></el-input>
                 </el-form-item>
                 <el-form-item label="新闻内容" prop="content">
                     <el-input type="hidden" v-model="peoAUDataForm.content"></el-input>
                     <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="info" plain>取消</el-button>
-                    <el-button type="primary">确定</el-button>
+                    <el-button type="info" plain @click="closeNewsSeeDialod">取消</el-button>
+                    <el-button type="primary" @click="peoAUDataSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -80,6 +78,35 @@
                     imageUrlIcon: '',
                     content: ''
                 },
+                peoAUDataRules: {
+                    proLineName: [
+                        { required: true, message: '请输入产品线名称', trigger: 'blur' }
+                    ],
+                    proName: [
+                        { required: true, message: '请输入产品名称', trigger: 'blur' }
+                    ],
+                    describe: [
+                        { required: true, message: '请输入描述信息', trigger: 'blur' }
+                    ],
+                    imageUrlIcon: [
+                        { required: true, message: '请上传icon', trigger: 'blur' }
+                    ],
+                    status: [
+                        { required: true, message: '请选择状态', trigger: 'blur' }
+                    ],
+                    orderNum: [
+                        { required: true, message: '请输入排序号', trigger: 'blur' }
+                    ],
+                    methods: [
+                        { required: true, message: '请选择跳转方式', trigger: 'blur' }
+                    ],
+                    adress: [
+                        { required: true, message: '请输入链接地址', trigger: 'blur' }
+                    ],
+                    content: [
+                        { required: true, message: '请输入编辑内容', trigger: 'blur' }
+                    ],
+                },
                 statusArr: [
                     { label: '上架', value: 1 },
                     { label: '下架', value: 2 }
@@ -94,6 +121,26 @@
         methods: {
             showInit() {
                 this.visible = true;
+                this.$nextTick(() => {
+                    this.$refs['peoAUDataRef'].resetFields()
+                })
+                // 设置默认值
+                if (this.peoAUDataForm.status == 1) {
+                    this.peoAUDataForm.status = '上架'
+                }
+            },
+            peoAUDataSubmit() {
+                if (this.$refs.ue.hasContent) {   //判断是否有内容
+                    this.peoAUDataForm.content = this.$refs.ue.getUEContentMsj()
+
+                }
+                this.$refs['peoAUDataRef'].validate((valid) => {
+                    if (valid) {
+                        let status = this.peoAUDataForm.status;
+                        status == "上架" ? (status = 1) : (status = status);
+                        console.log(status)
+                    }
+                })
             },
             closeNewsSeeDialod() {
                 this.visible = false;

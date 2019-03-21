@@ -102,8 +102,6 @@
                     { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
                     { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
                     { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
                     { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' }
                 ]
             }
