@@ -1,7 +1,8 @@
 <template>
     <div>
         <el-dialog title="审核/查看" :close-on-click-modal="false" :visible.sync="visible" width="550px" :before-close="closeNewsSeeDialod">
-            <el-form :model="quesAuditDataForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="quesAuditDataForm" label-width="100px" :rules="quesAuditDataRules" ref="quesAuditDataRef"
+                class="demo-ruleForm">
                 <el-form-item label="代理商名称：">
                     <el-input v-model="quesAuditDataForm.agentName" readonly></el-input>
                 </el-form-item>
@@ -29,7 +30,7 @@
                 </el-form-item>
 
                 <!-- 审核 -->
-                <el-form-item label="审核结果：" prop="resource">
+                <el-form-item label="审核：" prop="resource">
                     <el-radio-group v-model="quesAuditDataForm.resource" @change="auditChangeHandler">
                         <el-radio :label="0">通过</el-radio>
                         <el-radio :label="1">驳回</el-radio>
@@ -39,7 +40,7 @@
                     <el-input type="textarea" v-model="quesAuditDataForm.desc"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">确定</el-button>
+                    <el-button type="primary" @click="quesAuditDataSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -63,14 +64,30 @@
                     audit: '',
                     seeDesc: '',
                     resource: '',
-
+                },
+                quesAuditDataRules: {
+                    resource: [
+                        { required: true, message: '请选择审核', trigger: 'blur' }
+                    ],
+                    desc: [
+                        { required: true, message: '请输入驳回原因', trigger: 'blur' }
+                    ],
                 }
             }
         },
         methods: {
             showInit() {
                 this.visible = true;
-
+                this.$nextTick(() => {
+                    this.$refs['quesAuditDataRef'].resetFields()
+                })
+            },
+            quesAuditDataSubmit() {
+                this.$refs['quesAuditDataRef'].validate((valid) => {
+                    if (valid) {
+                        console.log('通过')
+                    }
+                })
             },
             auditChangeHandler(val) {
                 if (val == 1) {

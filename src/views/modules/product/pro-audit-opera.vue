@@ -1,7 +1,8 @@
 <template>
     <div>
         <el-dialog title="审核/查看" :close-on-click-modal="false" :visible.sync="visible" width="550px" :before-close="closeNewsSeeDialod">
-            <el-form :model="proAuditDataForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="proAuditDataForm" label-width="100px" :rules="proAuditDataRules" ref="proAuditDataRef"
+                class="demo-ruleForm">
                 <el-form-item label="代理商名称：">
                     <el-input v-model="proAuditDataForm.agentName"></el-input>
                 </el-form-item>
@@ -49,6 +50,10 @@
                 <el-form-item label="备注：">
                     <el-input type="textarea" v-model="proAuditDataForm.auditDesc"></el-input>
                 </el-form-item>
+                <el-form-item>
+                    <el-button type="info" plain>取消</el-button>
+                    <el-button type="primary" @click="proAuditDataSubmit()">确定</el-button>
+                </el-form-item>
             </el-form>
         </el-dialog>
     </div>
@@ -82,6 +87,14 @@
                     bhdesc: '',
                     auditRes: '',
                     auditDesc: ''
+                },
+                proAuditDataRules: {
+                    resource: [
+                        { required: true, message: '请选择状态', trigger: 'blur' }
+                    ],
+                    bhdesc: [
+                        { required: true, message: '请输入驳回原因', trigger: 'blur' }
+                    ]
                 }
             }
         },
@@ -89,6 +102,16 @@
             showInit() {
                 this.iconsImageUrl = "";
                 this.visible = true;
+                this.$nextTick(() => {
+                    this.$refs['proAuditDataRef'].resetFields()
+                })
+            },
+            proAuditDataSubmit() {
+                this.$refs['proAuditDataRef'].validate((valid) => {
+                    if (valid) {
+                        console.log('通过')
+                    }
+                })
             },
             closeNewsSeeDialod() {
                 this.visible = false;
