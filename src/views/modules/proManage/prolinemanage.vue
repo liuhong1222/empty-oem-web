@@ -22,7 +22,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary">查询</el-button>
+                    <el-button type="primary" @click="getProLineData(1)">查询</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -32,15 +32,15 @@
                 </el-table-column>
                 <el-table-column prop="id" label="产品线ID" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="proLineName" label="产品线名称" align="center">
+                <el-table-column prop="product_type_name" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="status" label="状态" align="center">
+                <el-table-column prop="shelf_status" label="状态" align="center">
                 </el-table-column>
-                <el-table-column prop="submitTime" label="修改时间" align="center">
+                <el-table-column prop="update_time" label="修改时间" align="center">
                 </el-table-column>
-                <el-table-column prop="sort" label="排序" align="center">
+                <el-table-column prop="order_num" label="排序" align="center">
                 </el-table-column>
-                <el-table-column prop="audit" label="审核状态" align="center">
+                <el-table-column prop="audit_status" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
@@ -75,18 +75,18 @@
                 proLineForm: {
                     status: '',
                     auditStatus: '',
-                    dateTime: ''
+                    dateTime: []
                 },
                 statusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '上架', value: 1 },
-                    { label: '下架', value: 2 }
+                    { label: '全部', value: -1 },
+                    { label: '上架', value: 0 },
+                    { label: '下架', value: 1 }
                 ],
                 auditStatusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '待审核', value: 1 },
-                    { label: '已审核', value: 2 },
-                    { label: '驳回', value: 3 }
+                    { label: '全部', value: -1 },
+                    { label: '待审核', value: 0 },
+                    { label: '已审核', value: 1 },
+                    { label: '驳回', value: 2 }
                 ],
                 proLineTableData: [
                     { id: '1602', proLineName: '产品线名称', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
@@ -109,8 +109,34 @@
             this.getProLineData()
         },
         methods: {
-            getProLineData() {
-                this.dataListLoading = false;
+            getProLineData(cur) {
+                this.dataListLoading = true;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/news/my/list?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'currentPage': cur || this.pageIndex,
+                        'pageSize': this.pageSize,
+                        'shelfStatus': this.status,
+                        'auditStatus': this.auditStatus,
+                        'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
+                        'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = true;
+                        if (cur == 1) {
+                            this.pageIndex = 1
+                        }
+                        this.proLineTableData = data.data.list
+                        this.totalPage = data.data.total
+
+                    } else {
+                        // this.newsTableData = []
+                        this.totalPage = 0
+                    }
+                    this.dataListLoading = false
+                })
             },
             update(id) {
                 this.addProlineUpdateVisible = true;

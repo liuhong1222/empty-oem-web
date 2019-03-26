@@ -75,7 +75,6 @@
             getUEContentBtn() {
                 if (this.$refs.ue.hasContent) {   //判断是否有内容
                     this.newsForm.newsContent = this.$refs.ue.getUEContentMsj()
-
                 }
                 this.$refs['newsRuleForm'].validate((valid) => {
                     if (valid) {

@@ -21,6 +21,7 @@
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
+                
                 <el-form-item label="状态：">
                     <el-input v-model="proAuditDataForm.status"></el-input>
                 </el-form-item>
@@ -102,6 +103,7 @@
             showInit() {
                 this.iconsImageUrl = "";
                 this.visible = true;
+                
                 this.$nextTick(() => {
                     this.$refs['proAuditDataRef'].resetFields()
                 })

@@ -28,7 +28,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary">查询</el-button>
+                    <el-button type="primary" @click="getQuesData(1)">查询</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -82,7 +82,8 @@
                 pageSize: 10,
                 totalPage: 100,
                 quesDataForm: {
-                    auditStatus: '待审核',  //默认显示待审核
+                    status: '',
+                    auditStatus: '1',  //默认显示待审核
                     dateTime: '',
                     searchType: '',
                     searchKey: ''
@@ -121,12 +122,49 @@
         components: {
             addQuestionUpdate
         },
+        created() {
+            //         // 设置默认值
+            if (this.quesDataForm.auditStatus == 1) {
+                this.quesDataForm.auditStatus = '待审核'
+            }
+        },
         activated() {
             this.getQuesData()
         },
+
         methods: {
-            getQuesData() {
-                this.dataListLoading = false;
+            getQuesData(cur) {
+                let auditStatus = this.quesDataForm.auditStatus;
+                auditStatus == '待审核' ? (auditStatus = 1) : (auditStatus = auditStatus);
+                this.dataListLoading = true;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/productFaq/all/list?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'currentPage': cur || this.pageIndex,
+                        'pageSize': this.pageSize,
+                        'queryType': this.quesDataForm.searchType,
+                        'content': this.quesDataForm.searchKey,
+                        'status': this.quesDataForm.status,
+                        'auditState': auditStatus,
+                        'startDate': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[0],
+                        'endDate': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[1]
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = true;
+                        if (cur == 1) {
+                            this.pageIndex = 1
+                        }
+                        // this.proLineTableData = data.data.list
+                        this.totalPage = data.data.total
+
+                    } else {
+                        // this.newsTableData = []
+                        this.totalPage = 0
+                    }
+                    this.dataListLoading = false
+                })
             },
             update(id) {
                 this.addquestionUpdateVisible = true;
