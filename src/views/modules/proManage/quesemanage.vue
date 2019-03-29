@@ -172,6 +172,7 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.dataListLoading = false;
+                        this.getQuesData();
                     } else {
                         this.$message.error(data.msg)
                     }
