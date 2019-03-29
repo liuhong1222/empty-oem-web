@@ -30,6 +30,9 @@
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="getQuesData(1)">查询</el-button>
                 </el-form-item>
+                <el-form-item style="margin-left:6px">
+                    <el-button type="primary" @click="sortReload()">刷新排序</el-button>
+                </el-form-item>
             </el-form>
         </div>
         <div class="agentTable">
@@ -146,7 +149,7 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.dataListLoading = true;
+                        this.dataListLoading = false;
                         if (cur == 1) {
                             this.pageIndex = 1
                         }
@@ -157,7 +160,21 @@
                         this.quesTableData = []
                         this.totalPage = 0
                     }
-                    this.dataListLoading = false
+                })
+            },
+            sortReload() {
+                this.dataListLoading = true;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/productFaq/my/againOrder?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = false;
+                    } else {
+                        this.$message.error(data.msg)
+                    }
                 })
             },
             // 上架，下架
