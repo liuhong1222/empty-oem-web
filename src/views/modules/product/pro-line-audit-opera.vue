@@ -9,17 +9,15 @@
                     <el-input v-model="proLineDataForm.proLineName" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                    <el-select v-model="proLineDataForm.status" placeholder="请选择审核状态">
-                        <el-option v-for="(item,index) in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
-                    </el-select>
+                    <el-input v-model="proLineDataForm.status" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="排序：" prop="orderNum">
-                    <el-input-number v-model="proLineDataForm.orderNum" controls-position="right" :min="0" label="排序号"></el-input-number>
+                    <el-input v-model="proLineDataForm.orderNum" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="审核：" prop="resource">
                     <el-radio-group v-model="proLineDataForm.resource" @change="auditChangeHandler">
-                        <el-radio :label="0">通过</el-radio>
-                        <el-radio :label="1">驳回</el-radio>
+                        <el-radio :label="3">通过</el-radio>
+                        <el-radio :label="4">驳回</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="驳回原因：" prop="desc" v-if="auditDisable">
@@ -41,18 +39,13 @@
                 proLineDataForm: {
                     agentName: '',
                     proLineName: '',
-                    status: '1',
+                    status: '',
                     orderNum: '',
                     resource: '',
-                    desc: ''
+                    desc: '',
+                    id: ''
                 },
                 proLineDataRules: {
-                    status: [
-                        { required: true, message: '请选择状态', trigger: 'blur' }
-                    ],
-                    orderNum: [
-                        { required: true, message: '请输入序号', trigger: 'blur' }
-                    ],
                     resource: [
                         { required: true, message: '请选择审核', trigger: 'blur' }
                     ],
@@ -60,17 +53,29 @@
                         { required: true, message: '请输入驳回原因', trigger: 'blur' }
                     ],
                 },
-                statusArr: [
-                    { label: '上架', value: 1 },
-                    { label: '下架', value: 2 }
-                ],
             }
         },
         methods: {
-            showInit() {
+            showInit(id) {
+                this.proLineDataForm.id = id;
                 this.visible = true;
+                this.auditDisable = false
                 this.$nextTick(() => {
                     this.$refs['proLineDataRef'].resetFields()
+                })
+                this.$http({
+                    url: this.$http.adornUrl(`agent/line/findById?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'id': this.proLineDataForm.id
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.proLineDataForm.agentName = data.data.agentName;
+                        this.proLineDataForm.proLineName = data.data.productLineName;
+                        this.proLineDataForm.status = data.data.shelfStatus == 0 ? '上架' : '下架';
+                        this.proLineDataForm.orderNum = data.data.orderNum;
+                    }
                 })
                 // 设置默认值
                 if (this.proLineDataForm.status == 1) {
@@ -80,15 +85,31 @@
             proLineDataSubmit() {
                 this.$refs['proLineDataRef'].validate((valid) => {
                     if (valid) {
-                        let status = this.proLineDataForm.status;
-                        status == "上架" ? (status = 1) : (status = status);
-                        console.log(status)
+                        this.$http({
+                            url: this.$http.adornUrl(`agent/line/updateStatus?token=${this.$cookie.get('token')}`),
+                            method: 'post',
+                            params: this.$http.adornParams({
+                                'status': this.proLineDataForm.resource,
+                                'id': this.proLineDataForm.id,
+                                'remark': this.proLineDataForm.desc
+                            })
+                        }).then(({ data }) => {
+                            if (data && data.code === 0) {
+                                this.$message.success('成功')
+                                this.visible = false
+                                this.$emit('refreshNewsList')
+                            } else {
+                                this.$message.error(data.msg)
+                            }
+                        })
                     }
+
                 })
             },
             auditChangeHandler(val) {
-                if (val == 1) {
+                if (val == 4) {
                     this.auditDisable = true
+
                 } else {
                     this.auditDisable = false
                     this.proLineDataForm.desc = ""

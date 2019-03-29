@@ -4,7 +4,7 @@
             <h2>产品详情管理列表</h2>
             <el-form :inline="true" :model="proLineForm" label-width="100px">
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-plus">添加产品</el-button>
+                    <el-button type="primary" icon="el-icon-plus" @click="update()">添加产品</el-button>
                 </el-form-item>
                 <el-form-item label="选择日期：">
                     <el-date-picker v-model="proLineForm.dateTime" type="daterange" range-separator="至"
@@ -22,39 +22,46 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary">查询</el-button>
+                    <el-button type="primary" @click="getProData(1)">查询</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <div class="agentTable">
             <el-table :data="proLineTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
+                <el-table-column prop="order_num" label="排序" align="center">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.order_num" @change="change(scope.row.id)" @keyup.enter.native="change(scope.row.id)"></el-input>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="id" label="产品线ID" align="center" width="110">
+                <el-table-column prop="id" label="产品线ID" align="center" width="110"> </el-table-column>
+                <el-table-column prop="productLineName" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="proLineName" label="产品线名称" align="center">
+                <el-table-column prop="product_name" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="proName" label="产品名称" align="center">
+                <el-table-column prop="icon_path" label="icon图片" align="center">
                 </el-table-column>
-                <el-table-column prop="icon" label="icon图片" align="center">
+                <el-table-column prop="shelf_status" label="状态" align="center">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.shelf_status==0 ? '上架':'下架' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态" align="center">
+                <el-table-column prop="jump_mode" label="跳转方式" align="center">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.jump_mode==1 ? '内部编辑':'外部地址' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="methods" label="跳转方式"" align=" center">
+                <el-table-column prop="create_time" label="修改时间" align="center">
                 </el-table-column>
-                <el-table-column prop="submitTime" label="修改时间" align="center">
-                </el-table-column>
-                <el-table-column prop="sort" label="排序" align="center">
-                </el-table-column>
-                <el-table-column prop="audit" label="审核状态" align="center">
+                <el-table-column prop="auditStatus" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.eow)">编辑</el-button>
-                        <el-button type="text" size="small">下架</el-button>
-                        <el-button type="text" size="small">删除</el-button>
+                        <el-button type="text" size="small" @click="update(scope.row.id)">编辑</el-button>
+                        <el-button type="text" size="small" @click="onOrOffBtn(scope.row)">{{scope.row.shelf_status==0
+                            ? '下架':'上架' }}</el-button>
+                        <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -80,47 +87,122 @@
                 totalPage: 100,
                 proLineForm: {
                     status: '',
-                    auditStatus: '',
+                    auditStatus: 0,
                     dateTime: ''
                 },
-
                 statusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '上架', value: 1 },
-                    { label: '下架', value: 2 }
+                    { label: '全部', value: -1 },
+                    { label: '上架', value: 0 },
+                    { label: '下架', value: 1 }
                 ],
                 auditStatusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '待审核', value: 1 },
-                    { label: '已审核', value: 2 },
-                    { label: '驳回', value: 3 }
+                    { label: '全部', value: -1 },
+                    { label: '待审核', value: 0 },
+                    { label: '已审核', value: 1 },
+                    { label: '驳回', value: 2 }
                 ],
-                proLineTableData: [
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1602', proLineName: '产品线名称', proName: '产品名称', icon: '图片', status: '上架', methods: '内部', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' }
-                ]
+                proLineTableData: []
             }
         },
         components: {
             addProUpdate
         },
         activated() {
+            if (this.proLineForm.auditStatus !== 0) {
+                this.proLineForm.auditStatus = 0
+            }
             this.getProData()
         },
+        created() {
+            // 设置默认值
+            if (this.proLineForm.auditStatus == 0) {
+                this.proLineForm.auditStatus = '待审核'
+            }
+        },
         methods: {
-            getProData() {
-                this.dataListLoading = false;
+            change(id) {
+                console.log(id)
+            },
+            getProData(cur) {
+                this.dataListLoading = true;
+                let auditStatus = this.proLineForm.auditStatus;
+                auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/product/list?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'currentPage': cur || this.pageIndex,
+                        'pageSize': this.pageSize,
+                        'auditStatus': auditStatus,
+                        'shelfStatus': this.proLineForm.status,
+                        'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
+                        'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = false;
+                        if (cur == 1) {
+                            this.pageIndex = 1
+                        }
+                        this.proLineTableData = data.data.list
+                        this.totalPage = data.data.total
+
+                    } else {
+                        this.proLineTableData = []
+                        this.totalPage = 0
+                    }
+                })
             },
             update(id) {
                 this.addProUpdateVisible = true;
                 this.$nextTick(() => {
                     this.$refs.addProUpdateRef.showInit(id)
                 })
+            },
+            // 上架，下架
+            onOrOffBtn(row) {
+                let shelf_status = row.shelf_status;
+                let id = row.id
+                if (shelf_status == 0) {  //下架
+                    // alert('下架')
+                    this.onOffFun(1, id)
+                } else if (shelf_status == 1) {  //上架
+                    // alert('上架')
+                    this.onOffFun(0, id)
+                }
+            },
+            onOffFun(shelf_status, id) {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/product/updateStatus?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'status': shelf_status,
+                        'id': id
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        if (shelf_status == 0) {
+                            this.$message.success('上架成功')
+                        } else if (shelf_status == 1) {
+                            this.$message.success('下架成功')
+                        } else if (shelf_status == 2) {
+                            this.$message.success('删除成功')
+                        }
+                        this.getProLineData()
+
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
+            delBtn(id) {
+                this.$confirm(`确定对此产品进行删除操作?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.onOffFun(2, id)
+                }).catch(() => { })
             },
             // 每页数
             sizeChangeHandle(val) {

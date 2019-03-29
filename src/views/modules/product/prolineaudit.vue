@@ -14,7 +14,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary">查询</el-button>
+                    <el-button type="primary" @click="getProLineData(1)">查询</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -24,19 +24,23 @@
                 </el-table-column>
                 <el-table-column prop="agentName" label="代理商名称" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="proLineName" label="产品线名称" align="center">
+                <el-table-column prop="product_type_name" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="submitTime" label="提交时间" align="center">
+                <el-table-column prop="create_time" label="提交时间" align="center">
                 </el-table-column>
-                <el-table-column prop="sort" label="排序" align="center">
+                <el-table-column prop="order_num" label="排序" align="center">
                 </el-table-column>
-                <el-table-column prop="audit" label="审核状态" align="center">
+                <el-table-column prop="audit_status" label="审核状态" align="center">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.audit_status==0 ? '待审核' : (scope.row.audit_status==1) ? '审核通过' : '审核驳回' }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="proLineAuditBtn(scope.row.id)">审核</el-button>
+                        <el-button type="text" size="small" @click="proLineAuditBtn(scope.row.id)" :disabled="scope.row.audit_status ==
+                        0 ?false: true">审核</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -57,44 +61,71 @@
     export default {
         data() {
             return {
-                proLineAuditVisible:false,
+                proLineAuditVisible: false,
                 dataListLoading: false,
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 100,
                 proLineForm: {
-                    status: '待审核',  //默认显示待审核
+                    status: 0,  //默认显示待审核
                     dateTime: ''
                 },
                 statusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '待审核', value: 1 },
-                    { label: '已审核', value: 2 },
-                    { label: '驳回', value: 3 }
+                    { label: '全部', value: -1 },
+                    { label: '待审核', value: 0 },
+                    { label: '已审核', value: 1 },
+                    { label: '驳回', value: 2 }
                 ],
-                proLineTableData: [
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { agentName: '代理商名称', proLineName: '产品线名称', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' }
-                ]
+                proLineTableData: []
             }
         },
         components: {
             proLineAudit
         },
         activated() {
+            if (this.proLineForm.status !== 0) {
+                this.proLineForm.status = 0
+            }
             this.getProLineData()
         },
+        created() {
+            // 设置默认值
+            if (this.proLineForm.status == 0) {
+                this.proLineForm.status = '待审核'
+            }
+        },
         methods: {
-            getProLineData() {
-                this.dataListLoading = false;
+            getProLineData(cur) {
+                this.dataListLoading = true;
+                let auditStatus = this.proLineForm.status;
+                auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/line/list?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'currentPage': cur || this.pageIndex,
+                        'pageSize': this.pageSize,
+                        'auditStatus': auditStatus,
+                        'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
+                        'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = false;
+                        if (cur == 1) {
+                            this.pageIndex = 1
+                        }
+                        this.proLineTableData = data.data.list
+                        this.totalPage = data.data.total
+
+                    } else {
+
+                        this.proLineTableData = []
+                        this.totalPage = 0
+                    }
+                })
             },
-            proLineAuditBtn(id){
+            proLineAuditBtn(id) {
                 this.proLineAuditVisible = true
                 this.$nextTick(() => {
                     this.$refs.proLineAuditRef.showInit(id)

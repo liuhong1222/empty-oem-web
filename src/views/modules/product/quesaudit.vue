@@ -25,35 +25,34 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary">查询</el-button>
+                    <el-button type="primary" @click="getQuesAuditData(1)">查询</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <div class="agentTable">
             <el-table :data="proTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
+                <el-table-column prop="orderNum" label="排序" align="center">
                 </el-table-column>
                 <el-table-column prop="id" label="问题ID" align="center" width="110">
                 </el-table-column>
                 <el-table-column prop="agentName" label="代理商名称" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="proName" label="所属产品" align="center">
+                <el-table-column prop="productName" label="所属产品" align="center">
                 </el-table-column>
-                <el-table-column prop="title" label="标题" align="center">
+                <el-table-column prop="question" label="标题" align="center">
                 </el-table-column>
                 <el-table-column prop="status" label="状态" align="center">
                 </el-table-column>
-                <el-table-column prop="submitTime" label="提交时间" align="center">
+                <el-table-column prop="createTime" label="提交时间" align="center">
                 </el-table-column>
-                <el-table-column prop="sort" label="排序" align="center">
-                </el-table-column>
-                <el-table-column prop="audit" label="审核状态" align="center">
+                <el-table-column prop="auditStatus" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="quesAuditBtn(scope.row.id)">审核</el-button>
+                        <el-button type="text" size="small" @click="quesAuditBtn(scope.row.id,'audit')" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? false : true">审核</el-button>
+                        <el-button type="text" size="small" @click="quesAuditBtn(scope.row.id,'see')" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? true : false">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -79,54 +78,84 @@
                 pageSize: 10,
                 totalPage: 100,
                 quesAuditForm: {
-                    auditStatus: '待审核',  //默认显示待审核
+                    status: '',
+                    auditStatus: '',  //默认显示待审核
                     dateTime: '',
                     searchType: '',
                     searchKey: ''
                 },
                 searchKeyArr: [
-                    { label: '全部', value: 0 },
-                    { label: '标题', value: 1 },
-                    { label: '内容', value: 2 }
+                    { label: '全部', value: "" },
+                    { label: '标题', value: "question" },
+                    { label: '内容', value: "answer" }
                 ],
                 statusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '上架', value: 1 },
-                    { label: '下架', value: 2 }
+                    { label: '全部', value: "" },
+                    { label: '上架', value: 0 },
+                    { label: '下架', value: 1 }
                 ],
                 auditStatusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '待审核', value: 1 },
-                    { label: '已审核', value: 2 },
-                    { label: '驳回', value: 3 }
+                    { label: '全部', value: "" },
+                    { label: '待审核', value: 0 },
+                    { label: '已审核', value: 1 },
+                    { label: '驳回', value: 2 }
                 ],
-                proTableData: [
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', agentName: '代理商名称', proName: '所属产品', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' }
-                ]
+                proTableData: []
             }
         },
         components: {
             quesAuditDialog
         },
         activated() {
+            // if (this.quesAuditForm.auditStatus !== 0) {
+            //     this.quesAuditForm.auditStatus = 0
+            // }
             this.getQuesAuditData()
         },
+        // created() {
+        //     // 设置默认值
+        //     if (this.quesAuditForm.auditStatus == 0) {
+        //         this.quesAuditForm.auditStatus = '待审核'
+        //     }
+        // },
         methods: {
-            getQuesAuditData() {
-                this.dataListLoading = false;
+            getQuesAuditData(cur) {
+                // let auditStatus = this.quesAuditForm.auditStatus;
+                // auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
+                this.dataListLoading = true;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/productFaq/all/list?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'currentPage': cur || this.pageIndex,
+                        'pageSize': this.pageSize,
+                        'queryType': this.quesAuditForm.searchType,
+                        'content': this.quesAuditForm.searchKey,
+                        'status': this.quesAuditForm.status,
+                        'auditState': this.quesAuditForm.auditStatus,
+                        'startDate': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[0],
+                        'endDate': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[1]
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = true;
+                        if (cur == 1) {
+                            this.pageIndex = 1
+                        }
+                        this.proTableData = data.data.list
+                        this.totalPage = data.data.total
+
+                    } else {
+                        this.proTableData = []
+                        this.totalPage = 0
+                    }
+                    this.dataListLoading = false
+                })
             },
-            quesAuditBtn(id) {
+            quesAuditBtn(id, stu) {
                 this.quesAuditVisible = true,
                     this.$nextTick(() => {
-                        this.$refs.quesAuditRef.showInit(id)
+                        this.$refs.quesAuditRef.showInit(id, stu)
                     })
             },
             // 每页数

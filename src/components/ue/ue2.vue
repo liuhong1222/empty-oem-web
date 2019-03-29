@@ -1,7 +1,7 @@
 <template>
     <div>
         <script id="editor2" type="text/plain"></script>
-        <!-- <span>{{defaultMsg}}</span> -->
+        <span>{{defaultMsg}}</span>
     </div>
 </template>
 <script>
@@ -23,6 +23,7 @@
             }
         },
         mounted() {
+           
             // const _this = this;
             this.editor2 = UE.getEditor('editor2', this.config);
             // this.editor.addListener("ready", function () {

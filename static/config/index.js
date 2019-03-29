@@ -5,7 +5,9 @@
 window.SITE_CONFIG = {};
 
 // api接口请求地址
-window.SITE_CONFIG['baseUrl'] = 'http://localhost:9999/open/';
+// window.SITE_CONFIG['baseUrl'] = 'http://localhost:9999/open/';
+window.SITE_CONFIG['baseUrl'] = 'http://172.16.20.33:9999/open/';
+
 window.SITE_CONFIG['imgUrl'] = 'http://127.0.0.1:9191/'; //军哥图片地址
 window.SITE_CONFIG['zxaImgUrl'] = 'http://127.0.0.1:9191/'; //张新安图片地址
 

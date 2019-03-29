@@ -1,9 +1,10 @@
 <template>
     <div>
-        <el-dialog title="添加/编辑" :close-on-click-modal="false" :visible.sync="visible" width="850px" :before-close="closeNewsSeeDialod">
+        <el-dialog :title="!peoAUDataForm.id ? '添加' :'编辑'" :close-on-click-modal="false" :visible.sync="visible" width="850px"
+            :before-close="closeNewsSeeDialod">
             <el-form :model="peoAUDataForm" label-width="110px" :rules="peoAUDataRules" ref="peoAUDataRef" class="demo-ruleForm">
                 <el-form-item label="产品线名称：" prop="proLineName">
-                    <el-input v-model="peoAUDataForm.proLineName" placeholder="请输入产品线名称……"></el-input>
+                    <el-input v-model="peoAUDataForm.proLineName" placeholder="请输入产品线名称……" :disabled="disabled"></el-input>
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="proName">
                     <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称……"></el-input>
@@ -31,15 +32,15 @@
                     <el-input-number v-model="peoAUDataForm.orderNum" controls-position="right" :min="0" label="排序号"></el-input-number>
                 </el-form-item>
                 <el-form-item label="跳转方式" prop="methods">
-                    <el-radio-group v-model="peoAUDataForm.methods">
-                        <el-radio label="内部编辑"></el-radio>
-                        <el-radio label="外部地址"></el-radio>
+                    <el-radio-group v-model="peoAUDataForm.methods" @change="addressTab">
+                        <el-radio :label="2">外部地址</el-radio>
+                        <el-radio :label="1">内部编辑</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="链接地址：" prop="adress">
+                <el-form-item label="链接地址：" prop="adress" v-if="addressShow">
                     <el-input v-model="peoAUDataForm.adress" placeholder="请输入您要跳转的地址链接"></el-input>
                 </el-form-item>
-                <el-form-item label="新闻内容" prop="content">
+                <el-form-item label="新闻内容" prop="content" v-if="contentShow">
                     <el-input type="hidden" v-model="peoAUDataForm.content"></el-input>
                     <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
                 </el-form-item>
@@ -54,11 +55,16 @@
 
 <script>
     import UE from '../../../components/ue/ue4.vue';
+    import imgUrl from '@/utils/imgUrl'
     export default {
         components: { UE },
         data() {
             return {
                 visible: false,
+                disabled: false,
+                addressShow: true,
+                contentShow: false,
+                title: '',
                 defaultMsgCon: '',
                 config: {
                     initialFrameWidth: '100%',
@@ -73,10 +79,11 @@
                     describe: '',
                     status: '',
                     orderNum: '',
-                    methods: '',
+                    methods: 2,
                     adress: '',
                     imageUrlIcon: '',
-                    content: ''
+                    content: '',
+                    id: ''
                 },
                 peoAUDataRules: {
                     proLineName: [
@@ -108,8 +115,8 @@
                     ],
                 },
                 statusArr: [
-                    { label: '上架', value: 1 },
-                    { label: '下架', value: 2 }
+                    { label: '上架', value: 0 },
+                    { label: '下架', value: 1 }
                 ],
                 iconQueryParams: { //icon上传参数
                     imageType: 4,
@@ -119,35 +126,78 @@
             }
         },
         methods: {
-            showInit() {
+            showInit(id) {
                 this.visible = true;
+                this.disabled = false;
+                this.peoAUDataForm.id = id;
+                this.peoAUDataForm.methods = 2;
+                if (this.peoAUDataForm.methods == 2) {
+                    this.addressShow = true;
+                    this.contentShow = false;
+                } else {
+                    this.addressShow = false;
+                    this.contentShow = true;
+                }
+                if (this.peoAUDataForm.id) {
+                    this.disabled = true;
+                    this.$http({
+                        url: this.$http.adornUrl(`agent/product/findById?token=${this.$cookie.get('token')}`),
+                        method: 'post',
+                        params: this.$http.adornParams({
+                            'id': this.peoAUDataForm.id
+                        })
+                    }).then(({ data }) => {
+                        if (data && data.code === 0) {
+                            this.peoAUDataForm.proLineName = data.data.productLineName;
+                            this.peoAUDataForm.proName = data.data.product_name;
+                            this.peoAUDataForm.describe = data.data.product_desc;
+                            this.peoAUDataForm.imageUrlIcon = imgUrl.imgUrl + data.data.icon_path;
+                            this.peoAUDataForm.status = data.data.shelf_status;
+                            this.peoAUDataForm.orderNum = data.data.order_num;
+                            this.peoAUDataForm.methods = data.data.jumpMode;
+                            this.peoAUDataForm.adress = data.data.link_url;
+                            this.defaultMsgCon = data.data.product_content;
+                        }
+                    })
+                }
+
                 this.$nextTick(() => {
                     this.$refs['peoAUDataRef'].resetFields()
                 })
                 // 设置默认值
-                if (this.peoAUDataForm.status == 1) {
+                if (this.peoAUDataForm.status == 0) {
                     this.peoAUDataForm.status = '上架'
                 }
             },
             peoAUDataSubmit() {
-                if (this.$refs.ue.hasContent) {   //判断是否有内容
-                    this.peoAUDataForm.content = this.$refs.ue.getUEContentMsj()
-
+                if (this.$refs.ue) {
+                    if (this.$refs.ue.hasContent) {   //判断是否有内容
+                        this.peoAUDataForm.content = this.$refs.ue.getUEContentMsj()
+                    }
                 }
                 this.$refs['peoAUDataRef'].validate((valid) => {
                     if (valid) {
                         let status = this.peoAUDataForm.status;
-                        status == "上架" ? (status = 1) : (status = status);
+                        status == "上架" ? (status = 0) : (status = status);
                         console.log(status)
                     }
                 })
             },
             closeNewsSeeDialod() {
                 this.visible = false;
+                this.defaultMsgCon = ""
+                console.log(this.$refs.ue)
+                if (this.$refs.ue) {
+                    if (this.$refs.ue.hasContent) {   //判断是否有内容
+                        // alert(33333)
+                        this.$refs.ue.execCommand()
+                    }
+                }
+
             },
             // 上传icon
             actionIcon() {
-                let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=4`);
+                let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=7`);
                 return url;
             },
             errorIcon() {
@@ -196,6 +246,15 @@
                 this.iconUrl = res.data.licenseUrl
                 this.peoAUDataForm.imageUrlIcon = URL.createObjectURL(file.raw);
             },
+            addressTab(val) {
+                if (val == 2) {
+                    this.addressShow = true;
+                    this.contentShow = false;
+                } else {
+                    this.addressShow = false;
+                    this.contentShow = true;
+                }
+            }
         }
     }
 </script>

@@ -4,7 +4,7 @@
             <h2>常见问题管理列表</h2>
             <el-form :inline="true" :model="quesDataForm" label-width="100px">
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-plus">添加问题</el-button>
+                    <el-button type="primary" icon="el-icon-plus" @click="update()">添加问题</el-button>
                 </el-form-item>
                 <el-form-item label="状态" style="margin-left: -40px">
                     <el-select v-model="quesDataForm.status" placeholder="请选择状态">
@@ -34,29 +34,32 @@
         </div>
         <div class="agentTable">
             <el-table :data="quesTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
+                <el-table-column prop="orderNum" label="排序" align="center">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.orderNum" @change="orderNumChange(scope.row)"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="id" label="问题ID" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="proName" label="产品名称" align="center" width="110">
+                <el-table-column prop="productName" label="产品名称" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="title" label="标题" align="center">
+                <el-table-column prop="question" label="标题" align="center" width="150" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="status" label="状态" align="center">
                 </el-table-column>
-                <el-table-column prop="submitTime" label="修改时间" align="center">
+                <el-table-column prop="updateTime" label="修改时间" align="center">
                 </el-table-column>
-                <el-table-column prop="sort" label="排序" align="center">
-                </el-table-column>
-                <el-table-column prop="audit" label="审核状态" align="center">
+
+                <el-table-column prop="auditStatus" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row)">编辑</el-button>
-                        <el-button type="text" size="small">下架</el-button>
-                        <el-button type="text" size="small">删除</el-button>
+                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" @click="upAddOff(scope.row)">{{scope.row.status=='上架' ?'下架'
+                            :'上架' }}</el-button>
+                        <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -83,63 +86,54 @@
                 totalPage: 100,
                 quesDataForm: {
                     status: '',
-                    auditStatus: '1',  //默认显示待审核
+                    auditStatus: 0,  //默认显示待审核
                     dateTime: '',
                     searchType: '',
                     searchKey: ''
                 },
                 searchKeyArr: [
-                    { label: '全部', value: 0 },
-                    { label: '标题', value: 1 },
-                    { label: '内容', value: 2 }
+                    { label: '全部', value: "" },
+                    { label: '标题', value: "question" },
+                    { label: '内容', value: 'answer' }
                 ],
                 statusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '上架', value: 1 },
-                    { label: '下架', value: 2 }
+                    { label: '全部', value: "" },
+                    { label: '上架', value: 0 },
+                    { label: '下架', value: 1 }
                 ],
                 auditStatusArr: [
-                    { label: '全部', value: 0 },
-                    { label: '待审核', value: 1 },
-                    { label: '已审核', value: 2 },
-                    { label: '驳回', value: 3 }
+                    { label: '全部', value: "" },
+                    { label: '待审核', value: 0 },
+                    { label: '已审核', value: 1 },
+                    { label: '驳回', value: 2 }
                 ],
-                quesTableData: [
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' },
-                    { id: '1', proName: '产品名称', title: '标题', status: '上架', submitTime: '时间', sort: '1', audit: '已审核', remark: '备注,,.....' }
-
-                ]
+                quesTableData: []
             }
         },
         components: {
             addQuestionUpdate
         },
         created() {
-            //         // 设置默认值
-            if (this.quesDataForm.auditStatus == 1) {
+            // 设置默认值
+            if (this.quesDataForm.auditStatus == 0) {
                 this.quesDataForm.auditStatus = '待审核'
             }
         },
         activated() {
+            if (this.quesDataForm.auditStatus !== 0) {
+                this.quesDataForm.auditStatus = 0
+            }
             this.getQuesData()
         },
 
         methods: {
             getQuesData(cur) {
                 let auditStatus = this.quesDataForm.auditStatus;
-                auditStatus == '待审核' ? (auditStatus = 1) : (auditStatus = auditStatus);
+                auditStatus == '待审核' ? (auditStatus = 0) : (auditStatus = auditStatus);
                 this.dataListLoading = true;
                 this.$http({
-                    url: this.$http.adornUrl(`agent/productFaq/all/list?token=${this.$cookie.get('token')}`),
-                    method: 'get',
+                    url: this.$http.adornUrl(`agent/productFaq/my/list?token=${this.$cookie.get('token')}`),
+                    method: 'post',
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
@@ -156,15 +150,90 @@
                         if (cur == 1) {
                             this.pageIndex = 1
                         }
-                        // this.proLineTableData = data.data.list
+                        this.quesTableData = data.data.list
                         this.totalPage = data.data.total
 
                     } else {
-                        // this.newsTableData = []
+                        this.quesTableData = []
                         this.totalPage = 0
                     }
                     this.dataListLoading = false
                 })
+            },
+            // 上架，下架
+            upAddOff(row) {
+                let status = row.status;
+                let id = row.id
+                if (status == '上架') {  //下架
+                    // alert('下架')
+                    this.upOffDelFun(1, id)
+                } else if (status == '下架') {  //上架
+                    // alert('上架')
+                    this.upOffDelFun(0, id)
+                }
+            },
+            // 排序
+            orderNumChange(row) {
+                // console.log(row.orderNum)
+                this.$http({
+                    url: this.$http.adornUrl(`agent/productFaq/my/updateFaqOrder?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'orderNum': row.orderNum,
+                        'productFaqId': row.id
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.getQuesData()
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
+            upOffDelFun(status, id) {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/productFaq/my/updateFaqOrder?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'shelfStatus': status,
+                        'productFaqId': id
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        if (status == 0) {
+                            this.$message.success('上架成功')
+                        } else if (status == 1) {
+                            this.$message.success('下架成功')
+                        }
+                        this.getQuesData()
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
+            // 删除
+            delBtn(id) {
+                this.$confirm(`确定对此产品进行删除操作?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$http({
+                        url: this.$http.adornUrl(`agent/productFaq/my/delete?token=${this.$cookie.get('token')}`),
+                        method: 'post',
+                        params: this.$http.adornParams({
+                            'productFaqId': id
+                        })
+                    }).then(({ data }) => {
+                        if (data && data.code === 0) {
+                            this.$message.success('删除成功')
+                            this.getQuesData()
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
+                }).catch(() => { })
+
             },
             update(id) {
                 this.addquestionUpdateVisible = true;
