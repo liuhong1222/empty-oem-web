@@ -6,6 +6,11 @@
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-plus" @click="update()">添加问题</el-button>
                 </el-form-item>
+                <el-form-item label="产品名称">
+                    <el-select v-model="quesDataForm.proName" placeholder="请选择产品名称">
+                        <el-option v-for="(item,index) in proArr" :label="item.productName" :key="item.productId" :value="item.productId"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="状态" style="margin-left: -40px">
                     <el-select v-model="quesDataForm.status" placeholder="请选择状态">
                         <el-option v-for="(item,index) in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
@@ -16,7 +21,7 @@
                         <el-option v-for="(item,index) in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="搜索类型" style="margin-left: -60px;" class="searchType">
+                <el-form-item label="搜索类型" class="searchType">
                     <el-select v-model="quesDataForm.searchType" placeholder="请选择">
                         <el-option v-for="(item,index) in searchKeyArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
@@ -89,10 +94,11 @@
                 totalPage: 100,
                 quesDataForm: {
                     status: '',
-                    auditStatus: 0,  //默认显示待审核
+                    auditStatus: '',  //默认显示待审核
                     dateTime: '',
                     searchType: '',
-                    searchKey: ''
+                    searchKey: '',
+                    proName: ''
                 },
                 searchKeyArr: [
                     { label: '全部', value: "" },
@@ -106,44 +112,49 @@
                 ],
                 auditStatusArr: [
                     { label: '全部', value: "" },
-                    { label: '待审核', value: 0 },
+                    { label: '新增待审核', value: 0 },
                     { label: '已审核', value: 1 },
-                    { label: '驳回', value: 2 }
+                    { label: '新增已驳回', value: 2 },
+                    { label: '修改待审核', value: 3 },
+                    { label: '修改驳回', value: 4 },
                 ],
+                proArr: [],
                 quesTableData: []
             }
         },
         components: {
             addQuestionUpdate
         },
-        created() {
-            // 设置默认值
-            if (this.quesDataForm.auditStatus == 0) {
-                this.quesDataForm.auditStatus = '待审核'
-            }
-        },
+        // created() {
+        //     // 设置默认值
+        //     if (this.quesDataForm.auditStatus == 0) {
+        //         this.quesDataForm.auditStatus = '待审核'
+        //     }
+        // },
         activated() {
-            if (this.quesDataForm.auditStatus !== 0) {
-                this.quesDataForm.auditStatus = 0
-            }
-            this.getQuesData()
+            // if (this.quesDataForm.auditStatus !== 0) {
+            //     this.quesDataForm.auditStatus = 0
+            // }
+            this.getQuesData();
+            this.getAllPro();
         },
 
         methods: {
             getQuesData(cur) {
-                let auditStatus = this.quesDataForm.auditStatus;
-                auditStatus == '待审核' ? (auditStatus = 0) : (auditStatus = auditStatus);
+                // let auditStatus = this.quesDataForm.auditStatus;
+                // auditStatus == '待审核' ? (auditStatus = 0) : (auditStatus = auditStatus);
                 this.dataListLoading = true;
                 this.$http({
                     url: this.$http.adornUrl(`agent/productFaq/my/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
+                        'productId': this.quesDataForm.proName,
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
                         'queryType': this.quesDataForm.searchType,
                         'content': this.quesDataForm.searchKey,
                         'status': this.quesDataForm.status,
-                        'auditState': auditStatus,
+                        'auditState': this.quesDataForm.auditStatus,
                         'startDate': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[0],
                         'endDate': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[1]
                     })
@@ -155,10 +166,28 @@
                         }
                         this.quesTableData = data.data.list
                         this.totalPage = data.data.total
-
                     } else {
                         this.quesTableData = []
                         this.totalPage = 0
+                    }
+                })
+            },
+            // 获取所有产品
+            getAllPro() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/productFaq/my/getProductInfo?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'productName': ""
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        // console.log(data)
+                        this.proArr = data.data;
+                        this.proArr.unshift({productId: '', productName: "全部"})
+                    } else {
+                        this.proArr = [];
+                        this.$message.error(data.msg);
                     }
                 })
             },

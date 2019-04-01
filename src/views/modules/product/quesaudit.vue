@@ -96,9 +96,11 @@
                 ],
                 auditStatusArr: [
                     { label: '全部', value: "" },
-                    { label: '待审核', value: 0 },
+                    { label: '新增待审核', value: 0 },
                     { label: '已审核', value: 1 },
-                    { label: '驳回', value: 2 }
+                    { label: '新增已驳回', value: 2 },
+                    { label: '修改待审核', value: 3 },
+                    { label: '修改驳回', value: 4 }
                 ],
                 proTableData: []
             }
