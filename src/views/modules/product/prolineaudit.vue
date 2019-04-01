@@ -85,29 +85,18 @@
             proLineAudit
         },
         activated() {
-            if (this.proLineForm.status !== 0) {
-                this.proLineForm.status = 0
-            }
             this.getProLineData()
-        },
-        created() {
-            // 设置默认值
-            if (this.proLineForm.status == 0) {
-                this.proLineForm.status = '待审核'
-            }
         },
         methods: {
             getProLineData(cur) {
                 this.dataListLoading = true;
-                let auditStatus = this.proLineForm.status;
-                auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
                 this.$http({
                     url: this.$http.adornUrl(`agent/line/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditStatus': auditStatus,
+                        'auditStatus': this.proLineForm.status,
                         'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })

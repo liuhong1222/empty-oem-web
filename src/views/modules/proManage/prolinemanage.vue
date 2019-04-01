@@ -102,7 +102,7 @@
                     { label: '已审核', value: 1 },
                     { label: '创建驳回', value: 2 },
                     { label: '修改待审核', value: 3 },
-                    { label: '修改驳回', value: 4}
+                    { label: '修改驳回', value: 4 }
                 ],
                 proLineTableData: []
             }
@@ -111,17 +111,7 @@
             addProlineUpdate
         },
         activated() {
-            if (this.proLineForm.auditStatus !== 0) {
-                this.proLineForm.auditStatus = 0
-            }
             this.getProLineData()
-
-        },
-        created() {
-            // 设置默认值
-            if (this.proLineForm.auditStatus == 0) {
-                this.proLineForm.auditStatus = '待审核'
-            }
         },
         methods: {
             // change(id){
@@ -141,8 +131,6 @@
             // },
             getProLineData(cur) {
                 this.dataListLoading = true;
-                let auditStatus = this.proLineForm.auditStatus;
-                auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
                 this.$http({
                     url: this.$http.adornUrl(`agent/line/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
@@ -150,7 +138,7 @@
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
                         'shelfStatus': this.proLineForm.status,
-                        'auditStatus': auditStatus,
+                        'auditStatus': this.proLineForm.auditStatus,
                         'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })

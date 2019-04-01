@@ -6,6 +6,12 @@
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-plus" @click="update()">添加产品</el-button>
                 </el-form-item>
+                <el-form-item label="产品线名称">
+                    <el-select v-model="proLineForm.proLineName" placeholder="请选择产品线名称">
+                        <el-option v-for="(item,index) in proLineNameArr" :label="item.productName" :key="item.id"
+                            :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="选择日期：">
                     <el-date-picker v-model="proLineForm.dateTime" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd">
@@ -88,7 +94,8 @@
                 proLineForm: {
                     status: '',
                     auditStatus: 0,
-                    dateTime: ''
+                    dateTime: '',
+                    proLineName: ''
                 },
                 statusArr: [
                     { label: '全部', value: -1 },
@@ -97,11 +104,14 @@
                 ],
                 auditStatusArr: [
                     { label: '全部', value: -1 },
-                    { label: '待审核', value: 0 },
+                    { label: '创建待审核', value: 0 },
                     { label: '已审核', value: 1 },
-                    { label: '驳回', value: 2 }
+                    { label: '创建驳回', value: 2 },
+                    { label: '修改待审核', value: 3 },
+                    { label: '修改驳回', value: 4 }
                 ],
-                proLineTableData: []
+                proLineTableData: [],
+                proLineNameArr: []
             }
         },
         components: {
@@ -111,7 +121,8 @@
             if (this.proLineForm.auditStatus !== 0) {
                 this.proLineForm.auditStatus = 0
             }
-            this.getProData()
+            this.getProData();
+            this.getproLineName();
         },
         created() {
             // 设置默认值
@@ -131,6 +142,7 @@
                     url: this.$http.adornUrl(`agent/product/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
+                        'productLineId': this.proLineForm.proLineName,
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
                         'auditStatus': auditStatus,
@@ -150,6 +162,22 @@
                     } else {
                         this.proLineTableData = []
                         this.totalPage = 0
+                    }
+                })
+            },
+            getproLineName() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/line/findNameList?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({})
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        // console.log(data)
+                        this.proLineNameArr = data.data;
+                        this.proLineNameArr.unshift({ id: '', productName: "全部" })
+                    } else {
+                        this.proLineNameArr = [];
+                        this.$message.error(data.msg);
                     }
                 })
             },

@@ -153,9 +153,9 @@
                             this.linkUrl = true;
                             this.editCon = false
                         }
-                        if (data.data.audit_status == 2) {
+                        if (data.data.audit_status == 2 || data.data.audit_status == 4) {
                             this.seeShow1 = true;
-                        } else if (data.data.audit_status == 1) {
+                        } else if (data.data.audit_status == 1 || data.data.audit_status == 1) {
                             this.seeShow1 = false;
                         }
                         this.proAuditDataForm.agentName = data.data.agentName;
