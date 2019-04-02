@@ -88,7 +88,7 @@
                 totalPage: 100,
                 proLineForm: {
                     status: '',
-                    auditStatus: 0,
+                    auditStatus: '',
                     dateTime: []
                 },
                 statusArr: [

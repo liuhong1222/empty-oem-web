@@ -154,7 +154,7 @@
                             this.peoAUDataForm.imageUrlIcon = imgUrl.imgUrl + data.data.icon_path;
                             this.peoAUDataForm.status = data.data.shelf_status;
                             this.peoAUDataForm.orderNum = data.data.order_num;
-                            this.peoAUDataForm.methods = data.data.jumpMode;
+                            this.peoAUDataForm.methods = data.data.jump_mode;
                             this.peoAUDataForm.adress = data.data.link_url;
                             this.defaultMsgCon = data.data.product_content;
                         }

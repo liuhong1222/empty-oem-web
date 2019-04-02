@@ -67,7 +67,7 @@
                 pageSize: 10,
                 totalPage: 100,
                 proLineForm: {
-                    status: 0,  //默认显示待审核
+                    status: '',  //默认显示待审核
                     dateTime: ''
                 },
                 statusArr: [

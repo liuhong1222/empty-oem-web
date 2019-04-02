@@ -64,7 +64,7 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row.id)">编辑</el-button>
+                        <el-button type="text" size="small" @click="update(scope.row.id)"  :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? true : false">编辑</el-button>
                         <el-button type="text" size="small" @click="onOrOffBtn(scope.row)">{{scope.row.shelf_status==0
                             ? '下架':'上架' }}</el-button>
                         <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
@@ -93,7 +93,7 @@
                 totalPage: 100,
                 proLineForm: {
                     status: '',
-                    auditStatus: 0,
+                    auditStatus: '',
                     dateTime: '',
                     proLineName: ''
                 },
@@ -118,26 +118,26 @@
             addProUpdate
         },
         activated() {
-            if (this.proLineForm.auditStatus !== 0) {
-                this.proLineForm.auditStatus = 0
-            }
+            // if (this.proLineForm.auditStatus !== 0) {
+            //     this.proLineForm.auditStatus = 0
+            // }
             this.getProData();
             this.getproLineName();
         },
-        created() {
-            // 设置默认值
-            if (this.proLineForm.auditStatus == 0) {
-                this.proLineForm.auditStatus = '待审核'
-            }
-        },
+        // created() {
+        //     // 设置默认值
+        //     if (this.proLineForm.auditStatus == 0) {
+        //         this.proLineForm.auditStatus = '待审核'
+        //     }
+        // },
         methods: {
             change(id) {
                 console.log(id)
             },
             getProData(cur) {
                 this.dataListLoading = true;
-                let auditStatus = this.proLineForm.auditStatus;
-                auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
+                // let auditStatus = this.proLineForm.auditStatus;
+                // auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
                 this.$http({
                     url: this.$http.adornUrl(`agent/product/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
@@ -145,7 +145,7 @@
                         'productLineId': this.proLineForm.proLineName,
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditStatus': auditStatus,
+                        'auditStatus': this.proLineForm.auditStatus,
                         'shelfStatus': this.proLineForm.status,
                         'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]

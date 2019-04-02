@@ -84,7 +84,7 @@
                 pageSize: 10,
                 totalPage: 100,
                 proForm: {
-                    auditStatus: 0,  //默认显示待审核
+                    auditStatus: '',  //默认显示待审核
                     dateTime: '',
                     status: ''
                 },
@@ -108,29 +108,29 @@
             proAudit
         },
         activated() {
-            if (this.proForm.auditStatus !== 0) {
-                this.proForm.auditStatus = 0
-            }
+            // if (this.proForm.auditStatus !== 0) {
+            //     this.proForm.auditStatus = 0
+            // }
             this.getProData()
         },
-        created() {
-            // 设置默认值
-            if (this.proForm.auditStatus == 0) {
-                this.proForm.auditStatus = '待审核'
-            }
-        },
+        // created() {
+        //     // 设置默认值
+        //     if (this.proForm.auditStatus == 0) {
+        //         this.proForm.auditStatus = '待审核'
+        //     }
+        // },
         methods: {
             getProData(cur) {
                 this.dataListLoading = true;
-                let auditStatus = this.proForm.auditStatus;
-                auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
+                // let auditStatus = this.proForm.auditStatus;
+                // auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
                 this.$http({
                     url: this.$http.adornUrl(`agent/product/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditStatus': auditStatus,
+                        'auditStatus': this.proForm.auditStatus,
                         'shelfStatus': this.proForm.status,
                         'startTime': '' || this.proForm.dateTime == null ? '' : this.proForm.dateTime[0],
                         'endTime': '' || this.proForm.dateTime == null ? '' : this.proForm.dateTime[1]
