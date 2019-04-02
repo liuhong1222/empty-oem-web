@@ -1,7 +1,7 @@
 <template>
     <div>
         <script id="editor2" type="text/plain"></script>
-        <span>{{defaultMsg}}</span>
+        <!-- <span>{{defaultMsg}}</span> -->
     </div>
 </template>
 <script>

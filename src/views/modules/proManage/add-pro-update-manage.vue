@@ -4,7 +4,8 @@
             :before-close="closeNewsSeeDialod">
             <el-form :model="peoAUDataForm" label-width="110px" :rules="peoAUDataRules" ref="peoAUDataRef" class="demo-ruleForm">
                 <el-form-item label="产品线名称：" prop="proLineName">
-                    <el-input v-model="peoAUDataForm.proLineName" placeholder="请输入产品线名称……" :disabled="disabled"></el-input>
+                    <el-autocomplete style="width:100%" class="inline-input" v-model="peoAUDataForm.proLineName"
+                        :fetch-suggestions="querySearch" placeholder="请输入产品线名称……" :disabled="disabled"></el-autocomplete>
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="proName">
                     <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称……"></el-input>
@@ -40,7 +41,7 @@
                 <el-form-item label="链接地址：" prop="adress" v-if="addressShow">
                     <el-input v-model="peoAUDataForm.adress" placeholder="请输入您要跳转的地址链接"></el-input>
                 </el-form-item>
-                <el-form-item label="新闻内容" prop="content" v-if="contentShow">
+                <el-form-item label="产品内容" prop="content" v-if="contentShow">
                     <el-input type="hidden" v-model="peoAUDataForm.content"></el-input>
                     <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
                 </el-form-item>
@@ -61,6 +62,7 @@
         data() {
             return {
                 visible: false,
+                selectid: '',
                 disabled: false,
                 addressShow: true,
                 contentShow: false,
@@ -85,6 +87,8 @@
                     content: '',
                     id: ''
                 },
+                iconUrl: '',
+                productTypeId: '',
                 peoAUDataRules: {
                     proLineName: [
                         { required: true, message: '请输入产品线名称', trigger: 'blur' }
@@ -125,12 +129,57 @@
                 },
             }
         },
+        watch: {
+            'peoAUDataForm.proLineName'() {
+
+                this.csvS = [];//这是定义好的用于存放下拉提醒框中数据的数组
+                if (!this.peoAUDataForm.proLineName) {
+                    return;
+                }
+                this.$http({
+                    url: this.$http.adornUrl(`agent/line/findNameList?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'productLineName': this.peoAUDataForm.proLineName
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        if (data.data.length == 0) {
+                            return;
+                        }
+                        this.selectid = data.data[0].id;
+                        this.csvList = data.data
+                        var len = this.csvList.length;
+                        var arr = [];
+                        var idArr = [];
+                        for (var i = 0; i < len; i++) { //根据输入框中inputName的值进行模糊匹配
+                            if (this.csvList[i].productName.indexOf(this.peoAUDataForm.proLineName) >= 0) {
+                                // arr.push(this.csvList[i].productName);//符合条件的值都放入arr中
+                                arr.push(this.csvList[i])
+
+                            }
+                        }
+                        //el-autocomplete元素要求数组内是对象
+                        for (var i = 0; i < arr.length; i++) {
+                            var obj = { value: "", id: "" };
+                            obj.value = arr[i].productName;
+                            obj.id = arr[i].id;
+                            this.csvS.push(obj);
+                        }
+                    } else {
+                        this.$message.error(data.msg);
+                    }
+                })
+            }
+
+        },
         methods: {
             showInit(id) {
                 this.visible = true;
                 this.disabled = false;
                 this.peoAUDataForm.id = id;
                 this.peoAUDataForm.methods = 2;
+                this.iconUrl = ""
                 if (this.peoAUDataForm.methods == 2) {
                     this.addressShow = true;
                     this.contentShow = false;
@@ -157,6 +206,7 @@
                             this.peoAUDataForm.methods = data.data.jump_mode;
                             this.peoAUDataForm.adress = data.data.link_url;
                             this.defaultMsgCon = data.data.product_content;
+                            this.productTypeId = data.data.product_type_id;
                         }
                     })
                 }
@@ -179,7 +229,32 @@
                     if (valid) {
                         let status = this.peoAUDataForm.status;
                         status == "上架" ? (status = 0) : (status = status);
-                        console.log(status)
+                        console.log(this.selectid)
+                        this.$http({
+                            url: this.$http.adornUrl(`agent/product/saveOrUpdate?token=${this.$cookie.get('token')}`),
+                            method: 'post',
+                            params: this.$http.adornParams({
+                                'id': this.peoAUDataForm.id,
+                                'productTypeId': this.selectid,
+                                'orderNum': this.peoAUDataForm.orderNum,
+                                'productName': this.peoAUDataForm.proName,
+                                'productDesc': this.peoAUDataForm.describe,
+                                'iconPath': this.iconUrl,
+                                'shelfStatus': status,
+                                'productContent': this.peoAUDataForm.content,
+                                'jumpMode': this.peoAUDataForm.methods,
+                                'linkUrl': this.peoAUDataForm.adress,
+                            })
+                        }).then(({ data }) => {
+                            if (data && data.code === 0) {
+                                this.$message.success('成功')
+                                this.visible = false;
+                                this.$emit('refreshNewsList')
+                            } else {
+                                this.$message.error(data.msg)
+                            }
+                        })
+
                     }
                 })
             },
@@ -254,6 +329,18 @@
                     this.addressShow = false;
                     this.contentShow = true;
                 }
+            },
+            querySearch(queryString, cb) {
+                if (!this.peoAUDataForm.proLineName) {
+                    return;
+                }
+                var csvS = this.csvS;
+                console.log(csvS)
+                cb(csvS);
+                if (csvS.length > 0) {
+                    this.selectid = csvS[0].id;
+                }
+
             }
         }
     }

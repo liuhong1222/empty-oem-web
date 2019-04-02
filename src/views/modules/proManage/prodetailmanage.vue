@@ -39,7 +39,7 @@
                         <el-input v-model="scope.row.order_num" @change="change(scope.row.id)" @keyup.enter.native="change(scope.row.id)"></el-input>
                     </template>
                 </el-table-column>
-                <el-table-column prop="id" label="产品线ID" align="center" width="110"> </el-table-column>
+                <el-table-column prop="product_type_id" label="产品线ID" align="center" width="110"> </el-table-column>
                 <el-table-column prop="productLineName" label="产品线名称" align="center">
                 </el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center">

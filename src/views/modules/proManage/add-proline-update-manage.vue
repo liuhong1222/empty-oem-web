@@ -80,7 +80,7 @@
                 }
             },
             proLineAUSubmit() {
-                console.log(this.proLineAUDataForm.status)
+                // console.log(this.proLineAUDataForm.status)
                 this.$refs['proLineAUDataForm'].validate((valid) => {
                     if (valid) {
                         let status = this.proLineAUDataForm.status;

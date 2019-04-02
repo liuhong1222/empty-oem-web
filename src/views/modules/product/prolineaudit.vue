@@ -39,8 +39,7 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="proLineAuditBtn(scope.row.id)" :disabled="scope.row.audit_status ==
-                        0 ?false: true">审核</el-button>
+                        <el-button type="text" size="small" @click="proLineAuditBtn(scope.row.id)" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? false : true">审核</el-button>
                     </template>
                 </el-table-column>
             </el-table>

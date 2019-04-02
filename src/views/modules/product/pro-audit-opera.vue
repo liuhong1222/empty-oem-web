@@ -76,7 +76,7 @@
                 auditShow: false,
                 showBnt: false,
                 linkUrl: false,
-                editCon: '',
+                editCon: true,
                 defaultMsgCon: '',
                 title: '',
                 config: {
@@ -136,6 +136,7 @@
                     this.showBnt = false;
                 }
                 this.iconsImageUrl = "";
+                this.defaultMsgCon = ""
                 this.visible = true;
 
                 this.$http({
@@ -146,6 +147,7 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
+                        this.defaultMsgCon = data.data.product_content;
                         if (data.data.jump_mode == 1) { //内部
                             this.linkUrl = false;
                             this.editCon = true
@@ -155,7 +157,7 @@
                         }
                         if (data.data.audit_status == 2 || data.data.audit_status == 4) {
                             this.seeShow1 = true;
-                        } else if (data.data.audit_status == 1 || data.data.audit_status == 1) {
+                        } else if (data.data.audit_status == 1) {
                             this.seeShow1 = false;
                         }
                         this.proAuditDataForm.agentName = data.data.agentName;
@@ -169,7 +171,7 @@
                         this.proAuditDataForm.linkUrl = data.data.link_url;
                         this.proAuditDataForm.auditRes = data.data.auditStatus;
                         this.proAuditDataForm.auditDesc = data.data.remark;
-                        this.defaultMsgCon = data.data.product_content;
+
                     }
                 })
 
@@ -200,6 +202,9 @@
             closeNewsSeeDialod() {
                 this.visible = false;
                 this.defaultMsgCon = ""
+                if (this.$refs.ue.hasContent) {   //判断是否有内容
+                    this.$refs.ue.execCommand()
+                }
             },
             auditChangeHandler(val) {
                 if (val == 4) {
