@@ -23,14 +23,17 @@
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="getProLineData(1)">查询</el-button>
+                    <el-button type="primary" @click="proLinesortReload()">刷新排序</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <div class="agentTable">
             <el-table :data="proLineTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass"
                 row-key="id">
-                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
-
+                <el-table-column prop="order_num" label="排序" align="center">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.order_num" @change="orderNumChange(scope.row)"></el-input>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="id" label="产品线ID" align="center" width="110">
 
@@ -46,8 +49,6 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="update_time" label="修改时间" align="center">
-                </el-table-column>
-                <el-table-column prop="order_num" label="排序" align="center">
                 </el-table-column>
                 <el-table-column prop="audit_status" label="审核状态" align="center">
                     <template slot-scope="scope">
@@ -114,21 +115,23 @@
             this.getProLineData()
         },
         methods: {
-            // change(id){
-            //     console.log(id)
-            // },
-            //行拖拽
-            // rowDrop() {
-            //     const tbody = document.querySelector('.el-table__body-wrapper tbody')
-            //     const _this = this
-            //     Sortable.create(tbody, {
-            //         onEnd({ newIndex, oldIndex }) {
-            //             const currRow = _this.proLineTableData.splice(oldIndex, 1)[0]
-            //             _this.proLineTableData.splice(newIndex, 0, currRow)
-            //             console.log(newIndex, oldIndex)
-            //         }
-            //     })
-            // },
+            // 排序
+            orderNumChange(row) {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/line/updateOrder?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'orderNum': row.order_num,
+                        'id': row.id
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.getProLineData()
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
             getProLineData(cur) {
                 this.dataListLoading = true;
                 this.$http({
@@ -207,6 +210,22 @@
                 }).then(() => {
                     this.onOff(2, id)
                 }).catch(() => { })
+            },
+            proLinesortReload() {
+                this.dataListLoading = true;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/line/reorder?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = false;
+                        this.getProLineData();
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
             },
             // 每页数
             sizeChangeHandle(val) {

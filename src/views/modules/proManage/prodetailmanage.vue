@@ -29,6 +29,7 @@
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="getProData(1)">查询</el-button>
+                    <el-button type="primary" @click="proSortReload()">刷新排序</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -36,7 +37,7 @@
             <el-table :data="proLineTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column prop="order_num" label="排序" align="center">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.order_num" @change="change(scope.row.id)" @keyup.enter.native="change(scope.row.id)"></el-input>
+                        <el-input v-model="scope.row.order_num" @change="orderNumChange(scope.row)"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column prop="product_type_id" label="产品线ID" align="center" width="110"> </el-table-column>
@@ -64,7 +65,7 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row.id)"  :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? true : false">编辑</el-button>
                         <el-button type="text" size="small" @click="onOrOffBtn(scope.row)">{{scope.row.shelf_status==0
                             ? '下架':'上架' }}</el-button>
                         <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
@@ -131,8 +132,22 @@
         //     }
         // },
         methods: {
-            change(id) {
-                console.log(id)
+            // 排序
+            orderNumChange(row) {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/product/updateOrder?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        'orderNum': row.order_num,
+                        'id': row.id
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.getProData()
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
             },
             getProData(cur) {
                 this.dataListLoading = true;
@@ -231,6 +246,22 @@
                 }).then(() => {
                     this.onOffFun(2, id)
                 }).catch(() => { })
+            },
+            proSortReload() {
+                this.dataListLoading = true;
+                this.$http({
+                    url: this.$http.adornUrl(`agent/productFaq/my/againOrder?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.dataListLoading = false;
+                        this.getQuesData();
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
             },
             // 每页数
             sizeChangeHandle(val) {

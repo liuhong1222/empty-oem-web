@@ -8,7 +8,8 @@
                 </el-form-item>
                 <el-form-item label="产品名称">
                     <el-select v-model="quesDataForm.proName" placeholder="请选择产品名称">
-                        <el-option v-for="(item,index) in proArr" :label="item.productName" :key="item.productId" :value="item.productId"></el-option>
+                        <el-option v-for="(item,index) in proArr" :label="item.productName" :key="item.productId"
+                            :value="item.productId"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="状态" style="margin-left: -40px">
@@ -184,7 +185,7 @@
                     if (data && data.code === 0) {
                         // console.log(data)
                         this.proArr = data.data;
-                        this.proArr.unshift({productId: '', productName: "全部"})
+                        this.proArr.unshift({ productId: '', productName: "全部" })
                     } else {
                         this.proArr = [];
                         this.$message.error(data.msg);
