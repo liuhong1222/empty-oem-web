@@ -44,6 +44,7 @@
                 <el-form-item label="产品内容" prop="content" v-if="contentShow">
                     <el-input type="hidden" v-model="peoAUDataForm.content"></el-input>
                     <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
+                    注：目前仅支持上传宽度为1920px的图片居中显示，高度不限
                 </el-form-item>
                 <el-form-item>
                     <el-button type="info" plain @click="closeNewsSeeDialod">取消</el-button>

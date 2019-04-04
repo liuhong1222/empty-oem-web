@@ -4,7 +4,8 @@
             <el-form :model="proLineAUDataForm" :rules="proLineAUDataRules" ref="proLineAUDataForm" label-width="110px"
                 class="demo-ruleForm">
                 <el-form-item label="产品线名称：" prop="proLineName">
-                    <el-input v-model="proLineAUDataForm.proLineName"></el-input>
+                    <el-input v-model="proLineAUDataForm.proLineName" maxLength="6"></el-input>
+                    <p>注：为保持官网界面美观，建议您最多创建三条产品线，每个产品线名称最长为6</p>
                 </el-form-item>
                 <el-form-item label="icon" id="iconImgSize" prop="imageUrlIcon">
                     <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
