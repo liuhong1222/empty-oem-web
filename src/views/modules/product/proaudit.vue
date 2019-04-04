@@ -45,7 +45,7 @@
                         <span>{{scope.row.jump_mode==1 ? '内部编辑':'外部地址' }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="create_time" label="提交时间" align="center">
+                <el-table-column prop="update_time" label="提交时间" align="center">
                 </el-table-column>
                 <el-table-column prop="order_num" label="排序" align="center">
                 </el-table-column>

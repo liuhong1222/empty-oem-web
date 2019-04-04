@@ -38,6 +38,10 @@
                 <el-table-column prop="id" label="产品线ID" align="center" width="110">
 
                 </el-table-column>
+                
+                <el-table-column prop="icon_path" label="icon图片" align="center" width="110">
+
+                    </el-table-column>
                 <el-table-column prop="product_type_name" label="产品线名称" align="center">
                     <!-- <template slot-scope="scope">
                                 <el-input v-model="scope.row.product_type_name" @change="change(scope.row.id)"></el-input>

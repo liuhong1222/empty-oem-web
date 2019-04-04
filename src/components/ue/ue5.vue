@@ -26,7 +26,7 @@
             const _this = this;
             this.editor5 = UE.getEditor('editor5', this.config);
             this.editor5.addListener("ready", function () {
-                _this.edito5.setContent(_this.defaultMsg); // 确保UE加载完成后，放入内容。
+                _this.editor5.setContent(_this.defaultMsg); // 确保UE加载完成后，放入内容。
             });
         },
         watch: {

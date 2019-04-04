@@ -73,7 +73,7 @@
                     if (data && data.code === 0) {
                         this.proLineDataForm.agentName = data.data.agentName;
                         this.proLineDataForm.proLineName = data.data.productLineName;
-                        this.proLineDataForm.status = data.data.shelfStatus == 0 ? '上架' : '下架';
+                        this.proLineDataForm.status = data.data.shelf_status == 0 ? '上架' : '下架';
                         this.proLineDataForm.orderNum = data.data.orderNum;
                     }
                 })

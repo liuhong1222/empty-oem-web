@@ -26,7 +26,7 @@
                 </el-table-column>
                 <el-table-column prop="product_type_name" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="create_time" label="提交时间" align="center">
+                <el-table-column prop="update_time" label="提交时间" align="center">
                 </el-table-column>
                 <el-table-column prop="order_num" label="排序" align="center">
                 </el-table-column>

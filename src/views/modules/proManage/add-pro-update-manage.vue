@@ -65,7 +65,7 @@
                 selectid: '',
                 disabled: false,
                 addressShow: true,
-                contentShow: false,
+                contentShow: true,
                 title: '',
                 defaultMsgCon: '',
                 config: {
@@ -123,7 +123,7 @@
                     { label: '下架', value: 1 }
                 ],
                 iconQueryParams: { //icon上传参数
-                    imageType: 4,
+                    imageType: 7,
                     agentId: null,
                     file: null
                 },
@@ -207,6 +207,14 @@
                             this.peoAUDataForm.adress = data.data.link_url;
                             this.defaultMsgCon = data.data.product_content;
                             this.productTypeId = data.data.product_type_id;
+                            if (data.data.jump_mode == 1) {
+
+                                this.addressShow = false;
+                                this.contentShow = true;
+                            } else {
+                                this.addressShow = true;
+                                this.contentShow = false;
+                            }
                         }
                     })
                 }
