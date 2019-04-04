@@ -35,6 +35,7 @@
 </template>
 
 <script>
+    import imgUrl from '@/utils/imgUrl'
     export default {
         data() {
             return {
@@ -82,6 +83,7 @@
                     this.$refs['proLineAUDataForm'].resetFields()
                 }
                 this.visible = true;
+                this.proLineAUDataForm.imageUrlIcon = ""
                 // 设置默认值
                 if (this.proLineAUDataForm.status == 0) {
                     this.proLineAUDataForm.status = '上架'
@@ -93,7 +95,10 @@
                     this.proLineAUDataForm.proLineName = row.product_type_name
                     this.proLineAUDataForm.orderNum = row.order_num
                     this.proLineAUDataForm.status = row.shelf_status == 0 ? '上架' : '下架'
-                    this.proLineAUDataForm.imageUrlIcon = imgUrl.imgUrl + row.icon_path;
+                    if (row.icon_path) {
+                        this.proLineAUDataForm.imageUrlIcon = imgUrl.imgUrl + row.icon_path;
+                    }
+
                 } else {
                     this.title = '添加'
                     this.proLineAUDataForm.proLineName = ""
