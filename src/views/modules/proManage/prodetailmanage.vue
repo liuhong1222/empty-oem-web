@@ -257,7 +257,7 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.dataListLoading = false;
-                        this.getQuesData();
+                        this.getProData();
                     } else {
                         this.$message.error(data.msg)
                     }
