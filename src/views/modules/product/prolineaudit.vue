@@ -30,10 +30,10 @@
                 </el-table-column>
                 <el-table-column prop="order_num" label="排序" align="center">
                 </el-table-column>
-                <el-table-column prop="audit_status" label="审核状态" align="center">
-                    <template slot-scope="scope">
+                <el-table-column prop="auditStatus" label="审核状态" align="center">
+                    <!-- <template slot-scope="scope">
                         <span>{{scope.row.audit_status==0 ? '待审核' : (scope.row.audit_status==1) ? '审核通过' : '审核驳回' }}</span>
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>

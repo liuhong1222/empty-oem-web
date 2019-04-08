@@ -4,8 +4,13 @@
             :before-close="closeNewsSeeDialod">
             <el-form :model="peoAUDataForm" label-width="110px" :rules="peoAUDataRules" ref="peoAUDataRef" class="demo-ruleForm">
                 <el-form-item label="产品线名称：" prop="proLineName">
-                    <el-autocomplete style="width:100%" class="inline-input" v-model="peoAUDataForm.proLineName"
-                        :fetch-suggestions="querySearch" placeholder="请输入产品线名称……" :disabled="disabled" :no-match-text="emptyData"></el-autocomplete>
+                    <el-select v-model="peoAUDataForm.proLineName" filterable remote reserve-keyword placeholder="请输入关键词"
+                        :remote-method="remoteMethod" :loading="loading" @change="selectOne">
+                        <el-option v-for="item in options4" :key="item.id" :label="item.productName" :value="item.id">
+                        </el-option>
+                    </el-select>
+                    <!-- <el-autocomplete style="width:100%" class="inline-input" v-model="peoAUDataForm.proLineName"
+                        :fetch-suggestions="querySearch" placeholder="请输入产品线名称……" :disabled="disabled"></el-autocomplete> -->
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="proName">
                     <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称(长度最大为11个字)……" maxLength="11"></el-input>
@@ -62,9 +67,11 @@
         components: { UE },
         data() {
             return {
+                options4: [],
+                list: [],
+                loading: false,
                 visible: false,
                 selectid: '',
-                emptyData: '无匹配数据',
                 disabled: false,
                 addressShow: true,
                 contentShow: true,
@@ -93,7 +100,7 @@
                 productTypeId: '',
                 peoAUDataRules: {
                     proLineName: [
-                        { required: true, message: '请输入产品线名称', trigger: 'blur' }
+                        { required: true, message: '请输入产品线名称', trigger: 'change' }
                     ],
                     proName: [
                         { required: true, message: '请输入产品名称', trigger: 'blur' }
@@ -131,52 +138,51 @@
                 },
             }
         },
-        watch: {
-            'peoAUDataForm.proLineName'() {
-
-                this.csvS = [];//这是定义好的用于存放下拉提醒框中数据的数组
-                if (!this.peoAUDataForm.proLineName) {
-                    return;
-                }
+        methods: {
+            remoteMethod(query) {
+                this.getdata(query)
+                // if (query !== '') {
+                //     this.loading = true;
+                //     setTimeout(() => {
+                //         this.loading = false;
+                //         this.options4 = this.list.filter(item => {
+                //             return item.productName.indexOf(query) > -1;
+                //         });
+                //     }, 200);
+                // } else {
+                //     this.options4 = [];
+                // }
+            },
+            getdata(query) {
                 this.$http({
                     url: this.$http.adornUrl(`agent/line/findNameList?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        'productLineName': this.peoAUDataForm.proLineName
+                        'productLineName': query
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         if (data.data.length == 0) {
+                            this.options4 = [];
+                            this.peoAUDataForm.proLineName = ""
                             return;
                         }
-                        this.selectid = data.data[0].id;
-                        this.csvList = data.data
-                        var len = this.csvList.length;
-                        var arr = [];
-                        var idArr = [];
-                        for (var i = 0; i < len; i++) { //根据输入框中inputName的值进行模糊匹配
-                            if (this.csvList[i].productName.indexOf(this.peoAUDataForm.proLineName) >= 0) {
-                                // arr.push(this.csvList[i].productName);//符合条件的值都放入arr中
-                                arr.push(this.csvList[i])
-
-                            }
-                        }
-                        //el-autocomplete元素要求数组内是对象
-                        for (var i = 0; i < arr.length; i++) {
-                            var obj = { value: "", id: "" };
-                            obj.value = arr[i].productName;
-                            obj.id = arr[i].id;
-                            this.csvS.push(obj);
-                        }
+                        // this.list = data.data
+                        this.loading = true;
+                        setTimeout(() => {
+                            this.loading = false;
+                            this.options4 = data.data.filter(item => {
+                                return item.productName.indexOf(query) > -1;
+                            });
+                        }, 200);
                     } else {
+                        this.options4 = [];
                         this.$message.error(data.msg);
                     }
                 })
-            }
-
-        },
-        methods: {
+            },
             showInit(id) {
+
                 this.visible = true;
                 this.disabled = false;
                 this.peoAUDataForm.id = id;
@@ -228,6 +234,9 @@
                 if (this.peoAUDataForm.status == 0) {
                     this.peoAUDataForm.status = '上架'
                 }
+            },
+            selectOne(event, item) {
+                this.selectid = event
             },
             peoAUDataSubmit() {
                 if (this.$refs.ue) {
@@ -347,8 +356,11 @@
                     return;
                 }
                 var csvS = this.csvS;
-                console.log(csvS)
-                // cb(csvS);
+                // console.log(csvS)
+                // if (csvS.length === 0) {
+                //     csvS = [{ value: '暂无数据' }]
+                // }
+                cb(csvS);
                 if (csvS.length > 0) {
                     this.selectid = csvS[0].id;
                 }
