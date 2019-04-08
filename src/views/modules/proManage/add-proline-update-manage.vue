@@ -5,7 +5,7 @@
                 class="demo-ruleForm">
                 <el-form-item label="产品线名称：" prop="proLineName">
                     <el-input v-model="proLineAUDataForm.proLineName" maxLength="6"></el-input>
-                    <p>注：为保持官网界面美观，建议您最多创建三条产品线，每个产品线名称最长为6</p>
+                    <p>注：为保持官网界面美观，建议您最多创建三条产品线，每个产品线名称最长为6个字</p>
                 </el-form-item>
                 <el-form-item label="icon" id="iconImgSize" prop="imageUrlIcon">
                     <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
@@ -92,7 +92,7 @@
 
                 if (this.proLineAUDataForm.id) {
                     this.title = '编辑'
-                    alert('编辑')
+                    // alert('编辑')
                     this.proLineAUDataForm.proLineName = row.product_type_name
                     this.proLineAUDataForm.orderNum = row.order_num
                     this.proLineAUDataForm.status = row.shelf_status == 0 ? '上架' : '下架'

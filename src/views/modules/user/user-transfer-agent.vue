@@ -86,7 +86,7 @@
                     }
                 })
             }
-    
+
         },
         methods: {
             transferAgentInit(row) {

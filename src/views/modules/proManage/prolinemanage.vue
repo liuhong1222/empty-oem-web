@@ -38,10 +38,10 @@
                 <el-table-column prop="id" label="产品线ID" align="center" width="110">
 
                 </el-table-column>
-                
+
                 <el-table-column prop="icon_path" label="icon图片" align="center" width="110">
 
-                    </el-table-column>
+                </el-table-column>
                 <el-table-column prop="product_type_name" label="产品线名称" align="center">
                     <!-- <template slot-scope="scope">
                                 <el-input v-model="scope.row.product_type_name" @change="change(scope.row.id)"></el-input>
@@ -54,10 +54,10 @@
                 </el-table-column>
                 <el-table-column prop="update_time" label="修改时间" align="center">
                 </el-table-column>
-                <el-table-column prop="audit_status" label="审核状态" align="center">
-                    <template slot-scope="scope">
+                <el-table-column prop="auditStatus" label="审核状态" align="center">
+                    <!-- <template slot-scope="scope">
                         <span>{{scope.row.audit_status==0 ? '待审核' : (scope.row.audit_status==1) ? '审核通过' : '审核驳回' }}</span>
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>

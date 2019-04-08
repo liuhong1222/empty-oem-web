@@ -5,10 +5,10 @@
             <el-form :model="peoAUDataForm" label-width="110px" :rules="peoAUDataRules" ref="peoAUDataRef" class="demo-ruleForm">
                 <el-form-item label="产品线名称：" prop="proLineName">
                     <el-autocomplete style="width:100%" class="inline-input" v-model="peoAUDataForm.proLineName"
-                        :fetch-suggestions="querySearch" placeholder="请输入产品线名称……" :disabled="disabled"></el-autocomplete>
+                        :fetch-suggestions="querySearch" placeholder="请输入产品线名称……" :disabled="disabled" :no-match-text="emptyData"></el-autocomplete>
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="proName">
-                    <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称……"></el-input>
+                    <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称(长度最大为11个字)……" maxLength="11"></el-input>
                 </el-form-item>
                 <el-form-item label="描述：" prop="describe">
                     <el-input type="textarea" v-model="peoAUDataForm.describe" placeholder="请简要描述下产品,最多输入50个字符……"
@@ -64,6 +64,7 @@
             return {
                 visible: false,
                 selectid: '',
+                emptyData: '无匹配数据',
                 disabled: false,
                 addressShow: true,
                 contentShow: true,
@@ -340,12 +341,14 @@
                 }
             },
             querySearch(queryString, cb) {
+                // console.log(queryString)
+                // console.log(cb)
                 if (!this.peoAUDataForm.proLineName) {
                     return;
                 }
                 var csvS = this.csvS;
                 console.log(csvS)
-                cb(csvS);
+                // cb(csvS);
                 if (csvS.length > 0) {
                     this.selectid = csvS[0].id;
                 }

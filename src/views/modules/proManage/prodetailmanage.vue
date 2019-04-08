@@ -231,7 +231,7 @@
                         } else if (shelf_status == 2) {
                             this.$message.success('删除成功')
                         }
-                        this.getProLineData()
+                        this.getProData()
 
                     } else {
                         this.$message.error(data.msg)
