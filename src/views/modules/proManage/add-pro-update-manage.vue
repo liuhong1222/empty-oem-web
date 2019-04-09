@@ -5,7 +5,7 @@
             <el-form :model="peoAUDataForm" label-width="110px" :rules="peoAUDataRules" ref="peoAUDataRef" class="demo-ruleForm">
                 <el-form-item label="产品线名称：" prop="proLineName">
                     <el-select v-model="peoAUDataForm.proLineName" filterable remote reserve-keyword placeholder="请输入关键词"
-                        :remote-method="remoteMethod" :loading="loading" @change="selectOne">
+                        :remote-method="remoteMethod" :loading="loading" @change="selectOne" :disabled="disabled">
                         <el-option v-for="item in options4" :key="item.id" :label="item.productName" :value="item.id">
                         </el-option>
                     </el-select>
@@ -254,7 +254,7 @@
                             method: 'post',
                             params: this.$http.adornParams({
                                 'id': this.peoAUDataForm.id,
-                                'productTypeId': this.selectid,
+                                'productTypeId': this.selectid ? this.selectid : this.productTypeId,
                                 'orderNum': this.peoAUDataForm.orderNum,
                                 'productName': this.peoAUDataForm.proName,
                                 'productDesc': this.peoAUDataForm.describe,
@@ -341,7 +341,7 @@
                 this.iconUrl = res.data.licenseUrl
                 this.peoAUDataForm.imageUrlIcon = URL.createObjectURL(file.raw);
                 this.$nextTick((x) => {   //正确写法
-                   console.log( this.$refs.inputs)
+                    console.log(this.$refs.inputs)
                 })
             },
             addressTab(val) {

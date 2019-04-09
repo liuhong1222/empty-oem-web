@@ -5,7 +5,7 @@
             <el-form :model="quesAUDataForm" label-width="100px" :rules="quesAUDataRules" ref="quesAUDataRef" class="demo-ruleForm">
                 <el-form-item label="所属产品：" prop="proName">
                     <el-select v-model="quesAUDataForm.proName" filterable remote reserve-keyword placeholder="请输入关键词"
-                        :remote-method="remoteMethod" :loading="loading" @change="selectOne">
+                        :remote-method="remoteMethod" :loading="loading" @change="selectOne" :disabled="disabled">
                         <el-option v-for="item in options4" :key="item.productId" :label="item.productName" :value="item.productId">
                         </el-option>
                     </el-select>
@@ -42,6 +42,8 @@
                 list: [],
                 loading: false,
                 visible: false,
+                disabled: false,
+                productId: '',
                 quesAUDataForm: {
                     proName: '',
                     status: 0,
@@ -109,22 +111,25 @@
             showInit(id) {
                 this.quesAUDataForm.id = id
                 this.visible = true;
+                this.disabled = false;
                 if (this.quesAUDataForm.id) {
+                    this.disabled = true;
                     this.$http({
-                        url: this.$http.adornUrl(`agent/productFaq/my/getProductInfo?token=${this.$cookie.get('token')}`),
-                        method: 'post',
+                        url: this.$http.adornUrl(`agent/productFaq/my/detail?token=${this.$cookie.get('token')}`),
+                        method: 'get',
                         params: this.$http.adornParams({
-                            'productName': this.quesAUDataForm.proName
+                            'productFaqId': this.quesAUDataForm.id
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
                             this.quesAUDataForm.proName = data.data.productName;
-
                             this.quesAUDataForm.status = data.data.status;
                             this.quesAUDataForm.orderNum = data.data.orderNum;
                             this.quesAUDataForm.title = data.data.question;
                             this.quesAUDataForm.content = data.data.answer;
+                            this.productId = data.data.productId
                         } else {
+
                             this.$message.error(data.msg)
                         }
                     })
@@ -145,12 +150,12 @@
                     if (valid) {
                         let status = this.quesAUDataForm.status;
                         status == "上架" ? (status = 0) : (status == "下架" ? (status = 1) : status);
-                        // console.log(this.selectid)
+                        console.log(this.quesAUDataForm.proName)
                         this.$http({
                             url: this.$http.adornUrl(`agent/productFaq/my/${!this.quesAUDataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'productId': this.selectid,  //选中的产品id
+                                'productId': this.selectid ? this.selectid : this.productId,  //选中的产品id
                                 'id': this.quesAUDataForm.id,
                                 'question': this.quesAUDataForm.title,
                                 'order': this.quesAUDataForm.orderNum,
@@ -173,18 +178,18 @@
                 this.visible = false;
                 this.selectid = ""
             },
-            querySearch(queryString, cb) {
-                if (!this.quesAUDataForm.proName) {
-                    return;
-                }
-                var csvS = this.csvS;
-                // console.log(csvS)
-                cb(csvS);
-                if (csvS) {
-                    this.selectid = csvS[0].id;
-                }
+            // querySearch(queryString, cb) {
+            //     if (!this.quesAUDataForm.proName) {
+            //         return;
+            //     }
+            //     var csvS = this.csvS;
+            //     // console.log(csvS)
+            //     cb(csvS);
+            //     if (csvS) {
+            //         this.selectid = csvS[0].id;
+            //     }
 
-            }
+            // }
         }
     }
 
