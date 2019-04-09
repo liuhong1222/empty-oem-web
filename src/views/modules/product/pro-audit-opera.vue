@@ -34,7 +34,7 @@
                 <el-form-item label="链接地址：" v-if="linkUrl">
                     <el-input v-model="proAuditDataForm.linkUrl" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="编辑内容:" v-if="editCon">
+                <el-form-item label="编辑内容:" v-if="editCon"> 
                     <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
                 </el-form-item>
                 <!-- 查看 -->

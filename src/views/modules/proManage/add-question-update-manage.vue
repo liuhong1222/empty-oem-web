@@ -74,48 +74,6 @@
                 ]
             }
         },
-        // watch: {
-        //     'quesAUDataForm.proName'() {
-
-        //         this.csvS = [];//这是定义好的用于存放下拉提醒框中数据的数组
-        //         if (!this.quesAUDataForm.proName) {
-        //             return;
-        //         }
-        //         this.$http({
-        //             url: this.$http.adornUrl(`agent/productFaq/my/getProductInfo?token=${this.$cookie.get('token')}`),
-        //             method: 'post',
-        //             params: this.$http.adornParams({
-        //                 'productName': this.quesAUDataForm.proName
-        //             })
-        //         }).then(({ data }) => {
-        //             if (data && data.code === 0) {
-        //                 this.selectid = data.data[0].productId;
-        //                 this.csvList = data.data
-        //                 var len = this.csvList.length;
-        //                 var arr = [];
-        //                 var idArr = [];
-        //                 for (var i = 0; i < len; i++) { //根据输入框中inputName的值进行模糊匹配
-        //                     if (this.csvList[i].productName.indexOf(this.quesAUDataForm.proName) >= 0) {
-        //                         // arr.push(this.csvList[i].productName);//符合条件的值都放入arr中
-        //                         arr.push(this.csvList[i])
-
-        //                     }
-        //                 }
-        //                 //el-autocomplete元素要求数组内是对象
-        //                 for (var i = 0; i < arr.length; i++) {
-        //                     var obj = { value: "", id: "" };
-        //                     obj.value = arr[i].productName;
-        //                     obj.id = arr[i].productId;
-        //                     this.csvS.push(obj);
-        //                 }
-
-        //             } else {
-        //                 this.$message.error(data.msg);
-        //             }
-        //         })
-        //     }
-
-        // },
         methods: {
             remoteMethod(query) {
                 this.getData(query)
