@@ -6,15 +6,13 @@
                 <el-form-item label="所属产品：" prop="proName">
                     <el-select v-model="quesAUDataForm.proName" filterable remote reserve-keyword placeholder="请输入关键词"
                         :remote-method="remoteMethod" :loading="loading" @change="selectOne">
-                        <el-option v-for="item in options4" :key="item.id" :label="item.productName" :value="item.id">
+                        <el-option v-for="item in options4" :key="item.productId" :label="item.productName" :value="item.productId">
                         </el-option>
                     </el-select>
-                    <!-- <el-autocomplete style="width:100%" class="inline-input" v-model="quesAUDataForm.proName"
-                        :fetch-suggestions="querySearch" placeholder="请输入产品名称……"></el-autocomplete> -->
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                     <el-select v-model="quesAUDataForm.status" placeholder="请选择审核状态">
-                        <el-option v-for="(item,index) in statusArr" :label="item.value" :key="item.value" :value="item.id"></el-option>
+                        <el-option v-for="(item,index) in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="排序：" prop="orderNum">
@@ -124,7 +122,7 @@
             },
             getData(query) {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/line/findNameList?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/productFaq/my/getProductInfo?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
                         'productName': query
