@@ -10,7 +10,7 @@
                 <el-form-item label="icon" id="iconImgSize" prop="imageUrlIcon">
                     <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
                         :on-progress="onProgressIcon" :before-upload="beforeAvatarUploadIcon" :action="actionIcon()"
-                        :data="iconQueryParams" :on-error="errorIcon">
+                        :data="iconQueryParams" :on-error="errorIcon" ref="upload">
                         <img v-if="proLineAUDataForm.imageUrlIcon" :src="proLineAUDataForm.imageUrlIcon" class="avatar"
                             :limit="1">
                         <i class="el-icon-plus"></i>
@@ -52,7 +52,7 @@
                 },
                 proLineAUDataRules: {
                     imageUrlIcon: [
-                        { required: true, message: '请输入上传产品线icon', trigger: 'blur' }
+                        { required: true, message: '请输入上传产品线icon', trigger: 'focus' }
                     ],
                     proLineName: [
                         { required: true, message: '请输入产品线名称', trigger: 'blur' }
@@ -98,6 +98,7 @@
                     this.proLineAUDataForm.status = row.shelf_status == 0 ? '上架' : '下架'
                     if (row.icon_path) {
                         this.proLineAUDataForm.imageUrlIcon = imgUrl.imgUrl + row.icon_path;
+
                     }
 
                 } else {
@@ -140,13 +141,16 @@
             closeNewsSeeDialod() {
                 this.visible = false;
                 this.proLineAUDataForm.id = ""
+                this.$refs.upload.clearFiles()
             },
             // 上传icon
             actionIcon() {
+
                 let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=7`);
                 return url;
             },
             errorIcon() {
+                this.$refs.upload.clearFiles()
                 console.log("yyyyyy");
             },
             onProgressIcon() {
@@ -191,6 +195,7 @@
             handleAvatarSuccessIcon(res, file) {
                 this.iconUrl = res.data.licenseUrl
                 this.proLineAUDataForm.imageUrlIcon = URL.createObjectURL(file.raw);
+
             },
         }
     }

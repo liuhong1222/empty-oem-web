@@ -22,11 +22,11 @@
                 <el-form-item label="icon" id="iconImgSize" prop="imageUrlIcon">
                     <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
                         :on-progress="onProgressIcon" :before-upload="beforeAvatarUploadIcon" :action="actionIcon()"
-                        :data="iconQueryParams" :on-error="errorIcon">
+                        :data="iconQueryParams" :on-error="errorIcon" ref="upload">
                         <img v-if="peoAUDataForm.imageUrlIcon" :src="peoAUDataForm.imageUrlIcon" class="avatar" :limit="1">
                         <i class="el-icon-plus"></i>
                         <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长100px，宽100px，（再次上传请删除上一次上传）</div>
-                        <input type="hidden" v-model="peoAUDataForm.imageUrlIcon" />
+                        <input type="hidden" v-model="peoAUDataForm.imageUrlIcon" ref="inputs" />
                     </el-upload>
                 </el-form-item><br />
                 <el-form-item label="状态：" prop="status">
@@ -100,7 +100,7 @@
                 productTypeId: '',
                 peoAUDataRules: {
                     proLineName: [
-                        { required: true, message: '请输入产品线名称', trigger: 'change' }
+                        { required: true, message: '请输入产品线名称', trigger: 'blur' }
                     ],
                     proName: [
                         { required: true, message: '请输入产品名称', trigger: 'blur' }
@@ -280,7 +280,7 @@
             closeNewsSeeDialod() {
                 this.visible = false;
                 this.defaultMsgCon = ""
-                console.log(this.$refs.ue)
+                this.$refs.upload.clearFiles()
                 if (this.$refs.ue) {
                     if (this.$refs.ue.hasContent) {   //判断是否有内容
                         // alert(33333)
@@ -295,6 +295,7 @@
                 return url;
             },
             errorIcon() {
+                this.$refs.upload.clearFiles()
                 console.log("yyyyyy");
             },
             onProgressIcon() {
@@ -339,6 +340,9 @@
             handleAvatarSuccessIcon(res, file) {
                 this.iconUrl = res.data.licenseUrl
                 this.peoAUDataForm.imageUrlIcon = URL.createObjectURL(file.raw);
+                this.$nextTick((x) => {   //正确写法
+                   console.log( this.$refs.inputs)
+                })
             },
             addressTab(val) {
                 if (val == 2) {
