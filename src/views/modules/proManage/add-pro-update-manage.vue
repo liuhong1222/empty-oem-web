@@ -100,7 +100,7 @@
                 productTypeId: '',
                 peoAUDataRules: {
                     proLineName: [
-                        { required: true, message: '请输入产品线名称', trigger: 'blur' }
+                        { required: true, message: '请输入产品线名称', trigger: 'change' }
                     ],
                     proName: [
                         { required: true, message: '请输入产品名称', trigger: 'blur' }
@@ -348,9 +348,15 @@
                 if (val == 2) {
                     this.addressShow = true;
                     this.contentShow = false;
+                    this.$nextTick(() => {
+                        this.$refs['peoAUDataRef'].clearValidate()
+                    })
                 } else {
                     this.addressShow = false;
                     this.contentShow = true;
+                    this.$nextTick(() => {
+                        this.$refs['peoAUDataRef'].clearValidate()
+                    })
                 }
             },
             querySearch(queryString, cb) {
