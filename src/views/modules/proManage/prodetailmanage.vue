@@ -250,7 +250,7 @@
             proSortReload() {
                 this.dataListLoading = true;
                 this.$http({
-                    url: this.$http.adornUrl(`agent/productFaq/my/againOrder?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/product/reorder?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
                     })
