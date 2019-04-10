@@ -14,9 +14,9 @@ module.exports = {
     // 代理列表, 是否开启代理通过[./dev.env.js]配置
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
-        target: 'http://localhost:9999/',
+        // target: 'http://localhost:9999/',
         //  target:'http://172.16.4.222:9999/', 红姐
-        // target:'http://172.16.20.33:9999/open/',
+        target:'http://172.16.20.33:9999/',
         //target:'http://oem.haifou.com/open/',
         changeOrigin: true,
         pathRewrite: {
