@@ -130,6 +130,7 @@
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false;
+                                this.$refs.upload.clearFiles()
                                 this.$emit('refreshNewsList')
                             } else {
                                 this.$message.error(data.msg)
