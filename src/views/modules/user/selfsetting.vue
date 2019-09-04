@@ -503,7 +503,7 @@
                         { required: true, message: '请输入公司备案', trigger: 'blur' }
                     ],
                     telservice: [
-                        { required: true, message: '请输入经营许可证', trigger: 'blur' }
+                        { required: false, message: '请输入经营许可证', trigger: 'blur' }
                     ],
                 },
                 customerDataForm: {  //客服资料信息
