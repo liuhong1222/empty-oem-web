@@ -130,7 +130,8 @@
                     <el-form-item label="联系方式：" prop="custHotline">
                         <el-input v-model="domainDataForm.custHotline" placeholder="请输入联系方式"></el-input>
                     </el-form-item>
-                    <el-form-item label="增值电信业务经营许可证：" prop="telservice">
+                    <el-form-item  prop="telservice">
+                        <span slot="label" style="line-height: 16px;display: inline-block;">增值电信业务经营许可证：</span>
                         <el-input v-model="domainDataForm.telservice" placeholder="请输入增值电信业务经营许可证"></el-input>
                     </el-form-item>
                     <el-form-item label="ICP备案：" prop="icpInfo">
