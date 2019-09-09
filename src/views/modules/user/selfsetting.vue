@@ -15,8 +15,8 @@
             <div>
                 <!-- 基本信息 -->
                 <div class="essentialInformation" v-if="active === 0 ">
-                    <el-form :inline="true" :model="basicdataForm" v-model="dataList" :rules="basicDatarules" ref="basicdataList"
-                        label-width="110px">
+                    <el-form :inline="true" :model="basicdataForm" v-model="dataList" :rules="basicDatarules"
+                        ref="basicdataList" label-width="110px">
                         <!-- <el-form-item label="代理商序号：" prop="agentId" class="noborder">
                             <el-input v-model="basicdataForm.agentId" placeholder="代理商序号" readonly></el-input>
                         </el-form-item><br /> -->
@@ -28,51 +28,59 @@
                         </el-form-item>
                         <br />
                         <el-form-item label="logo：" id="logoImgSize" prop="imageUrlLogo">
-                            <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionLogo()"
-                                :on-success="handleAvatarSuccessLogo" :on-error="errorLogo" :on-progress="onProgressLogo"
-                                :before-upload="beforeAvatarUploadLogo" :data="logoQueryParams" enctype="multipart/form-data"
-                                :limit="1">
+                            <el-upload class="upload-demo" drag :show-file-list="true" name="file"
+                                :action="actionLogo()" :on-success="handleAvatarSuccessLogo" :on-error="errorLogo"
+                                :on-progress="onProgressLogo" :before-upload="beforeAvatarUploadLogo"
+                                :data="logoQueryParams" enctype="multipart/form-data" :limit="1">
                                 <img v-if="basicdataForm.imageUrlLogo" :src="basicdataForm.imageUrlLogo" class="avatar">
                                 <i class="el-icon-plus "></i>
                                 <!-- <div class="el-upload__text" style="margin-top:-28px"><em>点击上传</em></div> -->
-                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长140px，宽36px，（再次上传请删除上一次上传）</div>
+                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长140px，宽36px，（再次上传请删除上一次上传）
+                                </div>
                                 <input type="hidden" v-model="basicdataForm.imageUrlLogo" />
                             </el-upload>
                         </el-form-item><br />
                         <el-form-item label="icon：" id="iconImgSize" prop="imageUrlIcon">
-                            <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
-                                :on-progress="onProgressIcon" :before-upload="beforeAvatarUploadIcon" :action="actionIcon()"
-                                :data="iconQueryParams" :on-error="errorIcon">
+                            <el-upload class="upload-demo" drag :show-file-list="true"
+                                :on-success="handleAvatarSuccessIcon" :on-progress="onProgressIcon"
+                                :before-upload="beforeAvatarUploadIcon" :action="actionIcon()" :data="iconQueryParams"
+                                :on-error="errorIcon">
                                 <img v-if="basicdataForm.imageUrlIcon" :src="basicdataForm.imageUrlIcon" class="avatar"
                                     :limit="1">
                                 <i class="el-icon-plus"></i>
                                 <!-- <div class="el-upload__text"><em>点击上传</em></div> -->
-                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长40px，宽40px，（再次上传请删除上一次上传）</div>
+                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长40px，宽40px，（再次上传请删除上一次上传）
+                                </div>
                                 <input type="hidden" v-model="basicdataForm.imageUrlIcon" />
                             </el-upload>
                         </el-form-item><br />
                         <el-form-item label="代表签字：" prop="imageUrlSignatures">
-                            <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionSignatures()"
-                                :on-success="handleAvatarSuccessSignatures" :on-error="errorSignatures" :on-progress="onProgressSignatures"
-                                :before-upload="beforeAvatarUploadSignatures" :data="SignaturesQueryParams" enctype="multipart/form-data"
-                                :limit="1">
+                            <el-upload class="upload-demo" drag :show-file-list="true" name="file"
+                                :action="actionSignatures()" :on-success="handleAvatarSuccessSignatures"
+                                :on-error="errorSignatures" :on-progress="onProgressSignatures"
+                                :before-upload="beforeAvatarUploadSignatures" :data="SignaturesQueryParams"
+                                enctype="multipart/form-data" :limit="1">
                                 <img v-if="basicdataForm.imageUrlSignatures" :src="basicdataForm.imageUrlSignatures"
                                     class="avatar">
                                 <i class="el-icon-plus"></i>
                                 <!-- <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div> -->
-                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长1261px，宽482px，（再次上传请删除上一次上传）</div>
+                                <div class="el-upload__tip" slot="tip">
+                                    要求为背景透明的png格式，且不超过2M，长1261px，宽482px，（再次上传请删除上一次上传）</div>
                                 <input type="hidden" v-model="basicdataForm.imageUrlSignatures" />
                             </el-upload>
                         </el-form-item><br />
                         <el-form-item label="公司红章：" prop="imageUrlChapter">
-                            <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionChapter()"
-                                :on-success="handleAvatarSuccessChapter" :on-error="errorChapter" :on-progress="onProgressChapter"
-                                :before-upload="beforeAvatarUploadChapter" :data="ChapterQueryParams" enctype="multipart/form-data"
-                                :limit="1">
-                                <img v-if="basicdataForm.imageUrlChapter" :src="basicdataForm.imageUrlChapter" class="avatar">
+                            <el-upload class="upload-demo" drag :show-file-list="true" name="file"
+                                :action="actionChapter()" :on-success="handleAvatarSuccessChapter"
+                                :on-error="errorChapter" :on-progress="onProgressChapter"
+                                :before-upload="beforeAvatarUploadChapter" :data="ChapterQueryParams"
+                                enctype="multipart/form-data" :limit="1">
+                                <img v-if="basicdataForm.imageUrlChapter" :src="basicdataForm.imageUrlChapter"
+                                    class="avatar">
                                 <i class="el-icon-plus"></i>
                                 <!-- <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div> -->
-                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长169px，宽168px，（再次上传请删除上一次上传）</div>
+                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长169px，宽168px，（再次上传请删除上一次上传）
+                                </div>
                                 <input type="hidden" v-model="basicdataForm.imageUrlChapter" />
                             </el-upload>
                         </el-form-item><br />
@@ -88,16 +96,18 @@
                 <!-- 客服资料 -->
                 <!-- class="customerInformation" 注释掉 要不验证 不出来-->
                 <div v-if="active === 1" style="padding: 30px 30px;">
-                    <el-form label-width="110px" :model="customerDataForm" :rules="customerDatarules" ref="customerdataList"
-                        class="demo-ruleForm">
+                    <el-form label-width="110px" :model="customerDataForm" :rules="customerDatarules"
+                        ref="customerdataList" class="demo-ruleForm">
                         <el-form-item label="浏览器右侧显示">
                             <el-switch v-model="customerDataForm.browserDisplay" @change="changeSwitch()"></el-switch>
                         </el-form-item>
                         <el-form-item label="客服热线" prop="kfLine">
-                            <el-input v-model="customerDataForm.kfLine" placeholder="客服热线 (最大输入长度为24)" maxlength="24"></el-input>
+                            <el-input v-model="customerDataForm.kfLine" placeholder="客服热线 (最大输入长度为24)" maxlength="24">
+                            </el-input>
                         </el-form-item>
                         <el-form-item label="客服qq" prop="keyqq">
-                            <el-input v-model="customerDataForm.keyqq" placeholder="客服qq (最大输入长度为24)" maxlength="24"></el-input>
+                            <el-input v-model="customerDataForm.keyqq" placeholder="客服qq (最大输入长度为24)" maxlength="24">
+                            </el-input>
                         </el-form-item>
                         <el-form-item label="美洽ID：" prop="beautyID">
                             <el-input v-model="customerDataForm.beautyID" placeholder="美洽ID"></el-input>
@@ -107,15 +117,18 @@
                         </el-form-item>
                         <el-form-item label="微信二维码" id="wxImgSize">
                             <div class="delWXimg" v-show="delWXimgVisible">
-                                <img src="~@/assets/img/delWX.png" alt="" @click="delWXimgBtn">&nbsp;<span>（删除后可重新上传）</span>
+                                <img src="~@/assets/img/delWX.png" alt=""
+                                    @click="delWXimgBtn">&nbsp;<span>（删除后可重新上传）</span>
                             </div>
                             <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionWx()"
                                 :on-success="handleAvatarSuccessWx" :on-error="errorWx" :on-progress="onProgressWx"
-                                :before-upload="beforeAvatarUploadWx" :data="wxQueryParams" enctype="multipart/form-data"
-                                :limit="1" :file-list="fileList2">
-                                <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
+                                :before-upload="beforeAvatarUploadWx" :data="wxQueryParams"
+                                enctype="multipart/form-data" :limit="1" :file-list="fileList2">
+                                <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx"
+                                    class="avatar">
                                 <i class="el-icon-plus "></i>
-                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长100px，宽100px，（再次上传请删除上一次上传）</div>
+                                <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长100px，宽100px，（再次上传请删除上一次上传）
+                                </div>
                                 <input type="hidden" v-model="customerDataForm.imageUrlWx" />
                             </el-upload>
                         </el-form-item><br />
@@ -137,7 +150,8 @@
                         <el-form-item label="联系方式：" prop="custHotline">
                             <el-input v-model="domainDataForm.custHotline" placeholder="请输入联系方式"></el-input>
                         </el-form-item>
-                        <el-form-item label="增值电信业务经营许可证：" prop="telservice">
+                        <el-form-item prop="telservice">
+                            <span slot="label" style="line-height: 16px;display: inline-block;">增值电信业务经营许可证：</span>
                             <el-input v-model="domainDataForm.telservice" placeholder="请输入增值电信业务经营许可证"></el-input>
                         </el-form-item>
                         <el-form-item label="ICP备案：" prop="icpInfo">
@@ -145,7 +159,8 @@
                             "></el-input>
                         </el-form-item>
                         <el-form-item label="公安备案：" prop="secrecord">
-                            <el-input v-model="domainDataForm.secrecord" placeholder="请输入公安备案，例：沪公网安备案 31011702001190号"></el-input>
+                            <el-input v-model="domainDataForm.secrecord" placeholder="请输入公安备案，例：沪公网安备案 31011702001190号">
+                            </el-input>
                         </el-form-item>
                         <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
                         <el-button style="margin-top: 12px;" @click="nextDomain">下一步</el-button>
@@ -165,10 +180,12 @@
                             <el-input v-model="alipaydataForm.alicallbackUrl" placeholder="支付回调地址"></el-input>
                         </el-form-item>
                         <el-form-item label="支付宝公钥">
-                            <el-input type="textarea" v-model="alipaydataForm.alipublicKey" placeholder="支付宝公钥" :rows="5"></el-input>
+                            <el-input type="textarea" v-model="alipaydataForm.alipublicKey" placeholder="支付宝公钥"
+                                :rows="5"></el-input>
                         </el-form-item>
                         <el-form-item label="应用私钥">
-                            <el-input type="textarea" v-model="alipaydataForm.aliprivateKey" placeholder="应用私钥" :rows="5"></el-input>
+                            <el-input type="textarea" v-model="alipaydataForm.aliprivateKey" placeholder="应用私钥"
+                                :rows="5"></el-input>
                         </el-form-item>
                         <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
                         <el-button style="margin-top: 12px;" @click="nextalipay">下一步</el-button>
@@ -177,8 +194,8 @@
 
                 <!-- 合同信息 -->
                 <div v-if="active === 4" class="contractInformation">
-                    <el-form :model="contractdataForm" :rules="contractdatarules" ref="contractdataFormref" label-width="110px"
-                        class="demo-ruleForm">
+                    <el-form :model="contractdataForm" :rules="contractdatarules" ref="contractdataFormref"
+                        label-width="110px" class="demo-ruleForm">
                         <el-form-item label="公司名称" prop="comName">
                             <el-input v-model="contractdataForm.comName" placeholder="公司名称"></el-input>
                         </el-form-item>
@@ -276,7 +293,8 @@
                         </el-form-item>
                         <el-form-item label="公司红章：">
                             <el-upload class="avatar-uploader" action="" :show-file-list="false" disabled>
-                                <img v-if="basicdataForm.imageUrlChapter" :src="basicdataForm.imageUrlChapter" class="avatar">
+                                <img v-if="basicdataForm.imageUrlChapter" :src="basicdataForm.imageUrlChapter"
+                                    class="avatar">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
@@ -308,7 +326,8 @@
                         </el-form-item>
                         <el-form-item label="微信二维码：">
                             <el-upload class="avatar-uploader" action="" :show-file-list="false" disabled>
-                                <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
+                                <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx"
+                                    class="avatar">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
@@ -351,17 +370,18 @@
                             <el-input v-model="alipaydataForm.alicallbackUrl" placeholder="支付回调地址" readonly></el-input>
                         </el-form-item>
                         <el-form-item label="支付宝公钥">
-                            <el-input type="textarea" v-model="alipaydataForm.alipublicKey" placeholder="支付宝公钥" :rows="5"
-                                readonly></el-input>
+                            <el-input type="textarea" v-model="alipaydataForm.alipublicKey" placeholder="支付宝公钥"
+                                :rows="5" readonly></el-input>
                         </el-form-item>
                         <el-form-item label="应用私钥">
-                            <el-input type="textarea" v-model="alipaydataForm.aliprivateKey" placeholder="应用私钥" :rows="5"
-                                readonly></el-input>
+                            <el-input type="textarea" v-model="alipaydataForm.aliprivateKey" placeholder="应用私钥"
+                                :rows="5" readonly></el-input>
                         </el-form-item>
                     </el-form>
                 </el-collapse-item>
                 <el-collapse-item title="合同资料 ✚" name="5">
-                    <el-form :model="contractdataForm" ref="contractdataFormref" label-width="110px" class="demo-ruleForm">
+                    <el-form :model="contractdataForm" ref="contractdataFormref" label-width="110px"
+                        class="demo-ruleForm">
                         <el-form-item label="公司名称">
                             <el-input v-model="contractdataForm.comName" placeholder="公司名称" readonly></el-input>
                         </el-form-item>
@@ -503,7 +523,7 @@
                         { required: true, message: '请输入公司备案', trigger: 'blur' }
                     ],
                     telservice: [
-                        { required: true, message: '请输入经营许可证', trigger: 'blur' }
+                        { required: false, message: '请输入经营许可证', trigger: 'blur' }
                     ],
                 },
                 customerDataForm: {  //客服资料信息
