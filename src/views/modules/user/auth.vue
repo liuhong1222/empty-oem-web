@@ -56,8 +56,8 @@
         <el-dialog width="800px" :title="rowobj['authStatusVal'] == 1 ? '审核': '查看'" :visible.sync="dialogRowVisible">
             <el-form :model="rowobj" :rules="dialogRules" ref="dialogForm">
                 <el-form-item label="营业执照：" label-width="180px">
-                    <viewer :options="{'navbar': false}" :images="['http://172.16.20.33:8081/' + rowobj.picture_url]">
-                        <img height="100" :src="'http://172.16.20.33:8081/' + rowobj.picture_url" style="cursor: pointer">
+                    <viewer :options="{'navbar': false}" :images="[imgBaseUrl + rowobj.picture_url]">
+                        <img height="100" :src="imgBaseUrl + rowobj.picture_url" style="cursor: pointer">
                     </viewer>
                 </el-form-item>
                 <el-form-item label="公司名称:" prop="name" label-width="180px">
