@@ -39,10 +39,10 @@
 </template>
 
 <script>
-  import md5 from 'js-md5';
-  import { isEmail, isMobile } from '@/utils/validate'
+  import md5 from 'js-md5'
+import { isEmail, isMobile } from '@/utils/validate'
   export default {
-    data() {
+    data () {
       var validatePassword = (rule, value, callback) => {
         if (!this.dataForm.id && !/\S/.test(value)) {
           callback(new Error('密码不能为空'))
@@ -101,17 +101,17 @@
             { validator: validateComfirmPassword, trigger: 'blur' }
           ],
           realName: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' },
+            { required: true, message: '姓名不能为空', trigger: 'blur' }
           ],
           email: [
             { required: true, message: '邮箱不能为空', trigger: 'blur' },
             { validator: validateEmail, trigger: 'blur' }
-          ],
+          ]
         }
       }
     },
     methods: {
-      init(id) {
+      init (id) {
         this.dataForm.id = id || 0
         this.visible = true
         this.$nextTick(() => {
@@ -149,7 +149,7 @@
         // })
       },
       // 表单提交
-      dataFormSubmit() {
+      dataFormSubmit () {
         this.parmroleList = []
         this.parmroleList.push(this.dataForm.roleId)
         this.$refs['dataForm'].validate((valid) => {
@@ -186,12 +186,10 @@
           }
         })
       },
-      closeDialog() {  //关闭之前
-        this.dataForm.comfirmPassword = ""
-        this.dataForm.password = ""
-
+      closeDialog () {  // 关闭之前
+        this.dataForm.comfirmPassword = ''
+        this.dataForm.password = ''
       }
     }
   }
-
 </script>
