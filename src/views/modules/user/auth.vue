@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>企业认证管理</h2>
+            <h2>认证审核管理</h2>
             <el-form :inline="true" :model="searchobj" @keyup.enter.native="getCustomList()">
                 <el-form-item label="提交时间：">
                     <el-date-picker
