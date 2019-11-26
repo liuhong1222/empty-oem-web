@@ -51,7 +51,7 @@
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="searchobj['currentPage']" :page-size.sync="searchobj['pageSize']" :page-sizes="[10, 20, 30, 40]" layout="total, prev, pager, next, sizes, jumper" :total="totalNumber" background></el-pagination>
+            <el-pagination ref="pages" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="searchobj['currentPage']" :page-size.sync="searchobj['pageSize']" :page-sizes="[10, 20, 30, 40]" layout="total, prev, pager, next, sizes, jumper" :total="totalNumber" background></el-pagination>
         </div>
         <el-dialog width="800px" :title="rowobj['authStatusVal'] == 1 ? '审核': '查看'" :visible.sync="dialogRowVisible">
             <el-form :model="rowobj" :rules="dialogRules" ref="dialogForm">
@@ -119,7 +119,7 @@ export default {
       },
       rowobj: {},
       dialogRowVisible: false,
-      imgBaseUrl: urlobj['imgUrl'],
+      imgBaseUrl: urlobj['zxaImgUrl'],
       dialogRules: {
         name: [
             { required: true, message: '请输入公司名称', trigger: 'blur' }
@@ -157,10 +157,12 @@ export default {
     }
   },
   activated () {
-    let date = new Date()
-    this.searchobj.dateTime[0] = this.formatDate(date)
-    this.searchobj.dateTime[1] = this.formatDate(date)
     this.getPageByMobile()
+    setInterval(() => {
+      let elemobj = $('[type=number]', '.el-pagination__editor')
+      let maxval = elemobj.prop('max')
+      maxval === '0' && elemobj.prop({ max: 1 })
+    }, 1000)
   },
   created () {
     let date = new Date()
