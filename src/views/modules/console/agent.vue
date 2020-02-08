@@ -251,7 +251,7 @@
         ],
         basicList: [ //基本信息
           { title: '我的代理价（元/条）', counts: '', btnText: '', flag: false },
-          { title: '我的余额（万条）', counts: '', btnText: '充值', flag: true },
+          { title: '我的余额（万条）', counts: '', btnText: '充值', flag: false },
           { title: '预警值（万条）', counts: '', btnText: '修改', flag: true },
           { title: '手机号', counts: '', btnText: '更改', flag: true },
           { title: '邮箱', counts: '', btnText: '更改', flag: true }
