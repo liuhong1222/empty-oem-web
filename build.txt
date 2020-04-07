@@ -1,0 +1,3 @@
+stable:   npm run build --qa
+sit: npm run build --uat
+pro:npm run build --prod

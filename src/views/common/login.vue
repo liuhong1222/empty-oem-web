@@ -94,6 +94,7 @@ export default {
         if (!valid) {
           this.$refs["dataForm"].validateField("password", valid => {
             if (!valid) {
+              this.times = 59;
               this.$http({
                 url: this.$http.adornUrl("sys/login"),
                 method: "post",
@@ -106,6 +107,7 @@ export default {
                   this.downTimes();
                   this.$message.success("验证码已发送注意查收");
                 } else {
+                  this.times = 60;
                   this.$message.error(data.msg);
                 }
               });
