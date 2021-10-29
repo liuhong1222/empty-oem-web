@@ -60,12 +60,18 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button @click="seeClick(scope.row.agentId)" type="text" size="small">查看</el-button>
-                        <el-button type="text" size="small" @click="addUpdateAgent(scope.row.agentId)">修改</el-button>
                         <el-button type="text" size="small" @click="chdataBtn(scope.row.agentId,scope.row.companyName,scope.row.price)">充值</el-button>
-                        <el-button type="text" size="small" @click="disableAndEnabled(scope.row)">{{scope.row.status ==
-                            0 ? '启用':
-                            '禁用'}}</el-button>
+                        <el-button style="margin-right: 10px;"  @click="seeClick(scope.row.agentId)" type="text" size="small">查看</el-button>
+                        <el-dropdown @command="(key) => handleClickDropdown(key, scope.row)">
+                            <el-button type="text" size="small">···</el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="edit">修改</el-dropdown-item>
+                                <el-dropdown-item command="refund">退款</el-dropdown-item>
+                                <el-dropdown-item command="usable">{{scope.row.status == 0 ? '启用' : '禁用'}}</el-dropdown-item>
+                                <el-dropdown-item command="auth">{{scope.row.isOpen == 0 ? '开启认证' : '关闭认证'}}</el-dropdown-item>
+                                <el-dropdown-item command="download">号码魔方</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </template>
                 </el-table-column>
             </el-table>
@@ -401,6 +407,44 @@
                         this.$message.error(data.msg)
                     }
                 })
+            },
+            // 退款
+            handleRefund(record) {
+                console.log('退款', record)
+            },
+            // 开启关闭认证
+            handleAuth(record) {
+                console.log('开启关闭认证', record)
+            },
+            // 下载号码魔方
+            handleDownloadApp(record) {
+                console.log('号码魔方', record)
+            },
+            handleClickDropdown(key, record) {
+                switch(key) {
+                    case 'edit': {
+                        this.addUpdateAgent(record.agentId)
+                        break;
+                    }
+                    case 'refund': {
+                        this.handleRefund(record)
+                        break;
+                    }
+                    case 'usable': {
+                        this.disableAndEnabled(record)
+                        break;
+                    }
+                    case 'auth': {
+                        this.handleAuth(record)
+                        break;
+                    }
+                    case 'download': {
+                        this.handleDownloadApp(record)
+                        break;
+                    }
+                    default:
+                        break
+                }
             }
         }
     }
