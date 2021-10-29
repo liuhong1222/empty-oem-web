@@ -12,7 +12,7 @@
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
                     <el-select v-model="quesAUDataForm.status" placeholder="请选择审核状态">
-                        <el-option v-for="(item,index) in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                        <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="排序：" prop="orderNum">

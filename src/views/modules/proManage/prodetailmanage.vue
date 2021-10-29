@@ -8,7 +8,7 @@
                 </el-form-item>
                 <el-form-item label="产品线名称">
                     <el-select v-model="proLineForm.proLineName" placeholder="请选择产品线名称">
-                        <el-option v-for="(item,index) in proLineNameArr" :label="item.productName" :key="item.id"
+                        <el-option v-for="item in proLineNameArr" :label="item.productName" :key="item.id"
                             :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
@@ -19,12 +19,12 @@
                 </el-form-item>
                 <el-form-item label="状态" style="margin-left: -35px">
                     <el-select v-model="proLineForm.status" placeholder="请选择状态">
-                        <el-option v-for="(item,index) in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                        <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="审核状态" style="margin-left: -35px">
                     <el-select v-model="proLineForm.auditStatus" placeholder="请选择审核状态">
-                        <el-option v-for="(item,index) in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                        <el-option v-for="item in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">

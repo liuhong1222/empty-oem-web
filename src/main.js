@@ -9,11 +9,10 @@ import '@/element-ui-theme'
 import '@/assets/scss/index.scss'
 import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios
 import { isAuth } from '@/utils'
-import VueRouter from 'vue-router';
-import VueClipboard from 'vue-clipboard2';
+// import VueRouter from 'vue-router'
+import VueClipboard from 'vue-clipboard2'
 
-
-window.jquery = $;
+window.jquery = $
 Vue.use(VueCookie)
 Vue.config.productionTip = false
 

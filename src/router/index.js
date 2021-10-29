@@ -18,10 +18,8 @@ const _import = require('./import-' + process.env.NODE_ENV)
 const globalRoutes = [
   { path: '/404', component: _import('common/404'), name: '404', meta: { title: '404未找到' } },
   { path: '/login', component: _import('common/login'), name: 'login', meta: { title: '登录' } },
-  { path: '/forget', component: _import('common/forget'), name: 'forget', meta: { title: '找回密码' } },
- 
+  { path: '/forget', component: _import('common/forget'), name: 'forget', meta: { title: '找回密码' } }
 ]
-
 
 // 主入口路由(需嵌套上左右整体布局)
 const mainRoutes = {
@@ -39,10 +37,10 @@ const mainRoutes = {
     { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } },
     { path: '/demo-echarts', component: _import('demo/echarts'), name: 'demo-echarts', meta: { title: '首页-图表', isTab: true } }
   ],
-  beforeEnter(to, from, next) {
+  beforeEnter (to, from, next) {
     // if (to.meta.title) {
     //   document.title = to.meta.title
-    // }  
+    // }
     // console.log(to.meta.title)
     let token = Vue.cookie.get('token')
     if (!token || !/\S/.test(token)) {
@@ -90,7 +88,7 @@ router.beforeEach((to, from, next) => {
  * 判断当前路由类型, global: 全局路由, main: 主入口路由
  * @param {*} route 当前路由
  */
-function fnCurrentRouteType(route) {
+function fnCurrentRouteType (route) {
   var temp = []
   for (var i = 0; i < globalRoutes.length; i++) {
     if (route.path === globalRoutes[i].path) {
@@ -107,7 +105,7 @@ function fnCurrentRouteType(route) {
  * @param {*} menuList 菜单列表
  * @param {*} routes 递归创建的动态(菜单)路由
  */
-function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
+function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   var temp = []
   for (var i = 0; i < menuList.length; i++) {
     if (menuList[i].list && menuList[i].list.length >= 1) {

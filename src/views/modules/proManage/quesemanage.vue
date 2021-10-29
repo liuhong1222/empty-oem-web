@@ -8,23 +8,23 @@
                 </el-form-item>
                 <el-form-item label="产品名称">
                     <el-select v-model="quesDataForm.proName" placeholder="请选择产品名称">
-                        <el-option v-for="(item,index) in proArr" :label="item.productName" :key="item.productId"
+                        <el-option v-for="item in proArr" :label="item.productName" :key="item.productId"
                             :value="item.productId"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="状态" style="margin-left: -40px">
                     <el-select v-model="quesDataForm.status" placeholder="请选择状态">
-                        <el-option v-for="(item,index) in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                        <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="审核状态" style="margin-left: -60px;">
                     <el-select v-model="quesDataForm.auditStatus" placeholder="请选择审核状态">
-                        <el-option v-for="(item,index) in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                        <el-option v-for="item in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="搜索类型" class="searchType">
                     <el-select v-model="quesDataForm.searchType" placeholder="请选择">
-                        <el-option v-for="(item,index) in searchKeyArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                        <el-option v-for="item in searchKeyArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                     <el-input v-model="quesDataForm.searchKey"></el-input>
                 </el-form-item>

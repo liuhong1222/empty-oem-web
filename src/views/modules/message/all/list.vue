@@ -2,7 +2,7 @@
     <div class="main">
         <div class="topSearch">
             <h2>代理商消息列表</h2>
-            <el-form :inline="true" :model="AgInfoSearchData" @keyup.enter.native="">
+            <el-form :inline="true" :model="AgInfoSearchData">
                 <el-form-item label="选择状态：">
                     <el-select v-model="AgInfoSearchData.status" placeholder="代理商状态">
                         <el-option label="全部" value=""></el-option>

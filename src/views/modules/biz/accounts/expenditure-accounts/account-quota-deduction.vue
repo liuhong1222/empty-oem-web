@@ -9,13 +9,13 @@
     <el-form :inline="true" label-width="100px">
       <el-form-item label="客户名称">
         {{customerName}}
-      </el-form-item></br>
+      </el-form-item><br />
       <el-form-item label="万数账号">
         {{accountPhone}}
-      </el-form-item></br>
+      </el-form-item><br />
       <el-form-item label="当前余额">
         {{balance}}
-      </el-form-item></br>
+      </el-form-item><br />
       <el-form-item label="所涉金额(元)">
         <el-input 
           v-model="messageMoney" 
@@ -25,7 +25,7 @@
           type="number"  
           placeholder="单行输入"
         ></el-input> 元
-        <div class="el-form-item__error" v-model="moneyMessage" v-if="balanceVisible">
+        <div class="el-form-item__error" v-if="balanceVisible">
           {{moneyMessage}}
         </div>
       </el-form-item><br />

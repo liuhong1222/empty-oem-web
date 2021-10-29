@@ -17,7 +17,7 @@
       </el-form-item><br />
       <el-form-item label="所涉金额(元)">
         <el-input v-model="messageMoney" class="moneyInput" ref="money" @change="saveMoney" type="number" placeholder="单行输入"></el-input> 元
-        <div class="el-form-item__error" v-model="moneyMessage" v-if="balanceVisible">
+        <div class="el-form-item__error" v-if="balanceVisible">
           {{moneyMessage}}
         </div>
       </el-form-item><br />

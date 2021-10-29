@@ -22,7 +22,7 @@
           type="number"  
           placeholder="单行输入"
         ></el-input> 元
-        <div class="el-form-item__error" v-model="moneyMessage" v-if="balanceVisible">
+        <div class="el-form-item__error" v-if="balanceVisible">
           {{moneyMessage}}
         </div>
       </el-form-item><br />

@@ -32,7 +32,7 @@
           placeholder="单行输入"
         ></el-input> 元
         <div>可退金额 <= 当前余额 - 应急充值未归还金额 - 测试赠送的金额</div>
-        <div class="el-form-item__error" v-model="moneyMessage" v-if="balanceVisible">
+        <div class="el-form-item__error" v-if="balanceVisible">
           {{moneyMessage}} 
         </div>
       </el-form-item><br />

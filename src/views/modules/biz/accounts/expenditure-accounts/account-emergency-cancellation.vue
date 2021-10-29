@@ -4,11 +4,11 @@
       <el-form-item label="公司名称">
         {{companyName}}
       </el-form-item>
-      </br>
+      <br />
       <el-form-item label="万数账号">
         {{accountUsername}}
       </el-form-item>
-      </br>
+      <br />
       <el-form-item label="应急充值单号">
         <template>
           <el-table :data="emergencyDataList" :header-cell-class-name="tableheaderClassName" @selection-change="handleSelectionChange"
@@ -28,16 +28,16 @@
           </el-table>
         </template>
       </el-form-item>
-      </br>
+      <br />
       <el-form-item label="应还金额">
         {{money | currency}} 元
         <div class="el-form-item__error" ref="FormDiv" v-if="balanceVisible"> {{moneyMessage}} </div>
       </el-form-item>
-      </br>
+      <br />
       <el-form-item label="账户余额">
         {{balance | currency}} 元
       </el-form-item>
-      </br>
+      <br />
 
       <el-form-item label="备注">
         <el-input v-model="remarkText" ref="mark" @change="saveMark" :rows="3" :cols="53" maxlength="150" placeholder="请输入本次操作备注"

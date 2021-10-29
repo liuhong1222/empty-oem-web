@@ -2,7 +2,7 @@
   <div class="mod-user">
     <div v-if="this.screening === true">
       <h4>筛选条件:</h4>
-      <div style="display: inline-block;" v-model="joinStatus">
+      <div style="display: inline-block;">
         <!-- <el-tag
           style=" margin-left: 10px;"
           v-for="item in joinStatusList"
@@ -11,8 +11,8 @@
           >
           {{item}} 
         </el-tag> -->
-        <ul style="    list-style: none;float:left;background:#e68f8f; padding:8px; margin-right:20px;border-radius:4px;color:#fff;">
-          <li style="float:left;margin-left:5px;" v-for="item in joinStatusList" key="joinStatusList"> {{item}}</li>
+        <ul style="list-style:none;float:left;background:#e68f8f;padding:8px;margin-right:20px;border-radius:4px;color:#fff;">
+          <li style="float:left;margin-left:5px;" v-for="(item, index) in joinStatusList" :key="index"> {{item}}</li>
         </ul>
         <p style="background:#f11c5f;color:#fff;display:inline-block;padding:8px;cursor: pointer;  border-radius:3px;" @click="deleteChoose">清空筛选</p>
       </div>
