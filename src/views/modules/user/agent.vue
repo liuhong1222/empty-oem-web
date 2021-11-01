@@ -32,8 +32,6 @@
             <el-table :data="agentTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
                 </el-table-column>
-                <!-- <el-table-column prop="agentNo" label="代理商编号" width="90" align="center">
-                </el-table-column> -->
                 <el-table-column prop="mchId" label=" 商户编号" width="80" align="center">
                 </el-table-column>
                 <el-table-column prop="companyName" label=" 代理商名称" width="165" align="center">

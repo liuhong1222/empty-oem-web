@@ -98,7 +98,7 @@
 
 </template>
 <script>
-    import { isEmail, isMobile } from '@/utils/validate'
+    import { isMobile } from '@/utils/validate'
     import imgUrl from '@/utils/imgUrl'
     export default {
         data() {

@@ -1,7 +1,74 @@
 <template>
     <div id="seeAgent">
-        <el-dialog title="查看" :visible.sync="dialogVisible" width="40%">
-            <el-form :model="dataForm" ref="dataForm" label-width="150px" class="demo-ruleForm" :label-position="labelPosition">
+        <el-dialog title="查看代理商" :visible.sync="dialogVisible" width="60%">
+            <table class="discribe-wrapper" border>
+                <tbody>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">联系人姓名</td>
+                        <td class="discribe-col">{{ detailInfo.linkmanName }}</td>
+                        <td class="discribe-col title">联系人手机号码</td>
+                        <td class="discribe-col">{{ detailInfo.linkmanPhone }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">联系人邮箱</td>
+                        <td class="discribe-col">{{ detailInfo.linkmanEmail }}</td>
+                        <td class="discribe-col title">营业执照地址</td>
+                        <td class="discribe-col">
+                            {{ detailInfo.businessLicensePath }}
+                            <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
+                        </td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">公司名称</td>
+                        <td class="discribe-col">{{ detailInfo.companyName }}</td>
+                        <td class="discribe-col title">公司简称</td>
+                        <td class="discribe-col">{{ detailInfo.companyShortName }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">营业执照所在地</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseAddress }}</td>
+                        <td class="discribe-col title">营业执照号</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseNumber }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">企业法人姓名</td>
+                        <td class="discribe-col">{{ detailInfo.legalPerson }}</td>
+                        <td class="discribe-col title">营业执照有效期开始时间</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseExpireStartTime }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">营业执照有效期结束时间</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseExpireEndTime }}</td>
+                        <td class="discribe-col title">空号检测等级名称</td>
+                        <td class="discribe-col">{{ detailInfo.agentLevel }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">单价</td>
+                        <td class="discribe-col">{{ detailInfo.price }}（元/条）</td>
+                        <td class="discribe-col title">预警条数</td>
+                        <td class="discribe-col">{{ detailInfo.warningsNumber }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">实时检测等级名称</td>
+                        <td class="discribe-col">{{ detailInfo.realLevel }}</td>
+                        <td class="discribe-col title">实时检测单价</td>
+                        <td class="discribe-col">{{ detailInfo.realPrice }}（元/条）</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">实时检测预警条数</td>
+                        <td class="discribe-col">{{ detailInfo.realWarningsNumber }}</td>
+                        <td class="discribe-col title">状态</td>
+                        <td class="discribe-col">{{ detailInfo.state ? '启用中' : '禁用中' }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">备注</td>
+                        <td class="discribe-col">{{ detailInfo.remark }}</td>
+                        <td class="discribe-col title">创建时间</td>
+                        <td class="discribe-col">{{ detailInfo.createTime }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <el-form v-show="false" :model="dataForm" ref="dataForm" label-width="150px" class="demo-ruleForm" :label-position="labelPosition">
                 <!-- <h3>基本信息</h3> -->
                 <!-- <el-form-item label="代理商编号：" prop="agentNumber">
                     <el-input v-model="dataForm.agentNumber" placeholder="代理商编号" readonly></el-input>
@@ -92,6 +159,7 @@
                 dialogVisible: false,
                 labelPosition: 'right',
                 seeImageUrl: '',
+                detailInfo: {},
                 dataForm: {
                     id: 0,
                     // agentNumber: '',
@@ -125,6 +193,7 @@
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
+                        this.detailInfo = data.data || {}
                         this.seeImageUrl = imgUrl.imgUrl + data.data.licenseUrl
                         // this.dataForm.agentNumber = data.data.agentNo
                         this.dataForm.businNumber = data.data.mchId
@@ -168,5 +237,24 @@
     #avatar-uploaderImg .el-upload img {
         width: 100%;
         height: 100%;
+    }
+</style>
+<style lang="scss" scoped>
+    .discribe {
+        &-wrapper {
+            width: 100%;
+            border: 1px solid #e8e8e8;
+            border-color: #e8e8e8;
+            border-collapse: collapse;
+        }
+        &-col {
+            width: 25%;
+            padding: 16px 24px;
+            min-height: 52px;
+            height: 100%;
+            &.title {
+                background-color: #fafafa;
+            }
+        }
     }
 </style>

@@ -23,11 +23,16 @@
                     <el-table :data="tableData" height="250" style="width: 100%" :highlight-current-row="false">
                         <el-table-column prop="companyName" label="代理商名称">
                         </el-table-column>
+                        <el-table-column prop="category" label="充值产品">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="payTime" label="充值时间">
                         </el-table-column>
-                        <el-table-column prop="money" label="充值金额">
+                        <el-table-column prop="money" label="充值金额（元）">
                         </el-table-column>
-                        <el-table-column prop="number" label="充值条数">
+                        <el-table-column prop="number" label="充值条数（条）">
                         </el-table-column>
                     </el-table>
                 </div>
