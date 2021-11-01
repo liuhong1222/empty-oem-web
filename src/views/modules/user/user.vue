@@ -25,11 +25,21 @@
                         <el-option label="其他" value="2"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="充值状态：">
+                    <el-select v-model="searchData.custType" placeholder="客户充值状态">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option label="已充值" value="0"></el-option>
+                        <el-option label="未充值" value="1"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="客户名称：" style="margin-left:0px;">
                     <el-input v-model="searchData.custName" placeholder="客户名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="代理商名称：" v-if="disableAgent">
                     <el-input v-model="searchData.agentName" placeholder="代理商名称" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="注册IP：">
+                    <el-input v-model="searchData.registerIp" placeholder="注册IP" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="getCustomList()">查询</el-button>
@@ -159,15 +169,16 @@ export default {
         mobile: '',
         custType: '',
         custName: '',
-        agentName: ''
-                // creUserId: "",
-                // user_phone: "",
-                // user_type: '',
-                // company_name: "",
-                // create_time: "",
-                // money: "",
-                // number: "",
-                // account: ""
+        agentName: '',
+        registerIp: ''
+        // creUserId: "",
+        // user_phone: "",
+        // user_type: '',
+        // company_name: "",
+        // create_time: "",
+        // money: "",
+        // number: "",
+        // account: ""
       },
       userTableData: [],
       pageIndex: 1,
