@@ -198,6 +198,58 @@ const adminNav = {
                   'orderNum':5,
                   'open':null,
                   'list':null
+              },
+              {
+                  'menuId':2021,
+                  'parentId':59,
+                  'parentName':null,
+                  'name':'空号检测记录',
+                  'url':'finance/emptycheck',
+                  'perms':'',
+                  'type':1,
+                  'icon':'tubiao',
+                  'orderNum':5,
+                  'open':null,
+                  'list':null
+              },
+              {
+                  'menuId':2022,
+                  'parentId':59,
+                  'parentName':null,
+                  'name':'空号检测API记录',
+                  'url':'finance/emptycheckapi',
+                  'perms':'',
+                  'type':1,
+                  'icon':'tubiao',
+                  'orderNum':5,
+                  'open':null,
+                  'list':null
+              },
+              {
+                  'menuId':2023,
+                  'parentId':59,
+                  'parentName':null,
+                  'name':'实时检测记录',
+                  'url':'finance/realcheck',
+                  'perms':'',
+                  'type':1,
+                  'icon':'tubiao',
+                  'orderNum':5,
+                  'open':null,
+                  'list':null
+              },
+              {
+                  'menuId':2024,
+                  'parentId':59,
+                  'parentName':null,
+                  'name':'实时检测API记录',
+                  'url':'finance/realcheckapi',
+                  'perms':'',
+                  'type':1,
+                  'icon':'tubiao',
+                  'orderNum':5,
+                  'open':null,
+                  'list':null
               }
           ]
       },

@@ -1,0 +1,184 @@
+<template>
+    <div class="main">
+        <div class="topSearch">
+            <h2>空号检测记录</h2>
+            <el-form :inline="true">
+                <el-form-item label="创建时间：">
+                    <el-date-picker v-model="searchData.createTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="代理商：" style="margin-left:35px;">
+                    <el-select v-model="searchData.agentId" placeholder="代理商">
+                        <el-option label="全部" :value="-1"></el-option>
+                        <el-option v-for="item in agentList" :label="item.companyName" :key="item.id" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="客户名称：" style="margin-left:-15px;">
+                    <el-input v-model="searchData.customerName" placeholder="客户名称" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="手机号码：" style="margin-left:-2px;">
+                    <el-input v-model="searchData.phone" placeholder="手机号码" clearable></el-input>
+                </el-form-item>
+                <el-form-item style="margin-left:6px">
+                    <el-button type="primary" @click="getTableData(1)">查询</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div class="agentTable">
+            <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
+                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
+                </el-table-column>
+                <el-table-column width="150" prop="agentName" label="代理商名称" align="center">
+                </el-table-column>
+                <el-table-column width="150" prop="phone" label=" 手机号码" align="center">
+                </el-table-column>
+                <el-table-column width="150" prop="name" label=" 文件名称" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="size" label="文件大小" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ Math.round((scope.row.size || 0) / 1024) + 'KB' }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="120" prop="realNumber" label="实号包（条）" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="silentNumber" label="沉默包（条）" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="emptyNumber" label="空号包（条）" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="checkType" label="接口" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ checkTypeMap[scope.row.checkType] || '' }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="120" prop="line" label="接口检测数" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="poolNumber" label="号池检测数" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.totalNumber - row.unknownNumber }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="120" prop="unknownNumber" label="号池未匹配" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
+                </el-table-column>
+                <el-table-column width="150" prop="createTime" label="创建时间" align="center">
+                </el-table-column>
+                <el-table-column width="150" prop="updateTime" label="完成时间" align="center">
+                </el-table-column>
+            </el-table>
+        </div>
+        <div class="agentPage">
+            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10,20,30,50]"
+                :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                dataListLoading: false,
+                searchData: {
+                    createTime: [],
+                    agentId: -1,
+                    customerName: '',
+                    phone: ''
+                },
+                tableData: [{ totalNumber: 1000, unknownNumber: 100, id: 1 }],
+                pageIndex: 1,
+                pageSize: 10,
+                totalPage: 0,
+                agentList: [],
+                checkTypeMap: {
+                    '0': 'QY-old',
+                    '1': 'QY-new',
+                    '2': 'BSP',
+                    '3': 'CL',
+                    '4': 'JD',
+                }
+            }
+        },
+        activated() {
+            // this.getTableData()
+        },
+        methods: {
+            getTableData(cur) {
+                this.pageIndex = cur || this.pageIndex;
+                this.dataListLoading = true
+                this.$http({
+                    url: this.$http.adornUrl(`agent/finance/user/refund/list?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        'currentPage': this.pageIndex,
+                        'pageSize': this.pageSize,
+                    })
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.tableData = data.data.list
+                        this.totalPage = data.data.total
+                    } else {
+                        this.tableData = []
+                        this.totalPage = 0
+                    }
+                    this.dataListLoading = false
+                })
+            },
+            // 每页数
+            sizeChangeHandle(val) {
+                this.pageSize = val
+                this.pageIndex = 1
+                this.getTableData()
+            },
+            // 当前页
+            currentChangeHandle(val) {
+                this.pageIndex = val
+                this.getTableData()
+            },
+            getRowClass({ row, column, rowIndex, columnIndex }) {
+                if (rowIndex === this.tableData.length) {
+                    return 'background-color: #f8f8f8;color:#666;'
+                } else {
+                    return ''
+                }
+            },
+            getTotal(param) {
+                const { columns, data } = param;
+                const sums = [];
+                columns.forEach((column, index) => {
+                    if (index === 0) {
+                        sums[index] = '合计';
+                        return;
+                    }
+                    if (column.property === 'line') {
+                        sums[index] = `接口${10223}条`
+                    } else if (column.property === 'poolNumber') {
+                        sums[index] = `号池${10223}条`
+                    } else if (column.property === 'totalNumber') {
+                        sums[index] = `共${10223}条`
+                    } else {
+                        sums[index] = '';
+                    }
+                });
+
+                return sums;
+            }
+        }
+    }
+
+</script>
+<style lang="scss">
+    .topSearch {
+        width: 100%;
+        padding: 10px 23px 20px;
+        background-color: #fff;
+        margin-bottom: 24px;
+        box-shadow: 0px 7px 9px 0px rgba(153, 153, 153, 0.05);
+    }
+</style>
