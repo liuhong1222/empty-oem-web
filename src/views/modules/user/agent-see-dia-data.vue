@@ -239,22 +239,3 @@
         height: 100%;
     }
 </style>
-<style lang="scss" scoped>
-    .discribe {
-        &-wrapper {
-            width: 100%;
-            border: 1px solid #e8e8e8;
-            border-color: #e8e8e8;
-            border-collapse: collapse;
-        }
-        &-col {
-            width: 25%;
-            padding: 16px 24px;
-            min-height: 52px;
-            height: 100%;
-            &.title {
-                background-color: #fafafa;
-            }
-        }
-    }
-</style>

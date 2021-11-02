@@ -93,6 +93,19 @@ const adminNav = {
                   'orderNum':0,
                   'open':null,
                   'list':null
+              },
+              {
+                  'menuId':555,
+                  'parentId':31,
+                  'parentName':null,
+                  'name':'套餐管理',
+                  'url':'user/meal',
+                  'perms':null,
+                  'type':1,
+                  'icon':'log',
+                  'orderNum':0,
+                  'open':null,
+                  'list':null
               }
           ]
       },
