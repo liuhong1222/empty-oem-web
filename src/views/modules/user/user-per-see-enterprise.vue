@@ -1,5 +1,86 @@
 <template>
     <div class="seecuslog">
+        <!-- 客户详情信息 -->
+        <el-dialog v-if="false" title="查看客户" :visible.sync="dialogVisible" width="60%">
+            <table class="discribe-wrapper" border>
+                <tbody>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">联系人姓名</td>
+                        <td class="discribe-col">{{ detailInfo.name }}</td>
+                        <td class="discribe-col title">联系人手机号码</td>
+                        <td class="discribe-col">{{ detailInfo.phone }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">联系人邮箱</td>
+                        <td class="discribe-col">{{ detailInfo.email }}</td>
+                        <td class="discribe-col title">营业执照地址</td>
+                        <td class="discribe-col">
+                            {{ detailInfo.businessLicensePath }}
+                            <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
+                        </td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">公司名称</td>
+                        <td class="discribe-col">{{ detailInfo.companyName }}</td>
+                        <td class="discribe-col title">公司简称</td>
+                        <td class="discribe-col">{{ detailInfo.companyShortName }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">营业执照所在地</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseAddress }}</td>
+                        <td class="discribe-col title">营业执照号</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseNumber }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">企业法人姓名</td>
+                        <td class="discribe-col">{{ detailInfo.legalPerson }}</td>
+                        <td class="discribe-col title">营业执照有效期开始时间</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseExpireStartTime }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">营业执照有效期结束时间</td>
+                        <td class="discribe-col">{{ detailInfo.businessLicenseExpireEndTime }}</td>
+                        <td class="discribe-col title">空号检测等级名称</td>
+                        <td class="discribe-col">{{ detailInfo.agentLevel }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">单价</td>
+                        <td class="discribe-col">{{ detailInfo.price }}（元/条）</td>
+                        <td class="discribe-col title">预警条数</td>
+                        <td class="discribe-col">{{ detailInfo.warningsNumber }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">状态</td>
+                        <td class="discribe-col">{{ detailInfo.state }}</td>
+                        <td class="discribe-col title">备注</td>
+                        <td class="discribe-col">{{ detailInfo.remark }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">版本</td>
+                        <td class="discribe-col">{{ detailInfo.version }}</td>
+                        <td class="discribe-col title">创建时间</td>
+                        <td class="discribe-col">{{ detailInfo.createTime }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">IP地址</td>
+                        <td class="discribe-col">{{ detailInfo.ip }}</td>
+                        <td class="discribe-col title">区域</td>
+                        <td class="discribe-col">{{ detailInfo.area }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">运营商</td>
+                        <td class="discribe-col">{{ detailInfo.operator }}</td>
+                        <td class="discribe-col title">来源</td>
+                        <td class="discribe-col">{{ detailInfo.referer }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+
         <!-- 查看个人信息 -->
         <el-dialog title="查看个人客户" :visible.sync="perseeVisible" width="48%">
 
@@ -93,6 +174,9 @@
     export default {
         data() {
             return {
+                dialogVisible: false,
+                detailInfo: {},
+
                 perseeVisible: false,
                 entriseVisible: false,
                 imageUrlFace: '',
@@ -157,7 +241,8 @@
                         }
                     })
 
-                } else if (arr[1] == 1) { //企业
+                }
+                if (arr[1] == 1) { //企业
                     this.entriseVisible = true
                     this.seepriseDataForm.id = arr[0]
                     this.seepriseDataForm.creUserId = arr[2]

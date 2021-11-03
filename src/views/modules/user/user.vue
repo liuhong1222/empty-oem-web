@@ -62,8 +62,6 @@
                     fixed
                     label="序号"
                 ></el-table-column>
-                <!-- <el-table-column prop="creUserId" label=" 客户编号" width="80" align="center">
-                </el-table-column>-->
                 <el-table-column prop="user_phone" label="手机号码" align="center"></el-table-column>
                 <el-table-column prop="userType" label="客户类型" align="center"></el-table-column>
                 <el-table-column prop="custName" label=" 客户名称" align="center"></el-table-column>
@@ -74,10 +72,13 @@
                     v-if="disableAgentName"
                 ></el-table-column>
                 <el-table-column prop="create_time" label="注册时间" align="center"></el-table-column>
-                <el-table-column prop="money" label="充值总计（元）" align="center"></el-table-column>
-                <el-table-column prop="number" label="充值总条数" align="center"></el-table-column>
-                <el-table-column prop="account" label="剩余条数" align="center"></el-table-column>
-                <el-table-column fixed="right" label="操作" align="center" width="260">
+                <el-table-column prop="paymentAmountTotal" label="空号充值总计（元）" align="center"></el-table-column>
+                <el-table-column prop="rechargeNumberTotal" label="空号充值总条数" align="center"></el-table-column>
+                <el-table-column prop="remainNumberTotal" label="空号剩余条数" align="center"></el-table-column>
+                <el-table-column prop="realtimeRechargeTotalPay" label="实时充值总计（元）" align="center"></el-table-column>
+                <el-table-column prop="realtimeRechargeTotalCount" label="实时充值总条数" align="center"></el-table-column>
+                <el-table-column prop="realtimeBalance" label="实时剩余条数" align="center"></el-table-column>
+                <el-table-column fixed="right" label="操作" align="center" width="150">
                     <template slot-scope="scope">
                         <el-button @click="perPriseSee(scope.row)" type="text" size="small">查看</el-button>
                         <el-button
@@ -85,31 +86,18 @@
                             size="small"
                             @click="rechargedataBtn(scope.row)"
                             :disabled="regDisabled"
+                            style="margin-right: 10px;"
                         >充值</el-button>
-                        <el-button
-                            type="text"
-                            size="small"
-                            @click="refundBtn(scope.row)"
-                            :disabled="refundDisabled"
-                        >退款</el-button>
-                        <el-button
-                            type="text"
-                            size="small"
-                            @click="transferAgent(scope.row)"
-                            :disabled="transferDisabled"
-                        >转代理商</el-button>
-                        <el-button
-                            type="text"
-                            size="small"
-                            v-if="scope.row.canPresent == 'false'"
-                            disabled
-                        >注册赠送</el-button>
-                        <el-button
-                            type="text"
-                            size="small"
-                            @click="canPresentBtn(scope.row.creUserId)"
-                            v-else
-                        >注册赠送</el-button>
+                        <el-dropdown @command="(key) => handleClickDropdown(key, scope.row)">
+                            <el-button type="text" size="small">···</el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item :disabled="refundDisabled" command="refund">退款</el-dropdown-item>
+                                <el-dropdown-item :disabled="transferDisabled" command="transferAgent">转代理商</el-dropdown-item>
+                                <el-dropdown-item :disabled="scope.row.canPresent == 'false'" command="give">注册赠送</el-dropdown-item>
+                                <el-dropdown-item command="viewRechargeRecord">查看历史充值记录</el-dropdown-item>
+                                <el-dropdown-item command="interface">{{scope.row.interface === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </template>
                 </el-table-column>
             </el-table>
@@ -144,12 +132,12 @@
 </template>
 <script>
 // import perEditEnterise from './user-per-edit-enterise'
-import perSeeEnterprise from './user-per-see-enterprise'
-import perRechargePrise from './user-per-recharge-prise'
-import perRefundPrise from './user-per-refund-prise'
-import transferOrAgent from './user-transfer-agent'
+import perSeeEnterprise from "./user-per-see-enterprise";
+import perRechargePrise from "./user-per-recharge-prise";
+import perRefundPrise from "./user-per-refund-prise";
+import transferOrAgent from "./user-transfer-agent";
 export default {
-  data () {
+  data() {
     return {
       disabled: false,
       seeVisible: false,
@@ -166,11 +154,11 @@ export default {
       arr: [], // 保存点击的id和区分个人和企业的id
       searchData: {
         dateTime: [],
-        mobile: '',
-        custType: '',
-        custName: '',
-        agentName: '',
-        registerIp: ''
+        mobile: "",
+        custType: "",
+        custName: "",
+        agentName: "",
+        registerIp: "",
         // creUserId: "",
         // user_phone: "",
         // user_type: '',
@@ -185,81 +173,83 @@ export default {
       pageSize: 10,
       totalPage: 0,
       pickerOptions0: {
-        disabledDate (time) {
-          return time.getTime() > Date.now() - 8.64e6
-        }
-      }
-    }
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e6;
+        },
+      },
+    };
   },
   components: {
-        // perEditEnterise,
+    // perEditEnterise,
     perSeeEnterprise,
     perRechargePrise,
     perRefundPrise,
-    transferOrAgent
+    transferOrAgent,
   },
-  activated () {
-    if (sessionStorage.getItem('msjRoleName') == '1') {
+  activated() {
+    if (sessionStorage.getItem("msjRoleName") == "1") {
       if (!this.searchData.dateTime) {
-        this.searchData.dateTime = []
-        var date = new Date()
-        var dateSeven = new Date(new Date() - 7 * 24 * 3600 * 1000)
-        this.searchData.dateTime[0] = this.formatDate(dateSeven)
-        this.searchData.dateTime[1] = this.formatDate(date)
+        this.searchData.dateTime = [];
+        var date = new Date();
+        var dateSeven = new Date(new Date() - 7 * 24 * 3600 * 1000);
+        this.searchData.dateTime[0] = this.formatDate(dateSeven);
+        this.searchData.dateTime[1] = this.formatDate(date);
       }
     }
 
-    this.getCustomList()
+    this.getCustomList();
   },
-  created () {
-    if (sessionStorage.getItem('msjRoleName') == '1') {
-      var date = new Date()
-      var dateSeven = new Date(new Date() - 7 * 24 * 3600 * 1000)
-      this.searchData.dateTime[0] = this.formatDate(dateSeven)
-      this.searchData.dateTime[1] = this.formatDate(date)
+  created() {
+    if (sessionStorage.getItem("msjRoleName") == "1") {
+      var date = new Date();
+      var dateSeven = new Date(new Date() - 7 * 24 * 3600 * 1000);
+      this.searchData.dateTime[0] = this.formatDate(dateSeven);
+      this.searchData.dateTime[1] = this.formatDate(date);
     }
   },
   methods: {
-    formatDate (date) {
-      var seperator1 = '-'
-      var year = date.getFullYear()
-      var month = date.getMonth() + 1
-      var strDate = date.getDate()
+    formatDate(date) {
+      var seperator1 = "-";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
       if (month >= 1 && month <= 9) {
-        month = '0' + month
+        month = "0" + month;
       }
       if (strDate >= 0 && strDate <= 9) {
-        strDate = '0' + strDate
+        strDate = "0" + strDate;
       }
-      var currentdate = year + seperator1 + month + seperator1 + strDate
-      return currentdate
+      var currentdate = year + seperator1 + month + seperator1 + strDate;
+      return currentdate;
     },
-    getRowClass ({ row, column, rowIndex, columnIndex }) {
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
-        return 'background-color: #f8f8f8;color:#666;'
+        return "background-color: #f8f8f8;color:#666;";
       } else {
-        return ''
+        return "";
       }
     },
-        // 获取客户列表
-    getCustomList () {
-      if (sessionStorage.getItem('msjRoleName') == '2') {
-                // 代理商
-        this.disableAgent = false
-        this.disableAgentName = false
-        this.regDisabled = false
-        this.refundDisabled = false
-        this.transferDisabled = true
-      } else if (sessionStorage.getItem('msjRoleName') == '1') {
-                // 管理员
-        this.regDisabled = true
-        this.refundDisabled = true
-        this.transferDisabled = false
+    // 获取客户列表
+    getCustomList() {
+      if (sessionStorage.getItem("msjRoleName") == "2") {
+        // 代理商
+        this.disableAgent = false;
+        this.disableAgentName = false;
+        this.regDisabled = false;
+        this.refundDisabled = false;
+        this.transferDisabled = true;
+      } else if (sessionStorage.getItem("msjRoleName") == "1") {
+        // 管理员
+        this.regDisabled = true;
+        this.refundDisabled = true;
+        this.transferDisabled = false;
       }
-      this.dataListLoading = true
+      this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl(`agent/cust/custList?token=${this.$cookie.get('token')}`),
-        method: 'get',
+        url: this.$http.adornUrl(
+          `agent/cust/custList?token=${this.$cookie.get("token")}`
+        ),
+        method: "get",
         params: this.$http.adornParams({
           currentPage: this.pageIndex,
           pageSize: this.pageSize,
@@ -267,131 +257,175 @@ export default {
           custName: this.searchData.custName,
           custType: this.searchData.custType,
           mobile: this.searchData.mobile,
-          startTimeStr: '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[0],
-          endTimeStr: '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[1]
-        })
+          startTimeStr:
+            "" || this.searchData.dateTime == null
+              ? ""
+              : this.searchData.dateTime[0],
+          endTimeStr:
+            "" || this.searchData.dateTime == null
+              ? ""
+              : this.searchData.dateTime[1],
+        }),
       }).then(({ data }) => {
         if (data && data.code === 0) {
-                    // console.log(data)
-          this.userTableData = data.data.list
-          this.totalPage = data.data.total
+          // console.log(data)
+          this.userTableData = data.data.list;
+          this.totalPage = data.data.total;
           if (data.data.list.length == 0) {
-            this.disabled = true
+            this.disabled = true;
           } else {
-            this.disabled = false
+            this.disabled = false;
           }
         } else {
-          this.userTableData = []
-          this.totalPage = 0
+          this.userTableData = [];
+          this.totalPage = 0;
         }
-        this.dataListLoading = false
-      })
+        this.dataListLoading = false;
+      });
     },
-        // 注册赠送
-    canPresentBtn (userId) {
+    // 注册赠送
+    canPresentBtn(userId) {
       this.$http({
-        url: this.$http.adornUrl(`agent/cust/presentNum?token=${this.$cookie.get('token')}`),
-        method: 'post',
+        url: this.$http.adornUrl(
+          `agent/cust/presentNum?token=${this.$cookie.get("token")}`
+        ),
+        method: "post",
         params: this.$http.adornParams({
-          userId: userId
-        })
+          userId: userId,
+        }),
       }).then(({ data }) => {
-        if (data.code == '0') {
-          this.$message.success(data.msg)
-          this.getCustomList()
+        if (data.code == "0") {
+          this.$message.success(data.msg);
+          this.getCustomList();
         } else {
-          this.$message.error(data.msg)
+          this.$message.error(data.msg);
         }
-      })
+      });
     },
-        // 每页数
-    sizeChangeHandle (val) {
-      this.pageSize = val
-      this.pageIndex = 1
-      this.getCustomList()
+    // 每页数
+    sizeChangeHandle(val) {
+      this.pageSize = val;
+      this.pageIndex = 1;
+      this.getCustomList();
     },
-        // 当前页
-    currentChangeHandle (val) {
-      this.pageIndex = val
-      this.getCustomList()
+    // 当前页
+    currentChangeHandle(val) {
+      this.pageIndex = val;
+      this.getCustomList();
     },
-        // 修改个人、企业
-        // perEnterEditBtn(row) {
-        //   let arr = this.arr; //传id和当前修改的是企业还是个人
-        //   this.updateVisible = true
-        //   // console.log(id,type)
-        //   this.arr[0] = row.id
-        //   this.arr[1] = row.user_type
-        //   this.arr[2] = row.creUserId
-        //   this.$nextTick(() => {
-        //     this.$refs.updatecon.updateInit(arr)
-        //   })
-        // },
-        // 查看个人、企业
-    perPriseSee (row) {
-      let arr = this.arr // 传id和当前修改的是企业还是个人
-      this.seeVisible = true
-            // console.log(row.id)
-            // console.log(row.user_type)
-      this.arr[0] = row.id
-      this.arr[1] = row.user_type
-      this.arr[2] = row.creUserId
+    // 修改个人、企业
+    // perEnterEditBtn(row) {
+    //   let arr = this.arr; //传id和当前修改的是企业还是个人
+    //   this.updateVisible = true
+    //   // console.log(id,type)
+    //   this.arr[0] = row.id
+    //   this.arr[1] = row.user_type
+    //   this.arr[2] = row.creUserId
+    //   this.$nextTick(() => {
+    //     this.$refs.updatecon.updateInit(arr)
+    //   })
+    // },
+    // 查看个人、企业
+    perPriseSee(row) {
+      let arr = this.arr; // 传id和当前修改的是企业还是个人
+      this.seeVisible = true;
+      // console.log(row.id)
+      // console.log(row.user_type)
+      this.arr[0] = row.id;
+      this.arr[1] = row.user_type;
+      this.arr[2] = row.creUserId;
       this.$nextTick(() => {
-        this.$refs.seecon.seeInit(arr)
-      })
+        this.$refs.seecon.seeInit(arr);
+      });
     },
-        // 充值个人，企业
-    rechargedataBtn (row) {
-      let arr = this.arr // 传id和当前修改的是企业还是个人
-      this.chargeVisible = true
-      this.arr[0] = row.id
-      this.arr[1] = row.user_type
-      this.arr[2] = row.creUserId
-      this.arr[3] = row.user_phone
+    // 充值个人，企业
+    rechargedataBtn(row) {
+      let arr = this.arr; // 传id和当前修改的是企业还是个人
+      this.chargeVisible = true;
+      this.arr[0] = row.id;
+      this.arr[1] = row.user_type;
+      this.arr[2] = row.creUserId;
+      this.arr[3] = row.user_phone;
       this.$nextTick(() => {
-        this.$refs.rechargecon.rechargeInit(arr)
-      })
+        this.$refs.rechargecon.rechargeInit(arr);
+      });
     },
-        // 退款 个人，企业
-    refundBtn (row) {
-      let arr = this.arr // 传id和当前修改的是企业还是个人
-      this.refundVisible = true
-      this.arr[0] = row.id
-      this.arr[1] = row.user_type
-      this.arr[2] = row.creUserId
-      this.arr[3] = row.user_phone
-      this.$nextTick(() => {
-        this.$refs.refundcon.refundInit(arr)
-      })
-    },
-        // 转代理商
-    transferAgent (row) {
-      this.transferAgentVisible = true
-      this.$nextTick(() => {
-        this.$refs.transferAgentcon.transferAgentInit(row)
-      })
-    },
-        // 导出
-    exportUser () {
-      let startTime
-      let endTime
+    // 导出
+    exportUser() {
+      let startTime;
+      let endTime;
       if (this.searchData.dateTime == null) {
-        startTime = ''
-        endTime = ''
+        startTime = "";
+        endTime = "";
       } else {
         if (this.searchData.dateTime.length == 0) {
-          startTime = ''
-          endTime = ''
+          startTime = "";
+          endTime = "";
         } else {
-          startTime = this.searchData.dateTime[0]
-          endTime = this.searchData.dateTime[1]
+          startTime = this.searchData.dateTime[0];
+          endTime = this.searchData.dateTime[1];
         }
       }
 
-      window.open(this.$http.adornUrl(`agent/cust/custListExport?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&custType=${this.searchData.custType}&custName=${this.searchData.custName}&agentName=${this.searchData.agentName}&mobile=${this.searchData.mobile}&startTimeStr=${startTime}&endTimeStr=${endTime}`))
-    }
-  }
-}
+      window.open(
+        this.$http.adornUrl(
+          `agent/cust/custListExport?token=${this.$cookie.get(
+            "token"
+          )}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&custType=${
+            this.searchData.custType
+          }&custName=${this.searchData.custName}&agentName=${
+            this.searchData.agentName
+          }&mobile=${
+            this.searchData.mobile
+          }&startTimeStr=${startTime}&endTimeStr=${endTime}`
+        )
+      );
+    },
+    handleClickDropdown(key, record) {
+      switch (key) {
+        case "refund": {
+          // 退款
+          let arr = this.arr; // 传id和当前修改的是企业还是个人
+          this.refundVisible = true;
+          this.arr[0] = record.id;
+          this.arr[1] = record.user_type;
+          this.arr[2] = record.creUserId;
+          this.arr[3] = record.user_phone;
+          this.$nextTick(() => {
+            this.$refs.refundcon.refundInit(arr);
+          });
+          break;
+        }
+        case "transferAgent": {
+          // 转代理商
+          this.transferAgentVisible = true;
+          this.$nextTick(() => {
+            this.$refs.transferAgentcon.transferAgentInit(record);
+          });
+          break;
+        }
+        case "give": {
+          // 注册赠送
+          this.canPresentBtn(record.creUserId);
+          break;
+        }
+        case "viewRechargeRecord": {
+          // 查看历史充值记录
+          console.log("查看历史充值记录");
+          this.$router.push({ name: 'finance-userrecharge', params: {...record} })
+          break;
+        }
+        case "interface": {
+          // 开启关闭接口
+          console.log("开启关闭接口");
+          break;
+        }
+        default:
+          break;
+      }
+    },
+  },
+};
 </script>
 <style lang="scss">
 .topSearch {

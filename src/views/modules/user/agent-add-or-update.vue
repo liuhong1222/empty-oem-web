@@ -46,7 +46,7 @@
             <h3>空号检测等级</h3>
             <el-form-item label="空号检测等级：" prop="agentLevel">
                 <el-select style="width: 100%;" v-model="dataForm.agentLevel" placeholder="请选择空号检测等级" @change="changeLevel(false, dataForm.agentLevel)">
-                    <el-option :value="item.id" :label="item.name" v-for="(item,index) in spaceLevelArr" :key="index">
+                    <el-option :value="item.id" :label="item.level" v-for="(item,index) in spaceLevelArr" :key="index">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -69,7 +69,7 @@
             <h3>实时检测等级</h3>
             <el-form-item label="实时检测等级：" prop="realLevel">
                 <el-select style="width: 100%;" v-model="dataForm.realLevel" placeholder="请选择实时检测等级" @change="changeLevel(true, dataForm.realLevel)">
-                    <el-option :value="item.id" :label="item.name" v-for="(item,index) in realLevelArr" :key="index">
+                    <el-option :value="item.id" :label="item.level" v-for="(item,index) in realLevelArr" :key="index">
                     </el-option>
                 </el-select>
             </el-form-item>

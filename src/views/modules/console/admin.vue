@@ -17,7 +17,7 @@
             <el-col :span="12">
                 <div class="grid-content bg-purple">
                     <div class="cf">
-                        <h2>OEM充值记录</h2>
+                        <h2>代理商充值记录</h2>
                         <el-button type="text" style="float:right" @click="showDetails()">查看详情</el-button>
                     </div>
                     <el-table :data="tableData" height="250" style="width: 100%" :highlight-current-row="false">
@@ -39,11 +39,22 @@
             </el-col>
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <h2>OEM代理</h2>
+                    <h2>代理商空号检测统计</h2>
                     <ul class="cf customerList">
-                        <li v-for="(item,index) in oemAgent" :key="index">
-                            <p>{{item.title}}</p>
-                            <p>{{item.counts}}</p>
+                        <li v-for="(item,index) in emptyCheckStatic" :key="index">
+                            <p>{{ item.title }}</p>
+                            <p>{{ adminInfo[item.field] }}</p>
+                        </li>
+                    </ul>
+                </div>
+            </el-col>
+            <el-col :span="12">
+                <div class="grid-content bg-purple">
+                    <h2>代理商实时检测统计</h2>
+                    <ul class="cf customerList">
+                        <li v-for="(item,index) in realCheckStatic" :key="index">
+                            <p>{{ item.title }}</p>
+                            <p>{{ adminInfo[item.field] }}</p>
                         </li>
                     </ul>
                 </div>
@@ -111,9 +122,8 @@
                     oldemail: '',
                     newemail: ''
                 },
-                basicInfoList: [  //基本信息
+                basicInfoList: [  // 基本信息
                     { title: '我的待办', data: '', flag: false },
-                    // { title: '职位', data: '产品专员', flag: false },
                     { title: '手机号', data: '', flag: true, btnText: '更改' },
                     { title: '邮箱', data: '', flag: true, btnText: '更改' }
                 ],
@@ -123,14 +133,20 @@
                         { validator: validateEmail, trigger: 'blur' }
                     ],
                 },
-                tableData: [], //oem充值记录
-                oemAgent: [
-                    { title: '代理商数量', counts: '' },
-                    { title: '充值总金额（元）', counts: '' },
-                    { title: '消耗总计（条）', counts: '' },
-                    { title: '充值总条数（条）', counts: '' }
-                ], //oem代理
-
+                tableData: [],
+                emptyCheckStatic: [
+                    { title: '代理商数量', field: 'agentCount' },
+                    { title: '充值总金额（元）', field: 'rechargeSum' },
+                    { title: '消耗总条数（条）', field: 'emptyConsume' },
+                    { title: '充值总条数（条）', field: 'rechargeNumberSum' }
+                ],
+                realCheckStatic: [
+                    { title: '代理商数量', field: 'agentCount' },
+                    { title: '充值总金额（元）', field: 'realtimeRechargeSum' },
+                    { title: '消耗总条数（条）', field: 'realTimeConsume' },
+                    { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
+                ],
+                adminInfo: {} // 管理员首页基本信息
             }
         },
         computed: {
@@ -209,10 +225,7 @@
                     if (data && data.code === 0) {
                         this.basicInfoList[1].data = data.data.mobile
                         this.basicInfoList[2].data = data.data.email
-                        this.oemAgent[0].counts = data.data.agentCount
-                        this.oemAgent[1].counts = data.data.rechargeSum
-                        this.oemAgent[2].counts = data.data.consumSum
-                        this.oemAgent[3].counts = data.data.rechargeNumberSum
+                        this.adminInfo = data.data || {}
                     } else {
                         this.$message.error(data.msg)
                     }

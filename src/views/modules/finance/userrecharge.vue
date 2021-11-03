@@ -77,7 +77,7 @@
                 number: '',
                 customerSearchData: {
                     dateTime: [],
-                    agentName: "",
+                    agentName: '',
                     custName: '',
                     custMobile: ''
                 },
@@ -97,6 +97,9 @@
                 this.customerSearchData.dateTime = [];
                 var date = new Date()
                 this.customerSearchData.dateTime[0] = this.customerSearchData.dateTime[1] = this.formatDate(date)
+            }
+            if (this.$route.params && this.$route.params.custName) {
+                this.customerSearchData.custName = this.$route.params.custName;
             }
             this.uerRechargeList();
         },
