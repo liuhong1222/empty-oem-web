@@ -247,7 +247,7 @@
             },
             getSpaceLevelList() {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=0`),
                     method: 'get',
                     param: this.$http.adornParams({
                         levelType: 0
@@ -262,7 +262,7 @@
             },
             getRealLevelList() {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=1`),
                     method: 'get',
                     param: this.$http.adornParams({
                         levelType: 1
@@ -282,18 +282,18 @@
                             url: this.$http.adornUrl(`agent/agentInfo/${!this.dataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'agentId': this.dataForm.id || undefined,
-                                'licensePicNo': this.licensePicNo,
+                                // 'agentId': this.dataForm.id || undefined,
+                                // 'licensePicNo': this.licensePicNo,
                                 'companyName': this.dataForm.companyName,
-                                'shortName': this.dataForm.shortName,
-                                'address': this.dataForm.bussicAdress,
+                                'companyShortName': this.dataForm.shortName,
+                                'businessLicenseAddress': this.dataForm.bussicAdress,
                                 'legalPerson': this.dataForm.lawName,
-                                'licenseNo': this.dataForm.businNum,
-                                'effectDate': this.dataForm.busindate1,
-                                'expireDate': this.dataForm.busindate2,
-                                'contactName': this.dataForm.username,
-                                'mobile': this.dataForm.mobile,
-                                'email': this.dataForm.email,
+                                'businessLicenseNumber': this.dataForm.businNum,
+                                'businessLicenseExpireStartTime': this.dataForm.busindate1,
+                                'businessLicenseExpireEndTime': this.dataForm.busindate2,
+                                'linkmanName': this.dataForm.username,
+                                'linkmanPhone': this.dataForm.mobile,
+                                'linkmanEmail': this.dataForm.email,
                                 'agentLevel': this.dataForm.agentLevel,
                                 'price': this.dataForm.price,
                                 'warningsNumber': this.dataForm.warningsNumber,
