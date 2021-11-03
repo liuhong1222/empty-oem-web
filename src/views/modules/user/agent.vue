@@ -29,7 +29,7 @@
             </el-form>
         </div>
         <div class="agentTable">
-            <el-table :data="agentTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
+            <el-table :data="[{ id:1 }]" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
                 </el-table-column>
                 <el-table-column prop="mchId" label=" 商户编号" width="80" align="center">
@@ -85,6 +85,12 @@
                 <el-form-item label="充值账号">
                     <el-input style="border:none" v-model="chdataForm.accnumber" placeholder="" readonly id="chprice"></el-input>
                 </el-form-item>
+                <el-form-item label="产品名称：" prop="category">
+                    <el-radio-group v-model="chdataForm.category">
+                        <el-radio :label="0">空号检测</el-radio>
+                        <el-radio :label="1">实时检测</el-radio>
+                    </el-radio-group>
+                </el-form-item>
                 <el-form-item label="充值单价" prop="chPrice">
                     <el-input v-model.number="chdataForm.chPrice" placeholder="输入充值单价，自动计算条数"></el-input>
                     <span>元/条</span>
@@ -98,14 +104,14 @@
                     <span>条</span>
                 </el-form-item>
                 <el-form-item label="入账类型" prop="type">
-                    <el-select v-model="chdataForm.type" placeholder="入账类型">
+                    <el-select style="width: 100%;" v-model="chdataForm.type" placeholder="入账类型">
                         <el-option label="支付宝" value="1"></el-option>
                         <el-option label="对公转账" value="5"></el-option>
                         <!-- <el-option label="赠送" value="6"></el-option> -->
                     </el-select>
                 </el-form-item>
                 <el-form-item label="备注" prop="remark">
-                    <el-input type="textarea" v-model="chdataForm.remark" placeholder="请输入备注..."></el-input>
+                    <el-input type="textarea" v-model="chdataForm.remark" placeholder="请输入备注"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -129,11 +135,14 @@
         <add-or-update v-if="addSeeUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
         <!--查看 对话框 -->
         <see-dia-data v-if="agentseeVisible" ref="agentseecon"></see-dia-data>
+        <!--退款 对话框 -->
+        <agent-refund ref="agentRefundRef" @refreshDataList="getDataList"></agent-refund>
     </div>
 </template>
 <script>
     import AddOrUpdate from './agent-add-or-update'
-    import seeDiaData from './agent-see-dia-data'
+    import SeeDiaData from './agent-see-dia-data'
+    import AgentRefund from './agent-refund.vue'
     export default {
         data() {
             return {
@@ -208,7 +217,8 @@
         },
         components: {
             AddOrUpdate,
-            seeDiaData
+            SeeDiaData,
+            AgentRefund
         },
         activated() {
             this.getDataList()
@@ -406,10 +416,6 @@
                     }
                 })
             },
-            // 退款
-            handleRefund(record) {
-                console.log('退款', record)
-            },
             // 开启关闭认证
             handleAuth(record) {
                 console.log('开启关闭认证', record)
@@ -425,7 +431,7 @@
                         break;
                     }
                     case 'refund': {
-                        this.handleRefund(record)
+                        this.$refs.agentRefundRef.init(record)
                         break;
                     }
                     case 'usable': {

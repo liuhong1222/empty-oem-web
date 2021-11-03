@@ -112,7 +112,7 @@
             return {
                 agentReadonly: false,
                 loading: false,
-                priseurl: "",
+                priseurl: '',
                 licensePicNo: '',
                 visible: false,
                 labelPosition: 'right',
@@ -218,20 +218,20 @@
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.dataForm.priseimageUrl = imgUrl.imgUrl + data.data.licenseUrl
+                        this.dataForm.priseimageUrl = imgUrl.imgUrl + data.data.businessLicensePath
                         this.dataForm.companyName = data.data.companyName
-                        this.dataForm.shortName = data.data.shortName
-                        this.dataForm.bussicAdress = data.data.address
+                        this.dataForm.shortName = data.data.companyShortName
+                        this.dataForm.bussicAdress = data.data.businessLicenseAddress
                         this.dataForm.lawName = data.data.legalPerson
-                        this.dataForm.businNum = data.data.licenseNo
-                        this.dataForm.busindate1 = data.data.effectDate
-                        this.dataForm.busindate2 = data.data.expireDate
+                        this.dataForm.businNum = data.data.businessLicenseNumber
+                        this.dataForm.busindate1 = data.data.businessLicenseExpireStartTime
+                        this.dataForm.busindate2 = data.data.businessLicenseExpireEndTime
 
-                        this.dataForm.username = data.data.contactName
-                        this.dataForm.mobile = data.data.mobile
-                        this.dataForm.email = data.data.email
+                        this.dataForm.username = data.data.linkmanName
+                        this.dataForm.mobile = data.data.linkmanPhone
+                        this.dataForm.email = data.data.linkmanEmail
 
-                        this.dataForm.agentLevel = data.data.levelId
+                        this.dataForm.agentLevel = data.data.agentLevel
                         this.dataForm.price = data.data.price
                         this.dataForm.warningsNumber = data.data.warningsNumber
                         this.dataForm.minPaymentAmount = data.data.minPaymentAmount
@@ -278,8 +278,8 @@
                             url: this.$http.adornUrl(`agent/agentInfo/${!this.dataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                // 'agentId': this.dataForm.id || undefined,
-                                // 'licensePicNo': this.licensePicNo,
+                                'agentId': this.dataForm.id || undefined,
+                                'businessLicensePath': this.licensePicNo,
                                 'companyName': this.dataForm.companyName,
                                 'companyShortName': this.dataForm.shortName,
                                 'businessLicenseAddress': this.dataForm.bussicAdress,
@@ -347,7 +347,7 @@
                 if (res.code == 0) {
                     this.loading = false
                     this.dataForm.priseimageUrl = URL.createObjectURL(file.raw);
-                    this.licensePicNo = res.data.licensePicNo
+                    this.licensePicNo = res.data.businessLicensePath
                     this.dataForm.companyName = res.data.companyName
                     this.dataForm.bussicAdress = res.data.address
                     this.dataForm.lawName = res.data.legalPerson
@@ -368,23 +368,23 @@
                 this.agentReadonly = false
             },
             changeLevel(isReal, val) {
-                let selected = {};
                 let levelArr = isReal ? this.realLevelArr : this.spaceLevelArr
-                selected = levelArr.find(item => {
+                let selected = levelArr.find(item => {
                     return item.id === val
-                });
+                }) || {};
+                const { price, warningsNumber, minPaymentAmount, minRechargeNumber } = selected
                 if (isReal) {
                     // 实时检测等级
-                    this.dataForm.realPrice = selected.price
-                    this.dataForm.realWarningsNumber = selected.realWarningsNumber
-                    this.dataForm.realMinPaymentAmount = selected.realMinPaymentAmount
-                    this.dataForm.realMinRechargeNumber = selected.realMinRechargeNumber
+                    this.dataForm.realPrice = price
+                    this.dataForm.realWarningsNumber = warningsNumber
+                    this.dataForm.realMinPaymentAmount = minPaymentAmount
+                    this.dataForm.realMinRechargeNumber = minRechargeNumber
                 } else {
                     // 空号检测等级
-                    this.dataForm.price = selected.price
-                    this.dataForm.warningsNumber = selected.warningsNumber
-                    this.dataForm.minPaymentAmount = selected.minPaymentAmount
-                    this.dataForm.minRechargeNumber = selected.minRechargeNumber
+                    this.dataForm.price = price
+                    this.dataForm.warningsNumber = warningsNumber
+                    this.dataForm.minPaymentAmount = minPaymentAmount
+                    this.dataForm.minRechargeNumber = minRechargeNumber
                 }
             }
         }

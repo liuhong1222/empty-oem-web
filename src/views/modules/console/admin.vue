@@ -141,7 +141,7 @@
         activated() {
             this.oemRegRecode(),
             this.getAdminDeskInfo(),
-            this.myAgent(),
+            // this.myAgent(),
             this.updatePwd()
         },
         components: {
