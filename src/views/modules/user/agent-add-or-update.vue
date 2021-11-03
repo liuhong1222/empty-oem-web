@@ -249,9 +249,7 @@
                 this.$http({
                     url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=0`),
                     method: 'get',
-                    param: this.$http.adornParams({
-                        levelType: 0
-                    })
+                    param: this.$http.adornParams({})
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.spaceLevelArr = data.data
@@ -264,9 +262,7 @@
                 this.$http({
                     url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=1`),
                     method: 'get',
-                    param: this.$http.adornParams({
-                        levelType: 1
-                    })
+                    param: this.$http.adornParams({})
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.realLevelArr = data.data
