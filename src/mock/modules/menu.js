@@ -250,6 +250,19 @@ const adminNav = {
                   'orderNum':5,
                   'open':null,
                   'list':null
+              },
+              {
+                  'menuId':2025,
+                  'parentId':59,
+                  'parentName':null,
+                  'name':'日统计列表',
+                  'url':'finance/dailystatistic',
+                  'perms':'',
+                  'type':1,
+                  'icon':'tubiao',
+                  'orderNum':5,
+                  'open':null,
+                  'list':null
               }
           ]
       },
