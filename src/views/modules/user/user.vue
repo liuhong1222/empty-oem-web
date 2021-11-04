@@ -3,7 +3,7 @@
         <div class="topSearch">
             <h2>客户列表</h2>
             <el-form :inline="true" :model="searchData" @keyup.enter.native="getCustomList()">
-                <el-form-item label="创建时间：">
+                <el-form-item label="注册时间：">
                     <el-date-picker
                         v-model="searchData.dateTime"
                         type="daterange"
@@ -15,10 +15,13 @@
                     ></el-date-picker>
                 </el-form-item>
                 <el-form-item label="手机号：" style="margin-left:25px;">
-                    <el-input v-model="searchData.mobile" placeholder="手机号" clearable></el-input>
+                    <el-input v-model="searchData.mobile" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱：" style="margin-left:25px;">
+                    <el-input v-model="searchData.email" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="客户类型：">
-                    <el-select v-model="searchData.custType" placeholder="客户类型">
+                    <el-select v-model="searchData.custType" style="width: 200px;" placeholder="请选择客户类型">
                         <el-option label="全部" value="-1"></el-option>
                         <el-option label="个人" value="0"></el-option>
                         <el-option label="企业" value="1"></el-option>
@@ -26,20 +29,20 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="充值状态：">
-                    <el-select v-model="searchData.custType" placeholder="客户充值状态">
+                    <el-select v-model="searchData.rechargeState" style="width: 200px;" placeholder="请选择充值状态">
                         <el-option label="全部" value="-1"></el-option>
                         <el-option label="已充值" value="0"></el-option>
                         <el-option label="未充值" value="1"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="客户名称：" style="margin-left:0px;">
-                    <el-input v-model="searchData.custName" placeholder="客户名称" clearable></el-input>
+                <el-form-item label="客户名称：">
+                    <el-input v-model="searchData.custName" style="width: 180px;" placeholder="请输入客户名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="代理商名称：" v-if="disableAgent">
-                    <el-input v-model="searchData.agentName" placeholder="代理商名称" clearable></el-input>
+                    <el-input v-model="searchData.agentName" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="注册IP：">
-                    <el-input v-model="searchData.registerIp" placeholder="注册IP" clearable></el-input>
+                    <el-input v-model="searchData.registerIp" style="width: 180px;" placeholder="请输入注册IP" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="getCustomList()">查询</el-button>
@@ -62,22 +65,23 @@
                     fixed
                     label="序号"
                 ></el-table-column>
-                <el-table-column prop="user_phone" label="手机号码" align="center"></el-table-column>
-                <el-table-column prop="userType" label="客户类型" align="center"></el-table-column>
-                <el-table-column prop="custName" label=" 客户名称" align="center"></el-table-column>
+                <el-table-column prop="phone" width="150" label="手机号码" align="center"></el-table-column>
+                <el-table-column prop="customerType" label="客户类型" width="120" align="center"></el-table-column>
+                <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column>
                 <el-table-column
                     prop="company_name"
                     label="代理商名称"
                     align="center"
+                    width="150"
                     v-if="disableAgentName"
                 ></el-table-column>
-                <el-table-column prop="create_time" label="注册时间" align="center"></el-table-column>
-                <el-table-column prop="paymentAmountTotal" label="空号充值总计（元）" align="center"></el-table-column>
-                <el-table-column prop="rechargeNumberTotal" label="空号充值总条数" align="center"></el-table-column>
-                <el-table-column prop="remainNumberTotal" label="空号剩余条数" align="center"></el-table-column>
-                <el-table-column prop="realtimeRechargeTotalPay" label="实时充值总计（元）" align="center"></el-table-column>
-                <el-table-column prop="realtimeRechargeTotalCount" label="实时充值总条数" align="center"></el-table-column>
-                <el-table-column prop="realtimeBalance" label="实时剩余条数" align="center"></el-table-column>
+                <el-table-column prop="create_time" label="注册时间" width="150" align="center"></el-table-column>
+                <el-table-column prop="empty_recharge_money" width="150" label="空号充值总计（元）" align="center"></el-table-column>
+                <el-table-column prop="empty_recharge_num" width="150" label="空号充值总条数" align="center"></el-table-column>
+                <el-table-column prop="empty_count" width="150" label="空号剩余条数" align="center"></el-table-column>
+                <el-table-column prop="realtime_recharge_money" width="150" label="实时充值总计（元）" align="center"></el-table-column>
+                <el-table-column prop="realtime_recharge_num" width="150" label="实时充值总条数" align="center"></el-table-column>
+                <el-table-column prop="realtime_count" width="150" label="实时剩余条数" align="center"></el-table-column>
                 <el-table-column fixed="right" label="操作" align="center" width="150">
                     <template slot-scope="scope">
                         <el-button @click="perPriseSee(scope.row)" type="text" size="small">查看</el-button>
@@ -154,19 +158,12 @@ export default {
       arr: [], // 保存点击的id和区分个人和企业的id
       searchData: {
         dateTime: [],
-        mobile: "",
-        custType: "",
-        custName: "",
-        agentName: "",
-        registerIp: "",
-        // creUserId: "",
-        // user_phone: "",
-        // user_type: '',
-        // company_name: "",
-        // create_time: "",
-        // money: "",
-        // number: "",
-        // account: ""
+        mobile: '',
+        custType: '',
+        custName: '',
+        agentName: '',
+        registerIp: '',
+        rechargeState: ''
       },
       userTableData: [],
       pageIndex: 1,

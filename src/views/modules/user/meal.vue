@@ -81,7 +81,7 @@ export default {
         category: undefined,
         agentId: undefined,
       },
-      tableData: [{ id: 1 }],
+      tableData: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,

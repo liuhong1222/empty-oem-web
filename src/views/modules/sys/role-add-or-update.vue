@@ -54,23 +54,29 @@
     },
     methods: {
       init (id) {
-        this.dataForm.id = id || 0
-        this.$http({
-          url: this.$http.adornUrl('/sys/menu/list'),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({data}) => {
-          this.menuList = treeDataTranslate(data, 'menuId')
-        }).then(() => {
-          this.visible = true
-          this.$nextTick(() => {
-            this.$refs['dataForm'].resetFields()
-            this.$refs.menuListTree.setCheckedKeys([])
+        new Promise((resolve) => {
+          this.$http({
+            url: this.$http.adornUrl('sys/menu/list'),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            this.menuList = treeDataTranslate(data, 'menuId')
+            resolve();
           })
         }).then(() => {
-          if (this.dataForm.id) {
+          return new Promise((resolve) => {
+            this.visible = true
+            this.$nextTick(() => {
+              this.$refs['dataForm'].resetFields()
+              this.$refs.menuListTree.setCheckedKeys([])
+              resolve()
+            })
+          })
+        }).then(() => {
+          this.dataForm.id = id || 0
+          if (id) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/role/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`sys/role/info/${id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {

@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <h2 style="display:inline-block">OEM代理商等级管理</h2>
+        <h2 style="display:inline-block">代理商等级管理</h2>
         <el-button type="primary" style="float:right" @click="addUpdateLevel()">新增</el-button>
         <div class="userTable">
             <el-table :data="oemTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">

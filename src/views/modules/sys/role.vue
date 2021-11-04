@@ -13,9 +13,9 @@
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
-      <el-table-column prop="roleId" header-align="center" align="center" width="80" label="ID">
+      <el-table-column prop="id" header-align="center" align="center" width="80" label="ID">
       </el-table-column>
-      <el-table-column prop="roleName" header-align="center" align="center" label="角色名称">
+      <el-table-column prop="name" header-align="center" align="center" label="角色名称">
       </el-table-column>
       <el-table-column prop="remark" header-align="center" align="center" label="备注">
       </el-table-column>
@@ -64,7 +64,7 @@
       getDataList() {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/role/list'),
+          url: this.$http.adornUrl('sys/role/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,

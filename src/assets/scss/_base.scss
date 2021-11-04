@@ -369,18 +369,15 @@ li {
 }
 .el-dialog {
   width: 35%;
-}
-
-.el-input__inner {
-  width: 98%;
-}
-
-.el-textarea__inner {
-  width: 74%;
-}
-
-.el-input {
-  width: 75%;
+  .el-input {
+    width: 75%;
+  }
+  .el-input__inner {
+    width: 98%;
+  }
+  .el-textarea__inner {
+    width: 74%;
+  }
 }
 
 .el-input-number {

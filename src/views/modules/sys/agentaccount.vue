@@ -1,45 +1,41 @@
 <template>
-    <div class="main">
-        <div class="topSearch">
-            <h2>账号管理</h2>
-            <el-form :inline="true" :model="accountData" @keyup.enter.native="agentSysUserList()">
-                <el-form-item label="手机号：">
-                    <el-input v-model="accountData.mobile" placeholder="手机号" clearable></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="agentSysUserList()">查询</el-button>
-                    <el-button type="primary" @click="agentExport()" :disabled="disabled">导出</el-button>
-                    <el-button type="primary" @click="addUpdateAgent()">新增</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
-        <div class="agentTable">
-            <el-table :data="accountTableData" style="width: 100%" :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
-                </el-table-column>
-                <!-- <el-table-column prop="userId" label=" 用户编号" width="80" align="center">
-                </el-table-column> -->
-                <el-table-column prop="realName" label=" 用户名称" align="center">
-                </el-table-column>
-                <el-table-column prop="mobile" label="手机号码"  align="center">
-                </el-table-column>
-                <el-table-column prop="email" label="邮箱"  align="center">
-                </el-table-column>
-                <!-- <el-table-column prop="password" label="密码" width="90" align="center">
-                </el-table-column> -->
-                <el-table-column prop="createTime" label="创建时间" align="center">
-                </el-table-column>
-                <el-table-column fixed="right" label="操作" align="center">
-                    <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="addUpdateAgent(scope.row)" v-if="scope.row.flag == '0'" disabled>修改</el-button>
-                        <el-button type="text" size="small" @click="addUpdateAgent(scope.row)" v-else>修改</el-button>
-                        <el-button type="text" size="small" @click="delAcc(scope.row)" v-if="scope.row.flag == '0'" disabled>删除</el-button>
-                        <el-button type="text" size="small" @click="delAcc(scope.row)" v-else>删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div>
-
+    <div class="mod-user">
+        <el-form :inline="true" :model="accountData" @keyup.enter.native="agentSysUserList(1)">
+            <el-form-item label="手机号：">
+                <el-input v-model="accountData.phone" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="agentSysUserList(1)">查询</el-button>
+                <el-button type="primary" @click="agentExport()" :disabled="disabled">导出</el-button>
+                <el-button type="primary" @click="addUpdateAgent()">新增</el-button>
+            </el-form-item>
+        </el-form>
+        <el-table border :data="accountTableData" style="width: 100%">
+            <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
+            </el-table-column>
+            <el-table-column prop="username" label=" 用户名称" align="center">
+            </el-table-column>
+            <el-table-column prop="agentName" label="代理商名称" align="center">
+            </el-table-column>
+            <el-table-column prop="nickname" label="姓名" align="center">
+            </el-table-column>
+            <el-table-column prop="phone" label="手机号码"  align="center">
+            </el-table-column>
+            <el-table-column prop="email" label="邮箱"  align="center">
+            </el-table-column>
+            <el-table-column prop="createTime" label="创建时间" align="center">
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small" @click="addUpdateAgent(scope.row)" v-if="scope.row.flag == '0'" disabled>修改</el-button>
+                    <el-button type="text" size="small" @click="addUpdateAgent(scope.row)" v-else>修改</el-button>
+                    <el-button type="text" size="small" @click="delAcc(scope.row)" v-if="scope.row.flag == '0'" disabled>删除</el-button>
+                    <el-button type="text" size="small" @click="delAcc(scope.row)" v-else>删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
         <!-- 新增，修改代理商管理 -->
         <add-agent-update v-if="accountVisible" ref="accountCon" @refreshDataList="agentSysUserList"></add-agent-update>
     </div>
@@ -54,36 +50,38 @@
                 accountVisible: false,
                 disabled: false,
                 accountData: {
-                    mobile: ""
+                    phone: ''
                 },
                 accountTableData: [],
+                pageIndex: 1,
+                pageSize: 10,
+                totalPage: 0,
+                dataListLoading: false,
             }
         },
         components: {
             addAgentUpdate
         },
         activated() {
-            this.agentSysUserList()
+            this.agentSysUserList(1)
         },
         methods: {
-            getRowClass({ row, column, rowIndex, columnIndex }) {
-                if (rowIndex == 0) {
-                    return 'background-color: #f8f8f8;color:#666;'
-                } else {
-                    return ''
-                }
-            },
             // 代理商账号列表
-            agentSysUserList() {
+            agentSysUserList(curr) {
+                this.pageIndex = curr || this.pageIndex
                 this.$http({
-                    url: this.$http.adornUrl(`agent/agentSysUser/list?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`sys/user/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
-                        mobile: this.accountData.mobile
+                        phone: this.accountData.phone,
+                        roleId: 2,
+                        'currentPage': this.pageIndex,
+                        'pageSize': this.pageSize,
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.accountTableData = data.data.list
+                        this.totalPage = data.data.totalCount
                         if (data.data.list.length == 0) {
                             this.disabled = true
                         } else {
@@ -91,16 +89,28 @@
                         }
                     } else {
                         this.accountTableData = []
+                        this.totalPage = 0
                     }
                 })
+            },
+            // 每页数
+            sizeChangeHandle(val) {
+                this.pageSize = val
+                this.pageIndex = 1
+                this.agentSysUserList()
+            },
+            // 当前页
+            currentChangeHandle(val) {
+                this.pageIndex = val
+                this.agentSysUserList()
             },
             // 新增，修改
             addUpdateAgent(row) {
                 let paramArr = this.paramArr;
                 if (row !== undefined) {
-                    this.paramArr[0] = row.userId
-                    this.paramArr[1] = row.realName
-                    this.paramArr[2] = row.mobile
+                    this.paramArr[0] = row.id
+                    this.paramArr[1] = row.username
+                    this.paramArr[2] = row.phone
                     this.paramArr[3] = row.email
                 } else {
                     paramArr = ""
@@ -113,8 +123,7 @@
             },
             // 删除
             delAcc(row) {
-
-                this.$confirm(`是否删除用户${row.realName}？删除后此用户将无法登录系统。`, '删除账号', {
+                this.$confirm(`是否删除用户${row.usename}？删除后此用户将无法登录系统。`, '删除账号', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -123,7 +132,7 @@
                         url: this.$http.adornUrl(`agent/agentSysUser/delete?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'userId': row.userId
+                            'id': row.id
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
@@ -132,7 +141,7 @@
                                 type: 'success',
                                 duration: 1500,
                                 onClose: () => {
-                                    this.agentSysUserList()
+                                    this.agentSysUserList(1)
                                 }
                             })
                         } else {
@@ -143,7 +152,7 @@
             },
             // 导出
             agentExport() {
-                window.open(this.$http.adornUrl(`agent/agentSysUser/list/export?token=${this.$cookie.get('token')}&mobile=${this.accountData.mobile}`))
+                window.open(this.$http.adornUrl(`agent/agentSysUser/list/export?token=${this.$cookie.get('token')}&phone=${this.accountData.phone}`))
             }
         }
     }

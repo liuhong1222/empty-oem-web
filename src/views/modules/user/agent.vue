@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>OEM列表</h2>
+            <h2>代理商列表</h2>
             <el-form :inline="true" :model="searchData" @keyup.enter.native="getDataList()">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="searchData.dateTime" type="daterange" range-separator="至"
@@ -9,16 +9,17 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="代理商名称：" style="margin-left:25px;">
-                    <el-input v-model="searchData.agentName" placeholder="代理商名称" clearable></el-input>
+                    <el-input v-model="searchData.agentName" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="手机号：">
-                    <el-input v-model="searchData.mobile" placeholder="手机号" clearable></el-input>
+                    <el-input v-model="searchData.mobile" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="代理商状态：">
-                    <el-select v-model="searchData.status" placeholder="代理商状态">
-                        <el-option label="全部" value=""></el-option>
-                        <el-option label="已禁用" value="0"></el-option>
-                        <el-option label="使用中" value="1"></el-option>
+                    <el-select v-model="searchData.status" style="width: 220px;" placeholder="请选择代理商状态">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option label="禁用" value="0"></el-option>
+                        <el-option label="启用" value="1"></el-option>
+                        <el-option label="锁定" value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -32,29 +33,38 @@
             <el-table :data="agentTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
                 </el-table-column>
-                <el-table-column prop="mchId" label=" 商户编号" width="80" align="center">
+                <el-table-column prop="companyName" label="代理商名称" width="150" align="center">
                 </el-table-column>
-                <el-table-column prop="companyName" label=" 代理商名称" width="165" align="center">
+                <el-table-column prop="state" label="状态" width="90" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ stateMap[row.state] || '' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="statusName" label=" 代理商状态" width="90" align="center">
-                </el-table-column>
-                <el-table-column prop="shortName" label=" 公司简称" align="center">
+                <el-table-column prop="companyShortName" label="公司简称" width="150" align="center">
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" width="150" align="center">
                 </el-table-column>
-                <el-table-column prop="canUpgradeName" label="能否升级" width="80" align="center">
+                <el-table-column prop="offLineLevelName" label="空号检测等级" width="120" align="center">
                 </el-table-column>
-                <el-table-column prop="levelName" label="代理等级" width="120" align="center">
+                <el-table-column prop="emptyRechargeMoney" label="空号充值总计（元）" width="150" align="center">
                 </el-table-column>
-                <el-table-column prop="totalRechargeMoney" label="充值总计（元）" width="120" align="center">
+                <el-table-column prop="emptyRechargeNumber" label="空号充值总条数" width="120" align="center">
                 </el-table-column>
-                <el-table-column prop="totalRechargeNumber" label="充值总条数" width="120" align="center">
+                <el-table-column prop="emptyBalance" label="空号剩余条数" width="120" align="center">
                 </el-table-column>
-                <el-table-column prop="emptyBalance" label="剩余条数" width="120" align="center">
+                <el-table-column prop="warningsNumber" label="空号预警条数" width="120" align="center">
                 </el-table-column>
-                <el-table-column prop="emptyWarnNumber" label="预警条数" width="120" align="center">
+                <el-table-column prop="realLevelName" label="实时检测等级" width="120" align="center">
                 </el-table-column>
-                <el-table-column prop="mobile" label="联系电话" width="120" align="center">
+                <el-table-column prop="realTimeRechargeMoney" label="实时充值总计（元）" width="150" align="center">
+                </el-table-column>
+                <el-table-column prop="realTimeRechargeNumber" label="实时充值总条数" width="120" align="center">
+                </el-table-column>
+                <el-table-column prop="realTimeBalance" label="实时剩余条数" width="120" align="center">
+                </el-table-column>
+                <el-table-column prop="realWarningsNumber" label="实时预警条数" width="120" align="center">
+                </el-table-column>
+                <el-table-column prop="linkmanPhone" label="联系电话" width="120" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
@@ -65,7 +75,7 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="edit">修改</el-dropdown-item>
                                 <el-dropdown-item command="refund">退款</el-dropdown-item>
-                                <el-dropdown-item command="usable">{{scope.row.status == 0 ? '启用' : '禁用'}}</el-dropdown-item>
+                                <el-dropdown-item command="usable">{{scope.row.state == 0 ? '启用' : '禁用'}}</el-dropdown-item>
                                 <el-dropdown-item command="auth">{{scope.row.isOpen == 0 ? '开启认证' : '关闭认证'}}</el-dropdown-item>
                                 <el-dropdown-item command="download">号码魔方</el-dropdown-item>
                             </el-dropdown-menu>
@@ -203,6 +213,11 @@
                     disabledDate(time) {
                         return time.getTime() > Date.now() - 8.64e6
                     }
+                },
+                stateMap: {
+                    '0': '禁用',
+                    '1': '启用',
+                    '2': '锁定'
                 }
             }
         },
@@ -235,8 +250,8 @@
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'companyName': this.searchData.agentName,
-                        'status': this.searchData.status,
-                        'mobile': this.searchData.mobile,
+                        'state': this.searchData.status,
+                        'linkmanPhone': this.searchData.mobile,
                         'startTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[0],
                         'endTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[1]
                     })

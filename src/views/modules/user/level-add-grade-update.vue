@@ -1,11 +1,15 @@
 <template>
     <el-dialog :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="levelvisible" @close="closeDialog">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
-            <el-form-item label="代理商等级：" prop="levelNum">
+            <!-- <el-form-item label="代理商等级：" prop="levelNum">
                 <el-input v-model="dataForm.levelNum" placeholder="代理商等级 如：1"></el-input>
             </el-form-item>
             <el-form-item label="等级名称：" prop="levelName">
                 <el-input v-model="dataForm.levelName" placeholder="代理商等级 如：一级代理商"></el-input>
+            </el-form-item> -->
+            <el-form-item label="代理商等级：" prop="price">
+                <el-input v-model="dataForm.levelName" placeholder="代理商等级"></el-input>
+                <span>级</span>
             </el-form-item>
             <el-form-item label="单价：" prop="price">
                 <el-input v-model="dataForm.price" placeholder="单价"></el-input>
@@ -15,7 +19,7 @@
                 <el-input v-model="dataForm.moreCounts" placeholder="预警条数"></el-input>
                 <span>条</span>
             </el-form-item>
-            <el-form-item label="充值金额：" prop="minRecharge">
+            <!-- <el-form-item label="充值金额：" prop="minRecharge">
                 <el-col :span="8">
                     <el-input v-model="dataForm.minRecharge" style="width:100%" placeholder="最小充值"></el-input>
                 </el-col>
@@ -23,8 +27,18 @@
                 <el-col :span="8">
                     <el-input v-model="dataForm.maxRecharge" style="width:100%" placeholder="最大充值"></el-input>
                 </el-col>
+            </el-form-item> -->
+            <el-form-item label="最小充值条数：" prop="price">
+               <el-input-number v-model="dataForm.minCount" :min="0"></el-input-number>
+                <span>条</span>
             </el-form-item>
-
+            <el-form-item label="最小充值金额：" prop="price">
+                <el-input-number v-model="dataForm.minPrice" disabled :min="0"></el-input-number>
+                <span>元</span>
+            </el-form-item>
+            <el-form-item label="备注：" prop="price">
+                <el-input v-model="dataForm.remark" :rows="3" placeholder="请输入备注" type="textarea"></el-input>
+            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="levelvisible = false">取消</el-button>
