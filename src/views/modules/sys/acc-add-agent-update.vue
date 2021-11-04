@@ -2,25 +2,31 @@
     <el-dialog :title="!accountdataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible" @close='closeDialog'>
         <el-form :model="accountdataForm" :rules="accdatarules" ref="accountdataFormref" label-width="150px" class="demo-ruleForm"
             :label-position="labelPosition">
-            <!-- <el-form-item label="用户编号：" prop="agentNumber" id="agentNumberAcc">
-                <el-input v-model="accountdataForm.agentNumber" placeholder="用户编号" :readonly="readonly"></el-input>
-            </el-form-item> -->
-            <el-form-item label="姓名：" prop="name">
-                <el-input v-model="accountdataForm.name" placeholder="姓名"></el-input>
+            <el-form-item label="用户名：" prop="username">
+                <el-input v-model="accountdataForm.username" placeholder="请输入用户名" :disabled="accountdataForm.id"></el-input>
             </el-form-item>
-            <el-form-item label="手机号：" prop="mobile">
-                <el-input v-model="accountdataForm.mobile" placeholder="手机号"></el-input>
+            <el-form-item label="代理商：" prop="agent">
+                <el-select style="width: 100%" class="filter-item" v-model="accountdataForm.agent" placeholder="请选择代理商">
+                    <el-option v-for="item in agentList" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="姓名：" prop="nickname">
+                <el-input v-model="accountdataForm.nickname" placeholder="请输入姓名"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号：" prop="phone">
+                <el-input v-model="accountdataForm.phone" placeholder="请输入手机号"></el-input>
             </el-form-item>
             <el-form-item label="邮箱：" prop="email">
-                <el-input v-model="accountdataForm.email" placeholder="邮箱"></el-input>
+                <el-input v-model="accountdataForm.email" placeholder="请输入邮箱"></el-input>
             </el-form-item>
-            <el-form-item label="密码：" :prop="!accountdataForm.id ? 'password' : ''">
-                <el-input v-model="accountdataForm.password" placeholder="密码"></el-input>
+            <el-form-item label="密码：" prop="password">
+                <el-input v-model="accountdataForm.password" placeholder="请输入密码"></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-                <el-button @click="visible = false">取消</el-button>
-                <el-button type="primary" @click="accDataFormSubmit()">确定</el-button>
+            <el-button @click="visible = false">取消</el-button>
+            <el-button type="primary" @click="accDataFormSubmit()">确定</el-button>
         </span>
     </el-dialog>
 </template>
@@ -30,40 +36,42 @@
     import { isEmail, isMobile } from '@/utils/validate'
     export default {
         data() {
-            var validateMobile = (rule, value, callback) => {
-                if (!isMobile(value)) {
-                    callback(new Error('手机号格式错误'))
-                } else {
-                    callback()
-                }
-            }
-            var validateEmail = (rule, value, callback) => {
-                if (!isEmail(value)) {
-                    callback(new Error('邮箱格式错误'))
-                } else {
-                    callback()
-                }
-            }
             return {
                 visible: false,
                 readonly: false,
                 labelPosition: 'right',
                 accountdataForm: {
-                    id: '',
+                    id: 0,
                     // agentNumber: '',
                     name: '',
                     mobile: '',
                     email: '',
                     password: ''
                 },
-                accdatarules: {
-                    // agentNumber: [
-                    //     { required: true, message: '请输入用户编号', trigger: 'blur' }
-                    // ],
-                    name: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' }
+                agentList: []
+            }
+        },
+        computed: {
+            accdatarules() {
+                let validateMobile = (rule, value, callback) => {
+                    if (!isMobile(value)) {
+                        callback(new Error('手机号格式错误'))
+                    } else {
+                        callback()
+                    }
+                }
+                let validateEmail = (rule, value, callback) => {
+                    if (!isEmail(value)) {
+                        callback(new Error('邮箱格式错误'))
+                    } else {
+                        callback()
+                    }
+                }
+                return {
+                    username: [
+                        { required: true, message: '请输入用户名', trigger: 'blur' }
                     ],
-                    mobile: [
+                    phone: [
                         { required: true, message: '请输入联系电话', trigger: 'blur' },
                         { validator: validateMobile, trigger: 'blur' }
                     ],
@@ -72,10 +80,9 @@
                         { validator: validateEmail, trigger: 'blur' }
                     ],
                     password: [
-                        { required: true, message: '请输入密码', trigger: 'blur' }
-                    ],
-                },
-
+                        { required: !this.accountdataForm.id, message: '请输入密码', trigger: 'blur' }
+                    ]
+                }
             }
         },
         methods: {
