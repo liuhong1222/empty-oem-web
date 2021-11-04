@@ -16,10 +16,10 @@ console.log('\n%c!<-------------------- 接口拦截, mock模拟数据 s -------
 // 1. 关闭[业务模块集]拦截, create方法[第2个参数]设置. (默认开启)
 // 2. 关闭[业务模块对象]拦截, 通过模块返回对象中的[isOpen属性, 默认开启]设置. (默认开启)
 
-fnCreate(common, true)      // 公共
-fnCreate(user, true)        // 管理员管理
-fnCreate(role, true)        // 角色管理
-fnCreate(menu, true)        // 菜单管理
+fnCreate(common, false)      // 公共
+fnCreate(user, false)        // 管理员管理
+fnCreate(role, false)        // 角色管理
+fnCreate(menu, false)        // 菜单管理
 fnCreate(log, false)         // 系统日志
 fnCreate(config, false)      // 参数管理
 fnCreate(oss, false)         // 文件服务

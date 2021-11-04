@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>OEM代理商设置</h2>
+            <h2>代理商设置列表</h2>
             <el-form :inline="true" :model="searchData" @keyup.enter.native="getDataList()">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="searchData.dateTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
@@ -32,11 +32,9 @@
             <el-table :data="dataList" style="width: 100%" :header-cell-style="getRowClass" height="750">
                 <el-table-column type="index" header-align="center" align="center" width="50" fixed label="序号">
                 </el-table-column>
-                <!-- <el-table-column prop="agentId" label=" 代理商序号" width="100" align="center">
-                </el-table-column> -->
-                <el-table-column prop="mch_id" label=" 商户编号" width="100" align="center">
+                <el-table-column prop="companyName" label=" 代理商名称" width="100" align="center">
                 </el-table-column>
-                <el-table-column prop="company_name" label=" 代理商名称" width="100" align="center">
+                <el-table-column prop="agentId" label="代理商编号" width="100" align="center">
                 </el-table-column>
                 <el-table-column prop="agentMobile" label="手机号" width="100" align="center">
                 </el-table-column>

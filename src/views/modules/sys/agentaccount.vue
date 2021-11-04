@@ -80,9 +80,10 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.accountTableData = data.data.list
-                        this.totalPage = data.data.totalCount
-                        if (data.data.list.length == 0) {
+                        const { list, totalCount } = (data.data || {})
+                        this.accountTableData = list || []
+                        this.totalPage = totalCount || 0
+                        if (list && list.length == 0) {
                             this.disabled = true
                         } else {
                             this.disabled = false

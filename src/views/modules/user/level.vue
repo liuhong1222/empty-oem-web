@@ -1,20 +1,20 @@
 <template>
     <div class="main">
-        <h2 style="display:inline-block">代理商等级管理</h2>
-        <el-button type="primary" style="float:right" @click="addUpdateLevel()">新增</el-button>
+        <div class="filter-wrapper">
+            <h2 style="display:inline-block">代理商等级管理</h2>
+            <el-button type="primary" @click="addUpdateLevel()">新增</el-button>
+        </div>
         <div class="userTable">
             <el-table :data="oemTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
                 </el-table-column>
-                <el-table-column prop="name" label=" 代理商级别" align="center">
+                <el-table-column prop="level" label=" 代理商等级" align="center">
                 </el-table-column>
                 <el-table-column prop="price" label=单价（元/条） align="center">
                 </el-table-column>
-                <el-table-column prop="emptyWarnNumber" label="预警条数(条) " align="center">
+                <el-table-column prop="warningsNumber" label="预警条数 " align="center">
                 </el-table-column>
-                <el-table-column prop="minRecharge" label=" 最小充值金额（元） " align="center">
-                </el-table-column>
-                <el-table-column prop="maxRecharge" label=" 最大充值金额（元） " align="center">
+                <el-table-column prop="minPaymentAmount" label=" 最小充值金额（元） " align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" align="center">
                     <template slot-scope="scope">
@@ -115,5 +115,10 @@
         background-color: #ffffff;
         margin-bottom: 24px;
         box-shadow: 0px 7px 9px 0px rgba(153, 153, 153, 0.05);
+    }
+    .filter-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 </style>

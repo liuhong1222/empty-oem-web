@@ -71,6 +71,9 @@
                     username: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
                     ],
+                    agent: [
+                        { required: true, message: '请选择代理商', trigger: 'blur' }
+                    ],
                     phone: [
                         { required: true, message: '请输入联系电话', trigger: 'blur' },
                         { validator: validateMobile, trigger: 'blur' }
