@@ -173,14 +173,12 @@
               })
             }).then(({ data }) => {
               if (data && data.code === 0) {
+                this.visible = false
+                this.$emit('refreshDataList')
                 this.$message({
                   message: '操作成功',
                   type: 'success',
-                  duration: 1500,
-                  onClose: () => {
-                    this.visible = false
-                    this.$emit('refreshDataList')
-                  }
+                  duration: 1500
                 })
               } else {
                 this.$message.error(data.msg)

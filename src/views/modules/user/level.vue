@@ -18,8 +18,8 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="del(scope.row.id,scope.row.level)">删除</el-button>
-                        <el-button type="text" size="small" @click="addUpdateLevel(scope.row.id)">修改</el-button>
+                        <el-button type="text" size="small" @click="addUpdateLevel(scope.row)">修改</el-button>
+                        <el-button type="text" size="small" @click="del(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -68,15 +68,15 @@
                 }
             },
             // 点击修改 ，新增
-            addUpdateLevel(id) {
+            addUpdateLevel(record) {
                 this.gradeVisible = true
                 this.$nextTick(() => {
-                    this.$refs.gradeCon.levelInit(id)
+                    this.$refs.gradeCon.levelInit(record || {})
                 })
             },
             // 点击删除
-            del(id, name) {
-                this.$confirm(`是否删除${name}以及相关信息？`, '删除代理商等级', {
+            del(record) {
+                this.$confirm(`是否删除${record.level}以及相关信息？`, '删除代理商等级', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -85,7 +85,7 @@
                         url: this.$http.adornUrl(`agent/level/delete?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'id': id
+                            'id': record.id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {

@@ -1,15 +1,18 @@
 <template>
   <div class="mod-log">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList(1)">
       <el-form-item label="手机号码">
         <el-input v-model="dataForm.key" style="width: 220px;" placeholder="请输入手机号码" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList(1)">查询</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" style="width: 100%">
       <el-table-column prop="logId" header-align="center" align="center" width="80" label="ID">
+        <template slot-scope="{ row }">
+          <span>{{ row.logId + '' }}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="username" header-align="center" align="center" label="手机号码">
       </el-table-column>
@@ -48,11 +51,12 @@
       }
     },
     created() {
-      this.getDataList()
+      this.getDataList(1)
     },
     methods: {
       // 获取数据列表
-      getDataList() {
+      getDataList(curr) {
+        this.pageIndex = curr || this.pageIndex;
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('sys/log/list'),

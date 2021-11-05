@@ -15,7 +15,8 @@
                         <td class="discribe-col">{{ detailInfo.email }}</td>
                         <td class="discribe-col title">营业执照地址</td>
                         <td class="discribe-col">
-                            {{ detailInfo.businessLicensePath }}
+                            <div>{{ detailInfo.businessLicensePath }}</div>
+                            <!-- {{ detailInfo.businessLicensePath }} -->
                             <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
                         </td>
                     </tr>
@@ -23,13 +24,17 @@
                         <td class="discribe-col title">公司名称</td>
                         <td class="discribe-col">{{ detailInfo.companyName }}</td>
                         <td class="discribe-col title">公司简称</td>
-                        <td class="discribe-col">{{ detailInfo.companyShortName }}</td>
+                        <td class="discribe-col">
+                            <div>{{ detailInfo.companyShortName }}</div>
+                        </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">营业执照所在地</td>
                         <td class="discribe-col">{{ detailInfo.businessLicenseAddress }}</td>
                         <td class="discribe-col title">营业执照号</td>
-                        <td class="discribe-col">{{ detailInfo.businessLicenseNumber }}</td>
+                        <td class="discribe-col">
+                            <div>{{ detailInfo.businessLicenseNumber }}</div>
+                        </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">企业法人姓名</td>

@@ -14,6 +14,9 @@
       <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
       <el-table-column prop="id" header-align="center" align="center" width="80" label="ID">
+        <template slot-scope="{ row }">
+          <span>{{ row.id + '' }}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="phone" header-align="center" align="center" label="手机号">
       </el-table-column>
@@ -86,8 +89,9 @@
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.totalCount
+            const { list, total } = (data.data || {})
+            this.dataList = list || [];
+            this.totalPage = total || 0;
           } else {
             this.dataList = []
             this.totalPage = 0
@@ -133,13 +137,11 @@
             data: this.$http.adornData(userIds, false)
           }).then(({ data }) => {
             if (data && data.code === 0) {
+              this.getDataList(1)
               this.$message({
                 message: '操作成功',
                 type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList(1)
-                }
+                duration: 1500
               })
             } else {
               this.$message.error(data.msg)

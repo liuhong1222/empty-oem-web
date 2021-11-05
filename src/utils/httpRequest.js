@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+import JSONBigNumber from 'json-bigint'
 import router from '@/router'
 import qs from 'qs'
 import merge from 'lodash/merge'
@@ -9,7 +10,16 @@ const http = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json; charset=utf-8'
-  }
+  },
+  transformResponse: [
+    function (data) {
+      try {
+        return JSONBigNumber.parse(data)
+      } catch (err) {
+        return data
+      }
+    }
+  ]
 })
 
 /**

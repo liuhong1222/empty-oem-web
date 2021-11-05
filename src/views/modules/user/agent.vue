@@ -69,7 +69,7 @@
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="chdataBtn(scope.row.agentId,scope.row.companyName,scope.row.price)">充值</el-button>
-                        <el-button style="margin-right: 10px;"  @click="seeClick(scope.row.agentId)" type="text" size="small">查看</el-button>
+                        <el-button style="margin-right: 10px;"  @click="seeClick(scope.row.id)" type="text" size="small">查看</el-button>
                         <el-dropdown @command="(key) => handleClickDropdown(key, scope.row)">
                             <el-button type="text" size="small">···</el-button>
                             <el-dropdown-menu slot="dropdown">
@@ -322,7 +322,7 @@
             seeClick(id) {
                 this.agentseeVisible = true
                 this.$nextTick(() => {
-                    this.$refs.agentseecon.showInit(id)
+                    this.$refs.agentseecon.showInit(id + '')
                 })
             },
             chdataBtn(agentId, companyName, price) {
@@ -442,7 +442,7 @@
             handleClickDropdown(key, record) {
                 switch(key) {
                     case 'edit': {
-                        this.addUpdateAgent(record.agentId)
+                        this.addUpdateAgent(record.id + '')
                         break;
                     }
                     case 'refund': {

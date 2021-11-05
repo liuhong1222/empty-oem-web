@@ -5,7 +5,7 @@
                 <el-input v-model="accountData.phone" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="agentSysUserList(1)">查询</el-button>
+                <el-button @click="agentSysUserList(1)">查询</el-button>
                 <el-button type="primary" @click="agentExport()" :disabled="disabled">导出</el-button>
                 <el-button type="primary" @click="addUpdateAgent()">新增</el-button>
             </el-form-item>
@@ -15,7 +15,7 @@
             </el-table-column>
             <el-table-column prop="username" label=" 用户名称" align="center">
             </el-table-column>
-            <el-table-column prop="agentName" label="代理商名称" align="center">
+            <el-table-column prop="companyName" label="代理商名称" align="center">
             </el-table-column>
             <el-table-column prop="nickname" label="姓名" align="center">
             </el-table-column>
@@ -46,7 +46,6 @@
     export default {
         data() {
             return {
-                paramArr: [],
                 accountVisible: false,
                 disabled: false,
                 accountData: {
@@ -80,9 +79,9 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        const { list, totalCount } = (data.data || {})
+                        const { list, total } = (data.data || {})
                         this.accountTableData = list || []
-                        this.totalPage = totalCount || 0
+                        this.totalPage = total || 0
                         if (list && list.length == 0) {
                             this.disabled = true
                         } else {
@@ -107,24 +106,14 @@
             },
             // 新增，修改
             addUpdateAgent(row) {
-                let paramArr = this.paramArr;
-                if (row !== undefined) {
-                    this.paramArr[0] = row.id
-                    this.paramArr[1] = row.username
-                    this.paramArr[2] = row.phone
-                    this.paramArr[3] = row.email
-                } else {
-                    paramArr = ""
-                }
-
                 this.accountVisible = true
                 this.$nextTick(() => {
-                    this.$refs.accountCon.updateInit(paramArr)
+                    this.$refs.accountCon.updateInit(row || {})
                 })
             },
             // 删除
             delAcc(row) {
-                this.$confirm(`是否删除用户${row.usename}？删除后此用户将无法登录系统。`, '删除账号', {
+                this.$confirm(`是否删除用户${row.username}？删除后此用户将无法登录系统。`, '删除账号', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -133,17 +122,15 @@
                         url: this.$http.adornUrl(`agent/agentSysUser/delete?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'id': row.id
+                            'id': row.id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
+                            this.agentSysUserList(1)
                             this.$message({
                                 message: '操作成功',
                                 type: 'success',
-                                duration: 1500,
-                                onClose: () => {
-                                    this.agentSysUserList(1)
-                                }
+                                duration: 1500
                             })
                         } else {
                             this.$message.error(data.msg)

@@ -114,6 +114,7 @@ import { isEmail, isMobile } from '@/utils/validate'
     methods: {
       init (id) {
         this.visible = true
+        this.submitLoading = false
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
         })
@@ -135,7 +136,6 @@ import { isEmail, isMobile } from '@/utils/validate'
             }
           })
         }
-        // })
       },
       // 表单提交
       dataFormSubmit () {

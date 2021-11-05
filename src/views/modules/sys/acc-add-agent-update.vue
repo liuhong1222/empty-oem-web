@@ -1,12 +1,12 @@
 <template>
-    <el-dialog :title="!accountdataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible" @close='closeDialog'>
+    <el-dialog :title="!isEdit ? '新增账号' : '修改账号'" :close-on-click-modal="false" :visible.sync="visible">
         <el-form :model="accountdataForm" :rules="accdatarules" ref="accountdataFormref" label-width="150px" class="demo-ruleForm"
             :label-position="labelPosition">
             <el-form-item label="用户名：" prop="username">
-                <el-input v-model="accountdataForm.username" placeholder="请输入用户名" :disabled="accountdataForm.id"></el-input>
+                <el-input v-model="accountdataForm.username" placeholder="请输入用户名" :disabled="isEdit"></el-input>
             </el-form-item>
-            <el-form-item label="代理商：" prop="agent">
-                <el-select style="width: 100%" class="filter-item" v-model="accountdataForm.agent" placeholder="请选择代理商">
+            <el-form-item label="代理商：" prop="agentId">
+                <el-select style="width: 100%" class="filter-item" v-model="accountdataForm.agentId" placeholder="请选择代理商">
                     <el-option v-for="item in agentList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
@@ -26,7 +26,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取消</el-button>
-            <el-button type="primary" @click="accDataFormSubmit()">确定</el-button>
+            <el-button type="primary" :loading="submitLoading" @click="accDataFormSubmit()">确定</el-button>
         </span>
     </el-dialog>
 </template>
@@ -38,17 +38,11 @@
         data() {
             return {
                 visible: false,
-                readonly: false,
+                isEdit: false,
                 labelPosition: 'right',
-                accountdataForm: {
-                    id: 0,
-                    // agentNumber: '',
-                    name: '',
-                    mobile: '',
-                    email: '',
-                    password: ''
-                },
-                agentList: []
+                accountdataForm: {},
+                agentList: [],
+                submitLoading: false
             }
         },
         computed: {
@@ -71,7 +65,7 @@
                     username: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
                     ],
-                    agent: [
+                    agentId: [
                         { required: true, message: '请选择代理商', trigger: 'blur' }
                     ],
                     phone: [
@@ -83,51 +77,53 @@
                         { validator: validateEmail, trigger: 'blur' }
                     ],
                     password: [
-                        { required: !this.accountdataForm.id, message: '请输入密码', trigger: 'blur' }
+                        { required: !this.isEdit, message: '请输入密码', trigger: 'blur' }
                     ]
                 }
             }
         },
         methods: {
-            updateInit(paramArr) {
-                // console.log(paramArr)
+            updateInit(record) {
                 this.visible = true
-                this.readonly = false
-                if (paramArr !== "") {
-                    // console.log(paramArr)
-                    this.readonly = true
-                    this.accountdataForm.id = paramArr[0] || 0
-                    // this.accountdataForm.agentNumber = paramArr[0]
-                    this.accountdataForm.name = paramArr[1]
-                    this.accountdataForm.mobile = paramArr[2]
-                    this.accountdataForm.email = paramArr[3]
+                this.submitLoading = false
+                if (record.username) {
+                    const { username, agentId, nickname, phone, email, id } = record
+                    this.accountdataForm = {
+                        username,
+                        agentId,
+                        nickname,
+                        phone,
+                        email,
+                        id: id + ''
+                    }
+                    this.isEdit = true
+                } else {
+                    this.isEdit = false;
                 }
             },
             accDataFormSubmit() {
                 this.$refs['accountdataFormref'].validate((valid) => {
                     if (valid) {
-                        // console.log('验证通过')
+                        this.submitLoading = true;
                         this.$http({
                             url: this.$http.adornUrl(`agent/agentSysUser/${!this.accountdataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
                                 'userId': this.accountdataForm.id || undefined,
-                                'realName': this.accountdataForm.name,
+                                'username': this.accountdataForm.username,
                                 'mobile': this.accountdataForm.mobile,
                                 'email': this.accountdataForm.email,
                                 'password': (this.accountdataForm.password) ? md5(this.accountdataForm.password) : this.accountdataForm.password
                             })
                         }).then(({ data }) => {
-                            console.log(data)
+                            this.submitLoading = false;
                             if (data && data.code === 0) {
+                                this.visible = false
+                                this.$emit('refreshDataList', 1)
                                 this.$message({
                                     message: '操作成功',
                                     type: 'success',
-                                    duration: 1500,
-                                    onClose: () => {
-                                        this.visible = false
-                                        this.$emit('refreshDataList')
-                                    }
+                                    duration: 1500
                                 })
                             } else {
                                 this.$message.error(data.msg)
@@ -135,14 +131,6 @@
                         })
                     }
                 })
-            },
-            closeDialog() {
-                this.accountdataForm.id = ""
-                // this.accountdataForm.agentNumber = ""
-                this.accountdataForm.name = ""
-                this.accountdataForm.mobile = ""
-                this.accountdataForm.password = ""
-                this.accountdataForm.email = ""
             }
         }
     }

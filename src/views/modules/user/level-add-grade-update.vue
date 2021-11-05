@@ -71,32 +71,25 @@
             }
         },
         methods: {
-            levelInit(id) {
+            levelInit(record) {
                 this.levelvisible = true
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
-                })
-                if (id) {
-                    this.$http({
-                        url: this.$http.adornUrl(`agent/level/detail?token=${this.$cookie.get('token')}&id=${this.dataForm.id}`),
-                        method: 'get',
-                        params: this.$http.adornParams()
-                    }).then(({ data }) => {
-                        if (data && data.code === 0) {
-                            const { levelType, level, price, warningsNumber, minRechargeNumber, minPaymentAmount, remark } = (data.data || {})
-                            this.dataForm = {
-                                id,
-                                levelType,
-                                level,
-                                price,
-                                warningsNumber,
-                                minRechargeNumber,
-                                minPaymentAmount,
-                                remark
-                            }
+                    if (record.id) {
+                        const { levelType, level, price, warningsNumber, minRechargeNumber, minPaymentAmount, remark } = record
+                        this.dataForm = {
+                            id: record.id,
+                            levelType,
+                            level,
+                            price,
+                            warningsNumber,
+                            minRechargeNumber,
+                            minPaymentAmount,
+                            remark
                         }
-                    })
-                }
+                    }
+                })
             },
             levelSubmit() {
                 this.$refs['dataForm'].validate((valid) => {

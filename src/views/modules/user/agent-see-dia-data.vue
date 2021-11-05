@@ -1,6 +1,6 @@
 <template>
     <div id="seeAgent">
-        <el-dialog title="查看代理商" :visible.sync="dialogVisible" width="60%">
+        <el-dialog title="查看代理商" :visible.sync="dialogVisible" width="800px">
             <table class="discribe-wrapper" border>
                 <tbody>
                     <tr class="discribe-row">
@@ -14,7 +14,8 @@
                         <td class="discribe-col">{{ detailInfo.linkmanEmail }}</td>
                         <td class="discribe-col title">营业执照地址</td>
                         <td class="discribe-col">
-                            {{ detailInfo.businessLicensePath }}
+                            <!-- {{ detailInfo.businessLicensePath }} -->
+                            <div>{{ detailInfo.businessLicensePath }}</div>
                             <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
                         </td>
                     </tr>
@@ -187,8 +188,9 @@
             showInit(id) {
                 this.dialogVisible = true;
                 this.dataForm.id = id
+                console.log(id)
                 this.$http({
-                    url: this.$http.adornUrl(`agent/agentInfo/detail?token=${this.$cookie.get('token')}&agentId=${this.dataForm.id}`),
+                    url: this.$http.adornUrl(`agent/agentInfo/detail?token=${this.$cookie.get('token')}&agentId=${id}`),
                     method: 'get',
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
