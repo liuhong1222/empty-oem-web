@@ -1,7 +1,7 @@
 <template>
     <div class="seecuslog">
         <!-- 客户详情信息 -->
-        <el-dialog v-if="false" title="查看客户" :visible.sync="dialogVisible" width="60%">
+        <el-dialog title="查看客户" :visible.sync="dialogVisible" width="800px">
             <table class="discribe-wrapper" border>
                 <tbody>
                     <tr class="discribe-row">
@@ -24,9 +24,7 @@
                         <td class="discribe-col title">公司名称</td>
                         <td class="discribe-col">{{ detailInfo.companyName }}</td>
                         <td class="discribe-col title">公司简称</td>
-                        <td class="discribe-col">
-                            <div>{{ detailInfo.companyShortName }}</div>
-                        </td>
+                        <td class="discribe-col">{{ detailInfo.companyShortName }}</td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">营业执照所在地</td>
@@ -67,16 +65,22 @@
                         <td class="discribe-col">{{ detailInfo.createTime }}</td>
                     </tr>
                     <tr class="discribe-row">
+                        <td class="discribe-col title">修改时间</td>
+                        <td class="discribe-col">{{ detailInfo.updateTime }}</td>
                         <td class="discribe-col title">IP地址</td>
                         <td class="discribe-col">{{ detailInfo.ip }}</td>
-                        <td class="discribe-col title">区域</td>
-                        <td class="discribe-col">{{ detailInfo.area }}</td>
                     </tr>
                     <tr class="discribe-row">
+                        <td class="discribe-col title">区域</td>
+                        <td class="discribe-col">{{ detailInfo.area }}</td>
                         <td class="discribe-col title">运营商</td>
                         <td class="discribe-col">{{ detailInfo.operator }}</td>
+                    </tr>
+                    <tr>
                         <td class="discribe-col title">来源</td>
-                        <td class="discribe-col">{{ detailInfo.referer }}</td>
+                        <td class="discribe-col" colspan="3" style="width: 75%;">
+                            <div style="width: 500px;">{{ detailInfo.referer }}</div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -87,7 +91,7 @@
         </el-dialog>
 
         <!-- 查看个人信息 -->
-        <el-dialog title="查看个人客户" :visible.sync="perseeVisible" width="48%">
+        <el-dialog v-if="false" title="查看个人客户" :visible.sync="perseeVisible" width="48%">
 
             <el-form :model="perseeDataForm" ref="perDataForm" label-width="150px" :label-position="labelPosition">
                 <el-form-item label="手机号码：">
@@ -131,7 +135,7 @@
         </el-dialog>
 
         <!-- 查看企业信息 -->
-        <el-dialog title=" 查看企业客户" :visible.sync="entriseVisible" width="52%">
+        <el-dialog v-if="false" title=" 查看企业客户" :visible.sync="entriseVisible" width="52%">
 
             <el-form :model="seepriseDataForm" ref="seepriseDataFormref" label-width="150px" :label-position="labelPosition">
                 <el-form-item label="手机号码：">
@@ -216,6 +220,7 @@
         },
         methods: {
             seeInit(arr) {
+                this.dialogVisible = true
                 // console.log(arr[0])  //id
                 // console.log(arr[1])  //个人 （0，null） 还是企业（1）
                 // console.log(arr[2])  //creUserId

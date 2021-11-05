@@ -105,7 +105,7 @@
     }
 
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
     .main {
         width: 100%;
         padding: 10px 23px 20px;

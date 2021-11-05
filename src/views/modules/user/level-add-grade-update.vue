@@ -135,8 +135,3 @@
         margin-left: 0
     }
 </style>
-<style scoped lang="scss">
-    .margin-left-8 {
-        margin-left: 8px;
-    }
-</style>

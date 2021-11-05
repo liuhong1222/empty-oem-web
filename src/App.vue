@@ -11,7 +11,7 @@
 
 <style>
   .el-table {
-    min-height: 600px;
+    /* min-height: 600px; */
   }
 
   .el-table,

@@ -641,9 +641,9 @@
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
-            this.$message.success('成功');
+            this.$message.success(data.msg);
           } else {
-            this.$message.error('失败');
+            this.$message.error(data.msg || '操作失败');
           }
         })
       },

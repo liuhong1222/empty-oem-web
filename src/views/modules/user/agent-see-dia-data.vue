@@ -59,21 +59,19 @@
                         <td class="discribe-col title">实时检测预警条数</td>
                         <td class="discribe-col">{{ detailInfo.realWarningsNumber }}</td>
                         <td class="discribe-col title">状态</td>
-                        <td class="discribe-col">{{ detailInfo.state ? '启用中' : '禁用中' }}</td>
+                        <td class="discribe-col">{{ detailInfo.state ? '启用' : '禁用' }}</td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">备注</td>
-                        <td class="discribe-col">{{ detailInfo.remark }}</td>
+                        <td class="discribe-col">
+                            <div>{{ detailInfo.remark }}</div>
+                        </td>
                         <td class="discribe-col title">创建时间</td>
                         <td class="discribe-col">{{ detailInfo.createTime }}</td>
                     </tr>
                 </tbody>
             </table>
             <el-form v-show="false" :model="dataForm" ref="dataForm" label-width="150px" class="demo-ruleForm" :label-position="labelPosition">
-                <!-- <h3>基本信息</h3> -->
-                <!-- <el-form-item label="代理商编号：" prop="agentNumber">
-                    <el-input v-model="dataForm.agentNumber" placeholder="代理商编号" readonly></el-input>
-                </el-form-item> -->
                 <el-form-item label="营业执照：" id="avatar-uploaderImg">
                     <el-upload class="avatar-uploader" action="" :show-file-list="false" disabled>
                         <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar">

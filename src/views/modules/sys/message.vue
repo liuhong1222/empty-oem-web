@@ -141,7 +141,7 @@
     }
 
 </script>
-<style>
+<style scoped>
     .main {
         background: #fff;
         padding: 20px

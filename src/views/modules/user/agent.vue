@@ -68,7 +68,7 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="chdataBtn(scope.row.agentId,scope.row.companyName,scope.row.price)">充值</el-button>
+                        <el-button type="text" size="small" @click="chdataBtn(scope.row)">充值</el-button>
                         <el-button style="margin-right: 10px;"  @click="seeClick(scope.row.id)" type="text" size="small">查看</el-button>
                         <el-dropdown @command="(key) => handleClickDropdown(key, scope.row)">
                             <el-button type="text" size="small">···</el-button>
@@ -92,8 +92,8 @@
         <!-- 充值弹窗 -->
         <el-dialog title="充值" :visible.sync="chdataFormVisible">
             <el-form :model="chdataForm" ref="chdataFormref" :rules="chdataFormrefRule" label-width="100px">
-                <el-form-item label="充值账号">
-                    <el-input style="border:none" v-model="chdataForm.accnumber" placeholder="" readonly id="chprice"></el-input>
+                <el-form-item label="充值账号：" prop="agentId">
+                    <el-input v-model="chdataForm.agentId" placeholder="请输入充值账号" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="category">
                     <el-radio-group v-model="chdataForm.category">
@@ -101,32 +101,30 @@
                         <el-radio :label="1">实时检测</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="充值单价" prop="chPrice">
-                    <el-input v-model.number="chdataForm.chPrice" placeholder="输入充值单价，自动计算条数"></el-input>
-                    <span>元/条</span>
+                <el-form-item label="充值单价：" prop="price">
+                    <el-input-number v-model="chdataForm.price" disabled :min="0"></el-input-number>
+                    <span class="margin-left-8">元/条</span>
                 </el-form-item>
-                <el-form-item label="充值金额" prop="chMoney">
-                    <el-input v-model.number="chdataForm.chMoney" placeholder="输入充值金额，自动计算条数"></el-input>
-                    <span>元</span>
+                <el-form-item label="充值金额：" prop="paymentAmount">
+                    <el-input-number v-model="chdataForm.paymentAmount" :min="0"></el-input-number>
+                    <span class="margin-left-8">元</span>
                 </el-form-item>
-                <el-form-item label="充值条数" prop="chCounts">
-                    <el-input v-model.number="chdataForm.chCounts" placeholder="请输入充值条数" readonly></el-input>
-                    <span>条</span>
+                <el-form-item label="充值条数：" prop="rechargeNumber">
+                    <el-input-number v-model="chdataForm.rechargeNumber" disabled :min="0"></el-input-number>
+                    <span class="margin-left-8">条</span>
                 </el-form-item>
-                <el-form-item label="入账类型" prop="type">
-                    <el-select style="width: 100%;" v-model="chdataForm.type" placeholder="入账类型">
-                        <el-option label="支付宝" value="1"></el-option>
-                        <el-option label="对公转账" value="5"></el-option>
-                        <!-- <el-option label="赠送" value="6"></el-option> -->
+                <el-form-item label="入账类型：" prop="payType">
+                    <el-select style="width: 100%;" v-model="chdataForm.payType" placeholder="请选择入账类型">
+                        <el-option v-for="item in rechargeWayOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="备注" prop="remark">
-                    <el-input type="textarea" v-model="chdataForm.remark" placeholder="请输入备注"></el-input>
+                <el-form-item label="备注：" prop="remark">
+                    <el-input type="textarea" v-model="chdataForm.remark" :row="3" placeholder="请输入备注"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="chdataFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="chsubmit" :disabled="disabledcz">确 定</el-button>
+                <el-button type="primary" @click="rechargeSubmit" :disabled="disabledcz">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -138,7 +136,7 @@
             <p v-show="qiShow">您将启用账号<input type="text" value="*****" style="border:none;min-width:50px" v-model="account">，启用后该账户将恢复正常使用。</p> -->
             <span slot="footer" class="dialog-footer">
                 <el-button @click="disableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="ddd">确 定</el-button>
+                <el-button type="primary" @click="forbidden">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 修改,新增 -->
@@ -173,42 +171,45 @@
                     status: "",
                     mobile: ""
                 },
-                formInline: {
-                    user: '',
-                    region: ''
-                },
                 agentTableData: [],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
                 dataListLoading: false,
                 chdataFormVisible: false,
-                chdataForm: {
-                    accnumber: '',
-                    chPrice: '',
-                    chCounts: '',
-                    type: '',
-                    chMoney: '',
-                    remark: ''
-                },
+                chdataForm: {},
                 chdataFormrefRule: {
-                    chPrice: [
+                    agentId: [
+                        { required: true, message: '请输入充值账号', trigger: 'blur' },
+                    ],
+                    category: [
+                        { required: true, message: '请选择产品类型', trigger: 'blur' },
+                    ],
+                    price: [
                         { required: true, message: '请输入单价', trigger: 'blur' },
-                        { type: 'number', message: '金额必须为数字' }
                     ],
-                    chMoney: [
-                        { required: true, message: '请输入金额', trigger: 'blur' },
-                        { type: 'number', message: '金额必须为数字' }
+                    rechargeNumber: [
+                        { required: true, message: '请输入充值金额', trigger: 'blur' },
                     ],
-                    chCounts: [
-                        { required: true, message: '请输入条数', trigger: 'blur' },
-                        { type: 'number', message: '条数必须为数字' }
+                    paymentAmount: [
+                        { required: true, message: '请输入充值条数', trigger: 'blur' },
                     ],
-                    type: [
+                    payType: [
                         { required: true, message: '请选择入账类型', trigger: 'blur' }
                     ],
 
                 },
+                rechargeWayOptions: [
+                    { label: '对公转账', value: 0 },
+                    { label: '支付宝扫码付', value: 1 },
+                    { label: '注册赠送', value: 2 },
+                    { label: '赠送', value: 3 },
+                    { label: '对公支付宝转账', value: 4 },
+                    { label: '对私支付宝', value: 5 },
+                    { label: '对私微信', value: 6 },
+                    { label: '对私转账', value: 7 },
+                ],
+                rechargeSubmitLoading: false,
                 pickerOptions0: {
                     disabledDate(time) {
                         return time.getTime() > Date.now() - 8.64e6
@@ -222,12 +223,21 @@
             }
         },
         watch: {
-            'chdataForm.chMoney'() {
-                if (this.chdataForm.chMoney !== "" && this.chdataForm.chPrice !== "") {
-                    this.chdataForm.chCounts = Math.ceil(Number(this.chdataForm.chMoney) / (this.chdataForm.chPrice));
+            'chdataForm.category'() {
+                const { emptyPrice, realPrice, category } = this.chdataForm;
+                if (category === 1) {
+                    // 实时检测
+                    this.chdataForm.price = realPrice;
                 } else {
-                    this.chdataForm.chCounts = ""
+                    // 空号检测
+                    this.chdataForm.price = emptyPrice;
                 }
+            },
+            'chdataForm.price'() {
+                this.computedRechargeNumber()
+            },
+            'chdataForm.paymentAmount'() {
+                this.computedRechargeNumber()
             }
         },
         components: {
@@ -239,6 +249,10 @@
             this.getDataList()
         },
         methods: {
+            computedRechargeNumber() {
+                const { price, paymentAmount } = this.chdataForm
+                this.chdataForm.rechargeNumber = price ? Math.floor((paymentAmount || 0) / price) : 0
+            },
 
             // 获取代理商列表
             getDataList() {
@@ -325,44 +339,51 @@
                     this.$refs.agentseecon.showInit(id + '')
                 })
             },
-            chdataBtn(agentId, companyName, price) {
+            chdataBtn(record) {
+                const { id, level, companyName, price, realPrice, linkmanPhone } = record;
                 this.chdataFormVisible = true
-                this.cdAgentId = agentId
-                this.chdataForm.accnumber = companyName
-                this.chdataForm.chPrice = price
                 this.$nextTick(() => {
-                    this.$refs['chdataFormref'].resetFields();
+                    this.$refs['chdataFormref'].resetFields()
+                    this.chdataForm = {
+                        agentId: id + '',
+                        agentLevel: level,
+                        name: companyName,
+                        phone: linkmanPhone,
+                        emptyPrice: price,
+                        realPrice,
+                        category: 0,
+                        price
+                    }
                 })
             },
             // 禁用启用
-            disableAndEnabled(v) {
-                this.account = v.companyName
-                this.jinorQiId = v.agentId
-                if (v.status == 1) {
+            disableAndEnabled(record) {
+                this.account = record.companyName
+                this.jinorQiId = record.id + ''
+                if (record.state === 1) {
                     this.disableTitlt = '禁用'
                     this.jinShow = true
-                    // 分别调用确定提交按钮
-                } else if (v.status == 0) {
+                    this.qiShow = false
+                }
+                if (record.state === 0) {
                     this.disableTitlt = '启用'
+                    this.jinShow = false
                     this.qiShow = true
-                    // 分别调用确定提交按钮
                 }
                 this.disableVisible = true
             },
 
-            ddd() {
+            forbidden() {
                 if (this.disableTitlt == "禁用") {
                     this.$http({
                         url: this.$http.adornUrl(`agent/agentInfo/pause?token=${this.$cookie.get('token')}`),
                         method: 'post',
-                        params: this.$http.adornParams({
+                        params: {
                             'agentId': this.jinorQiId
-                        })
+                        }
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
                             this.disableVisible = false
-                            this.jinShow = false
-                            this.qiShow = false
                             this.getDataList()
                         } else {
                             this.$message.error(data.msg)
@@ -378,8 +399,6 @@
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
                             this.disableVisible = false
-                            this.qiShow = false
-                            this.jinShow = false
                             this.getDataList()
                         } else {
                             this.$message.error(data.msg)
@@ -389,45 +408,39 @@
                 }
             },
             // 提交充值
-            chsubmit() {
+            rechargeSubmit() {
                 this.$refs['chdataFormref'].validate((valid) => {
                     if (valid) {
-                        this.$confirm('确认要充值吗？')
-                            .then(_ => {
-                                this.regAgentSubmit()
+                        this.rechargeSubmitLoading = true
+                        this.$http({
+                            url: this.$http.adornUrl(`agent/agentInfo/recharge?token=${this.$cookie.get('token')}`),
+                            method: 'post',
+                            params: this.$http.adornParams({
+                                'agentId': this.chdataForm.agentId,
+                                'agentLevel': this.chdataForm.agentLevel,
+                                'name': this.chdataForm.name,
+                                'phone': this.chdataForm.phone,
+                                'price': this.chdataForm.price,
+                                'rechargeNumber': this.chdataForm.rechargeNumber,
+                                'paymentAmount': this.chdataForm.paymentAmount,
+                                'payType': this.chdataForm.payType,
+                                'category': this.chdataForm.category,
+                                'remark': this.chdataForm.remark
                             })
-                            .catch(_ => { })
-                    }
-                })
-            },
-            regAgentSubmit() {
-                this.$http({
-                    url: this.$http.adornUrl(`agent/agentInfo/recharge?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                    params: this.$http.adornParams({
-                        'agentId': this.cdAgentId,
-                        'price': this.chdataForm.chPrice,
-                        'number': this.chdataForm.chCounts,
-                        'money': this.chdataForm.chMoney,
-                        'payType': this.chdataForm.type,
-                    })
-                }).then(({ data }) => {
-                    // console.log(data)
-                    if (data && data.code === 0) {
-                        this.disabledcz = true
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success',
-                            duration: 1500,
-                            onClose: () => {
+                        }).then(({ data }) => {
+                            this.rechargeSubmitLoading = false
+                            if (data && data.code === 0) {
                                 this.chdataFormVisible = false
-                                this.disabledcz = false
-                                this.chdataForm.remark = ""// 清空备注
                                 this.getDataList()
+                                this.$message({
+                                    message: '操作成功',
+                                    type: 'success',
+                                    duration: 1500
+                                })
+                            } else {
+                                this.$message.error(data.msg)
                             }
                         })
-                    } else {
-                        this.$message.error(data.msg)
                     }
                 })
             },

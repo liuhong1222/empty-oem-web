@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>OEM充值明细记录</h2>
+            <h2>代理商充值记录</h2>
             <el-form :inline="true" :model="OEMSearchData" @keyup.enter.native="agentRechargeList()">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="OEMSearchData.dateTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"

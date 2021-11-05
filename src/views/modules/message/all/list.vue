@@ -13,7 +13,7 @@
                         <el-option label="已驳回" value="3"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="代理商名称：" style="margin-left:-15px;">
+                <el-form-item label="代理商名称：" style="margin-left: 15px;">
                     <el-input v-model="AgInfoSearchData.agentName" placeholder="代理商名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
