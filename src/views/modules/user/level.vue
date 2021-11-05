@@ -18,13 +18,13 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="del(scope.row.id,scope.row.name)">删除</el-button>
+                        <el-button type="text" size="small" @click="del(scope.row.id,scope.row.level)">删除</el-button>
                         <el-button type="text" size="small" @click="addUpdateLevel(scope.row.id)">修改</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-        <!-- 删除代理商等级 -->
+        <!-- 新增修改代理商等级 -->
         <add-grade-update v-if="gradeVisible" ref="gradeCon" @refreshDataList="levelList"></add-grade-update>
     </div>
 </template>
@@ -53,8 +53,7 @@
                     method: 'get',
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data)
-                        this.oemTableData = data.data
+                        this.oemTableData = data.data || []
                     } else {
                         this.oemTableData = []
                     }
@@ -90,19 +89,17 @@
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
+                            this.levelList()
                             this.$message({
                                 message: '操作成功',
                                 type: 'success',
-                                duration: 1500,
-                                onClose: () => {
-                                    this.levelList()
-                                }
+                                duration: 1500
                             })
                         } else {
                             this.$message.error(data.msg)
                         }
                     })
-                }).catch(() => { })
+                }).catch(() => {})
             }
         }
     }

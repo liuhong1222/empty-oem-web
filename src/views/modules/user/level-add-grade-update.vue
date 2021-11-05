@@ -1,48 +1,39 @@
 <template>
-    <el-dialog :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="levelvisible" @close="closeDialog">
+    <el-dialog :title="!dataForm.id ? '新增代理商等级' : '修改代理商等级'" :close-on-click-modal="false" :visible.sync="levelvisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
-            <!-- <el-form-item label="代理商等级：" prop="levelNum">
-                <el-input v-model="dataForm.levelNum" placeholder="代理商等级 如：1"></el-input>
+            <el-form-item label="产品代理类型：" prop="levelType">
+                <el-radio-group v-model="dataForm.levelType">
+                    <el-radio :label="0">空号检测</el-radio>
+                    <el-radio :label="1">实时检测</el-radio>
+                </el-radio-group>
             </el-form-item>
-            <el-form-item label="等级名称：" prop="levelName">
-                <el-input v-model="dataForm.levelName" placeholder="代理商等级 如：一级代理商"></el-input>
-            </el-form-item> -->
-            <el-form-item label="代理商等级：" prop="price">
-                <el-input v-model="dataForm.levelName" placeholder="代理商等级"></el-input>
+            <el-form-item label="代理商等级：" prop="level">
+                <el-input v-model="dataForm.level" placeholder="代理商等级"></el-input>
                 <span>级</span>
             </el-form-item>
             <el-form-item label="单价：" prop="price">
-                <el-input v-model="dataForm.price" placeholder="单价"></el-input>
+                <el-input-number @change="handleInputChange" v-model="dataForm.price" :min="0"></el-input-number>
                 <span>元/条</span>
             </el-form-item>
-            <el-form-item label="预警条数：" prop="moreCounts">
-                <el-input v-model="dataForm.moreCounts" placeholder="预警条数"></el-input>
+            <el-form-item label="预警条数：" prop="warningsNumber">
+                <el-input-number v-model="dataForm.warningsNumber" :min="0"></el-input-number>
                 <span>条</span>
             </el-form-item>
-            <!-- <el-form-item label="充值金额：" prop="minRecharge">
-                <el-col :span="8">
-                    <el-input v-model="dataForm.minRecharge" style="width:100%" placeholder="最小充值"></el-input>
-                </el-col>
-                <el-col class="line" :span="1">-</el-col>
-                <el-col :span="8">
-                    <el-input v-model="dataForm.maxRecharge" style="width:100%" placeholder="最大充值"></el-input>
-                </el-col>
-            </el-form-item> -->
-            <el-form-item label="最小充值条数：" prop="price">
-               <el-input-number v-model="dataForm.minCount" :min="0"></el-input-number>
+            <el-form-item label="最小充值条数：" prop="minRechargeNumber">
+               <el-input-number @change="handleInputChange" v-model="dataForm.minRechargeNumber" :min="0"></el-input-number>
                 <span>条</span>
             </el-form-item>
-            <el-form-item label="最小充值金额：" prop="price">
-                <el-input-number v-model="dataForm.minPrice" disabled :min="0"></el-input-number>
+            <el-form-item label="最小充值金额：" prop="minPaymentAmount">
+                <el-input-number v-model="dataForm.minPaymentAmount" disabled :min="0"></el-input-number>
                 <span>元</span>
             </el-form-item>
-            <el-form-item label="备注：" prop="price">
+            <el-form-item label="备注：" prop="remark">
                 <el-input v-model="dataForm.remark" :rows="3" placeholder="请输入备注" type="textarea"></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="levelvisible = false">取消</el-button>
-            <el-button type="primary"  @click="levelSubmit()">确定</el-button>
+            <el-button type="primary" :loading="submitLoading" @click="levelSubmit()">确定</el-button>
           </span>
     </el-dialog>
 </template>
@@ -54,55 +45,55 @@
                 levelvisible: false,
                 labelPosition: 'right',
                 dataForm: {
-                    id: 0,
-                    levelName: '',
-                    levelNum: '',
-                    price: '',
-                    moreCounts: '',
-                    minRecharge: '',
-                    maxRecharge: ''
+                    levelType: 0
                 },
                 dataRule: {
-                    levelName: [
-                        { required: true, message: '请输入代理商等级名称', trigger: 'blur' }
+                    levelType: [
+                        { required: true, message: '请选择产品代理类型', trigger: 'blur' }
                     ],
-                    levelNum: [
+                    level: [
                         { required: true, message: '请输入代理商等级', trigger: 'blur' }
                     ],
                     price: [
                         { required: true, message: '请输入单价', trigger: 'blur' }
                     ],
-                    moreCounts: [
-                        { required: true, message: '请输入允许超出条数', trigger: 'blur' }
+                    warningsNumber: [
+                        { required: true, message: '请输入预警条数', trigger: 'blur' }
                     ],
-                    minRecharge: [
-                        { required: true, message: '请输入充值金额', trigger: 'blur' }
+                    minRechargeNumber: [
+                        { required: true, message: '请输入最小充值条数', trigger: 'blur' }
+                    ],
+                    minPaymentAmount: [
+                        { required: true, message: '请输入最小充值金额', trigger: 'blur' }
                     ]
-                }
+                },
+                submitLoading: false
             }
         },
         methods: {
             levelInit(id) {
-                this.dataForm.id = id || 0
                 this.levelvisible = true
-                // console.log(id)
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
                 })
-                if (this.dataForm.id) {
+                if (id) {
                     this.$http({
                         url: this.$http.adornUrl(`agent/level/detail?token=${this.$cookie.get('token')}&id=${this.dataForm.id}`),
                         method: 'get',
                         params: this.$http.adornParams()
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
-                            // console.log(data)
-                            this.dataForm.levelName = data.data.name
-                            this.dataForm.levelNum = data.data.level
-                            this.dataForm.price = data.data.price
-                            this.dataForm.moreCounts = data.data.emptyWarnNumber
-                            this.dataForm.minRecharge = data.data.minRecharge
-                            this.dataForm.maxRecharge = data.data.maxRecharge
+                            const { levelType, level, price, warningsNumber, minRechargeNumber, minPaymentAmount, remark } = (data.data || {})
+                            this.dataForm = {
+                                id,
+                                levelType,
+                                level,
+                                price,
+                                warningsNumber,
+                                minRechargeNumber,
+                                minPaymentAmount,
+                                remark
+                            }
                         }
                     })
                 }
@@ -110,29 +101,23 @@
             levelSubmit() {
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/level/${!this.dataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'id': this.dataForm.id || undefined,
-                                'name': this.dataForm.levelName,
-                                'level': this.dataForm.levelNum,
-                                'price': this.dataForm.price,
-                                'emptyWarnNumber': this.dataForm.moreCounts,
-                                'minRecharge': this.dataForm.minRecharge,
-                                'maxRecharge': this.dataForm.maxRecharge
+                                ...this.dataForm,
+                                id: this.dataForm.id || undefined
                             })
                         }).then(({ data }) => {
-                            // console.log(data)
+                            this.submitLoading = false
                             if (data && data.code === 0) {
+                                this.levelvisible = false
+                                this.$emit('refreshDataList')
                                 this.$message({
                                     message: '操作成功',
                                     type: 'success',
-                                    duration: 1500,
-                                    onClose: () => {
-                                        this.levelvisible = false
-                                        this.$emit('refreshDataList')
-                                    }
+                                    duration: 1500
                                 })
                             } else {
                                 this.$message.error(data.msg)
@@ -140,12 +125,13 @@
                         })
                     }
                 })
-
             },
-            closeDialog() {
-                this.dataForm.minRecharge=""
-                this.dataForm.maxRecharge=""
-            },
+            handleInputChange() {
+                this.$nextTick(() => {
+                    const { price, minRechargeNumber } = this.dataForm
+                    this.dataForm.minPaymentAmount = (price || 0) * (minRechargeNumber || 0)
+                })
+            }
         }
     }
 
