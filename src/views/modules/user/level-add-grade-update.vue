@@ -8,24 +8,24 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="代理商等级：" prop="level">
-                <el-input v-model="dataForm.level" placeholder="代理商等级"></el-input>
+                <el-input v-model="dataForm.level" placeholder="请输入代理商等级"></el-input>
                 <span>级</span>
             </el-form-item>
             <el-form-item label="单价：" prop="price">
                 <el-input-number @change="handleInputChange" v-model="dataForm.price" :min="0"></el-input-number>
-                <span>元/条</span>
+                <span class="margin-left-8">元/条</span>
             </el-form-item>
             <el-form-item label="预警条数：" prop="warningsNumber">
                 <el-input-number v-model="dataForm.warningsNumber" :min="0"></el-input-number>
-                <span>条</span>
+                <span class="margin-left-8">条</span>
             </el-form-item>
             <el-form-item label="最小充值条数：" prop="minRechargeNumber">
                <el-input-number @change="handleInputChange" v-model="dataForm.minRechargeNumber" :min="0"></el-input-number>
-                <span>条</span>
+                <span class="margin-left-8">条</span>
             </el-form-item>
             <el-form-item label="最小充值金额：" prop="minPaymentAmount">
                 <el-input-number v-model="dataForm.minPaymentAmount" disabled :min="0"></el-input-number>
-                <span>元</span>
+                <span class="margin-left-8">元</span>
             </el-form-item>
             <el-form-item label="备注：" prop="remark">
                 <el-input v-model="dataForm.remark" :rows="3" placeholder="请输入备注" type="textarea"></el-input>
@@ -140,5 +140,10 @@
 <style lang="scss">
     .el-form-item__content {
         margin-left: 0
+    }
+</style>
+<style scoped lang="scss">
+    .margin-left-8 {
+        margin-left: 8px;
     }
 </style>

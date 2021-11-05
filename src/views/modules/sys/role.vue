@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.roleName" placeholder="角色名称" clearable></el-input>
+        <el-input v-model="dataForm.roleName" placeholder="请输入角色名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -57,11 +57,12 @@
       AddOrUpdate
     },
     activated() {
-      this.getDataList()
+      this.getDataList(1)
     },
     methods: {
       // 获取数据列表
-      getDataList() {
+      getDataList(curr) {
+        this.pageIndex = curr || this.pageIndex;
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('sys/role/list'),
@@ -120,13 +121,11 @@
             data: this.$http.adornData(ids, false)
           }).then(({ data }) => {
             if (data && data.code === 0) {
+              this.getDataList(1)
               this.$message({
                 message: '操作成功',
                 type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
+                duration: 1500
               })
             } else {
               this.$message.error(data.msg)

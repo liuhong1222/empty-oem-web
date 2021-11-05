@@ -14,7 +14,7 @@
                 <el-form-item label="手机号：" style="margin-left:5px;">
                     <el-input v-model="searchData.agentMobile" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="审核状态">
+                <el-form-item label="审核状态：">
                     <el-select v-model="searchData.auditStatusSer" placeholder="请选择审核状态">
                         <el-option label="全部" value=""></el-option>
                         <el-option label="待审核" value="0"></el-option>
@@ -145,10 +145,10 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" align="center" width="200">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click=seedialog(scope.row)>查看</el-button>
+                        <el-button type="text" size="small" @click="seedialog(scope.row)">查看</el-button>
                         <el-button type="text" size="small" @click="seetingDialog(scope.row.agentId)">修改</el-button>
                         <el-button type="text" size="small" @click="del(scope.row.agentId)">删除</el-button>
-                        <el-button type="text" size="small" @click=auditDialog(scope.row) :disabled="scope.row.auditState == 0 ? false: true">{{scope.row.auditState == 0 ? '审核': ''}}</el-button>
+                        <el-button type="text" size="small" @click="auditDialog(scope.row)" :disabled="scope.row.auditState == 0 ? false: true">{{scope.row.auditState == 0 ? '审核': ''}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
