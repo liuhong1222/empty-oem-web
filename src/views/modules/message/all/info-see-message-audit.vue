@@ -80,21 +80,20 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.seeAuditDataForm.title = data.data.title;
-                        this.seeAuditDataForm.messCon = data.data.message;
-                        this.seeAuditDataForm.infoType = data.data.typeName;
+                        this.seeAuditDataForm.messCon = data.data.content;
+                        this.seeAuditDataForm.infoType = data.data.noticeTypeName;
                         var str = "";
-                        for (var i = 0; i < data.data.mobileList.length; i++) {
-                            data.data.mobileList[i] += ','
+                        for (var i = 0; i < data.data.customerMobileList.length; i++) {
+                            data.data.customerMobileList[i] += ','
                             if (i % 3 == 0 && i !== 0) {
                                 str += "\n"
                             }
                             if (str.substr(0, 1) == '，')
                                 str = str.substr(1);  //去掉第一个一个符号
-                            str += data.data.mobileList[i];
+                            str += data.data.customerMobileList[i];
                         }
                         str = str.slice(0, str.length - 1)  //去掉最后一个符号
                         this.seeAuditDataForm.sendObject = str
-                        // this.seeAuditDataForm.sendObject = (data.data.mobileList).toString();
                     }
                 })
                 this.$nextTick(() => {

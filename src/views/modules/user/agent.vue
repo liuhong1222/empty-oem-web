@@ -2,7 +2,7 @@
     <div class="main">
         <div class="topSearch">
             <h2>代理商列表</h2>
-            <el-form :inline="true" :model="searchData" @keyup.enter.native="getDataList()">
+            <el-form :inline="true" :model="searchData" @keyup.enter.native="getDataList(1)">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="searchData.dateTime" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
@@ -23,7 +23,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="getDataList()">查询</el-button>
+                    <el-button type="primary" @click="getDataList(1)">查询</el-button>
                     <el-button type="primary" @click="exporTable" :disabled="disabled">导出</el-button>
                     <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addUpdateAgent()">新增代理商</el-button>
                 </el-form-item>
@@ -255,7 +255,8 @@
             },
 
             // 获取代理商列表
-            getDataList() {
+            getDataList(curr) {
+                this.pageIndex = curr || this.pageIndex
                 this.dataListLoading = true
                 this.$http({
                     url: this.$http.adornUrl(`agent/agentInfo/list?token=${this.$cookie.get('token')}`),

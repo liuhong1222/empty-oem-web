@@ -8,7 +8,7 @@
                 </el-form-item>
                 <el-form-item label="新闻内容" prop="newsContent">
                     <el-input type="hidden" v-model="newsForm.newsContent"></el-input>
-                    <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
+                    <UE v-bind:defaultMsg="defaultMsgCon" :config="config" ref="ue"></UE>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -30,7 +30,6 @@
                     initialFrameHeight: 350,
                     autoFloatEnabled: false,
                     elementPathEnabled: false,
-                    // serverUrl: 'http://172.16.4.242:9999/open/agent/ueditor?token=' + `${this.$cookie.get('token')}`
                 },
                 dataForm: {
                     id: ''
@@ -65,8 +64,8 @@
                         params: this.$http.adornParams()
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
-                            this.newsForm.newsTitle = data.data.title;
-                            this.defaultMsgCon = data.data.message;
+                            this.newsForm.newsTitle = data.data.title || '';
+                            this.defaultMsgCon = data.data.content || '';
                         }
                     })
                 }
@@ -79,16 +78,7 @@
                 this.$refs['newsRuleForm'].validate((valid) => {
                     if (valid) {
                         let content = this.$refs.ue.getUEContentMsj();
-                        // 不带标签
                         let noLableCon = this.$refs.ue.getContentTxtMsj();
-                        // console.log(noLableCon)
-                        // if (content == "") {
-                        //     this.$message({
-                        //         message: '请输入新闻内容',
-                        //         type: 'warning'
-                        //     });
-                        //     return;
-                        // }
                         this.$http({
                             url: this.$http.adornUrl(`agent/news/my/${!this.dataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -104,10 +94,8 @@
                                 this.newsForm.newsTitle = "";
                                 this.$refs.ue.execCommand();
                                 this.visible = false;
-                                this.$emit('refreshNewsList')
+                                this.$emit('refreshNewsList', 1)
                             } else {
-                                // this.$refs.ue.execCommand();
-                                // this.newsForm.newsTitle = "";
                                 this.$message.error(data.msg);
                             }
                         })

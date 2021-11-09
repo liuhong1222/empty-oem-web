@@ -154,7 +154,8 @@
           <span class="label" v-if="i == '3'">条</span>
           <span class="label" v-else>万条</span>
         </div>
-        <p style="margin-left: 40px">注意：
+        <p style="margin-left: 40px">
+          注意：
           <p style="margin-left: 80px;margin-top: -37px">1. 充值单价不得低于<span style="color:red">0.001</span>元/条；</p>
           <p style="margin-left: 80px;line-height:2px">2.套餐价格必须为正整数。</p>
         </p>
@@ -251,7 +252,7 @@
         ],
         basicList: [ //基本信息
           { title: '我的代理价（元/条）', counts: '', btnText: '', flag: false },
-          { title: '我的余额（万条）', counts: '', btnText: '充值', flag: false },
+          { title: '我的余额（万条）', counts: '', btnText: '充值', flag: true },
           { title: '预警值（万条）', counts: '', btnText: '修改', flag: true },
           { title: '手机号', counts: '', btnText: '更改', flag: true },
           { title: '邮箱', counts: '', btnText: '更改', flag: true }
@@ -651,7 +652,7 @@
       // 充值记录
       myRechargeList() {
         this.$http({
-          url: this.$http.adornUrl(`agent/finance/my/recharge/list?token=${this.$cookie.get('token')}`),
+          url: this.$http.adornUrl(`agent/finance/agent/recharge/list?token=${this.$cookie.get('token')}`),
           method: 'get',
           params: this.$http.adornParams({
             'currentPage': 1,

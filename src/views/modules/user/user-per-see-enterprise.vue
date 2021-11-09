@@ -229,7 +229,7 @@
                     this.perseeDataForm.id = arr[0]
                     this.perseeDataForm.creUserId = arr[2]
                     this.$http({
-                        url: this.$http.adornUrl(`agent/cust/findPersonById?token=${this.$cookie.get('token')}&id=${this.perseeDataForm.id === null ? "" : this.perseeDataForm.id}&creUserId=${this.perseeDataForm.creUserId}`),
+                        url: this.$http.adornUrl(`agent/cust/findPersonById?token=${this.$cookie.get('token')}&customerId=${this.perseeDataForm.id === null ? "" : this.perseeDataForm.id}`),
                         method: 'get',
                         params: this.$http.adornParams()
                     }).then(({ data }) => {

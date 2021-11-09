@@ -6,7 +6,7 @@
                     <el-input v-model="newsSeeForm.newsTitle" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="新闻内容:">
-                    <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
+                    <UE v-bind:defaultMsg="defaultMsgCon" :config="config" ref="ue"></UE>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -33,7 +33,6 @@
                     toolbars: [],
                     readonly: true,
                     elementPathEnabled: false,
-                    // serverUrl: 'http://172.16.4.242:9999/open/agent/ueditor?token=' + `${this.$cookie.get('token')}`
                 },
             }
         },
@@ -41,24 +40,22 @@
             showInit(id) {
                 this.dataForm.id = id
                 this.visible = true;
-                // alert('查看')
                 this.$http({
                     url: this.$http.adornUrl(`agent/news/my/detail?token=${this.$cookie.get('token')}&newsId=${this.dataForm.id}`),
                     method: 'get',
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.newsSeeForm.newsTitle = data.data.title;
-                        this.defaultMsgCon = data.data.message;
+                        this.newsSeeForm.newsTitle = data.data.title || '';
+                        this.defaultMsgCon = data.data.content || '';
                     }
                 })
             },
             closeNewsSeeDialod() {
                 this.visible = false;
-                this.defaultMsgCon = "";
-                this.newsSeeForm.newsTitle = "";
+                this.defaultMsgCon = '';
+                this.newsSeeForm.newsTitle = '';
                 if (this.$refs.ue.hasContent) {   //判断是否有内容
-                    // alert(33333)
                     this.$refs.ue.execCommand()
                 }
             }

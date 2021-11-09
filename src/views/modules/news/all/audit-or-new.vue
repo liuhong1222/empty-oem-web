@@ -79,8 +79,8 @@
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.auditnewsSeeForm.newsTitle = data.data.title;
-                        this.defaultMsgCon = data.data.message;
+                        this.auditnewsSeeForm.newsTitle = data.data.title || '';
+                        this.defaultMsgCon = data.data.content || '';
                     }
                 })
                 this.$nextTick(() => {
@@ -116,8 +116,7 @@
                             if (data && data.code === 0) {
                                 this.$message.success('操作成功!')
                                 this.dialogVisible = false
-                                this.$emit('auditRefreshDataList')
-
+                                this.$emit('auditRefreshDataList', 1)
                             } else {
                                 this.$message.error(data.msg)
 

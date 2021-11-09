@@ -328,9 +328,9 @@ export default {
       this.seeVisible = true;
       // console.log(row.id)
       // console.log(row.user_type)
-      this.arr[0] = row.id;
+      this.arr[0] = row.customerId;
       this.arr[1] = row.user_type;
-      this.arr[2] = row.creUserId;
+      this.arr[2] = row.customerId;
       this.$nextTick(() => {
         this.$refs.seecon.seeInit(arr);
       });
@@ -339,10 +339,10 @@ export default {
     rechargedataBtn(row) {
       let arr = this.arr; // 传id和当前修改的是企业还是个人
       this.chargeVisible = true;
-      this.arr[0] = row.id;
+      this.arr[0] = row.customerId;
       this.arr[1] = row.user_type;
-      this.arr[2] = row.creUserId;
-      this.arr[3] = row.user_phone;
+      this.arr[2] = row.customerId;
+      this.arr[3] = row.phone;
       this.$nextTick(() => {
         this.$refs.rechargecon.rechargeInit(arr);
       });

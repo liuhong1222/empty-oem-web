@@ -45,8 +45,8 @@
             </el-form-item>
             <h3>空号检测等级</h3>
             <el-form-item label="空号检测等级：" prop="agentLevel">
-                <el-select style="width: 100%;" v-model="dataForm.agentLevel" placeholder="请选择空号检测等级" @change="changeLevel(false, dataForm.agentLevel)">
-                    <el-option :value="item.id + ''" :label="item.level" v-for="(item,index) in spaceLevelArr" :key="index">
+                <el-select style="width: 100%;" v-model="dataForm.agentLevel" placeholder="请选择空号检测等级" @change="changeLevel(false, 'agentLevel')">
+                    <el-option :value="item.level" :label="item.level" v-for="(item,index) in spaceLevelArr" :key="index">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -68,7 +68,7 @@
             </el-form-item>
             <h3>实时检测等级</h3>
             <el-form-item label="实时检测等级：" prop="realLevel">
-                <el-select style="width: 100%;" v-model="dataForm.realLevel" placeholder="请选择实时检测等级" @change="changeLevel(true, dataForm.realLevel)">
+                <el-select style="width: 100%;" v-model="dataForm.realLevel" placeholder="请选择实时检测等级" @change="changeLevel(true, 'realLevel')">
                     <el-option :value="item.id + ''" :label="item.level" v-for="(item,index) in realLevelArr" :key="index">
                     </el-option>
                 </el-select>
@@ -252,7 +252,7 @@
                     param: this.$http.adornParams({})
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.spaceLevelArr = data.data
+                        this.spaceLevelArr = data.data || []
                     } else {
                         this.spaceLevelArr = []
                     }
@@ -265,7 +265,7 @@
                     param: this.$http.adornParams({})
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.realLevelArr = data.data
+                        this.realLevelArr = data.data || []
                     } else {
                         this.realLevelArr = []
                     }
@@ -303,16 +303,16 @@
                             })
                         }).then(({ data }) => {
                             if (data && data.code === 0) {
+                                this.visible = false
+                                this.$emit('refreshDataList', this.dataForm.id ? undefined : 1)
                                 this.$message({
                                     message: '操作成功',
                                     type: 'success',
                                     duration: 1500,
                                     onClose: () => {
-                                        this.visible = false
                                         this.dataForm.priseimageUrl = ""
                                         this.licensePicNo = ""
                                         this.dataForm.busindate2 = ""
-                                        this.$emit('refreshDataList')
                                     }
                                 })
                             } else {
@@ -367,25 +367,28 @@
                 this.dataForm.busindate2 = ""
                 this.agentReadonly = false
             },
-            changeLevel(isReal, val) {
-                let levelArr = isReal ? this.realLevelArr : this.spaceLevelArr
-                let selected = levelArr.find(item => {
-                    return item.id === val
-                }) || {};
-                const { price, warningsNumber, minPaymentAmount, minRechargeNumber } = selected
-                if (isReal) {
-                    // 实时检测等级
-                    this.dataForm.realPrice = price
-                    this.dataForm.realWarningsNumber = warningsNumber
-                    this.dataForm.realMinPaymentAmount = minPaymentAmount
-                    this.dataForm.realMinRechargeNumber = minRechargeNumber
-                } else {
-                    // 空号检测等级
-                    this.dataForm.price = price
-                    this.dataForm.warningsNumber = warningsNumber
-                    this.dataForm.minPaymentAmount = minPaymentAmount
-                    this.dataForm.minRechargeNumber = minRechargeNumber
-                }
+            changeLevel(isReal, key) {
+                this.$nextTick(() => {
+                    let levelArr = isReal ? this.realLevelArr : this.spaceLevelArr
+                    let selected = levelArr.find(item => {
+                        return item.id + '' === this.dataForm[key]
+                    }) || {}
+                    console.log(this.dataForm[key], selected)
+                    const { price, warningsNumber, minPaymentAmount, minRechargeNumber } = selected
+                    if (isReal) {
+                        // 实时检测等级
+                        this.dataForm.realPrice = price
+                        this.dataForm.realWarningsNumber = warningsNumber
+                        this.dataForm.realMinPaymentAmount = minPaymentAmount
+                        this.dataForm.realMinRechargeNumber = minRechargeNumber
+                    } else {
+                        // 空号检测等级
+                        this.dataForm.price = price
+                        this.dataForm.warningsNumber = warningsNumber
+                        this.dataForm.minPaymentAmount = minPaymentAmount
+                        this.dataForm.minRechargeNumber = minRechargeNumber
+                    }
+                });
             }
         }
     }

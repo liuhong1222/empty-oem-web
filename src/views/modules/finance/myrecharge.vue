@@ -79,7 +79,7 @@
             myRechargeList() {
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/finance/my/recharge/list?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/finance/agent/recharge/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,

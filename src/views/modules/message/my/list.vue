@@ -1,25 +1,25 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>代理商消息列表</h2>
+            <h2>我的消息列表</h2>
             <el-form :inline="true" :model="AgentInfoSearchData">
                 <el-form-item label="选择状态：">
                     <el-select v-model="AgentInfoSearchData.status" placeholder="代理商状态">
                         <el-option label="全部" value=""></el-option>
-                        <el-option label="已审核" value="1"></el-option>
-                        <el-option label="发布待审核" value="0"></el-option>
-                        <el-option label="修改待审核" value="2"></el-option>
-                        <el-option label="已删除" value="-1"></el-option>
-                        <el-option label="已驳回" value="3"></el-option>
+                        <el-option label="发布待审核" value="1"></el-option>
+                        <el-option label="已审核" value="2"></el-option>
+                        <el-option label="修改待审核" value="3"></el-option>
+                        <el-option label="已驳回" value="4"></el-option>
+                        <el-option label="已删除" value="5"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="消息类型：">
                     <el-select v-model="AgentInfoSearchData.infoType" placeholder="消息类型">
                         <el-option label="全部" value=""></el-option>
-                        <el-option label="系统消息" value="1"></el-option>
+                        <el-option label="系统消息" value="0"></el-option>
                         <el-option label="活动通知" value="2"></el-option>
                         <el-option label="故障通知" value="3"></el-option>
-                        <el-option label="更新通知" value="4"></el-option>
+                        <el-option label="更新通知" value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
@@ -32,27 +32,28 @@
             <el-table :data="infoTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column prop="agentName" label="代理商名称" align="center">
-                </el-table-column>
+                <!-- <el-table-column prop="agentName" label="代理商名称" align="center">
+                </el-table-column> -->
                 <el-table-column prop="title" label="消息标题" align="center">
                 </el-table-column>
                 <el-table-column prop="typeName" label="消息类型" align="center">
                 </el-table-column>
-                <el-table-column prop="commitTime" label="提交发布时间" align="center">
+                <el-table-column prop="createTime" label="提交发布时间" align="center">
                 </el-table-column>
-                <el-table-column prop="auditTime" label="审核时间" align="center">
+                <el-table-column prop="updateTime" label="审核时间" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.state != 1 ? row.updateTime : '' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="auditStateName" label="状态" align="center">
+                <el-table-column prop="stateName" label="状态" align="center">
                 </el-table-column>
-                <el-table-column prop="auditRemark" label="备注" align="center">
+                <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="auditOrSeeMess(scope.row.id,'see')">查看</el-button>
-                        <el-button type="text" size="small" :disabled="scope.row.auditState ==3 ?false: true" @click="updateInfo(scope.row.id)">修改</el-button>
-                        <el-button type="text" size="small" :disabled="scope.row.auditState ==
-                        -1 ?true: false"
-                            @click="delInfoList(scope.row.id,scope.row.agentName)">删除</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.state == 4 ? false : true" @click="updateInfo(scope.row.id)">修改</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.state == 5 ? true : false" @click="delInfoList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -109,8 +110,8 @@
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditState': this.AgentInfoSearchData.status,
-                        'type': this.AgentInfoSearchData.infoType
+                        'state': this.AgentInfoSearchData.status,
+                        'noticeType': this.AgentInfoSearchData.infoType
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
@@ -164,8 +165,8 @@
                 })
             },
             // 删除
-            delInfoList(id, name) {
-                this.$confirm(`是否删除${name}以及相关信息？`, '删除消息列表', {
+            delInfoList(record) {
+                this.$confirm(`是否删除【${record.title}】以及相关信息？`, '删除消息列表', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -174,17 +175,15 @@
                         url: this.$http.adornUrl(`agent/message/my/delete?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'agentMessageId': id
+                            'agentMessageId': record.id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
+                            this.messageList()
                             this.$message({
                                 message: '操作成功',
                                 type: 'success',
-                                duration: 1500,
-                                onClose: () => {
-                                    this.messageList()
-                                }
+                                duration: 1500
                             })
                         } else {
                             this.$message.error(data.msg)

@@ -54,10 +54,10 @@
                     id: ''
                 },
                 infoTypeArr: [
-                    { id: '1', type: '系统消息' },
+                    { id: '0', type: '系统消息' },
                     { id: '2', type: '活动通知' },
                     { id: '3', type: '故障通知' },
-                    { id: '4', type: '更新通知' },
+                    { id: '1', type: '更新通知' },
                 ]
             }
         },
@@ -72,9 +72,9 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.updateInfoDataForm.title = data.data.title;
-                        this.updateInfoDataForm.messCon = data.data.message;
-                        this.updateInfoDataForm.infoType = data.data.type;
-                        this.updateInfoDataForm.sendObject = (data.data.mobileList).toString();
+                        this.updateInfoDataForm.messCon = data.data.content;
+                        this.updateInfoDataForm.infoType = data.data.noticeType + '';
+                        this.updateInfoDataForm.sendObject = (data.data.customerMobileList).toString();
                     }
                 })
                 this.$nextTick(() => {

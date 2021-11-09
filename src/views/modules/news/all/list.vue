@@ -2,15 +2,15 @@
     <div>
         <div class="topSearch">
             <h3>代理商新闻列表</h3>
-            <el-form :inline="true" :model="ADnewsSearchData" @keyup.enter.native="ADnewsTableDataList()">
+            <el-form :inline="true" :model="ADnewsSearchData" @keyup.enter.native="ADnewsTableDataList(1)">
                 <el-form-item label="选择状态：">
                     <el-select v-model="ADnewsSearchData.type" placeholder="选择状态">
                         <el-option label="全部" value=""></el-option>
-                        <el-option label="发布待审核" value="0"></el-option>
+                        <el-option label="发布待审核" value="1"></el-option>
                         <el-option label="修改待审核" value="2"></el-option>
-                        <el-option label="已审核" value="1"></el-option>
-                        <el-option label="已驳回" value="3"></el-option>
-                        <el-option label="已删除" value="-1"></el-option>
+                        <el-option label="已审核" value="3"></el-option>
+                        <el-option label="已驳回" value="4"></el-option>
+                        <el-option label="已删除" value="5"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="代理商名称">
@@ -29,9 +29,9 @@
                 </el-table-column>
                 <el-table-column prop="title" label="新闻标题" align="center">
                 </el-table-column>
-                <el-table-column prop="commitTime" label="提交时间" align="center">
+                <el-table-column prop="commitTime" width="150" label="提交时间" align="center">
                 </el-table-column>
-                <el-table-column prop="auditTime" label="审核时间" align="center">
+                <el-table-column prop="auditTime" width="150" label="审核时间" align="center">
                 </el-table-column>
                 <el-table-column prop="auditStateName" label="状态" align="center">
                 </el-table-column>
@@ -40,10 +40,8 @@
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="auditNes(scope.row.id,'see')">查看</el-button>
-                        <el-button type="text" size="small" @click="delADnewsList(scope.row.id,scope.row.agentName)"
-                            :disabled="scope.row.auditState ==
-                        -1 ?true: false">删除</el-button>
-                        <el-button type="text" size="small" @click="auditNes(scope.row.id,'audit')" :disabled="scope.row.auditState == 0 ? false : (scope.row.auditState == 2) ? false : true">审核</el-button>
+                        <el-button type="text" size="small" @click="delADnewsList(scope.row)" :disabled="scope.row.auditState == 5 ? true : false">删除</el-button>
+                        <el-button type="text" size="small" @click="auditNes(scope.row.id,'audit')" :disabled="['1', '2'].includes(scope.row.auditState + '') ? false : true">审核</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,25 +76,23 @@
             AuditOrNew
         },
         activated() {
-            this.ADnewsTableDataList()
+            this.ADnewsTableDataList(1)
         },
         methods: {
-            ADnewsTableDataList(cur) {
+            ADnewsTableDataList(curr) {
                 this.dataListLoading = true
+                this.pageIndex = curr || this.pageIndex
                 this.$http({
                     url: this.$http.adornUrl(`agent/news/all/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
-                        'currentPage': cur || this.pageIndex,
+                        'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'auditState': this.ADnewsSearchData.type,
                         'agentName': this.ADnewsSearchData.agentName
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        if (cur == 1) {
-                            this.pageIndex = 1
-                        }
                         this.ADnewsTableData = data.data.list
                         this.totalPage = data.data.total
 
@@ -108,8 +104,8 @@
                 })
             },
             // 删除
-            delADnewsList(id, name) {
-                this.$confirm(`是否删除${name}以及相关信息？`, '删除新闻列表', {
+            delADnewsList(record) {
+                this.$confirm(`是否删除【${record.title}】以及相关信息？`, '删除新闻列表', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -118,17 +114,15 @@
                         url: this.$http.adornUrl(`agent/news/all/delete?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'newsId': id
+                            'newsId': record.id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
+                            this.ADnewsTableDataList(1)
                             this.$message({
                                 message: '操作成功',
                                 type: 'success',
-                                duration: 1500,
-                                onClose: () => {
-                                    this.ADnewsTableDataList()
-                                }
+                                duration: 1500
                             })
                         } else {
                             this.$message.error(data.msg)

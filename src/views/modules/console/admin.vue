@@ -135,13 +135,13 @@
                 },
                 tableData: [],
                 emptyCheckStatic: [
-                    { title: '代理商数量', field: 'agentCount' },
+                    { title: '代理商数量', field: 'emptyAgentNums' },
                     { title: '充值总金额（元）', field: 'rechargeSum' },
                     { title: '消耗总条数（条）', field: 'emptyConsume' },
                     { title: '充值总条数（条）', field: 'rechargeNumberSum' }
                 ],
                 realCheckStatic: [
-                    { title: '代理商数量', field: 'agentCount' },
+                    { title: '代理商数量', field: 'realtimeAgentNums' },
                     { title: '充值总金额（元）', field: 'realtimeRechargeSum' },
                     { title: '消耗总条数（条）', field: 'realTimeConsume' },
                     { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }

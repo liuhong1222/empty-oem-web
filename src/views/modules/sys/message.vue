@@ -16,8 +16,8 @@
             </el-form-item>
             <el-form-item label="发送对象" prop="object">
                 <el-radio-group v-model="ruleForm.object">
-                    <el-radio @click.native.prevent="clickitem(1)" :label="1">所有用户</el-radio>
-                    <el-radio @click.native.prevent="clickitem(2)" :label="2">选定用户</el-radio>
+                    <el-radio @click.native.prevent="clickitem(1)" :label="1">所有客户</el-radio>
+                    <el-radio @click.native.prevent="clickitem(2)" :label="2">选择客户</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="消息内容" prop="desc">
@@ -29,7 +29,7 @@
             </el-form-item>
         </el-form>
 
-        <!-- 选定用户弹窗 -->
+        <!-- 选择客户弹窗 -->
         <!-- v-on:childByValue  子给父传值 -->
         <select-user v-if="selectUserVisible" ref="selectUserRef" v-on:childByValue="childByValue" v-bind:param="messageList"></select-user>
     </div>
@@ -69,7 +69,6 @@
         },
         methods: {
             clickitem(e) {
-                // alert(e)
                 if (e == 2) {
                     e === this.ruleForm.object ? this.ruleForm.object = e : this.ruleForm.object = e
                     this.selectUserVisible = true
@@ -92,7 +91,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         if (this.childValues == "" && this.ruleForm.object == 2) {
-                            this.$message.warning('选定的用户为空，请选定用户或者选择所有用户！')
+                            this.$message.warning('选择的客户为空，请选择客户或者选择所有客户！')
                             return
                         }
                         this.$confirm('确认要发布吗？')

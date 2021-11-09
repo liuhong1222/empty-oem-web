@@ -1,12 +1,12 @@
 <template>
-    <el-dialog title="选定用户" :visible.sync="dialogTableVisible" width="50%" :before-close="clseoeoe" :modal="false">
+    <el-dialog title="选择客户" :visible.sync="dialogTableVisible" width="50%" :before-close="clseoeoe" :modal="false">
         <div style="text-align: center">
             <el-transfer style="text-align: left; display: inline-block" v-model="value4" filterable :titles="['全部', '已选中']" :button-texts="['删除', '选中']"
                 :format="{
                   noChecked: '${total}',
                   hasChecked: '${checked}/${total}'
                 }" @change="handleChange" :data="list">
-                <span slot-scope="{ option }">{{ option.key }} - {{ option.label }}</span>
+                <span slot-scope="{ option }">{{ option.label }}</span>
                 <el-button class="transfer-footer" slot="right-footer" size="small" type="primary" @click="trueSave" style="margin:3px 75px 0">保存</el-button>
                 <!-- <el-button class="transfer-footer" slot="right-footer" size="small">取消</el-button> -->
             </el-transfer>
@@ -22,7 +22,7 @@
                 disable: true,
                 dialogTableVisible: false,
                 list: [],
-                value4: [], //选定的用户
+                value4: [], // 选定的用户
                 isClick: false,
                 // 保存选中的用户
                 trueSaveList: []
@@ -60,10 +60,9 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         for (let i = 0; i < data.data.length; i++) {
-                            // console.log(data.data[i].id)
                             dataList.push({
                                 key: data.data[i].id,
-                                label: data.data[i].user_phone,
+                                label: data.data[i].name,
                             });
                         }
 

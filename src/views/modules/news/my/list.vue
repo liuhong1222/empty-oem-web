@@ -6,11 +6,11 @@
                 <el-form-item label="选择状态：">
                     <el-select v-model="newsSearchData.type" placeholder="选择状态">
                         <el-option label="全部" value=""></el-option>
-                        <el-option label="发布待审核" value="0"></el-option>
+                        <el-option label="发布待审核" value="1"></el-option>
                         <el-option label="修改待审核" value="2"></el-option>
-                        <el-option label="已审核" value="1"></el-option>
-                        <el-option label="已驳回" value="3"></el-option>
-                        <el-option label="已删除" value="-1"></el-option>
+                        <el-option label="已审核" value="3"></el-option>
+                        <el-option label="已驳回" value="4"></el-option>
+                        <el-option label="已删除" value="5"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -25,11 +25,11 @@
             <el-table :data="newsTableData" style="width: 100%" :header-cell-style="getRowClass" v-loading="dataListLoading">
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
-                <el-table-column prop="agentName" label="代理商名称" align="center">
-                </el-table-column>
+                <!-- <el-table-column prop="agentName" label="代理商名称" align="center">
+                </el-table-column> -->
                 <el-table-column prop="title" label="新闻标题" align="center">
                 </el-table-column>
-                <el-table-column prop="commitTime" label="发布时间" align="center">
+                <el-table-column prop="commitTime" width="150" label="发布时间" align="center">
                 </el-table-column>
                 <el-table-column prop="auditStateName" label="状态" align="center">
                 </el-table-column>
@@ -38,11 +38,8 @@
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="seeList(scope.row.id)">查看</el-button>
-                        <el-button type="text" size="small" @click="updateList(scope.row.id)" :disabled="scope.row.auditState ==
-                        -1 ?true: false">修改</el-button>
-                        <el-button type="text" size="small" @click="delList(scope.row.id,scope.row.agentName)"
-                            :disabled="scope.row.auditState ==
-                        -1 ?true: false">删除</el-button>
+                        <el-button type="text" size="small" @click="updateList(scope.row.id)" :disabled="scope.row.auditState == 5 ? true : false">修改</el-button>
+                        <el-button type="text" size="small" @click="delList(scope.row)" :disabled="scope.row.auditState == 5 ? true : false">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -81,24 +78,22 @@
             seeOrDialog
         },
         activated() {
-            this.newsTableDataList()
+            this.newsTableDataList(1)
         },
         methods: {
-            newsTableDataList(cur) {
+            newsTableDataList(curr) {
                 this.dataListLoading = true
+                this.pageIndex = curr || this.pageIndex
                 this.$http({
-                    url: this.$http.adornUrl(`agent/news/my/list?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/news/all/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
-                        'currentPage': cur || this.pageIndex,
+                        'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'auditState': this.newsSearchData.type
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        if (cur == 1) {
-                            this.pageIndex = 1
-                        }
                         this.newsTableData = data.data.list
                         this.totalPage = data.data.total
 
@@ -141,8 +136,8 @@
                     this.$refs.seeOrDialog.showInit(id)
                 })
             },
-            delList(id, name) {
-                this.$confirm(`是否删除${name}以及相关信息？`, '删除新闻列表', {
+            delList(record) {
+                this.$confirm(`是否删除【${record.title}】以及相关信息？`, '删除新闻列表', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -151,17 +146,15 @@
                         url: this.$http.adornUrl(`agent/news/my/delete?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'newsId': id
+                            'newsId': record.id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
+                            this.newsTableDataList(1)
                             this.$message({
                                 message: '操作成功',
                                 type: 'success',
-                                duration: 1500,
-                                onClose: () => {
-                                    this.newsTableDataList()
-                                }
+                                duration: 1500
                             })
                         } else {
                             this.$message.error(data.msg)
