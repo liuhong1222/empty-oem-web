@@ -37,6 +37,12 @@
                 </div>
             </el-col>
         </el-row>
+        <!-- 复制链接弹窗 -->
+        <el-dialog title="复制推广链接" :visible.sync="copyVisible" width="30%">
+        <el-input v-model="copyinput" id="copyInput"></el-input>
+        <el-button type="primary" id="copyBtn" v-clipboard:copy="copyinput" v-clipboard:success="onCopy"
+            v-clipboard:error="onError">复制链接</el-button>
+        </el-dialog>
     </div>
 </template>
 
@@ -57,10 +63,48 @@ export default {
                 { title: '邮箱', field: 'email', btnText: '更改', flag: true }
             ],
             deskInfo: {},
-            rechargeRecordData: []
+            rechargeRecordData: [],
+
+            // 复制链接弹窗
+            copyVisible: false,
         };
     },
+    activated() {
+        this.getAgentDeskInfo()
+        this.myRechargeList()
+    },
     methods: {
+        // 获取基本信息
+        getAgentDeskInfo() {
+            this.remarksCon = sessionStorage.getItem('remarkCon')
+            this.$http({
+            url: this.$http.adornUrl(`agent/desk/getAgentDeskInfo?token=${this.$cookie.get('token')}`),
+            method: 'post',
+            }).then(({ data }) => {
+            if (data && data.code === 0) {
+                // 0不自动赠送，1自动赠送
+                if (data.data.autoPresentCfg == 1) {
+                this.giveSwitch = true
+                } else if (data.data.autoPresentCfg == 0) {
+                this.giveSwitch = false
+                }
+                sessionStorage.setItem('agentInfo', this.$json.stringify(data.data.agentInfo || '{}'))
+                this.copyinput = data.data.referralLink
+                this.chdataForm.chPrice = data.data.price
+                this.basicList[0].counts = data.data.price
+                this.basicList[1].counts = data.data.emptyBalance
+                this.basicList[2].counts = data.data.emptyWarnNumber
+                this.basicList[3].counts = data.data.mobile
+                this.basicList[4].counts = data.data.email
+                this.customMy[0].counts = data.data.creUserCount
+                this.customMy[1].counts = data.data.rechargeSum
+                this.customMy[2].counts = data.data.consumSum
+                this.customMy[3].counts = data.data.rechargeNumberSum
+            } else {
+                this.$message.error(data.msg)
+            }
+            })
+        },
         handleOneCardClick(index, record) {
             switch (index) {
                 case 4:
@@ -80,7 +124,20 @@ export default {
                 default:
                     break;
             }
-        }
+        },
+        copyLink() {
+            this.copyVisible = true;
+        },
+        onCopy: function (e) {
+            this.$message({
+            message: '恭喜你，复制成功',
+            type: 'success'
+            });
+            this.copyVisible = false;
+        },
+        onError: function (e) {
+            this.$message.error('复制失败了哦！');
+        },
     },
 };
 </script>

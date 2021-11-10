@@ -6,7 +6,7 @@
         ref="formRef"
     >
         <el-form-item label="浏览器右侧显示：" prop="browserRightDisplay">
-            <el-switch v-model="formData.browserRightDisplay" @change="changeSwitch()"></el-switch>
+            <el-switch v-model="formData.browserRightDisplay" :inactive-value="0" :active-value="1" @change="changeSwitch()"></el-switch>
         </el-form-item>
         <el-form-item label="客服昵称：" prop="kefuNickname">
             <el-input v-model="formData.kefuNickname" placeholder="请输入客服昵称" maxlength="20">

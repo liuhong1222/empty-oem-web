@@ -35,7 +35,7 @@
                     <el-input v-model="proAuditDataForm.linkUrl" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="编辑内容:" v-if="editCon"> 
-                    <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
+                    <UE v-bind:defaultMsg="defaultMsgCon" :config="config" ref="ue"></UE>
                 </el-form-item>
                 <!-- 查看 -->
                 <el-form-item label="审核结果：" prop="auditRes" v-if="seeShow">
@@ -165,7 +165,7 @@
                         this.proAuditDataForm.proName = data.data.product_name;
                         this.proAuditDataForm.describe = data.data.product_desc;
                         this.iconsImageUrl = imgUrl.imgUrl + data.data.icon_path;
-                        this.proAuditDataForm.status = data.data.shelf_status == 0 ? '上架' : '下架';
+                        this.proAuditDataForm.status = data.data.shelf_status == 0 ? '下架' : '上架';
                         this.proAuditDataForm.sort = data.data.order_num;
                         this.proAuditDataForm.methods = data.data.jump_mode == 1 ? '内部编辑' : '外部编辑';
                         this.proAuditDataForm.linkUrl = data.data.link_url;

@@ -55,6 +55,7 @@
             </div>
         </div>
         <div v-show="isView" class="view-wrapper">
+            <el-button type="primary" @click="handleEdit" class="edit-btn">编辑</el-button>
             <agent-setting-detail ref="detailRef" />
         </div>
     </div>
@@ -86,43 +87,10 @@
             return {
                 isView: true,
                 allSettingInfo: {}, // 所有的代理商设置信息
+                editSettingInfo: {}, // 编辑之后的数据
                 currStep: 0,
-            }
-        },
-        activated() {
-            this.getBasicInfo()
-        },
-        methods: {
-            getBasicInfo() {
-                let agentInfo = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}')
-                this.allSettingInfo = {
-                    agentId: agentInfo.id + '',
-                    agentName: agentInfo.companyName
-                }
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/findBasicInfo?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        this.allSettingInfo = {
-                            ...this.allSettingInfo,
-                            ...(data.data || {})
-                        }
-                        this.isView = false;
-                        if (this.isView) {
-                            this.$refs.detailRef.init(this.allSettingInfo)
-                        } else {
-                            this.initBaseInfoForm()
-                        }
-                    }
-                })
-            },
-            handlePre() {
-                if (this.currStep === 0) {
-                    this.isView = true
-                    return true
-                }
-                let funcNameArr = [
+                agentSetId: '',
+                initFuncNameArr: [
                     'initBaseInfoForm',
                     'initServiceInfoForm',
                     'initDomainInfoForm',
@@ -132,25 +100,66 @@
                     'initWechatInfoForm',
                     'initServiceAgreementForm',
                 ]
+            }
+        },
+        activated() {
+            this.initPage()
+        },
+        methods: {
+            initPage() {
+                let agentInfo = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}')
+                this.allSettingInfo = {
+                    agentId: agentInfo.id + '',
+                    agentName: agentInfo.companyName
+                }
+                this.currStep = 0
+                this.editSettingInfo = {}
+                this.getBasicInfo((data) => {
+                    const { agentSetId, agentSetInfo } = data
+                    this.allSettingInfo = {
+                        ...this.allSettingInfo,
+                        ...(agentSetInfo || {}),
+                        browserRightDisplay: (agentSetInfo && agentSetInfo.browserRightDisplay) ? 1 : 0
+                    }
+                    this.agentSetId = agentSetId + ''
+                    this.isView = this.agentSetId ? true : false
+                    this.$nextTick(() => {
+                        if (this.isView) {
+                            this.$refs.detailRef.init(this.allSettingInfo)
+                        } else {
+                            this.initBaseInfoForm()
+                        }
+                    })
+                })
+            },
+            getBasicInfo(callback) {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/set/findBasicInfo?token=${this.$cookie.get('token')}`),
+                    method: 'post',
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        callback(data.data || {})
+                    }
+                })
+            },
+            handlePre() {
+                if (this.currStep === 0) {
+                    this.isView = true
+                    return true
+                }
                 this.currStep = this.currStep - 1
-                this[funcNameArr[this.currStep]]()
+                this.$nextTick(() => {
+                    this[this.initFuncNameArr[this.currStep]]()
+                })
             },
             handleNext() {
                 if (this.currStep === 7) {
-                    this.handleSubmitFormData('serviceAgreementFormRef', () => {
-                        this.isView = true
+                    this.addOrUpdateSetInfo({
+                        agreement: this.$refs.serviceAgreementFormRef.getUeContent(),
+                        ...this.editSettingInfo,
                     })
                     return true;
                 }
-                let funcNameArr = [
-                    'initServiceInfoForm',
-                    'initDomainInfoForm',
-                    'initGatheringInfoForm',
-                    'initAlipayInfoForm',
-                    'initContractDataForm',
-                    'initWechatInfoForm',
-                    'initServiceAgreementForm',
-                ]
                 let refStrArr = [
                     'baseInfoFormRef',
                     'serviceInfoFormRef',
@@ -160,136 +169,152 @@
                     'contractDataFormRef',
                     'wechatInfoFormRef',
                 ]
-                this.handleSubmitFormData(refStrArr[this.currStep], () => {
-                    this[funcNameArr[this.currStep]]()
-                    this.currStep = this.currStep + 1
+                let refStr = refStrArr[this.currStep];
+                this.$refs[refStr].$refs.formRef.validate((valid) => {
+                    if (valid) {
+                        this.editSettingInfo = {
+                            ...this.editSettingInfo,
+                            ...(this.$refs[refStr].formData || {})
+                        }
+                        this.currStep = this.currStep + 1
+                        this.$nextTick(() => {
+                            this[this.initFuncNameArr[this.currStep]]()
+                        })
+                    }
+                })
+            },
+            addOrUpdateSetInfo(params) {
+                let url = this.agentSetId ? `agent/set/updateBasicInfo` : `agent/set/add`
+                this.$http({
+                    url: this.$http.adornUrl(url),
+                    method: 'post',
+                    data: {
+                        token: this.$cookie.get('token'),
+                        ...params,
+                        agentSetId: this.agentSetId
+                    }
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.allSettingInfo = {
+                            ...this.allSettingInfo,
+                            ...params
+                        }
+                        this.agentSetId = data.data || this.agentSetId
+                        this.isView = true
+                        this.$nextTick(() => {
+                            this.$refs.detailRef.init(this.allSettingInfo)
+                        })
+                    } else {
+                        this.$message.error(data.msg)
+                    }
                 })
             },
             initBaseInfoForm() {
-                const { agentId, agentName, agentLogo, agentIcon, deputySignature, companyChop, smsSignature, domain } = this.allSettingInfo
+                const { agentId, agentName, agentLogo, agentIcon, deputySignature, companyChop, smsSignature, domain, siteName, seoKeywords, seoDescription, la51Src, baiduSrc, baiduocpcToken } = this.allSettingInfo
                 this.$refs.baseInfoFormRef.init({
-                    agentId,
-                    agentName,
-                    agentLogo,
-                    agentIcon,
-                    deputySignature,
-                    companyChop,
-                    smsSignature,
-                    domain,
+                    agentId: this.editSettingInfo.agentId || agentId,
+                    agentName: this.editSettingInfo.agentName || agentName,
+                    agentLogo: this.editSettingInfo.agentLogo || agentLogo,
+                    agentIcon: this.editSettingInfo.agentIcon || agentIcon,
+                    deputySignature: this.editSettingInfo.deputySignature || deputySignature,
+                    companyChop: this.editSettingInfo.companyChop || companyChop,
+                    smsSignature: this.editSettingInfo.smsSignature || smsSignature,
+                    domain: this.editSettingInfo.domain || domain,
+                    siteName: this.editSettingInfo.siteName || siteName,
+                    seoKeywords: this.editSettingInfo.seoKeywords || seoKeywords,
+                    seoDescription: this.editSettingInfo.seoDescription || seoDescription,
+                    la51Src: this.editSettingInfo.la51Src || la51Src,
+                    baiduSrc: this.editSettingInfo.baiduSrc || baiduSrc,
+                    baiduocpcToken: this.editSettingInfo.baiduocpcToken || baiduocpcToken,
                 })
             },
             initServiceInfoForm() {
                 const { browserRightDisplay, kefuNickname, hotline, qq, businessCode, wechatQrcode, maintainerPhone, maintainerQq, maintainerNickname, maintainerWechatQrcode } = this.allSettingInfo
                 this.$refs.serviceInfoFormRef.init({
-                    browserRightDisplay,
-                    kefuNickname,
-                    hotline,
-                    qq,
-                    businessCode,
-                    wechatQrcode,
-                    maintainerPhone,
-                    maintainerQq,
-                    maintainerNickname,
-                    maintainerWechatQrcode,
+                    browserRightDisplay: (this.editSettingInfo.browserRightDisplay || this.editSettingInfo.browserRightDisplay === 0) ? this.editSettingInfo.browserRightDisplay : browserRightDisplay,
+                    kefuNickname: this.editSettingInfo.kefuNickname || kefuNickname,
+                    hotline: this.editSettingInfo.hotline || hotline,
+                    qq: this.editSettingInfo.qq || qq,
+                    businessCode: this.editSettingInfo.businessCode || businessCode,
+                    wechatQrcode: this.editSettingInfo.wechatQrcode || wechatQrcode,
+                    maintainerPhone: this.editSettingInfo.maintainerPhone || maintainerPhone,
+                    maintainerQq: this.editSettingInfo.maintainerQq || maintainerQq,
+                    maintainerNickname: this.editSettingInfo.maintainerNickname || maintainerNickname,
+                    maintainerWechatQrcode: this.editSettingInfo.maintainerWechatQrcode || maintainerWechatQrcode,
                 })
             },
             initDomainInfoForm() {
                 const { domainCopyright, domainCompanyAddress, domainContactWay, telecomCertification, icp, publicSecurityFiling } = this.allSettingInfo
                 this.$refs.domainInfoFormRef.init({
-                    domainCopyright,
-                    domainCompanyAddress,
-                    domainContactWay,
-                    telecomCertification,
-                    icp,
-                    publicSecurityFiling,
+                    domainCopyright: this.editSettingInfo.domainCopyright || domainCopyright,
+                    domainCompanyAddress: this.editSettingInfo.domainCompanyAddress || domainCompanyAddress,
+                    domainContactWay: this.editSettingInfo.domainContactWay || domainContactWay,
+                    telecomCertification: this.editSettingInfo.telecomCertification || telecomCertification,
+                    icp: this.editSettingInfo.icp || icp,
+                    publicSecurityFiling: this.editSettingInfo.publicSecurityFiling || publicSecurityFiling,
                 })
             },
             initGatheringInfoForm() {
                 const { payeePublic, payBankPublic, payAccountPublic, payeePrivate, payBankPrivate, payAccountPrivate, payeeWechat, payQrcodeWechat, payAccountWechat, payeeAlipay, payQrcodeAlipay, payAccountAlipay } = this.allSettingInfo
                 this.$refs.gatheringInfoFormRef.init({
-                    payeePublic,
-                    payBankPublic,
-                    payAccountPublic,
-                    payeePrivate,
-                    payBankPrivate,
-                    payAccountPrivate,
-                    payeeWechat,
-                    payQrcodeWechat,
-                    payAccountWechat,
-                    payeeAlipay,
-                    payQrcodeAlipay,
-                    payAccountAlipay
+                    payeePublic: this.editSettingInfo.payeePublic || payeePublic,
+                    payBankPublic: this.editSettingInfo.payBankPublic || payBankPublic,
+                    payAccountPublic: this.editSettingInfo.payAccountPublic || payAccountPublic,
+                    payeePrivate: this.editSettingInfo.payeePrivate || payeePrivate,
+                    payBankPrivate: this.editSettingInfo.payBankPrivate || payBankPrivate,
+                    payAccountPrivate: this.editSettingInfo.payAccountPrivate || payAccountPrivate,
+                    payeeWechat: this.editSettingInfo.payeeWechat || payeeWechat,
+                    payQrcodeWechat: this.editSettingInfo.payQrcodeWechat || payQrcodeWechat,
+                    payAccountWechat: this.editSettingInfo.payAccountWechat || payAccountWechat,
+                    payeeAlipay: this.editSettingInfo.payeeAlipay || payeeAlipay,
+                    payQrcodeAlipay: this.editSettingInfo.payQrcodeAlipay || payQrcodeAlipay,
+                    payAccountAlipay: this.editSettingInfo.payAccountAlipay || payAccountAlipay,
                 })
             },
             initAlipayInfoForm() {
                 const { alipayAppid, alipayGateway, alipayNotify, alipayPublicKey, applicationPrivateKey } = this.allSettingInfo
                 this.$refs.alipayInfoFormRef.init({
-                    alipayAppid,
-                    alipayGateway,
-                    alipayNotify,
-                    alipayPublicKey,
-                    applicationPrivateKey,
+                    alipayAppid: this.editSettingInfo.alipayAppid || alipayAppid,
+                    alipayGateway: this.editSettingInfo.alipayGateway || alipayGateway,
+                    alipayNotify: this.editSettingInfo.alipayNotify || alipayNotify,
+                    alipayPublicKey: this.editSettingInfo.alipayPublicKey || alipayPublicKey,
+                    applicationPrivateKey: this.editSettingInfo.applicationPrivateKey || applicationPrivateKey,
                 })
             },
             initContractDataForm() {
                 const { contactCompanyName, contactCompanyAddress, contactCompanyAccount, contactCompanyBank, contactPostcode, contactPhone } = this.allSettingInfo
                 this.$refs.contractDataFormRef.init({
-                    contactCompanyName,
-                    contactCompanyAddress,
-                    contactCompanyAccount,
-                    contactCompanyBank,
-                    contactPostcode,
-                    contactPhone,
+                    contactCompanyName: this.editSettingInfo.contactCompanyName || contactCompanyName,
+                    contactCompanyAddress: this.editSettingInfo.contactCompanyAddress || contactCompanyAddress,
+                    contactCompanyAccount: this.editSettingInfo.contactCompanyAccount || contactCompanyAccount,
+                    contactCompanyBank: this.editSettingInfo.contactCompanyBank || contactCompanyBank,
+                    contactPostcode: this.editSettingInfo.contactPostcode || contactPostcode,
+                    contactPhone: this.editSettingInfo.contactPhone || contactPhone,
                 })
             },
             initWechatInfoForm() {
                 const { wechatGateway, wechatpayNotify, wechatAppid, wechatMchid, wechatKey, wechatAppsecret } = this.allSettingInfo
                 this.$refs.wechatInfoFormRef.init({
-                    wechatGateway,
-                    wechatpayNotify,
-                    wechatAppid,
-                    wechatMchid,
-                    wechatKey,
-                    wechatAppsecret,
+                    wechatGateway: this.editSettingInfo.wechatGateway || wechatGateway,
+                    wechatpayNotify: this.editSettingInfo.wechatpayNotify || wechatpayNotify,
+                    wechatAppid: this.editSettingInfo.wechatAppid || wechatAppid,
+                    wechatMchid: this.editSettingInfo.wechatMchid || wechatMchid,
+                    wechatKey: this.editSettingInfo.wechatKey || wechatKey,
+                    wechatAppsecret: this.editSettingInfo.wechatAppsecret || wechatAppsecret,
                 })
             },
             initServiceAgreementForm() {
                 const { agreement } = this.allSettingInfo
                 this.$refs.serviceAgreementFormRef.init({
-                    agreement
+                    agreement: this.editSettingInfo.agreement || agreement,
                 })
             },
-            handleSubmitFormData(refStr, callback) {
-                this.$refs[refStr].$refs.formRef.validate((valid) => {
-                    if (valid) {
-                        let formData = this.$refs[refStr].formData || {}
-                        // 最后一步 其他 模块 单独处理（由于存在富文本编辑器）
-                        if (refStr === 'serviceAgreementFormRef') {
-                            formData = {
-                                agreement: this.$refs[refStr].getUeContent()
-                            }
-                        }
-                        this.$http({
-                            url: this.$http.adornUrl(`agent/set/add`),
-                            method: 'post',
-                            data: {
-                                token: this.$cookie.get('token'),
-                                ...formData
-                            }
-                        }).then(({ data }) => {
-                            if (data && data.code === 0) {
-                                this.allSettingInfo = {
-                                    ...this.allSettingInfo,
-                                    ...formData
-                                }
-                                this.$nextTick(() => {
-                                    callback()
-                                })
-                            } else {
-                                this.$message.error(data.msg)
-                            }
-                        })
-                    }
+            handleEdit() {
+                this.isView = false;
+                this.currStep = 0
+                this.editSettingInfo = {}
+                this.$nextTick(() => {
+                    this.initBaseInfoForm()
                 })
             }
         }
@@ -336,5 +361,14 @@
     .main {
         background-color: #fff;
         padding: 30px;
+    }
+    .view-wrapper {
+        position: relative;
+        padding-top: 60px;
+        .edit-btn {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
     }
 </style>

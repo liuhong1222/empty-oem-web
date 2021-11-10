@@ -1,5 +1,5 @@
 <template>
-    <el-collapse v-model="activeNames" accordion>
+    <el-collapse v-model="activeNames">
         <el-collapse-item title="基本信息 ✚" name="1">
             <table class="discribe-wrapper" border>
                 <tbody>

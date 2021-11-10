@@ -35,39 +35,45 @@
         </div>
         <div class="agentTable">
             <el-table :data="proLineTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column prop="order_num" label="排序" align="center">
+                <el-table-column prop="sort" label="排序" align="center">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.order_num" @change="orderNumChange(scope.row)"></el-input>
+                        <el-input v-model="scope.row.sort" @change="orderNumChange(scope.row)"></el-input>
                     </template>
                 </el-table-column>
-                <el-table-column prop="product_type_id" label="产品线ID" align="center" width="110"> </el-table-column>
+                <!-- <el-table-column prop="product_type_id" label="产品线ID" align="center" width="110"> </el-table-column> -->
                 <el-table-column prop="productLineName" label="产品线名称" align="center">
                 </el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="icon_path" label="icon图片" align="center">
+                <el-table-column prop="icon" label="icon图片" align="center">
                 </el-table-column>
-                <el-table-column prop="shelf_status" label="状态" align="center">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.shelf_status==0 ? '上架':'下架' }}</span>
+                <el-table-column prop="state" label="状态" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ statusMap[row.apply_state] }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="jump_mode" label="跳转方式" align="center">
+                <el-table-column prop="redirect_way " label="跳转方式" align="center">
                     <template slot-scope="scope">
-                        <span>{{scope.row.jump_mode==1 ? '内部编辑':'外部地址' }}</span>
+                        <span>{{scope.row.redirect_way === 1 ? '内部编辑' : '外部地址' }}</span>
                     </template>
+                </el-table-column>
+                <el-table-column prop="create_time" label="提交时间" align="center">
                 </el-table-column>
                 <el-table-column prop="update_time" label="修改时间" align="center">
                 </el-table-column>
-                <el-table-column prop="auditStatus" label="审核状态" align="center">
+                <el-table-column prop="apply_state" label="审核状态" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ auditAtatusMap[row.apply_state] }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? true : false">编辑</el-button>
-                        <el-button type="text" size="small" @click="onOrOffBtn(scope.row)">{{scope.row.shelf_status==0
-                            ? '下架':'上架' }}</el-button>
+                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="[1, 2].indexOf(scope.row.apply_state) != -1 ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" @click="onOrOffBtn(scope.row)">
+                            {{scope.row.state === 0 ? '上架' : '下架' }}
+                        </el-button>
                         <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -98,18 +104,29 @@
                     dateTime: '',
                     proLineName: ''
                 },
+                statusMap: {
+                    '0': '下架',
+                    '1': '上架',
+                },
                 statusArr: [
-                    { label: '全部', value: -1 },
-                    { label: '上架', value: 0 },
-                    { label: '下架', value: 1 }
+                    { label: '全部', value: '' },
+                    { label: '下架', value: 0 },
+                    { label: '上架', value: 1 }
                 ],
+                auditAtatusMap: {
+                    '1': '创建待审核',
+                    '2': '修改待审核',
+                    '3': '已审核',
+                    '4': '已驳回',
+                    '5': '已删除',
+                },
                 auditStatusArr: [
-                    { label: '全部', value: -1 },
-                    { label: '创建待审核', value: 0 },
-                    { label: '已审核', value: 1 },
-                    { label: '创建驳回', value: 2 },
-                    { label: '修改待审核', value: 3 },
-                    { label: '修改驳回', value: 4 }
+                    { label: '全部', value: '' },
+                    { label: '创建待审核', value: 1 },
+                    { label: '修改待审核', value: 2 },
+                    { label: '已审核', value: 3 },
+                    { label: '已驳回', value: 4 },
+                    { label: '已删除', value: 5 }
                 ],
                 proLineTableData: [],
                 proLineNameArr: []
@@ -204,15 +221,8 @@
             },
             // 上架，下架
             onOrOffBtn(row) {
-                let shelf_status = row.shelf_status;
                 let id = row.id
-                if (shelf_status == 0) {  //下架
-                    // alert('下架')
-                    this.onOffFun(1, id)
-                } else if (shelf_status == 1) {  //上架
-                    // alert('上架')
-                    this.onOffFun(0, id)
-                }
+                this.onOffFun(row.state ? 0 : 1, id)
             },
             onOffFun(shelf_status, id) {
                 this.$http({

@@ -3,7 +3,7 @@
         :model="formData"
         :rules="rules"
         ref="formRef"
-        label-width="150px"
+        label-width="180px"
     >
         <el-form-item label="代理商编号：" prop="agentId">
             <el-input v-model="formData.agentId" placeholder="请输入商户编号" disabled></el-input>
@@ -124,6 +124,24 @@
         <el-form-item label="代理商域名：" prop="domain">
             <el-input placeholder="请输入代理商域名" v-model="formData.domain"></el-input>
         </el-form-item>
+        <el-form-item label="网站名称：" prop="siteName">
+            <el-input placeholder="请输入网站名称" v-model="formData.siteName"></el-input>
+        </el-form-item>
+        <el-form-item label="seo优化页面关键字：" prop="seoKeywords">
+            <el-input placeholder="请输入seo优化页面关键字" v-model="formData.seoKeywords"></el-input>
+        </el-form-item>
+        <el-form-item label="seo优化页面描述内容：" prop="seoDescription">
+            <el-input placeholder="请输入seo优化页面描述内容" v-model="formData.seoDescription"></el-input>
+        </el-form-item>
+        <el-form-item label="51la的站长统计：" prop="la51Src">
+            <el-input placeholder="请输入51la的站长统计" v-model="formData.la51Src"></el-input>
+        </el-form-item>
+        <el-form-item label="百度的站长统计：" prop="baiduSrc">
+            <el-input placeholder="请输入百度的站长统计" v-model="formData.baiduSrc"></el-input>
+        </el-form-item>
+        <el-form-item label="百度营销账号token：" prop="baiduocpcToken">
+            <el-input placeholder="请输入百度营销账号token" v-model="formData.baiduocpcToken"></el-input>
+        </el-form-item>
     </el-form>
 </template>
 
@@ -137,27 +155,27 @@ export default {
                 agentId: [
                     { required: true, message: '请输入代理商编号', trigger: 'blur' }
                 ],
-                agentIcon: [
-                    { required: true, message: '请上传icon', trigger: 'blur' }
-                ],
-                agentLogo: [
-                    { required: true, message: '请上传logo', trigger: 'blur' }
-                ],
-                deputySignature: [
-                    { required: true, message: '请上传代表签字', trigger: 'blur' }
-                ],
-                companyChop: [
-                    { required: true, message: '请上传公司红章', trigger: 'blur' }
-                ],
-                agentName: [
-                    { required: true, message: '请输入代理商名称', trigger: 'blur' }
-                ],
-                smsSignature: [
-                    { required: true, message: '请输入短信签名', trigger: 'blur' }
-                ],
-                domain: [
-                    { required: true, message: '请输入代理商域名', trigger: 'blur' }
-                ]
+                // agentIcon: [
+                //     { required: true, message: '请上传icon', trigger: 'blur' }
+                // ],
+                // agentLogo: [
+                //     { required: true, message: '请上传logo', trigger: 'blur' }
+                // ],
+                // deputySignature: [
+                //     { required: true, message: '请上传代表签字', trigger: 'blur' }
+                // ],
+                // companyChop: [
+                //     { required: true, message: '请上传公司红章', trigger: 'blur' }
+                // ],
+                // agentName: [
+                //     { required: true, message: '请输入代理商名称', trigger: 'blur' }
+                // ],
+                // smsSignature: [
+                //     { required: true, message: '请输入短信签名', trigger: 'blur' }
+                // ],
+                // domain: [
+                //     { required: true, message: '请输入代理商域名', trigger: 'blur' }
+                // ]
             },
             logoQueryParams: {  // logo 上传参数
                 imageType: 3,
