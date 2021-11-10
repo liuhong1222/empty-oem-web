@@ -226,19 +226,18 @@
             },
             onOffFun(shelf_status, id) {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/product/updateStatus?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/product/updateStatus?token=${this.$cookie.get('token')}&id=${id}`),
                     method: 'post',
                     params: this.$http.adornParams({
                         'status': shelf_status,
-                        'id': id
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        if (shelf_status == 0) {
+                        if (shelf_status == 1) {
                             this.$message.success('上架成功')
-                        } else if (shelf_status == 1) {
+                        } else if (shelf_status == 0) {
                             this.$message.success('下架成功')
-                        } else if (shelf_status == 2) {
+                        } else {
                             this.$message.success('删除成功')
                         }
                         this.getProData()
