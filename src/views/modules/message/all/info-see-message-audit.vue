@@ -17,8 +17,8 @@
             </el-form-item>
             <el-form-item label="审核结果：" prop="resource" v-show="seeAuditShow">
                 <el-radio-group v-model="seeAuditDataForm.resource" @change="auditChangeHandler">
-                    <el-radio :label="1">通过</el-radio>
-                    <el-radio :label="3">驳回</el-radio>
+                    <el-radio :label="3">通过</el-radio>
+                    <el-radio :label="4">驳回</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="驳回原因：" prop="desc" v-if="auditDisable" v-show="seeAuditShow">
@@ -62,8 +62,8 @@
             }
         },
         methods: {
-            showInit(id, type) {
-                this.dataForm.id = id
+            showInit(record, type) {
+                this.dataForm.id = record.id
                 this.visible = true;
                 if (type == "see") {
                     this.title = "查看";
@@ -72,7 +72,6 @@
                     this.title = "审核";
                     this.seeAuditShow = true;
                 }
-                // alert(this.dataForm.id)
                 this.$http({
                     url: this.$http.adornUrl(`agent/message/all/detail?token=${this.$cookie.get('token')}&agentMessageId=${this.dataForm.id}`),
                     method: 'get',
@@ -105,7 +104,7 @@
                 this.seeAuditDataForm.desc = ""
             },
             auditChangeHandler(val) {
-                if (val == 3) {
+                if (val == 4) {
                     this.auditDisable = true
                 } else {
                     this.auditDisable = false
@@ -115,10 +114,9 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.$http({
-                            url: this.$http.adornUrl(`agent/message/all/audit?token=${this.$cookie.get('token')}`),
+                            url: this.$http.adornUrl(`agent/message/all/audit?token=${this.$cookie.get('token')}&agentMessageId=${this.dataForm.id}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'agentMessageId': this.dataForm.id,
                                 'auditState': this.seeAuditDataForm.resource,
                                 'auditRemark': this.seeAuditDataForm.desc
                             })

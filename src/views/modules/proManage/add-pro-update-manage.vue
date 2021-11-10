@@ -128,8 +128,8 @@
                     ],
                 },
                 statusArr: [
-                    { label: '上架', value: 0 },
-                    { label: '下架', value: 1 }
+                    { label: '上架', value: 1 },
+                    { label: '下架', value: 0 }
                 ],
                 iconQueryParams: { //icon上传参数
                     imageType: 7,
@@ -231,9 +231,9 @@
                     this.$refs['peoAUDataRef'].resetFields()
                 })
                 // 设置默认值
-                if (this.peoAUDataForm.status == 0) {
-                    this.peoAUDataForm.status = '上架'
-                }
+                // if (this.peoAUDataForm.status == 0) {
+                //     this.peoAUDataForm.status = '上架'
+                // }
             },
             selectOne(event, item) {
                 this.selectid = event
@@ -246,23 +246,21 @@
                 }
                 this.$refs['peoAUDataRef'].validate((valid) => {
                     if (valid) {
-                        let status = this.peoAUDataForm.status;
-                        status == "上架" ? (status = 0) : (status = status);
-                        console.log(this.selectid)
+                        let productGroupId = this.selectid ? this.selectid : this.productTypeId
                         this.$http({
-                            url: this.$http.adornUrl(`agent/product/saveOrUpdate?token=${this.$cookie.get('token')}`),
+                            url: this.$http.adornUrl(`agent/product/saveOrUpdate?token=${this.$cookie.get('token')}&productGroupId=${productGroupId}`),
                             method: 'post',
                             params: this.$http.adornParams({
                                 'id': this.peoAUDataForm.id,
-                                'productTypeId': this.selectid ? this.selectid : this.productTypeId,
-                                'orderNum': this.peoAUDataForm.orderNum,
-                                'productName': this.peoAUDataForm.proName,
-                                'productDesc': this.peoAUDataForm.describe,
-                                'iconPath': this.iconUrl,
-                                'shelfStatus': status,
-                                'productContent': this.peoAUDataForm.content,
-                                'jumpMode': this.peoAUDataForm.methods,
-                                'linkUrl': this.peoAUDataForm.adress,
+                                // 'productGroupId': this.selectid ? this.selectid : this.productTypeId,
+                                'sort': this.peoAUDataForm.orderNum,
+                                'name': this.peoAUDataForm.proName,
+                                'description': this.peoAUDataForm.describe,
+                                'icon': this.iconUrl,
+                                'state': this.peoAUDataForm.status,
+                                'content': this.peoAUDataForm.content,
+                                'redirectWay': this.peoAUDataForm.methods,
+                                'externalLinks': this.peoAUDataForm.adress,
                             })
                         }).then(({ data }) => {
                             if (data && data.code === 0) {
@@ -314,6 +312,7 @@
                     return false;
                 }
                 var _this = this;
+                // todo 取消图片限制注释
                 const imgSize = new Promise(function (resolve, reject) {
                     var reader = new FileReader();
                     reader.onload = function (event) {
@@ -321,14 +320,14 @@
                         image.onload = function () {
                             var width = this.width;
                             var height = this.height;
-                            if (width !== 100) {
-                                _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            if (height !== 100) {
-                                _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
+                            // if (width !== 100) {
+                            //     _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
+                            //     reject();
+                            // }
+                            // if (height !== 100) {
+                            //     _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
+                            //     reject();
+                            // }
                             resolve();
                         };
                         image.src = event.target.result;
@@ -336,7 +335,8 @@
                     reader.readAsDataURL(file);
                 });
 
-                return isJPG && isLt2M && imgSize;
+                // return isJPG && isLt2M && imgSize;
+                return isJPG;
             },
             handleAvatarSuccessIcon(res, file) {
                 this.iconUrl = res.data.licenseUrl

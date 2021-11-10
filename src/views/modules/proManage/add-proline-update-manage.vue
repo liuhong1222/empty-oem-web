@@ -18,8 +18,8 @@
                         <input type="hidden" v-model="proLineAUDataForm.imageUrlIcon" />
                     </el-upload>
                 </el-form-item><br />
-                <el-form-item label="状态：" prop="status">
-                    <el-select v-model="proLineAUDataForm.status" placeholder="请选择审核状态">
+                <el-form-item label="状态：" prop="state">
+                    <el-select v-model="proLineAUDataForm.state" placeholder="请选择审核状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -65,14 +65,15 @@
                     ],
                 },
                 statusArr: [
-                    { label: '上架', value: 0 },
-                    { label: '下架', value: 1 }
+                    { label: '下架', value: 0 },
+                    { label: '上架', value: 1 }
                 ],
                 iconQueryParams: { //icon上传参数
                     imageType: 7,
                     agentId: null,
                     file: null
                 },
+                agentId: '',
             }
         },
         methods: {
@@ -80,52 +81,45 @@
                 if (row) {
                     this.proLineAUDataForm.id = row.id
                 }
+                this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id;
                 if (this.$refs['proLineAUDataForm'] !== undefined) {
                     this.$refs['proLineAUDataForm'].resetFields()
                 }
                 this.visible = true;
                 this.proLineAUDataForm.imageUrlIcon = ""
                 // 设置默认值
-                if (this.proLineAUDataForm.status == 0) {
-                    this.proLineAUDataForm.status = '上架'
-                }
-
+                this.proLineAUDataForm.state = 1
                 if (this.proLineAUDataForm.id) {
                     this.title = '编辑'
-                    // alert('编辑')
-                    this.proLineAUDataForm.proLineName = row.product_type_name
-                    this.proLineAUDataForm.orderNum = row.order_num
-                    this.proLineAUDataForm.status = row.shelf_status == 0 ? '上架' : '下架'
+                    this.proLineAUDataForm.proLineName = row.name
+                    this.proLineAUDataForm.orderNum = row.sort
+                    this.proLineAUDataForm.state = row.state
                     if (row.icon_path) {
                         this.proLineAUDataForm.imageUrlIcon = imgUrl.imgUrl + row.icon_path;
-
                     }
-
                 } else {
                     this.title = '添加'
                     this.proLineAUDataForm.proLineName = ""
                     this.proLineAUDataForm.orderNum = 0
-                    this.proLineAUDataForm.status = '上架'
+                    this.proLineAUDataForm.state = 1
                     this.proLineAUDataForm.imageUrlIcon = ""
                 }
             },
             proLineAUSubmit() {
-                // console.log(this.proLineAUDataForm.status)
                 this.$refs['proLineAUDataForm'].validate((valid) => {
                     if (valid) {
-                        let status = this.proLineAUDataForm.status;
-                        status == "上架" ? (status = 0) : (status == "下架" ? (status = 1) : status);
-                        // console.log(status)
                         this.$http({
-                            url: this.$http.adornUrl(`agent/line/saveOrUpdate?token=${this.$cookie.get('token')}`),
+                            url: this.$http.adornUrl(`agent/line/saveOrUpdate`),
                             method: 'post',
-                            params: this.$http.adornParams({
+                            data: {
+                                'agentId': this.agentId,
+                                'token': this.$cookie.get('token'),
                                 'id': this.proLineAUDataForm.id,
-                                'productLineName': this.proLineAUDataForm.proLineName,
-                                'orderNum': this.proLineAUDataForm.orderNum,
-                                'status': status,
-                                'iconPath': this.iconUrl,
-                            })
+                                'name': this.proLineAUDataForm.proLineName,
+                                'sort': this.proLineAUDataForm.orderNum,
+                                'state': this.proLineAUDataForm.state,
+                                'icon': this.iconUrl,
+                            }
                         }).then(({ data }) => {
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
@@ -146,7 +140,6 @@
             },
             // 上传icon
             actionIcon() {
-
                 let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=7`);
                 return url;
             },
@@ -191,7 +184,9 @@
                     reader.readAsDataURL(file);
                 });
 
-                return isJPG && isLt2M && imgSize;
+                // todo 取消图片限制注释
+                // return isJPG && isLt2M && imgSize;
+                return isJPG && isLt2M;
             },
             handleAvatarSuccessIcon(res, file) {
                 this.iconUrl = res.data.licenseUrl

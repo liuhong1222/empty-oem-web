@@ -44,9 +44,9 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="auditOrSeeMess(scope.row.id,'see')">查看</el-button>
+                        <el-button type="text" size="small" @click="auditOrSeeMess(scope.row, 'see')">查看</el-button>
                         <el-button type="text" size="small" @click="delInfoList(scope.row)" :disabled="scope.row.state == 5 ? true : false">删除</el-button>
-                        <el-button type="text" size="small" @click="auditOrSeeMess(scope.row.id,'audit')" :disabled="['1', '2'].includes(scope.row.state + '') ? false : true">审核</el-button>
+                        <el-button type="text" size="small" @click="auditOrSeeMess(scope.row,'audit')" :disabled="['1', '2'].includes(scope.row.state + '') ? false : true">审核</el-button>
 
                     </template>
                 </el-table-column>
@@ -128,10 +128,10 @@
                     return ''
                 }
             },
-            auditOrSeeMess(id, type) {
+            auditOrSeeMess(record, type) {
                 this.seeMessageAuditVisible = true
                 this.$nextTick(() => {
-                    this.$refs.seeMessageAuditRef.showInit(id, type)
+                    this.$refs.seeMessageAuditRef.showInit(record, type)
                 })
             },
             delInfoList(record) {

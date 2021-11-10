@@ -30,34 +30,28 @@
         <div class="agentTable">
             <el-table :data="proLineTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass"
                 row-key="id">
-                <el-table-column prop="order_num" label="排序" align="center">
+                <el-table-column prop="sort" label="排序" align="center">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.order_num" @change="orderNumChange(scope.row)"></el-input>
+                        <el-input v-model="scope.row.sort" @change="orderNumChange(scope.row)"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column prop="id" label="产品线ID" align="center" width="110">
-
+                    <template slot-scope="{ row }">
+                        <span>{{ row.id + '' }}</span>
+                    </template>
                 </el-table-column>
-
-                <el-table-column prop="icon_path" label="icon图片" align="center" width="110">
-
+                <el-table-column prop="icon" label="icon图片" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="product_type_name" label="产品线名称" align="center">
-                    <!-- <template slot-scope="scope">
-                                <el-input v-model="scope.row.product_type_name" @change="change(scope.row.id)"></el-input>
-                            </template> -->
+                <el-table-column prop="name" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="shelf_status" label="状态" align="center">
+                <el-table-column prop="state" label="状态" align="center">
                     <template slot-scope="scope">
-                        <span>{{scope.row.shelf_status==0 ? '上架' : '下架' }}</span>
+                        <span>{{scope.row.state == 1 ? '上架' : '下架' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="update_time" label="修改时间" align="center">
                 </el-table-column>
-                <el-table-column prop="auditStatus" label="审核状态" align="center">
-                    <!-- <template slot-scope="scope">
-                        <span>{{scope.row.audit_status==0 ? '待审核' : (scope.row.audit_status==1) ? '审核通过' : '审核驳回' }}</span>
-                    </template> -->
+                <el-table-column prop="applyState" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
@@ -90,24 +84,24 @@
                 dataListLoading: false,
                 pageIndex: 1,
                 pageSize: 10,
-                totalPage: 100,
+                totalPage: 0,
                 proLineForm: {
                     status: '',
                     auditStatus: '',
                     dateTime: []
                 },
                 statusArr: [
-                    { label: '全部', value: -1 },
-                    { label: '上架', value: 0 },
-                    { label: '下架', value: 1 }
+                    { label: '全部', value: '' },
+                    { label: '上架', value: '1' },
+                    { label: '下架', value: '0' }
                 ],
                 auditStatusArr: [
-                    { label: '全部', value: -1 },
-                    { label: '创建待审核', value: 0 },
-                    { label: '已审核', value: 1 },
-                    { label: '创建驳回', value: 2 },
-                    { label: '修改待审核', value: 3 },
-                    { label: '修改驳回', value: 4 }
+                    { label: '全部', value: '' },
+                    { label: '创建待审核', value: 1 },
+                    { label: '修改待审核', value: 2 },
+                    { label: '已审核', value: 3 },
+                    { label: '已驳回', value: 4 },
+                    { label: '已删除', value: 5 }
                 ],
                 proLineTableData: []
             }
@@ -144,8 +138,8 @@
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'shelfStatus': this.proLineForm.status,
-                        'auditStatus': this.proLineForm.auditStatus,
+                        'state': this.proLineForm.status,
+                        'applyState': this.proLineForm.auditStatus,
                         'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })
@@ -174,13 +168,7 @@
             onOrOff(row) {
                 let shelf_status = row.shelf_status;
                 let id = row.id
-                if (shelf_status == 0) {  //下架
-                    // alert('下架')
-                    this.onOff(1, id)
-                } else if (shelf_status == 1) {  //上架
-                    // alert('上架')
-                    this.onOff(0, id)
-                }
+                this.onOff(shelf_status == 1 ? 0 : 1, id)
             },
             onOff(shelf_status, id) {
                 this.$http({
@@ -207,7 +195,7 @@
                 })
             },
             del(id) {
-                this.$confirm(`确定对此产品进行删除操作?`, '提示', {
+                this.$confirm(`确定对此产品线进行删除操作?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'

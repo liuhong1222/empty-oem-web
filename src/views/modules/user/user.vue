@@ -310,29 +310,11 @@ export default {
       this.pageIndex = val;
       this.getCustomList();
     },
-    // 修改个人、企业
-    // perEnterEditBtn(row) {
-    //   let arr = this.arr; //传id和当前修改的是企业还是个人
-    //   this.updateVisible = true
-    //   // console.log(id,type)
-    //   this.arr[0] = row.id
-    //   this.arr[1] = row.user_type
-    //   this.arr[2] = row.creUserId
-    //   this.$nextTick(() => {
-    //     this.$refs.updatecon.updateInit(arr)
-    //   })
-    // },
     // 查看个人、企业
     perPriseSee(row) {
-      let arr = this.arr; // 传id和当前修改的是企业还是个人
       this.seeVisible = true;
-      // console.log(row.id)
-      // console.log(row.user_type)
-      this.arr[0] = row.customerId;
-      this.arr[1] = row.user_type;
-      this.arr[2] = row.customerId;
       this.$nextTick(() => {
-        this.$refs.seecon.seeInit(arr);
+        this.$refs.seecon.init(row);
       });
     },
     // 充值个人，企业

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog title="审核" :close-on-click-modal="false" :visible.sync="visible" width="550px" :before-close="closeNewsSeeDialod">
+        <el-dialog title="审核产品线" :close-on-click-modal="false" :visible.sync="visible" width="550px" :before-close="closeNewsSeeDialod">
             <el-form :model="proLineDataForm" label-width="100px" :rules="proLineDataRules" ref="proLineDataRef" class="demo-ruleForm">
                 <el-form-item label="代理商名称：">
                     <el-input v-model="proLineDataForm.agentName" readonly></el-input>
@@ -64,33 +64,26 @@
                     this.$refs['proLineDataRef'].resetFields()
                 })
                 this.$http({
-                    url: this.$http.adornUrl(`agent/line/findById?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/line/findById?token=${this.$cookie.get('token')}&id=${this.proLineDataForm.id}`),
                     method: 'post',
-                    params: this.$http.adornParams({
-                        'id': this.proLineDataForm.id
-                    })
+                    params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.proLineDataForm.agentName = data.data.agentName;
-                        this.proLineDataForm.proLineName = data.data.productLineName;
-                        this.proLineDataForm.status = data.data.shelf_status == 0 ? '上架' : '下架';
-                        this.proLineDataForm.orderNum = data.data.orderNum;
+                        this.proLineDataForm.proLineName = data.data.productGroupName;
+                        this.proLineDataForm.status = data.data.state == 1 ? '上架' : '下架';
+                        this.proLineDataForm.orderNum = data.data.sort;
                     }
                 })
-                // 设置默认值
-                if (this.proLineDataForm.status == 1) {
-                    this.proLineDataForm.status = '上架'
-                }
             },
             proLineDataSubmit() {
                 this.$refs['proLineDataRef'].validate((valid) => {
                     if (valid) {
                         this.$http({
-                            url: this.$http.adornUrl(`agent/line/updateStatus?token=${this.$cookie.get('token')}`),
+                            url: this.$http.adornUrl(`agent/line/updateStatus?token=${this.$cookie.get('token')}&id=${this.proLineDataForm.id}`),
                             method: 'post',
                             params: this.$http.adornParams({
                                 'status': this.proLineDataForm.resource,
-                                'id': this.proLineDataForm.id,
                                 'remark': this.proLineDataForm.desc
                             })
                         }).then(({ data }) => {

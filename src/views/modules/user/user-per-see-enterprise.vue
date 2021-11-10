@@ -4,48 +4,76 @@
         <el-dialog title="查看客户" :visible.sync="dialogVisible" width="800px">
             <table class="discribe-wrapper" border>
                 <tbody>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">联系人姓名</td>
-                        <td class="discribe-col">{{ detailInfo.name }}</td>
-                        <td class="discribe-col title">联系人手机号码</td>
-                        <td class="discribe-col">{{ detailInfo.phone }}</td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">联系人邮箱</td>
-                        <td class="discribe-col">{{ detailInfo.email }}</td>
-                        <td class="discribe-col title">营业执照地址</td>
-                        <td class="discribe-col">
-                            <div>{{ detailInfo.businessLicensePath }}</div>
-                            <!-- {{ detailInfo.businessLicensePath }} -->
-                            <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
-                        </td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">公司名称</td>
-                        <td class="discribe-col">{{ detailInfo.companyName }}</td>
-                        <td class="discribe-col title">公司简称</td>
-                        <td class="discribe-col">{{ detailInfo.companyShortName }}</td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">营业执照所在地</td>
-                        <td class="discribe-col">{{ detailInfo.businessLicenseAddress }}</td>
-                        <td class="discribe-col title">营业执照号</td>
-                        <td class="discribe-col">
-                            <div>{{ detailInfo.businessLicenseNumber }}</div>
-                        </td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">企业法人姓名</td>
-                        <td class="discribe-col">{{ detailInfo.legalPerson }}</td>
-                        <td class="discribe-col title">营业执照有效期开始时间</td>
-                        <td class="discribe-col">{{ detailInfo.businessLicenseExpireStartTime }}</td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">营业执照有效期结束时间</td>
-                        <td class="discribe-col">{{ detailInfo.businessLicenseExpireEndTime }}</td>
-                        <td class="discribe-col title">空号检测等级名称</td>
-                        <td class="discribe-col">{{ detailInfo.agentLevel }}</td>
-                    </tr>
+                    <template v-if="isCompany">
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">联系人姓名</td>
+                            <td class="discribe-col">{{ detailInfo.name }}</td>
+                            <td class="discribe-col title">联系人手机号码</td>
+                            <td class="discribe-col">{{ detailInfo.phone }}</td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">联系人邮箱</td>
+                            <td class="discribe-col">{{ detailInfo.email }}</td>
+                            <td class="discribe-col title">营业执照地址</td>
+                            <td class="discribe-col">
+                                <div>{{ detailInfo.businessLicensePath }}</div>
+                                <!-- {{ detailInfo.businessLicensePath }} -->
+                                <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
+                            </td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">公司名称</td>
+                            <td class="discribe-col">{{ detailInfo.companyName }}</td>
+                            <td class="discribe-col title">公司简称</td>
+                            <td class="discribe-col">{{ detailInfo.companyShortName }}</td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">营业执照所在地</td>
+                            <td class="discribe-col">{{ detailInfo.businessLicensePath }}</td>
+                            <td class="discribe-col title">营业执照号</td>
+                            <td class="discribe-col">
+                                <div>{{ detailInfo.businessLicenseNumber }}</div>
+                            </td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">企业法人姓名</td>
+                            <td class="discribe-col">{{ detailInfo.legalPerson }}</td>
+                            <td class="discribe-col title">营业期限</td>
+                            <td class="discribe-col">{{ detailInfo.businessLicenseExpireStartTime }} - {{ detailInfo.businessLicenseExpireEndTime }}</td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">经营范围</td>
+                            <td class="discribe-col">{{ detailInfo.businessScope }}</td>
+                            <td class="discribe-col title">空号检测等级名称</td>
+                            <td class="discribe-col">{{ detailInfo.agentLevel }}</td>
+                        </tr>
+                    </template>
+                    <template v-else>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">客户姓名</td>
+                            <td class="discribe-col">{{ detailInfo.name }}</td>
+                            <td class="discribe-col title">身份证号码</td>
+                            <td class="discribe-col">{{ detailInfo.idCardNumber }}</td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">身份证照片正面</td>
+                            <td class="discribe-col">{{ detailInfo.idCardFrontPath }}</td>
+                            <td class="discribe-col title">身份证照片背面</td>
+                            <td class="discribe-col">{{ detailInfo.idCardBackPath }}</td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">详细地址</td>
+                            <td class="discribe-col">{{ detailInfo.idCardAddress }}</td>
+                            <td class="discribe-col title">证件期限</td>
+                            <td class="discribe-col">{{ detailInfo.idCardExpireStartTime }} - {{ detailInfo.idCardExpireEndTime }}</td>
+                        </tr>
+                        <tr class="discribe-row">
+                            <td class="discribe-col title">联系邮箱</td>
+                            <td class="discribe-col">{{ detailInfo.email }}</td>
+                            <td class="discribe-col title">空号检测等级名称</td>
+                            <td class="discribe-col">{{ detailInfo.agentLevel }}</td>
+                        </tr>
+                    </template>
                     <tr class="discribe-row">
                         <td class="discribe-col title">单价</td>
                         <td class="discribe-col">{{ detailInfo.price }}（元/条）</td>
@@ -54,7 +82,7 @@
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">状态</td>
-                        <td class="discribe-col">{{ detailInfo.state }}</td>
+                        <td class="discribe-col">{{ stateMap[detailInfo.state] }}</td>
                         <td class="discribe-col title">备注</td>
                         <td class="discribe-col">{{ detailInfo.remark }}</td>
                     </tr>
@@ -91,15 +119,11 @@
         </el-dialog>
 
         <!-- 查看个人信息 -->
-        <el-dialog v-if="false" title="查看个人客户" :visible.sync="perseeVisible" width="48%">
-
+        <!-- <el-dialog v-if="false" title="查看个人客户" :visible.sync="perseeVisible" width="48%">
             <el-form :model="perseeDataForm" ref="perDataForm" label-width="150px" :label-position="labelPosition">
                 <el-form-item label="手机号码：">
                     <el-input v-model="perseeDataForm.mobile" placeholder="手机号码" readonly></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="客户编号">
-                    <el-input v-model="perseeDataForm.custNum" placeholder="客户编号" readonly></el-input>
-                </el-form-item> -->
                 <el-form-item label="身份证照片" id="avatar-uploaderFceImg">
                     <el-upload class="avatar-uploader" action="" :show-file-list="false" style="display:inline-block" disabled>
                         <img v-if="imageUrlFace" :src="imageUrlFace" class="avatar">
@@ -132,18 +156,14 @@
                 <el-button @click="perseeVisible = false">取 消</el-button>
                 <el-button type="primary"  @click="perseeVisible = false">确 定</el-button>
             </span>
-        </el-dialog>
+        </el-dialog> -->
 
         <!-- 查看企业信息 -->
-        <el-dialog v-if="false" title=" 查看企业客户" :visible.sync="entriseVisible" width="52%">
-
+        <!-- <el-dialog v-if="false" title=" 查看企业客户" :visible.sync="entriseVisible" width="52%">
             <el-form :model="seepriseDataForm" ref="seepriseDataFormref" label-width="150px" :label-position="labelPosition">
                 <el-form-item label="手机号码：">
                     <el-input v-model="seepriseDataForm.mobile" placeholder="手机号码"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="客户编号：">
-                    <el-input v-model="seepriseDataForm.prisecustNum" placeholder="客户编号"></el-input>
-                </el-form-item> -->
                 <el-form-item label="营业执照：" id="avatar-uploaderpriseImg">
                     <el-upload class="avatar-uploader" action="" :show-file-list="false" readonly disabled>
                         <img v-if="priseimageUrl" :src="priseimageUrl" class="avatar">
@@ -174,7 +194,7 @@
                     <el-button @click="entriseVisible = false">取 消</el-button>
                     <el-button type="primary" @click="entriseVisible = false">确 定</el-button>
                 </span>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 <script>
@@ -185,101 +205,95 @@
             return {
                 dialogVisible: false,
                 detailInfo: {},
-
-                perseeVisible: false,
-                entriseVisible: false,
-                imageUrlFace: '',
-                imageUrlback: '',
-                priseimageUrl: '',
-                perseeDataForm: {  //个人
-                    id: '',
-                    creUserId: '',
-                    mobile: '',
-                    // custNum: '',
-                    custNanme: '',
-                    perIdno: '',
-                    peraddress: '',
-                    pertimelimit: '',
-                    peremail: '',
+                isCompany: true,
+                stateMap: {
+                    '0': '待审核',
+                    '9': '已认证',
+                    '1': '已驳回'
                 },
-                seepriseDataForm: {//企业
-                    id: '',
-                    creUserId: '',
-                    mobile: '',
-                    // prisecustNum: '',
-                    priseComName: '',
-                    businNum: '',
-                    priseaddress: '',
-                    priseName: '',
-                    prisetimelimit: '',
-                    priseDesc: '',
-                    bussicLice: ''
-                },
-                labelPosition: 'right',
+                // imageUrlFace: '',
+                // imageUrlback: '',
+                // priseimageUrl: '',
             }
         },
         methods: {
-            seeInit(arr) {
+            init(record) {
                 this.dialogVisible = true
-                // console.log(arr[0])  //id
-                // console.log(arr[1])  //个人 （0，null） 还是企业（1）
-                // console.log(arr[2])  //creUserId
-                if (arr[1] == 0 || arr[1] == null) {  //个人
-                    this.perseeVisible = true
-                    this.perseeDataForm.id = arr[0]
-                    this.perseeDataForm.creUserId = arr[2]
-                    this.$http({
-                        url: this.$http.adornUrl(`agent/cust/findPersonById?token=${this.$cookie.get('token')}&customerId=${this.perseeDataForm.id === null ? "" : this.perseeDataForm.id}`),
-                        method: 'get',
-                        params: this.$http.adornParams()
-                    }).then(({ data }) => {
-                        if (data && data.code === 0) {
-                            // console.log(data)
-                            this.perseeDataForm.mobile = data.mobile
-                            this.perseeDataForm.peremail = data.mail
-                            this.imageUrlFace = imgUrl.zxaImgUrl + data.idCardInfo.faceUrl
-                            this.imageUrlback = imgUrl.zxaImgUrl + data.idCardInfo.backUrl
-                            // this.perseeDataForm.custNum = data.idCardInfo.creUserId
-                            this.perseeDataForm.custNanme = data.idCardInfo.username
-                            this.perseeDataForm.perIdno = data.idCardInfo.idno
-                            this.perseeDataForm.peraddress = data.idCardInfo.address
-                            this.perseeDataForm.pertimelimit1 = data.idCardInfo.effectdate
-                            this.perseeDataForm.pertimelimit2 = data.idCardInfo.expiredate
+                this.isCompany = Boolean(record.customerType === '企业');
+                this.detailInfo = {};
+                this.$http({
+                    url: this.$http.adornUrl(`agent/cust/findPersonById?token=${this.$cookie.get('token')}&customerId=${record.customerId}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.detailInfo = data.data || {}
+                    } else {
+                        this.$message.error(data.msg)
+                    }
+                })
+            },
+            // seeInit(arr) {
+            //     this.dialogVisible = true
+            //     // console.log(arr[0])  //id
+            //     // console.log(arr[1])  //个人 （0，null） 还是企业（1）
+            //     // console.log(arr[2])  //creUserId
+            //     if (arr[1] == 0 || arr[1] == null) {  //个人
+            //         this.perseeVisible = true
+            //         this.perseeDataForm.id = arr[0]
+            //         this.perseeDataForm.creUserId = arr[2]
+            //         this.$http({
+            //             url: this.$http.adornUrl(`agent/cust/findPersonById?token=${this.$cookie.get('token')}&customerId=${this.perseeDataForm.id === null ? "" : this.perseeDataForm.id}`),
+            //             method: 'get',
+            //             params: this.$http.adornParams()
+            //         }).then(({ data }) => {
+            //             if (data && data.code === 0) {
+            //                 // console.log(data)
+            //                 this.perseeDataForm.mobile = data.mobile
+            //                 this.perseeDataForm.peremail = data.mail
+            //                 this.imageUrlFace = imgUrl.zxaImgUrl + data.idCardInfo.faceUrl
+            //                 this.imageUrlback = imgUrl.zxaImgUrl + data.idCardInfo.backUrl
+            //                 // this.perseeDataForm.custNum = data.idCardInfo.creUserId
+            //                 this.perseeDataForm.custNanme = data.idCardInfo.username
+            //                 this.perseeDataForm.perIdno = data.idCardInfo.idno
+            //                 this.perseeDataForm.peraddress = data.idCardInfo.address
+            //                 this.perseeDataForm.pertimelimit1 = data.idCardInfo.effectdate
+            //                 this.perseeDataForm.pertimelimit2 = data.idCardInfo.expiredate
 
-                        } else {
-                            this.$message.error(data.msg)
-                        }
-                    })
+            //             } else {
+            //                 this.$message.error(data.msg)
+            //             }
+            //         })
 
-                }
-                if (arr[1] == 1) { //企业
-                    this.entriseVisible = true
-                    this.seepriseDataForm.id = arr[0]
-                    this.seepriseDataForm.creUserId = arr[2]
-                    this.$http({
-                        url: this.$http.adornUrl(`agent/cust/findCompanyById?token=${this.$cookie.get('token')}&id=${this.seepriseDataForm.id}&creUserId=${this.seepriseDataForm.creUserId}`),
-                        method: 'get',
-                        params: this.$http.adornParams()
-                    }).then(({ data }) => {
-                        if (data && data.code === 0) {
-                            // console.log(data)
-                            this.seepriseDataForm.mobile = data.mobile
-                            this.priseimageUrl = imgUrl.zxaImgUrl + data.businessLicenceInfo.pictureUrl
-                            // this.seepriseDataForm.prisecustNum = data.businessLicenceInfo.creUserId
-                            this.seepriseDataForm.priseComName = data.businessLicenceInfo.name
-                            this.seepriseDataForm.businNum = data.businessLicenceInfo.regnum
-                            this.seepriseDataForm.priseaddress = data.businessLicenceInfo.address
-                            this.seepriseDataForm.priseName = data.businessLicenceInfo.person
-                            this.seepriseDataForm.prisetimelimit1 = data.businessLicenceInfo.effectdate
-                            this.seepriseDataForm.prisetimelimit2 = data.businessLicenceInfo.expiredate
-                            this.seepriseDataForm.priseDesc = data.businessLicenceInfo.business
-                        } else {
-                            this.$message.error(data.msg)
-                        }
-                    })
-                }
+            //     }
+            //     if (arr[1] == 1) { //企业
+            //         this.entriseVisible = true
+            //         this.seepriseDataForm.id = arr[0]
+            //         this.seepriseDataForm.creUserId = arr[2]
+            //         this.$http({
+            //             url: this.$http.adornUrl(`agent/cust/findCompanyById?token=${this.$cookie.get('token')}&id=${this.seepriseDataForm.id}&creUserId=${this.seepriseDataForm.creUserId}`),
+            //             method: 'get',
+            //             params: this.$http.adornParams()
+            //         }).then(({ data }) => {
+            //             if (data && data.code === 0) {
+            //                 // console.log(data)
+            //                 this.seepriseDataForm.mobile = data.mobile
+            //                 this.priseimageUrl = imgUrl.zxaImgUrl + data.businessLicenceInfo.pictureUrl
+            //                 // this.seepriseDataForm.prisecustNum = data.businessLicenceInfo.creUserId
+            //                 this.seepriseDataForm.priseComName = data.businessLicenceInfo.name
+            //                 this.seepriseDataForm.businNum = data.businessLicenceInfo.regnum
+            //                 this.seepriseDataForm.priseaddress = data.businessLicenceInfo.address
+            //                 this.seepriseDataForm.priseName = data.businessLicenceInfo.person
+            //                 this.seepriseDataForm.prisetimelimit1 = data.businessLicenceInfo.effectdate
+            //                 this.seepriseDataForm.prisetimelimit2 = data.businessLicenceInfo.expiredate
+            //                 this.seepriseDataForm.priseDesc = data.businessLicenceInfo.business
+            //             } else {
+            //                 this.$message.error(data.msg)
+            //             }
+            //         })
+            //     }
 
-            }
+            // }
         }
     }
 

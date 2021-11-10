@@ -17,9 +17,9 @@
                     <el-select v-model="AgentInfoSearchData.infoType" placeholder="消息类型">
                         <el-option label="全部" value=""></el-option>
                         <el-option label="系统消息" value="0"></el-option>
+                        <el-option label="更新通知" value="1"></el-option>
                         <el-option label="活动通知" value="2"></el-option>
                         <el-option label="故障通知" value="3"></el-option>
-                        <el-option label="更新通知" value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">

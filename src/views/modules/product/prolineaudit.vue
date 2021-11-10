@@ -24,22 +24,19 @@
                 </el-table-column>
                 <el-table-column prop="agentName" label="代理商名称" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="product_type_name" label="产品线名称" align="center">
+                <el-table-column prop="name" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="update_time" label="提交时间" align="center">
+                <el-table-column prop="create_time" label="提交时间" align="center">
                 </el-table-column>
-                <el-table-column prop="order_num" label="排序" align="center">
+                <el-table-column prop="sort" label="排序" align="center">
                 </el-table-column>
-                <el-table-column prop="auditStatus" label="审核状态" align="center">
-                    <!-- <template slot-scope="scope">
-                        <span>{{scope.row.audit_status==0 ? '待审核' : (scope.row.audit_status==1) ? '审核通过' : '审核驳回' }}</span>
-                    </template> -->
+                <el-table-column prop="applyState" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="proLineAuditBtn(scope.row.id)" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? false : true">审核</el-button>
+                        <el-button type="text" size="small" @click="proLineAuditBtn(scope.row.id)" :disabled="(scope.row.applyState || '').indexOf('待审核') != -1 ? false : true">审核</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -70,12 +67,12 @@
                     dateTime: ''
                 },
                 statusArr: [
-                    { label: '全部', value: -1 },
-                    { label: '创建待审核', value: 0 },
-                    { label: '已审核', value: 1 },
-                    { label: '创建驳回', value: 2 },
-                    { label: '修改待审核', value: 3 },
-                    { label: '修改驳回', value: 4 }
+                    { label: '全部', value: '' },
+                    { label: '创建待审核', value: 1 },
+                    { label: '修改待审核', value: 2 },
+                    { label: '已审核', value: 3 },
+                    { label: '已驳回', value: 4 },
+                    { label: '已删除', value: 5 }
                 ],
                 proLineTableData: []
             }
@@ -95,7 +92,7 @@
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditStatus': this.proLineForm.status,
+                        'applyState': this.proLineForm.status,
                         'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })
@@ -105,11 +102,9 @@
                         if (cur == 1) {
                             this.pageIndex = 1
                         }
-                        this.proLineTableData = data.data.list
-                        this.totalPage = data.data.total
-
+                        this.proLineTableData = data.data.list || []
+                        this.totalPage = data.data.total || 0
                     } else {
-
                         this.proLineTableData = []
                         this.totalPage = 0
                     }

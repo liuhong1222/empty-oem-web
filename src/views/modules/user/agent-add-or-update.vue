@@ -69,7 +69,7 @@
             <h3>实时检测等级</h3>
             <el-form-item label="实时检测等级：" prop="realLevel">
                 <el-select style="width: 100%;" v-model="dataForm.realLevel" placeholder="请选择实时检测等级" @change="changeLevel(true, 'realLevel')">
-                    <el-option :value="item.id + ''" :label="item.level" v-for="(item,index) in realLevelArr" :key="index">
+                    <el-option :value="item.level + ''" :label="item.level" v-for="(item,index) in realLevelArr" :key="index">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -371,7 +371,7 @@
                 this.$nextTick(() => {
                     let levelArr = isReal ? this.realLevelArr : this.spaceLevelArr
                     let selected = levelArr.find(item => {
-                        return item.id + '' === this.dataForm[key]
+                        return item.level + '' === this.dataForm[key]
                     }) || {}
                     console.log(this.dataForm[key], selected)
                     const { price, warningsNumber, minPaymentAmount, minRechargeNumber } = selected

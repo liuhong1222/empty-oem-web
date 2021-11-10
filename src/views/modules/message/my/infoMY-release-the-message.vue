@@ -6,8 +6,8 @@
             </el-form-item>
             <el-form-item label="消息类别" prop="type">
                 <el-select v-model="ruleForm.type" placeholder="请选择消息类别">
-                    <el-option label="系统消息" value="1"></el-option>
-                    <el-option label="更新通知" value="4"></el-option>
+                    <el-option label="系统消息" value="0"></el-option>
+                    <el-option label="更新通知" value="1"></el-option>
                     <el-option label="活动通知" value="2"></el-option>
                     <el-option label="故障通知" value="3"></el-option>
                 </el-select>

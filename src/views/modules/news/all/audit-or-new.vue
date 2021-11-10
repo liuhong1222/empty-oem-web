@@ -10,8 +10,8 @@
                 </el-form-item>
                 <el-form-item label="审核结果：" prop="resource" style="margin-left: 30px" v-show="seeAuditShow">
                     <el-radio-group v-model="auditnewsSeeForm.resource" @change="auditChangeHandler">
-                        <el-radio :label="1">通过</el-radio>
-                        <el-radio :label="3">驳回</el-radio>
+                        <el-radio :label="3">通过</el-radio>
+                        <el-radio :label="4">驳回</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="驳回原因：" prop="desc" v-if="auditDisable" style="margin-left: 30px" v-show="seeAuditShow">
@@ -93,7 +93,7 @@
 
             },
             auditChangeHandler(val) {
-                if (val == 3) {
+                if (val == 4) {
                     this.auditDisable = true
                 } else {
                     this.auditDisable = false

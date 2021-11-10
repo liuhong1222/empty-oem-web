@@ -6,7 +6,7 @@
             <el-step title="域名备案信息"></el-step>
             <el-step title="支付宝资料"></el-step>
             <el-step title="合同信息"></el-step>
-            <el-step title="微信收款资料"></el-step>
+            <el-step title="微信资料"></el-step>
             <el-step title="微信登录资料"></el-step>
         </el-steps>
         <!-- 内容显示 -->
@@ -194,7 +194,7 @@
                 </el-form>
             </div>
 
-            <!-- 微信收款资料 -->
+            <!-- 微信资料 -->
             <div class="weixinInformation" v-if="active === 5">
                 <el-form :model="wxdataForm" ref="wxdataFormref" label-width="110px" :rules="wxdataFormrefrules" class="demo-ruleForm">
                     <el-form-item label="微信调用地址" prop="wxcallUrl">

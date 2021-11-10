@@ -11,6 +11,7 @@ import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/a
 import { isAuth } from '@/utils'
 // import VueRouter from 'vue-router'
 import VueClipboard from 'vue-clipboard2'
+import JSONBigNumber from 'json-bigint'
 
 window.jquery = $
 Vue.use(VueCookie)
@@ -25,6 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 // 挂载全局
 Vue.prototype.$http = httpRequest // ajax请求方法
 Vue.prototype.isAuth = isAuth     // 权限方法
+Vue.prototype.$json = JSONBigNumber     // 超精度数据 JSON 处理
 
 /* eslint-disable no-new */
 new Vue({

@@ -140,7 +140,7 @@
                     </el-form>
                 </el-collapse-item>
 
-                <el-collapse-item title="微信收款资料 ✚" name="6">
+                <el-collapse-item title="微信资料 ✚" name="6">
                     <el-form :model="wxdataForm" ref="wxdataFormref" label-width="110px" class="demo-ruleForm">
                         <el-form-item label="微信调用地址">
                             <el-input v-model="wxdataForm.wxcallUrl" placeholder="微信调用地址" readonly></el-input>

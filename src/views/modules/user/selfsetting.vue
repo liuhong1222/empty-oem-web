@@ -8,7 +8,7 @@
                 <el-step title="域名备案信息"></el-step>
                 <el-step title="支付宝资料"></el-step>
                 <el-step title="合同信息"></el-step>
-                <el-step title="微信收款资料"></el-step>
+                <el-step title="微信资料"></el-step>
                 <el-step title="微信登录资料"></el-step>
             </el-steps>
             <!-- 内容显示 -->
@@ -17,9 +17,6 @@
                 <div class="essentialInformation" v-if="active === 0 ">
                     <el-form :inline="true" :model="basicdataForm" v-model="dataList" :rules="basicDatarules"
                         ref="basicdataList" label-width="110px">
-                        <!-- <el-form-item label="代理商序号：" prop="agentId" class="noborder">
-                            <el-input v-model="basicdataForm.agentId" placeholder="代理商序号" readonly></el-input>
-                        </el-form-item><br /> -->
                         <el-form-item label="商户编号：" prop="busicId" class="noborder">
                             <el-input v-model="basicdataForm.busicId" placeholder="商户编号" readonly></el-input>
                         </el-form-item><br />
@@ -219,7 +216,7 @@
                     </el-form>
                 </div>
 
-                <!-- 微信收款资料 -->
+                <!-- 微信资料 -->
                 <div class="weixinInformation" v-if="active === 5">
                     <el-form :model="wxdataForm" ref="wxdataFormref" label-width="110px" :rules="wxdataFormrefrules"
                         class="demo-ruleForm">
@@ -402,7 +399,7 @@
                         </el-form-item>
                     </el-form>
                 </el-collapse-item>
-                <el-collapse-item title="微信收款资料 ✚" name="6">
+                <el-collapse-item title="微信资料 ✚" name="6">
                     <el-form :model="wxdataForm" ref="wxdataFormref" label-width="110px" class="demo-ruleForm">
                         <el-form-item label="微信调用地址">
                             <el-input v-model="wxdataForm.wxcallUrl" placeholder="微信调用地址" readonly></el-input>

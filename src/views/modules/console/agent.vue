@@ -614,6 +614,7 @@
             } else if (data.data.autoPresentCfg == 0) {
               this.giveSwitch = false
             }
+            sessionStorage.setItem('agentInfo', this.$json.stringify(data.data.agentInfo || '{}'))
             this.copyinput = data.data.referralLink
             this.chdataForm.chPrice = data.data.price
             this.basicList[0].counts = data.data.price
