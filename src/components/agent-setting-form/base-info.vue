@@ -128,7 +128,6 @@
 </template>
 
 <script>
-import imgUrl from '@/utils/imgUrl'
 export default {
     name: "BaseInfo",
     data() {
@@ -188,10 +187,11 @@ export default {
     },
     methods: {
         init(initData) {
-            this.logoUrl = ''
-            this.iconUrl = ''
-            this.signUrl = ''
-            this.sealUrl = ''
+            let imgPreStr = 'map_engine_file/'
+            this.logoUrl = initData.agentLogo ? imgPreStr + initData.agentLogo : ''
+            this.iconUrl = initData.agentIcon ? imgPreStr + initData.agentIcon : ''
+            this.signUrl = initData.deputySignature ? imgPreStr + initData.deputySignature : ''
+            this.sealUrl = initData.companyChop ? imgPreStr + initData.companyChop : ''
             this.formData = {
                 ...initData
             }

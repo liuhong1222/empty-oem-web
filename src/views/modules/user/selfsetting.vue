@@ -54,14 +54,13 @@
                 <el-button v-else type="primary" @click="handleNext">完成</el-button>
             </div>
         </div>
-        <div class="view-wrapper">
-
+        <div v-show="isView" class="view-wrapper">
+            <agent-setting-detail ref="detailRef" />
         </div>
     </div>
 </template>
 
 <script>
-    import imgUrl from '@/utils/imgUrl'
     import BaseInfoForm from '@/components/agent-setting-form/base-info.vue'
     import ServiceInfoForm from '@/components/agent-setting-form/service-info.vue'
     import DomainInfoForm from '@/components/agent-setting-form/domain-info.vue'
@@ -70,6 +69,7 @@
     import ContractDataForm from '@/components/agent-setting-form/contract-data.vue'
     import WechatInfoForm from '@/components/agent-setting-form/wechat-info.vue'
     import ServiceAgreementForm from '@/components/agent-setting-form/service-agreement.vue'
+    import AgentSettingDetail from '@/components/agent-setting-detail/index.vue'
     export default {
         components: {
             BaseInfoForm,
@@ -80,10 +80,11 @@
             ContractDataForm,
             WechatInfoForm,
             ServiceAgreementForm,
+            AgentSettingDetail
         },
         data() {
             return {
-                isView: false,
+                isView: true,
                 allSettingInfo: {}, // 所有的代理商设置信息
                 currStep: 0,
             }
@@ -107,7 +108,12 @@
                             ...this.allSettingInfo,
                             ...(data.data || {})
                         }
-                        this.initBaseInfoForm()
+                        this.isView = false;
+                        if (this.isView) {
+                            this.$refs.detailRef.init(this.allSettingInfo)
+                        } else {
+                            this.initBaseInfoForm()
+                        }
                     }
                 })
             },
@@ -132,8 +138,8 @@
             handleNext() {
                 if (this.currStep === 7) {
                     this.handleSubmitFormData('serviceAgreementFormRef', () => {
-                    this.isView = true
-                })
+                        this.isView = true
+                    })
                     return true;
                 }
                 let funcNameArr = [
@@ -257,13 +263,19 @@
                 this.$refs[refStr].$refs.formRef.validate((valid) => {
                     if (valid) {
                         let formData = this.$refs[refStr].formData || {}
+                        // 最后一步 其他 模块 单独处理（由于存在富文本编辑器）
+                        if (refStr === 'serviceAgreementFormRef') {
+                            formData = {
+                                agreement: this.$refs[refStr].getUeContent()
+                            }
+                        }
                         this.$http({
                             url: this.$http.adornUrl(`agent/set/add`),
                             method: 'post',
-                            params: this.$http.adornParams({
+                            data: {
                                 token: this.$cookie.get('token'),
                                 ...formData
-                            })
+                            }
                         }).then(({ data }) => {
                             if (data && data.code === 0) {
                                 this.allSettingInfo = {
