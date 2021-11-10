@@ -1,10 +1,9 @@
 <template>
     <el-form
-        :inline="true"
         :model="formData"
         :rules="rules"
+        label-width="180px"
         ref="formRef"
-        label-width="110px"
     >
         <el-form-item label="合同资料公司名称：" prop="contactCompanyName">
             <el-input v-model="formData.contactCompanyName" placeholder="请输入合同资料公司名称">

@@ -1,10 +1,9 @@
 <template>
     <el-form
-        :inline="true"
         :model="formData"
         :rules="rules"
+        label-width="150px"
         ref="formRef"
-        label-width="110px"
     >
         <el-form-item label="微信网关地址：" prop="wechatGateway">
             <el-input v-model="formData.wechatGateway" placeholder="请输入微信网关地址">

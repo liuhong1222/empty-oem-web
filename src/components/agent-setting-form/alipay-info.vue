@@ -1,10 +1,9 @@
 <template>
     <el-form
-        :inline="true"
         :model="formData"
         :rules="rules"
         ref="formRef"
-        label-width="110px"
+        label-width="150px"
     >
         <el-form-item label="支付宝应用ID：" prop="alipayAppid">
             <el-input v-model="formData.alipayAppid" placeholder="请输入支付宝应用ID">

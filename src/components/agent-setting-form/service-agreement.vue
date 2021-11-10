@@ -1,13 +1,12 @@
 <template>
     <el-form
-        :inline="true"
         :model="formData"
         :rules="rules"
+        label-width="150px"
         ref="formRef"
-        label-width="110px"
     >
         <el-form-item label="服务协议：" prop="agreement">
-            <el-input type="hidden" v-model="newsForm.agreement"></el-input>
+            <el-input type="hidden" v-model="formData.agreement"></el-input>
             <UE :defaultMsg="defaultEditorCon" :config="config" ref="ue"></UE>
         </el-form-item>
     </el-form>

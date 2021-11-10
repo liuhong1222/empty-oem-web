@@ -1,10 +1,9 @@
 <template>
     <el-form
-        :inline="true"
         :model="formData"
         :rules="rules"
         ref="formRef"
-        label-width="110px"
+        label-width="180px"
     >
         <el-form-item label="域名版权信息：" prop="domainCopyright">
             <el-input v-model="formData.domainCopyright" placeholder="请输入域名版权信息">

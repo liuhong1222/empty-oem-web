@@ -1,10 +1,9 @@
 <template>
     <el-form
-        :inline="true"
         :model="formData"
         :rules="rules"
+        label-width="150px"
         ref="formRef"
-        label-width="110px"
     >
         <el-form-item label="浏览器右侧显示：" prop="browserRightDisplay">
             <el-switch v-model="formData.browserRightDisplay" @change="changeSwitch()"></el-switch>

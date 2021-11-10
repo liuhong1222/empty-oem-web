@@ -1,10 +1,9 @@
 <template>
     <el-form
-        :inline="true"
         :model="formData"
         :rules="rules"
         ref="formRef"
-        label-width="110px"
+        label-width="150px"
     >
         <el-form-item label="对公收款人：" prop="payeePublic">
             <el-input v-model="formData.payeePublic" placeholder="请输入对公收款人">
