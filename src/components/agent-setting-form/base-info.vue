@@ -165,6 +165,21 @@ export default {
                 agentId: null,
                 file: null
             },
+            iconQueryParams: { // icon 上传参数
+                imageType: 4,
+                agentId: null,
+                file: null
+            },
+            SignaturesQueryParams: { // 代表签字上传参数
+                imageType: 1,
+                agentId: null,
+                file: null
+            },
+            ChapterQueryParams: { // 公司红章上传参数
+                imageType: 2,
+                agentId: null,
+                file: null
+            },
             logoUrl: '', // logo 预览地址
             iconUrl: '', // icon 预览地址
             signUrl: '', // sign 预览地址
