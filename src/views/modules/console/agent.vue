@@ -476,6 +476,18 @@ export default {
         showDetails() {
             this.$router.push({ name: 'finance-myrecharge' })
         },
+        // 修改套餐
+        editMeal() {
+            this.editmealVisible = true;
+            this.dat.count = []
+            this.dat.mealMoney = []
+            this.dat.name = []
+            for (let i = 0; i < this.mealList.length; i++) {
+                this.dat.count.push(this.mealList[i].number);
+                this.dat.mealMoney.push(this.mealList[i].money)
+                this.dat.name.push(this.mealList[i].packageName)
+            }
+        },
 
         /********** 复制推广链接弹框 **********/
         copyLink() {

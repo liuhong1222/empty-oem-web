@@ -13,15 +13,23 @@
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">代理商logo</td>
-                        <td class="discribe-col">{{ agentSettingInfo.agentLogo }}</td>
+                        <td class="discribe-col">
+                            <img v-if="agentSettingInfo.agentLogo" :src="`/map_engine_file/${agentSettingInfo.agentLogo}`" />
+                        </td>
                         <td class="discribe-col title">代理商icon</td>
-                        <td class="discribe-col">{{ agentSettingInfo.agentIcon }}</td>
+                        <td class="discribe-col">
+                            <img v-if="agentSettingInfo.agentIcon" :src="`/map_engine_file/${agentSettingInfo.agentIcon}`" />
+                        </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">代表签字</td>
-                        <td class="discribe-col">{{ agentSettingInfo.deputySignature }}</td>
+                        <td class="discribe-col">
+                            <img style="width: 200px;" v-if="agentSettingInfo.deputySignature" :src="`/map_engine_file/${agentSettingInfo.deputySignature}`" />
+                        </td>
                         <td class="discribe-col title">公司红章</td>
-                        <td class="discribe-col">{{ agentSettingInfo.companyChop }}</td>
+                        <td class="discribe-col">
+                            <img v-if="agentSettingInfo.companyChop" :src="`/map_engine_file/${agentSettingInfo.companyChop}`" />
+                        </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">短信签名</td>

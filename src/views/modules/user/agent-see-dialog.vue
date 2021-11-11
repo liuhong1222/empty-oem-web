@@ -26,7 +26,8 @@
                     method: 'post',
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.agentSettingInfo = data.data || {}
+                        const { agentSetInfo } = (data.data || {})
+                        this.agentSettingInfo = agentSetInfo || {}
                         this.$refs.detailRef.init(this.agentSettingInfo)
                     }
                 })

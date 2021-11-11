@@ -125,7 +125,8 @@
         <!-- 个人，企业充值 -->
         <per-recharge-prise v-if="chargeVisible" ref="rechargecon" @refreshDataList="getCustomList"></per-recharge-prise>
         <!-- 个人，企业退款 -->
-        <per-refund-prise v-if="refundVisible" ref="refundcon" @refreshDataList="getCustomList"></per-refund-prise>
+        <customer-refund-dia ref="customerRefundDiaRef" @refresh="getCustomList" />
+        <!-- <per-refund-prise v-if="refundVisible" ref="refundcon" @refreshDataList="getCustomList"></per-refund-prise> -->
         <!-- 转代理商 -->
         <transfer-or-agent
             v-if="transferAgentVisible"
@@ -140,6 +141,7 @@ import perSeeEnterprise from "./user-per-see-enterprise";
 import perRechargePrise from "./user-per-recharge-prise";
 import perRefundPrise from "./user-per-refund-prise";
 import transferOrAgent from "./user-transfer-agent";
+import CustomerRefundDia from './customer-refund-dia.vue';
 export default {
   data() {
     return {
@@ -182,6 +184,7 @@ export default {
     perRechargePrise,
     perRefundPrise,
     transferOrAgent,
+    CustomerRefundDia,
   },
   activated() {
     if (sessionStorage.getItem("msjRoleName") == "1") {
@@ -227,7 +230,7 @@ export default {
       }
     },
     // 获取客户列表
-    getCustomList() {
+    getCustomList(currPage) {
       if (sessionStorage.getItem("msjRoleName") == "2") {
         // 代理商
         this.disableAgent = false;
@@ -241,6 +244,7 @@ export default {
         this.refundDisabled = true;
         this.transferDisabled = false;
       }
+      this.pageIndex = currPage || this.pageIndex
       this.dataListLoading = true;
       this.$http({
         url: this.$http.adornUrl(
@@ -370,9 +374,10 @@ export default {
           this.arr[1] = record.user_type;
           this.arr[2] = record.creUserId;
           this.arr[3] = record.user_phone;
-          this.$nextTick(() => {
-            this.$refs.refundcon.refundInit(arr);
-          });
+          // this.$nextTick(() => {
+          //   this.$refs.refundcon.refundInit(arr);
+          // });
+          this.$refs.customerRefundDiaRef.init(record);
           break;
         }
         case "transferAgent": {

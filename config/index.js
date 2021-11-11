@@ -20,6 +20,10 @@ module.exports = {
         pathRewrite: {
           '^/proxyApi': '/'
         }
+      },
+      '/map_engine_file': {
+        target:'http://172.18.108.175:9999/', // jzg
+        changeOrigin: true,
       }
     },
 

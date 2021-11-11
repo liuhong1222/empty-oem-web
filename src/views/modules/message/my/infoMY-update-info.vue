@@ -85,10 +85,9 @@
                 this.$refs['updateInfoDataFormRef'].validate((valid) => {
                     if (valid) {
                         this.$http({
-                            url: this.$http.adornUrl(`agent/message/my/update?token=${this.$cookie.get('token')}`),
+                            url: this.$http.adornUrl(`agent/message/my/update?token=${this.$cookie.get('token')}&agentMessageId=${this.dataForm.id}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'agentMessageId': this.dataForm.id,
                                 'title': this.updateInfoDataForm.title,
                                 'message': this.updateInfoDataForm.messCon,
                                 'type': this.updateInfoDataForm.infoType,

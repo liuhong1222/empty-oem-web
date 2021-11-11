@@ -452,17 +452,21 @@ li {
       border-collapse: collapse;
   }
   &-col {
-      width: 25%;
+      width: 30%;
       padding: 16px 24px;
       min-height: 52px;
       height: 100%;
       word-wrap: break-word;
+      border-color: #e8e8e8;
+      overflow-wrap: break-word;
       &.title {
+          width: 20%;
           background-color: #fafafa;
       }
     > div {
       word-wrap: break-word;
-      width: 120px;
+      overflow-wrap: break-word;
+      // width: 120px;
     }
   }
 }

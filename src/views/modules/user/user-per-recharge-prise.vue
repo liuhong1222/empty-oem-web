@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="充值" :visible.sync="chargeVisible" width="40%">
+    <el-dialog title="充值" :visible.sync="chargeVisible" width="600px">
         <el-form :model="rechargeDataForm" :rules="rechargerules" ref="rechargeRef" label-width="150px" :label-position="labelPosition">
             <el-form-item label="手机号：" prop="userName">
                 <el-input v-model="rechargeDataForm.userName" placeholder="手机号" id="mobile" readonly></el-input>
@@ -27,9 +27,12 @@
             </el-form-item>
             <el-form-item label="充值方式：" prop="rechargeMethod">
                 <el-select v-model="rechargeDataForm.rechargeMethod" placeholder="请选择充值方式">
-                    <el-option label="支付宝" value="5"></el-option>
-                    <el-option label="对公转账" value="6"></el-option>
-                    <el-option label="赠送" value="7"></el-option>
+                    <el-option label="对公转账" value="0"></el-option>
+                    <el-option label="赠送" value="3"></el-option>
+                    <el-option label="对公支付宝转账" value="4"></el-option>
+                    <el-option label="对私支付宝" value="5"></el-option>
+                    <el-option label="对私微信" value="6"></el-option>
+                    <el-option label="对私转账" value="7"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="备注：" prop="rechargeDesc">
@@ -37,9 +40,9 @@
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-                    <el-button @click="chargeVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="rechargeDataSubmit" :disabled="disabled">确 定</el-button>
-                </span>
+            <el-button @click="chargeVisible = false">取 消</el-button>
+            <el-button type="primary" @click="rechargeDataSubmit" :disabled="disabled">确 定</el-button>
+        </span>
     </el-dialog>
 </template>
 <script>
@@ -103,16 +106,6 @@
                     }
                 }
             }
-            // rechargeDataForm: {
-            //     handler: function (val, oldval) {
-            //         if (this.rechargeDataForm.rechargeMoney !== "" && this.rechargeDataForm.price !== "") {
-            //             this.rechargeDataForm.rechargeCounts = Number(this.rechargeDataForm.rechargeMoney) / (this.rechargeDataForm.price);
-            //         } else {
-            //             this.rechargeDataForm.rechargeCounts = ""
-            //         }
-            //     },
-            //     deep: true
-            // }
         },
         methods: {
             packagePro() {

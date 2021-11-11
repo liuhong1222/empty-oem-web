@@ -1,1205 +1,312 @@
 <template>
-    <el-dialog title="代理商设置" :close-on-click-modal="false" :visible.sync="visible" class="el-dialog-enter" @close='closeDialog'>
-        <el-steps :active="active" finish-status="success" align-center class="settingSteps">
+    <el-dialog title="代理商设置" width="1000px" :close-on-click-modal="false" :visible.sync="visible" class="el-dialog-enter">
+        <el-steps :active="currStep" finish-status="success" align-center class="settingSteps">
             <el-step title="基本信息"></el-step>
             <el-step title="客服资料"></el-step>
             <el-step title="域名备案信息"></el-step>
+            <el-step title="收款资料"></el-step>
             <el-step title="支付宝资料"></el-step>
-            <el-step title="合同信息"></el-step>
+            <el-step title="合同资料"></el-step>
             <el-step title="微信资料"></el-step>
-            <el-step title="微信登录资料"></el-step>
+            <el-step title="其他"></el-step>
         </el-steps>
         <!-- 内容显示 -->
         <div>
             <!-- 基本信息 -->
-            <div class="essentialInformation" v-if="active === 0 ">
-                <el-form :inline="true" :model="basicdataForm" v-model="dataList" :rules="basicDatarules" ref="basicdataList"
-                    label-width="110px">
-                    <!-- <el-form-item label="代理商序号" prop="agentId">
-            <el-input v-model="basicdataForm.agentId" placeholder="代理商序号"></el-input>
-          </el-form-item><br /> -->
-                    <el-form-item label="商户编号" prop="busicId">
-                        <el-input v-model="basicdataForm.busicId" placeholder="商户编号" readonly></el-input>
-                    </el-form-item><br />
-                    <el-form-item label="代理商名称" prop="agentName">
-                        <el-input v-model="basicdataForm.agentName" placeholder="代理商名称" readonly></el-input>
-                    </el-form-item>
-                    <br />
-                    <el-form-item label="logo" id="logoImgSize" prop="imageUrlLogo">
-                        <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionLogo()"
-                            :on-success="handleAvatarSuccessLogo" :on-error="errorLogo" :on-progress="onProgressLogo"
-                            :before-upload="beforeAvatarUploadLogo" :data="logoQueryParams" enctype="multipart/form-data"
-                            :limit="1">
-                            <img v-if="basicdataForm.imageUrlLogo" :src="basicdataForm.imageUrlLogo" class="avatar">
-                            <i class="el-icon-plus"></i>
-                            <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长140px，宽36px，（再次上传请删除上一次上传）</div>
-                            <input type="hidden" v-model="basicdataForm.imageUrlLogo" />
-                        </el-upload>
-                    </el-form-item><br />
-                    <el-form-item label="icon" id="iconImgSize" prop="imageUrlIcon">
-                        <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
-                            :on-progress="onProgressIcon" :before-upload="beforeAvatarUploadIcon" :action="actionIcon()"
-                            :data="iconQueryParams" :on-error="errorIcon">
-                            <img v-if="basicdataForm.imageUrlIcon" :src="basicdataForm.imageUrlIcon" class="avatar"
-                                :limit="1">
-                            <i class="el-icon-plus"></i>
-                            <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长40px，宽40px，（再次上传请删除上一次上传）</div>
-                            <input type="hidden" v-model="basicdataForm.imageUrlIcon" />
-                        </el-upload>
-                    </el-form-item><br />
-                    <el-form-item label="代表签字" prop="imageUrlSignatures">
-                        <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionSignatures()"
-                            :on-success="handleAvatarSuccessSignatures" :on-error="errorSignatures" :on-progress="onProgressSignatures"
-                            :before-upload="beforeAvatarUploadSignatures" :data="SignaturesQueryParams" enctype="multipart/form-data"
-                            :limit="1">
-                            <img v-if="basicdataForm.imageUrlSignatures" :src="basicdataForm.imageUrlSignatures" class="avatar">
-                            <i class="el-icon-plus"></i>
-                            <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长1261px，宽482px，（再次上传请删除上一次上传）</div>
-                            <input type="hidden" v-model="basicdataForm.imageUrlSignatures" />
-                        </el-upload>
-                    </el-form-item><br />
-                    <el-form-item label="公司红章" prop="imageUrlChapter">
-                        <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionChapter()"
-                            :on-success="handleAvatarSuccessChapter" :on-error="errorChapter" :on-progress="onProgressChapter"
-                            :before-upload="beforeAvatarUploadChapter" :data="ChapterQueryParams" enctype="multipart/form-data"
-                            :limit="1">
-                            <img v-if="basicdataForm.imageUrlChapter" :src="basicdataForm.imageUrlChapter" class="avatar">
-                            <i class="el-icon-plus"></i>
-                            <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长169px，宽168px，（再次上传请删除上一次上传）</div>
-                            <input type="hidden" v-model="basicdataForm.imageUrlChapter" />
-                        </el-upload>
-                    </el-form-item><br />
-                    <el-form-item label="短信签名" prop="messSign">
-                        <el-input placeholder="单行输入" v-model="basicdataForm.messSign"></el-input>
-                    </el-form-item><br />
-                    <el-form-item label="代理商域名" prop="agentDomain">
-                        <el-input placeholder="单行输入" v-model="basicdataForm.agentDomain"></el-input>
-                    </el-form-item><br />
-                    <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
-                </el-form>
+            <div class="form-wrapper" v-if="currStep === 0 ">
+                <base-info-form ref="baseInfoFormRef" />
             </div>
             <!-- 客服资料 -->
-            <!-- class="customerInformation" 注释掉 要不验证 不出来-->
-            <div v-if="active === 1" style="padding: 30px 30px;">
-                <el-form label-width="110px" :model="customerDataForm" :rules="customerDatarules" ref="customerdataList"
-                    class="demo-ruleForm">
-                    <el-form-item label="浏览器右侧显示">
-                        <el-switch v-model="customerDataForm.browserDisplay"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="客服热线" prop="kfLine">
-                        <el-input v-model="customerDataForm.kfLine" placeholder="客服热线 (最大输入长度为24)" maxlength="24"></el-input>
-                    </el-form-item>
-                    <el-form-item label="客服qq" prop="keyqq">
-                        <el-input v-model="customerDataForm.keyqq" placeholder="客服qq (最大输入长度为24)" maxlength="24"></el-input>
-                    </el-form-item>
-                    <el-form-item label="美洽ID" prop="beautyID">
-                        <el-input v-model="customerDataForm.beautyID" placeholder="美洽ID"></el-input>
-                    </el-form-item>
-                    <el-form-item label="商务合作号" prop="businNO">
-                        <el-input v-model="customerDataForm.businNO" placeholder="商务合作号"></el-input>
-                    </el-form-item>
-                    <el-form-item label="微信二维码" id="wxImgSize">
-                        <div class="delWXimg" v-show="delWXimgVisible">
-                            <img src="~@/assets/img/delWX.png" alt="" @click="delWXimgBtn">&nbsp;<span>（删除后可重新上传）</span>
-                        </div>
-                        <el-upload class="upload-demo" drag :show-file-list="true" name="file" :action="actionWx()"
-                            :on-success="handleAvatarSuccessWx" :on-error="errorWx" :on-progress="onProgressWx"
-                            :before-upload="beforeAvatarUploadWx" :data="wxQueryParams" enctype="multipart/form-data"
-                            :limit="1" :file-list="fileList2">
-                            <img v-if="customerDataForm.imageUrlWx" :src="customerDataForm.imageUrlWx" class="avatar">
-                            <i class="el-icon-plus "></i>
-                            <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长100px，宽100px，（再次上传请删除上一次上传）</div>
-                            <input type="hidden" v-model="customerDataForm.imageUrlWx" />
-                        </el-upload>
-                    </el-form-item><br />
-                    <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
-                    <el-button style="margin-top: 12px;" @click="nextcustomer">下一步</el-button>
-                </el-form>
+            <div class="form-wrapper" v-if="currStep === 1">
+                <service-info-form ref="serviceInfoFormRef" />
             </div>
             <!-- 域名备案信息 -->
-            <!-- class="domainNameFiling" 注释掉 要不验证 不出来 -->
-            <div v-if="active === 2 " style="padding: 30px 30px;">
-                <el-form label-width="110px" :model="domainDataForm" :rules="domainDatarules" ref="domaindataList"
-                    class="demo-ruleForm">
-                    <el-form-item label="版权信息：" prop="copyinfo">
-                        <el-input v-model="domainDataForm.copyinfo" placeholder="请输入版权信息"></el-input>
-                    </el-form-item>
-                    <el-form-item label="公司地址：" prop="compAdress">
-                        <el-input v-model="domainDataForm.compAdress" placeholder="请输入公司地址"></el-input>
-                    </el-form-item>
-                    <el-form-item label="联系方式：" prop="custHotline">
-                        <el-input v-model="domainDataForm.custHotline" placeholder="请输入联系方式"></el-input>
-                    </el-form-item>
-                    <el-form-item  prop="telservice">
-                        <span slot="label" style="line-height: 16px;display: inline-block;">增值电信业务经营许可证：</span>
-                        <el-input v-model="domainDataForm.telservice" placeholder="请输入增值电信业务经营许可证"></el-input>
-                    </el-form-item>
-                    <el-form-item label="ICP备案：" prop="icpInfo">
-                        <el-input v-model="domainDataForm.icpInfo" placeholder="请输入ICP备案，例：沪ICP备案：15046301号-2
-                        "></el-input>
-                    </el-form-item>
-                    <el-form-item label="公安备案：" prop="secrecord">
-                        <el-input v-model="domainDataForm.secrecord" placeholder="请输入公安备案，例：沪公网安备案 31011702001190号"></el-input>
-                    </el-form-item>
-                    <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
-                    <el-button style="margin-top: 12px;" @click="nextDomain">下一步</el-button>
-                </el-form>
+            <div class="form-wrapper" v-if="currStep === 2">
+                <domain-info-form ref="domainInfoFormRef" />
+            </div>
+            <!-- 收款资料 -->
+            <div class="form-wrapper" v-if="currStep === 3">
+                <gathering-info-form ref="gatheringInfoFormRef" />
             </div>
             <!-- 支付宝资料 -->
-            <div class="alipayIInformation" v-if="active === 3 ">
-                <el-form :model="alipaydataForm" ref="alipaydataFormref" label-width="110px">
-                    <el-form-item label="appid">
-                        <el-input v-model="alipaydataForm.aliappid" placeholder="appid"></el-input>
-                    </el-form-item>
-                    <el-form-item label="支付宝调用地址">
-                        <el-input v-model="alipaydataForm.alicallUrl" placeholder="支付宝调用地址"></el-input>
-                    </el-form-item>
-                    <el-form-item label="支付回调地址">
-                        <el-input v-model="alipaydataForm.alicallbackUrl" placeholder="支付回调地址"></el-input>
-                    </el-form-item>
-                    <el-form-item label="支付宝公钥">
-                        <el-input type="textarea" v-model="alipaydataForm.alipublicKey" placeholder="公钥" :rows="5"></el-input>
-                    </el-form-item>
-                    <el-form-item label="应用私钥">
-                        <el-input type="textarea" v-model="alipaydataForm.aliprivateKey" placeholder="私钥" :rows="5"></el-input>
-                    </el-form-item>
-                    <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
-                    <el-button style="margin-top: 12px;" @click="nextalipay">下一步</el-button>
-                </el-form>
+            <div class="form-wrapper" v-if="currStep === 4 ">
+                <alipay-info-form ref="alipayInfoFormRef" />
             </div>
-            <!-- 合同信息 -->
-            <div v-if="active === 4" class="contractInformation">
-                <el-form :model="contractdataForm" :rules="contractdatarules" ref="contractdataFormref" label-width="110px">
-                    <el-form-item label="公司名称" prop="comName">
-                        <el-input v-model="contractdataForm.comName" placeholder="公司名称"></el-input>
-                    </el-form-item>
-                    <el-form-item label="公司地址" prop="comAdress">
-                        <el-input v-model="contractdataForm.comAdress" placeholder="公司地址"></el-input>
-                    </el-form-item>
-                    <el-form-item label="开户行" prop="openBank">
-                        <el-input v-model="contractdataForm.openBank" placeholder="开户行"></el-input>
-                    </el-form-item>
-                    <el-form-item label="邮编" prop="zipcode">
-                        <el-input v-model="contractdataForm.zipcode" placeholder="邮编"></el-input>
-                    </el-form-item>
-                    <el-form-item label="账号" prop="comAccount">
-                        <el-input v-model="contractdataForm.comAccount" placeholder="账号"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="电话" prop="phone">
-                        <el-input v-model="contractdataForm.phone" placeholder="电话"></el-input>
-                    </el-form-item>
-                    <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
-                    <el-button style="margin-top: 12px;" @click="nextcontract">下一步</el-button>
-                </el-form>
+            <!-- 合同资料 -->
+            <div class="form-wrapper" v-if="currStep === 5 ">
+                <contract-data-form ref="contractDataFormRef" />
             </div>
-
             <!-- 微信资料 -->
-            <div class="weixinInformation" v-if="active === 5">
-                <el-form :model="wxdataForm" ref="wxdataFormref" label-width="110px" :rules="wxdataFormrefrules" class="demo-ruleForm">
-                    <el-form-item label="微信调用地址" prop="wxcallUrl">
-                        <el-input v-model="wxdataForm.wxcallUrl" placeholder="微信调用地址"></el-input>
-                    </el-form-item>
-                    <el-form-item label="微信回调地址" prop="wxcallbackUrl">
-                        <el-input v-model="wxdataForm.wxcallbackUrl" placeholder="微信回调地址"></el-input>
-                    </el-form-item>
-                    <el-form-item label="appid" prop="wxappid">
-                        <el-input v-model="wxdataForm.wxappid" placeholder="appid"></el-input>
-                    </el-form-item>
-                    <el-form-item label="mchid" prop="wxmchid">
-                        <el-input v-model="wxdataForm.wxmchid" placeholder="mchid"></el-input>
-                    </el-form-item>
-                    <el-form-item label="key" prop="wxkey">
-                        <el-input v-model="wxdataForm.wxkey" placeholder="key"></el-input>
-                    </el-form-item>
-                    <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
-                    <el-button style="margin-top: 12px;" @click="submitweixin">下一步</el-button>
-                </el-form>
+            <div class="form-wrapper" v-if="currStep === 6">
+                <wechat-info-form ref="wechatInfoFormRef" />
             </div>
-            <!-- 微信登录资料 -->
-            <div class="weixinLoginInfo" v-if="active === 6">
-                <el-form :model="wxLoginForm" ref="wxLoginFormref" label-width="110px" class="demo-ruleForm">
-                    <el-form-item label="APPID">
-                        <el-input v-model="wxLoginForm.APPID" placeholder="APPID"></el-input>
-                    </el-form-item>
-                    <el-form-item label="APPSECRET">
-                        <el-input v-model="wxLoginForm.APPSECRET" placeholder="APPSECRET"></el-input>
-                    </el-form-item>
-                    <el-button style="margin-top: 12px;" @click="lastStep">上一步</el-button>
-                    <el-button style="margin-top: 12px;" @click="submitweiLogin">完成</el-button>
-                </el-form>
+            <!-- 其他 -->
+            <div class="form-wrapper" v-if="currStep === 7">
+                <service-agreement-form ref="serviceAgreementFormRef" />
             </div>
+        </div>
+        <div class="footer">
+            <el-button v-if="currStep === 0" @click="handlePre">取消</el-button>
+            <el-button v-else @click="handlePre">上一步</el-button>
+            <el-button v-if="currStep !== 7" type="primary" @click="handleNext">下一步</el-button>
+            <el-button v-else type="primary" @click="handleNext">完成</el-button>
         </div>
     </el-dialog>
 </template>
 
 <script>
-    import imgUrl from '@/utils/imgUrl'
+    import BaseInfoForm from '@/components/agent-setting-form/base-info.vue'
+    import ServiceInfoForm from '@/components/agent-setting-form/service-info.vue'
+    import DomainInfoForm from '@/components/agent-setting-form/domain-info.vue'
+    import GatheringInfoForm from '@/components/agent-setting-form/gathering-info.vue'
+    import AlipayInfoForm from '@/components/agent-setting-form/alipay-info.vue'
+    import ContractDataForm from '@/components/agent-setting-form/contract-data.vue'
+    import WechatInfoForm from '@/components/agent-setting-form/wechat-info.vue'
+    import ServiceAgreementForm from '@/components/agent-setting-form/service-agreement.vue'
+    import AgentSettingDetail from '@/components/agent-setting-detail/index.vue'
     export default {
+        components: {
+            BaseInfoForm,
+            ServiceInfoForm,
+            DomainInfoForm,
+            GatheringInfoForm,
+            AlipayInfoForm,
+            ContractDataForm,
+            WechatInfoForm,
+            ServiceAgreementForm,
+            AgentSettingDetail
+        },
         data() {
             return {
-                delWXimgVisible: false,
-                fileList2: [],
                 visible: false,
-                agentId: null,
-                active: 0,
-                dataList: [],
-                logoUrl: '',
-                iconUrl: '',
-                signUrl: '',
-                sealUrl: '',
-                basicdataForm: { //基本信息
-                    agentId: '',
-                    busicId: '',
-                    agentName: '',
-                    messSign: '',
-                    agentDomain: '',
-                    imageUrlLogo: '',
-                    imageUrlIcon: '',
-                    imageUrlSignatures: '',
-                    imageUrlChapter: ''
-                },
-                basicDatarules: {  //基本信息规则
-                    agentId: [
-                        { required: true, message: '请输入代理商序号', trigger: 'blur' }
-                    ],
-                    busicId: [
-                        { required: true, message: '请输入商户编号', trigger: 'blur' }
-                    ],
-                    imageUrlLogo: [
-                        { required: true, message: '请输入上传logo', trigger: 'blur' }
-                    ],
-                    imageUrlIcon: [
-                        { required: true, message: '请上传icon', trigger: 'blur' }
-                    ],
-                    imageUrlSignatures: [
-                        { required: true, message: '请上传logo', trigger: 'blur' }
-                    ],
-                    imageUrlChapter: [
-                        { required: true, message: '请上传公司红章', trigger: 'blur' }
-                    ],
-                    agentName: [
-                        { required: true, message: '请上传代表签字', trigger: 'blur' }
-                    ],
-                    messSign: [
-                        { required: true, message: '请输入短信签名', trigger: 'blur' }
-                    ],
-                    agentDomain: [
-                        { required: true, message: '请输入代理商域名', trigger: 'blur' }
-                    ]
-                },
-                domainDataForm: { //域名备案信息
-                    copyinfo: '',
-                    compAdress: '',
-                    custHotline: '',
-                    telservice: '',
-                    icpInfo: '',
-                    secrecord: '',
-                    id: ''  //后端返回的id
-                },
-                domainDatarules: {//域名备案信息规则
-                    copyinfo: [
-                        { required: true, message: '请输入版权信息', trigger: 'blur' }
-                    ],
-                    compAdress: [
-                        { required: true, message: '请输入公司地址', trigger: 'blur' }
-                    ],
-                    custHotline: [
-                        { required: false, message: '请输入客服热线', trigger: 'blur' }
-                    ],
-                    icpInfo: [
-                        { required: true, message: '请输入icp备案', trigger: 'blur' }
-                    ],
-                    secrecord: [
-                        { required: true, message: '请输入公司备案', trigger: 'blur' }
-                    ],
-                    telservice: [
-                        { required: false, message: '请输入经营许可证', trigger: 'blur' }
-                    ],
-                },
-                customerDataForm: {  //客服资料信息
-                    kfLine: '',
-                    keyqq: '',
-                    beautyID: '',
-                    businNO: '',
-                    id: '',  //后端返回的id
-                    imageUrlWx: '',
-                    browserDisplay: true  //开关显示
-                },
-                customerDatarules: {
-                    kfLine: [
-                        { required: true, message: '请输入客服热线', trigger: 'blur' }
-                    ],
-                    keyqq: [
-                        { required: true, message: '请输入客服qq', trigger: 'blur' }
-                    ],
-                    businNO: [
-                        { required: true, message: '请输入商务合作号', trigger: 'blur' }
-                    ],
-                },
-                alipaydataForm: { //支付宝信息
-                    aliappid: '',
-                    alicallUrl: '',
-                    alicallbackUrl: '',
-                    alipublicKey: '',
-                    aliprivateKey: '',
-                    ceshi: '',
-                    id: ''  //后端返回的id
-                },
-                contractdataForm: {  //合同信息
-                    comName: '',
-                    comAdress: '',
-                    comAccount: '',
-                    openBank: '',
-                    zipcode: '',
-                    phone: '',
-                    id: ''  //后端返回的id
-                },
-                contractdatarules: {
-                    comName: [
-                        { required: true, message: '请输入公司名称', trigger: 'blur' }
-                    ],
-                    comAdress: [
-                        { required: true, message: '请输入公司地址', trigger: 'blur' }
-                    ],
-                    comAccount: [
-                        { required: true, message: '请输入账号', trigger: 'blur' }
-                    ],
-                    openBank: [
-                        { required: true, message: '请输入开户行', trigger: 'blur' }
-                    ],
-                    zipcode: [
-                        { required: true, message: '请输入邮编', trigger: 'blur' }
-                    ],
-                    phone: [
-                        { required: true, message: '请输入手机号', trigger: 'blur' }
-                    ],
-                },
-                wxdataForm: {
-                    wxkey: '',
-                    wxappid: '',
-                    wxmchid: '',
-                    wxcallbackUrl: '',
-                    wxcallUrl: '',
-                    id: ''  //后端返回的id
-                },
-                wxdataFormrefrules: {
-                    wxcallUrl: [
-                        { required: false, message: '请输入公司名称', trigger: 'blur' }
-                    ],
-                    wxcallbackUrl: [
-                        { required: false, message: '请输入公司地址', trigger: 'blur' }
-                    ],
-                    wxappid: [
-                        { required: false, message: '请输入账号', trigger: 'blur' }
-                    ],
-                    wxmchid: [
-                        { required: false, message: '请输入开户行', trigger: 'blur' }
-                    ],
-                    wxkey: [
-                        { required: false, message: '请输入邮编', trigger: 'blur' }
-                    ]
-                },
-                wxLoginForm: {
-                    APPID: '',
-                    APPSECRET: '',
-                    id: ''
-                },
-                // imageUrlIcon: "",
-                // imageUrlLogo: "",
-                // imageUrlSignatures: "",  //代表签字
-                // imageUrlChapter: "",  //公司红章
-                logoQueryParams: {  //logo上传参数
-                    imageType: 3,
-                    agentId: null,
-                    file: null
-                },
-                wxQueryParams: {  //logo上传参数
-                    imageType: 5,
-                    agentId: null,
-                    file: null
-                },
-                iconQueryParams: { //icon上传参数
-                    imageType: 4,
-                    agentId: null,
-                    file: null
-                },
-                SignaturesQueryParams: { //代表签字
-                    imageType: 1,
-                    agentId: null,
-                    file: null
-                },
-                ChapterQueryParams: { //公司红章
-                    imageType: 2,
-                    agentId: null,
-                    file: null
-                }
-            };
+                allSettingInfo: {}, // 所有的代理商设置信息
+                editSettingInfo: {}, // 编辑之后的数据
+                currStep: 0,
+                agentSetId: '',
+                initFuncNameArr: [
+                    'initBaseInfoForm',
+                    'initServiceInfoForm',
+                    'initDomainInfoForm',
+                    'initGatheringInfoForm',
+                    'initAlipayInfoForm',
+                    'initContractDataForm',
+                    'initWechatInfoForm',
+                    'initServiceAgreementForm',
+                ]
+            }
         },
         methods: {
-            init(agentId) {
-                this.visible = true;
-                this.agentId = agentId;
-                this.logoQueryParams.agentId = agentId;
-                this.iconQueryParams.agentId = agentId;
-                this.SignaturesQueryParams.agentId = agentId;
-                this.ChapterQueryParams.agentId = agentId;
-                this.logoUrl = ""
-                this.iconUrl = ""
-                this.signUrl = ""
-                this.sealUrl = ""
-                // 获取基本信息
+            init(record) {
+                this.allSettingInfo = {
+                    agentId: record.agentId + '',
+                    agentName: record.agentName
+                }
+                this.currStep = 0
+                this.editSettingInfo = {}
+                this.visible = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/set/findBasicInfo?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
+                    url: this.$http.adornUrl(`agent/set/findBasicInfo?token=${this.$cookie.get('token')}&agentId=${record.agentId}`),
                     method: 'post',
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data)
-                        this.basicdataForm.agentId = data.data[0].agentId
-                        this.basicdataForm.busicId = data.data[0].agent_no
-                        this.basicdataForm.agentName = data.data[0].company_name
-                        this.basicdataForm.imageUrlLogo = imgUrl.imgUrl + data.data[0].logo_url
-                        this.basicdataForm.imageUrlIcon = imgUrl.imgUrl + data.data[0].icon_url   //为了显示图片
-                        this.basicdataForm.imageUrlSignatures = imgUrl.imgUrl + data.data[0].sign_url
-                        this.basicdataForm.imageUrlChapter = imgUrl.imgUrl + data.data[0].seal_url
-                        this.basicdataForm.messSign = data.data[0].sms_sign
-                        this.basicdataForm.agentDomain = data.data[0].name
+                        const { agentSetId, agentSetInfo } = (data.data || {})
+                        this.allSettingInfo = {
+                            ...this.allSettingInfo,
+                            ...(agentSetInfo || {}),
+                            browserRightDisplay: (agentSetInfo && agentSetInfo.browserRightDisplay) ? 1 : 0
+                        }
+                        this.agentSetId = agentSetId ? agentSetId + '' : undefined
+                        this.initBaseInfoForm()
                     }
                 })
             },
-            // 删除图片
-            delWXimgBtn() {
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/delAgentWeixinImage?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                    params: this.$http.adornParams({
-                        'agentId': this.agentId,
+            handlePre() {
+                if (this.currStep === 0) {
+                    this.isView = true
+                    return true
+                }
+                this.currStep = this.currStep - 1
+                this.$nextTick(() => {
+                    this[this.initFuncNameArr[this.currStep]]()
+                })
+            },
+            handleNext() {
+                if (this.currStep === 7) {
+                    this.addOrUpdateSetInfo({
+                        agreement: this.$refs.serviceAgreementFormRef.getUeContent(),
+                        ...this.editSettingInfo,
                     })
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        this.fileList2 = [];
-                        this.wxUrl = "";
-                        this.customerDataForm.imageUrlWx = ""
-                        this.delWXimgVisible = false;
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
-            },
-            next() {  //点击基本信息
-                this.$refs['basicdataList'].validate((valid) => {
+                    return true;
+                }
+                let refStrArr = [
+                    'baseInfoFormRef',
+                    'serviceInfoFormRef',
+                    'domainInfoFormRef',
+                    'gatheringInfoFormRef',
+                    'alipayInfoFormRef',
+                    'contractDataFormRef',
+                    'wechatInfoFormRef',
+                ]
+                let refStr = refStrArr[this.currStep];
+                this.$refs[refStr].$refs.formRef.validate((valid) => {
                     if (valid) {
-                        // 提交基本信息
-                        this.$http({
-                            url: this.$http.adornUrl(`agent/set/updateBasicInfo?token=${this.$cookie.get('token')}`),
-                            method: 'post',
-                            params: this.$http.adornParams({
-                                'agentId': this.agentId,
-                                'logo_url': this.logoUrl,
-                                'icon_url': this.iconUrl,
-                                'sign_url': this.signUrl,
-                                'seal_url': this.sealUrl,
-                                'sms_sign': this.basicdataForm.messSign,
-                                'name': this.basicdataForm.agentDomain
-                            })
-                        }).then(({ data }) => {
-                            // console.log(data)
-                            if (data && data.code === 0) {
-                                this.$nextTick(() => {
-                                    this.$refs['basicdataList'].clearValidate()
-                                })
-                                this.getkfinfo()  //获取客服信息
-                                if (this.active++ > 5) this.active = 0;
-                            } else {
-                                this.$message.error(data.msg)
-                            }
+                        this.editSettingInfo = {
+                            ...this.editSettingInfo,
+                            ...(this.$refs[refStr].formData || {})
+                        }
+                        this.currStep = this.currStep + 1
+                        this.$nextTick(() => {
+                            this[this.initFuncNameArr[this.currStep]]()
                         })
                     }
                 })
             },
-            // 获取客服资料
-            getkfinfo() {
-                this.customerDataForm.id = ""
-                this.customerDataForm.imageUrlWx = ""
+            addOrUpdateSetInfo(params) {
+                let url = this.agentSetId ? `agent/set/updateBasicInfo` : `agent/set/add`
                 this.$http({
-                    url: this.$http.adornUrl(`agent/set/findCustService?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
+                    url: this.$http.adornUrl(url),
                     method: 'post',
+                    data: {
+                        token: this.$cookie.get('token'),
+                        ...params,
+                        agentSetId: this.agentSetId
+                    }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data)
-                        if (data.data !== null) {
-                            this.customerDataForm.kfLine = data.data.hotline
-                            this.customerDataForm.keyqq = data.data.qq
-                            this.customerDataForm.beautyID = data.data.meiqiaEntid
-                            this.customerDataForm.businNO = data.data.bizNo
-                            this.customerDataForm.id = data.data.id
-                            if (data.data.weixinUrl) {
-                                this.customerDataForm.imageUrlWx = imgUrl.imgUrl + data.data.weixinUrl
-                                this.delWXimgVisible = true
-                            } else {
-                                this.wxUrl = ""
-                                this.delWXimgVisible = false
-                            }
-                            if (data.data.rightDisplay == 0) {
-                                this.customerDataForm.browserDisplay = false
-                            } else if (data.data.rightDisplay == 1) {
-                                this.customerDataForm.browserDisplay = true
-                            }
-                        } else {
-                            this.customerDataForm.kfLine = ""
-                            this.customerDataForm.keyqq = ""
-                            this.customerDataForm.beautyID = ""
-                            this.customerDataForm.businNO = ""
-                        }
-                    }
-                })
-            },
-            // 提交客服资料
-            nextcustomer() {
-                this.$refs['customerdataList'].validate((valid) => {
-                    if (valid) {
-
-                        this.$http({
-                            url: this.$http.adornUrl(`agent/set/updateCustService?token=${this.$cookie.get('token')}`),
-                            method: 'post',
-                            params: this.$http.adornParams({
-                                'agentId': this.agentId,
-                                'id': this.customerDataForm.id,
-                                'bizNo': this.customerDataForm.businNO,
-                                'qq': this.customerDataForm.keyqq,
-                                'meiqiaEntid': this.customerDataForm.beautyID,
-                                'hotline': this.customerDataForm.kfLine,
-                                'weixinUrl': this.wxUrl,
-                                'rightDisplay': (this.customerDataForm.browserDisplay) == true ? 1 : 0
-                            })
-                        }).then(({ data }) => {
-                            // console.log(data)
-                            if (data && data.code === 0) {
-                                this.$nextTick(() => {
-                                    this.$refs['customerdataList'].clearValidate()
-                                })
-                                this.getDomain()//获取域名备案信息
-                                if (this.active++ > 5) this.active = 0;
-                            } else {
-                                this.$message.error(data.msg)
-                            }
-                        })
-                    }
-                })
-            },
-            // 获取下一步里面的内容（域名备案信息）
-            getDomain() {
-                this.domainDataForm.id = ""
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/findDomainInfo?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
-                    method: 'post',
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        // console.log(data)
-                        if (data.data !== null) {
-                            this.domainDataForm.copyinfo = data.data.copyright
-                            this.domainDataForm.compAdress = data.data.address
-                            this.domainDataForm.telservice = data.data.licence
-                            this.domainDataForm.icpInfo = data.data.icpRecord
-                            this.domainDataForm.secrecord = data.data.policeRecord
-                            this.domainDataForm.custHotline = data.data.contactInfo
-                            this.domainDataForm.id = data.data.id
-                        } else {
-                            this.domainDataForm.copyinfo = ""
-                            this.domainDataForm.compAdress = ""
-                            this.domainDataForm.telservice = ""
-                            this.domainDataForm.icpInfo = ""
-                            this.domainDataForm.secrecord = ""
-                            this.domainDataForm.custHotline = ""
-                        }
-                    }
-                })
-            },
-
-            // 提交域名信息
-            nextDomain() {
-                this.$refs['domaindataList'].validate((valid) => {
-                    if (valid) {
-
-                        this.$http({
-                            url: this.$http.adornUrl(`agent/set/updateDomainInfo?token=${this.$cookie.get('token')}`),
-                            method: 'post',
-                            params: this.$http.adornParams({
-                                'agentId': this.agentId,
-                                'id': this.domainDataForm.id,
-                                'licence': this.domainDataForm.telservice,
-                                'copyright': this.domainDataForm.copyinfo,
-                                'icpRecord': this.domainDataForm.icpInfo,
-                                'policeRecord': this.domainDataForm.secrecord,
-                                'address': this.domainDataForm.compAdress,
-                                'contactInfo': this.domainDataForm.custHotline
-                            })
-                        }).then(({ data }) => {
-                            // console.log(data)
-                            if (data && data.code === 0) {
-                                this.$nextTick(() => {
-                                    this.$refs['domaindataList'].clearValidate()
-                                })
-                                this.getalipay() //获取支付宝信息
-                                if (this.active++ > 5) this.active = 0;
-                            } else {
-                                this.$message.error(data.msg)
-                            }
-                        })
-                    }
-                })
-            },
-            // 获取支付宝信息
-            getalipay() {
-                this.alipaydataForm.id = ""
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/findAlipay?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
-                    method: 'post',
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        // console.log(data.data)
-                        if (data.data !== null) {
-                            // alert(2222222)
-                            this.alipaydataForm.aliappid = data.data.appid
-                            this.alipaydataForm.alicallUrl = data.data.callUrl
-                            this.alipaydataForm.alicallbackUrl = data.data.callbackUrl
-                            this.alipaydataForm.alipublicKey = data.data.publicKey
-                            this.alipaydataForm.aliprivateKey = data.data.privateKey
-                            this.alipaydataForm.id = data.data.id
-                        } else {
-                            // alert(33333)
-                            this.alipaydataForm.aliappid = ""
-                            this.alipaydataForm.alicallUrl = ""
-                            this.alipaydataForm.alicallbackUrl = ""
-                            this.alipaydataForm.alipublicKey = ""
-                            this.alipaydataForm.aliprivateKey = ""
-                        }
-                    }
-                })
-            },
-            // 提交支付宝
-            nextalipay() {
-
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/updateAlipay?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                    params: this.$http.adornParams({
-                        'agentId': this.agentId,
-                        'id': this.alipaydataForm.id,
-                        'appid': this.alipaydataForm.aliappid,
-                        'callUrl': this.alipaydataForm.alicallUrl,
-                        'callbackUrl': this.alipaydataForm.alicallbackUrl,
-                        'publicKey': this.alipaydataForm.alipublicKey,
-                        'privateKey': this.alipaydataForm.aliprivateKey,
-                    })
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        let keys = [];
-                        for (var key in this.contractdatarules) {
-                            keys.push(this.contractdatarules[key]);
-                        }
-                        if (this.alipaydataForm.aliappid !== "" && this.alipaydataForm.alicallUrl !== "" && this.alipaydataForm.alicallbackUrl !== "" && this.alipaydataForm.alipublicKey !== "" && this.alipaydataForm.aliprivateKey !== "") {
-                            for (var i = 0; i < keys.length; i++) {
-                                keys[i][0].required = true
-                            }
-                        } else {
-                            for (var i = 0; i < keys.length; i++) {
-                                keys[i][0].required = false
-                            }
-                        }
-                        this.getcontractinfo()//获取合同信息
-                        if (this.active++ > 5) this.active = 0;
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
-            },
-            // 
-            // 获取合同信息
-            getcontractinfo() {
-                this.contractdataForm.id = ""
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/findContract?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
-                    method: 'post',
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        // console.log(data)
-                        if (data.data !== null) {
-                            this.contractdataForm.comName = data.data.companyName
-                            this.contractdataForm.comAdress = data.data.companyAddress
-                            this.contractdataForm.comAccount = data.data.accountNo
-                            this.contractdataForm.openBank = data.data.bankName
-                            this.contractdataForm.zipcode = data.data.postcode
-                            this.contractdataForm.phone = data.data.mobile
-                            this.contractdataForm.id = data.data.id
-                        } else {
-                            this.contractdataForm.comName = ""
-                            this.contractdataForm.comAdress = ""
-                            this.contractdataForm.comAccount = ""
-                            this.contractdataForm.openBank = ""
-                            this.contractdataForm.zipcode = ""
-                            this.contractdataForm.phone = ""
-                        }
-                    }
-                })
-            },
-
-            // 提交合同
-            nextcontract() {
-                this.$refs['contractdataFormref'].validate((valid) => {
-                    if (valid) {
-
-                        this.$http({
-                            url: this.$http.adornUrl(`agent/set/updateContract?token=${this.$cookie.get('token')}`),
-                            method: 'post',
-                            params: this.$http.adornParams({
-                                'agentId': this.agentId,
-                                'id': this.contractdataForm.id,
-                                'companyName': this.contractdataForm.comName,
-                                'companyAddress': this.contractdataForm.comAdress,
-                                'accountNo': this.contractdataForm.comAccount,
-                                'bankName': this.contractdataForm.openBank,
-                                'postcode': this.contractdataForm.zipcode,
-                                'mobile': this.contractdataForm.phone
-                            })
-                        }).then(({ data }) => {
-                            // console.log(data)
-                            if (data && data.code === 0) {
-                                this.$nextTick(() => {
-                                    this.$refs['contractdataFormref'].clearValidate()
-                                })
-                                this.getweixinInfo()  //获取微信收款信息
-
-                                if (this.active++ > 5) this.active = 0;
-                            } else {
-                                this.$message.error(data.msg)
-                            }
-                        })
-                    }
-                })
-            },
-
-            //获取微信信息
-            getweixinInfo() {
-                this.wxdataForm.id = ""
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/findWeixinpay?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
-                    method: 'post',
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        if (data.data !== null) {
-                            this.wxdataForm.wxkey = data.data.wxkey
-                            this.wxdataForm.wxappid = data.data.appid
-                            this.wxdataForm.wxmchid = data.data.mchid
-                            this.wxdataForm.wxcallbackUrl = data.data.callbackUrl
-                            this.wxdataForm.wxcallUrl = data.data.callUrl
-                            this.wxdataForm.id = data.data.id
-                        } else {
-
-                            this.wxdataForm.wxkey = ""
-                            this.wxdataForm.wxappid = ""
-                            this.wxdataForm.wxmchid = ""
-                            this.wxdataForm.wxcallbackUrl = ""
-                            this.wxdataForm.wxcallUrl = ""
-                        }
-                    }
-                })
-            },
-
-            // 提交微信信息
-            submitweixin() {
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/updateWeixinpay?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                    params: this.$http.adornParams({
-                        'agentId': this.agentId,
-                        'id': this.wxdataForm.id,
-                        'appid': this.wxdataForm.wxappid,
-                        'callUrl': this.wxdataForm.wxcallUrl,
-                        'callbackUrl': this.wxdataForm.wxcallbackUrl,
-                        'mchid': this.wxdataForm.wxmchid,
-                        'wxkey': this.wxdataForm.wxkey,
-                    })
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        this.getWxLoginInfo()//获取微信登录信息
-                        if (this.active++ > 5) this.active = 0;
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
-            },
-            // 获取微信登录信息
-            getWxLoginInfo() {
-                this.wxLoginForm.id = ""
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/findWxLogin?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
-                    method: 'post',
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        if (data.data !== null) {
-                            this.wxLoginForm.APPID = data.data.appid
-                            this.wxLoginForm.APPSECRET = data.data.appSecret
-                            this.wxLoginForm.id = data.data.id
-                        } else {
-                            this.wxLoginForm.APPID = ""
-                            this.wxLoginForm.APPSECRET = ""
-                        }
-                    }
-                })
-            },
-            // 提交完成最后一步微信登录信息
-            submitweiLogin() {
-                this.$http({
-                    url: this.$http.adornUrl(`agent/set/updateWxLogin?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                    params: this.$http.adornParams({
-                        'agentId': this.agentId,
-                        'id': this.wxLoginForm.id,
-                        'appid': this.wxLoginForm.APPID,
-                        'appSecret': this.wxLoginForm.APPSECRET,
-                    })
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
+                        this.visible = false
+                        this.$emit("refreshDataList")
                         this.$message({
                             message: "操作成功",
                             type: "success",
-                            duration: 1500,
-                            onClose: () => {
-                                this.visible = false;
-                                this.$emit("refreshDataList");
-                            }
+                            duration: 1500
                         });
-                        if (this.active++ >= 5) this.active = 0;
                     } else {
                         this.$message.error(data.msg)
                     }
                 })
             },
-            lastStep() {
-                if (this.active == 1) {
-                    let agentId = this.agentId
-                    this.$refs['customerdataList'].clearValidate()
-                    this.init(agentId)
-                } else if (this.active == 2) {
-                    this.$refs['domaindataList'].clearValidate()
-                    this.getkfinfo()
-                } else if (this.active == 4) {
-                    this.$refs['contractdataFormref'].clearValidate()
-                    this.getalipay()
-                } else if (this.active == 6) {
-                    this.getweixinInfo()
-                } else if (this.active == 5) {
-                    this.$refs['wxdataFormref'].clearValidate()
-                    this.getcontractinfo()
-
-                }
-                this.active--;
+            initBaseInfoForm() {
+                const { agentId, agentName, agentLogo, agentIcon, deputySignature, companyChop, smsSignature, domain, siteName, seoKeywords, seoDescription, la51Src, baiduSrc, baiduocpcToken } = this.allSettingInfo
+                this.$refs.baseInfoFormRef.init({
+                    agentId: this.editSettingInfo.agentId || agentId,
+                    agentName: this.editSettingInfo.agentName || agentName,
+                    agentLogo: this.editSettingInfo.agentLogo || agentLogo,
+                    agentIcon: this.editSettingInfo.agentIcon || agentIcon,
+                    deputySignature: this.editSettingInfo.deputySignature || deputySignature,
+                    companyChop: this.editSettingInfo.companyChop || companyChop,
+                    smsSignature: this.editSettingInfo.smsSignature || smsSignature,
+                    domain: this.editSettingInfo.domain || domain,
+                    siteName: this.editSettingInfo.siteName || siteName,
+                    seoKeywords: this.editSettingInfo.seoKeywords || seoKeywords,
+                    seoDescription: this.editSettingInfo.seoDescription || seoDescription,
+                    la51Src: this.editSettingInfo.la51Src || la51Src,
+                    baiduSrc: this.editSettingInfo.baiduSrc || baiduSrc,
+                    baiduocpcToken: this.editSettingInfo.baiduocpcToken || baiduocpcToken,
+                })
             },
-            
-            closeDialog() {
-                this.active = 0  //修改回到第一步
-                this.customerDataForm.imageUrlWx = ""
+            initServiceInfoForm() {
+                const { browserRightDisplay, kefuNickname, hotline, qq, businessCode, wechatQrcode, maintainerPhone, maintainerQq, maintainerNickname, maintainerWechatQrcode } = this.allSettingInfo
+                this.$refs.serviceInfoFormRef.init({
+                    browserRightDisplay: (this.editSettingInfo.browserRightDisplay || this.editSettingInfo.browserRightDisplay === 0) ? this.editSettingInfo.browserRightDisplay : browserRightDisplay,
+                    kefuNickname: this.editSettingInfo.kefuNickname || kefuNickname,
+                    hotline: this.editSettingInfo.hotline || hotline,
+                    qq: this.editSettingInfo.qq || qq,
+                    businessCode: this.editSettingInfo.businessCode || businessCode,
+                    wechatQrcode: this.editSettingInfo.wechatQrcode || wechatQrcode,
+                    maintainerPhone: this.editSettingInfo.maintainerPhone || maintainerPhone,
+                    maintainerQq: this.editSettingInfo.maintainerQq || maintainerQq,
+                    maintainerNickname: this.editSettingInfo.maintainerNickname || maintainerNickname,
+                    maintainerWechatQrcode: this.editSettingInfo.maintainerWechatQrcode || maintainerWechatQrcode,
+                })
             },
-            // 上传微信二维码
-            actionWx() {
-                let url = this.$http.adornUrl(`file/image/upload?imageType=7&token=${this.$cookie.get('token')}`);
-                return url;
+            initDomainInfoForm() {
+                const { domainCopyright, domainCompanyAddress, domainContactWay, telecomCertification, icp, publicSecurityFiling } = this.allSettingInfo
+                this.$refs.domainInfoFormRef.init({
+                    domainCopyright: this.editSettingInfo.domainCopyright || domainCopyright,
+                    domainCompanyAddress: this.editSettingInfo.domainCompanyAddress || domainCompanyAddress,
+                    domainContactWay: this.editSettingInfo.domainContactWay || domainContactWay,
+                    telecomCertification: this.editSettingInfo.telecomCertification || telecomCertification,
+                    icp: this.editSettingInfo.icp || icp,
+                    publicSecurityFiling: this.editSettingInfo.publicSecurityFiling || publicSecurityFiling,
+                })
             },
-            beforeAvatarUploadWx(file) {
-                const isJPG = (file.type == 'image/png');
-                const isLt2M = file.size / 1024 / 1024 < 2;
-                if (!isJPG) {
-                    this.$message.error("上传微信图片只能是背景为透明的png 格式!");
-                    return false;
-                }
-                if (!isLt2M) {
-                    this.$message.error("上传微信图片大小不能超过 2MB!");
-                    return false;
-                }
-                var _this = this;
-                const imgSize = new Promise(function (resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var image = new Image();
-                        image.onload = function () {
-                            var width = this.width;
-                            var height = this.height;
-                            if (width !== 100) {
-                                _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            if (height !== 100) {
-                                _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            resolve();
-                        };
-                        image.src = event.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                });
-
-                return isJPG && isLt2M && imgSize;
+            initGatheringInfoForm() {
+                const { payeePublic, payBankPublic, payAccountPublic, payeePrivate, payBankPrivate, payAccountPrivate, payeeWechat, payQrcodeWechat, payAccountWechat, payeeAlipay, payQrcodeAlipay, payAccountAlipay } = this.allSettingInfo
+                this.$refs.gatheringInfoFormRef.init({
+                    payeePublic: this.editSettingInfo.payeePublic || payeePublic,
+                    payBankPublic: this.editSettingInfo.payBankPublic || payBankPublic,
+                    payAccountPublic: this.editSettingInfo.payAccountPublic || payAccountPublic,
+                    payeePrivate: this.editSettingInfo.payeePrivate || payeePrivate,
+                    payBankPrivate: this.editSettingInfo.payBankPrivate || payBankPrivate,
+                    payAccountPrivate: this.editSettingInfo.payAccountPrivate || payAccountPrivate,
+                    payeeWechat: this.editSettingInfo.payeeWechat || payeeWechat,
+                    payQrcodeWechat: this.editSettingInfo.payQrcodeWechat || payQrcodeWechat,
+                    payAccountWechat: this.editSettingInfo.payAccountWechat || payAccountWechat,
+                    payeeAlipay: this.editSettingInfo.payeeAlipay || payeeAlipay,
+                    payQrcodeAlipay: this.editSettingInfo.payQrcodeAlipay || payQrcodeAlipay,
+                    payAccountAlipay: this.editSettingInfo.payAccountAlipay || payAccountAlipay,
+                })
             },
-            handleAvatarSuccessWx(res, file) {
-                this.wxUrl = res.data.licenseUrl
-                this.customerDataForm.imageUrlWx = URL.createObjectURL(file.raw);
-                this.delWXimgVisible = true
+            initAlipayInfoForm() {
+                const { alipayAppid, alipayGateway, alipayNotify, alipayPublicKey, applicationPrivateKey } = this.allSettingInfo
+                this.$refs.alipayInfoFormRef.init({
+                    alipayAppid: this.editSettingInfo.alipayAppid || alipayAppid,
+                    alipayGateway: this.editSettingInfo.alipayGateway || alipayGateway,
+                    alipayNotify: this.editSettingInfo.alipayNotify || alipayNotify,
+                    alipayPublicKey: this.editSettingInfo.alipayPublicKey || alipayPublicKey,
+                    applicationPrivateKey: this.editSettingInfo.applicationPrivateKey || applicationPrivateKey,
+                })
             },
-            errorWx() {
-                console.log("yyyyyy");
+            initContractDataForm() {
+                const { contactCompanyName, contactCompanyAddress, contactCompanyAccount, contactCompanyBank, contactPostcode, contactPhone } = this.allSettingInfo
+                this.$refs.contractDataFormRef.init({
+                    contactCompanyName: this.editSettingInfo.contactCompanyName || contactCompanyName,
+                    contactCompanyAddress: this.editSettingInfo.contactCompanyAddress || contactCompanyAddress,
+                    contactCompanyAccount: this.editSettingInfo.contactCompanyAccount || contactCompanyAccount,
+                    contactCompanyBank: this.editSettingInfo.contactCompanyBank || contactCompanyBank,
+                    contactPostcode: this.editSettingInfo.contactPostcode || contactPostcode,
+                    contactPhone: this.editSettingInfo.contactPhone || contactPhone,
+                })
             },
-            onProgressWx() {
-                console.log("上传中");
+            initWechatInfoForm() {
+                const { wechatGateway, wechatpayNotify, wechatAppid, wechatMchid, wechatKey, wechatAppsecret } = this.allSettingInfo
+                this.$refs.wechatInfoFormRef.init({
+                    wechatGateway: this.editSettingInfo.wechatGateway || wechatGateway,
+                    wechatpayNotify: this.editSettingInfo.wechatpayNotify || wechatpayNotify,
+                    wechatAppid: this.editSettingInfo.wechatAppid || wechatAppid,
+                    wechatMchid: this.editSettingInfo.wechatMchid || wechatMchid,
+                    wechatKey: this.editSettingInfo.wechatKey || wechatKey,
+                    wechatAppsecret: this.editSettingInfo.wechatAppsecret || wechatAppsecret,
+                })
             },
-            //上传 执行顺序：beforeAvatarUpload ---执行action提交----执行handleAvatarSuccess or uploadError
-            actionLogo() {
-                let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=3`);
-                return url;
-            },
-            beforeAvatarUploadLogo(file) {
-                const isJPG = (file.type == 'image/png');
-                const isLt2M = file.size / 1024 / 1024 < 2;
-                if (!isJPG) {
-                    this.$message.error("上传logo图片只能是背景透明的 png 格式!");
-                    return false;
-                }
-                if (!isLt2M) {
-                    this.$message.error("上传logo图片大小不能超过 2MB!");
-                    return false;
-                }
-                var _this = this;
-                const imgSize = new Promise(function (resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var image = new Image();
-                        image.onload = function () {
-                            var width = this.width;
-                            var height = this.height;
-                            if (width !== 140) {
-                                _this.$alert('图片长必须为140!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            if (height !== 36) {
-                                _this.$alert('图片宽必须为36!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            resolve();
-                        };
-                        image.src = event.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                });
-
-                return isJPG && isLt2M && imgSize;
-            },
-            handleAvatarSuccessLogo(res, file) {
-                this.logoUrl = res.data.licenseUrl
-                this.basicdataForm.imageUrlLogo = URL.createObjectURL(file.raw);
-            },
-            errorLogo() {
-                console.log("yyyyyy");
-            },
-            onProgressLogo() {
-                console.log("上传中");
-            },
-            // 上传icon
-            actionIcon() {
-                let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=4`);
-                return url;
-            },
-            beforeAvatarUploadIcon(file) {
-                const isJPG = (file.type == 'image/png');
-                const isLt2M = file.size / 1024 / 1024 < 2;
-                if (!isJPG) {
-                    this.$message.error("上传icon图片只能是背景透明的 png 格式!");
-                    return false;
-                }
-                if (!isLt2M) {
-                    this.$message.error("上传icon图片大小不能超过 2MB!");
-                    return false;
-                }
-                var _this = this;
-                const imgSize = new Promise(function (resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var image = new Image();
-                        image.onload = function () {
-                            var width = this.width;
-                            var height = this.height;
-                            if (width !== 40) {
-                                _this.$alert('图片长必须为40!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            if (height !== 40) {
-                                _this.$alert('图片宽必须为40!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            resolve();
-                        };
-                        image.src = event.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                });
-
-                return isJPG && isLt2M && imgSize;
-            },
-            handleAvatarSuccessIcon(res, file) {
-                this.iconUrl = res.data.licenseUrl
-                this.basicdataForm.imageUrlIcon = URL.createObjectURL(file.raw);
-            },
-            errorIcon() {
-                console.log("yyyyyy");
-            },
-            onProgressIcon() {
-                console.log("上传中");
-            },
-
-            //上传代表签字
-            actionSignatures() {
-                let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=1`);
-                return url;
-            },
-            beforeAvatarUploadSignatures(file) {
-                const isJPG = (file.type == 'image/png');
-                // const isJPG = (file.type === 'image/jpeg') || (file.type == 'image/png') || (file.type == 'image/jpg');
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
-                if (!isJPG) {
-                    this.$message.error("上传代表签字图片只能是背景透明的 png 格式!");
-                    return false;
-                }
-                if (!isLt2M) {
-                    this.$message.error("上传代表签字图片大小不能超过 2MB!");
-                    return false;
-                }
-                var _this = this;
-                const imgSize = new Promise(function (resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var image = new Image();
-                        image.onload = function () {
-                            var width = this.width;
-                            var height = this.height;
-                            if (width !== 1261) {
-                                _this.$alert('图片长必须为1261!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            if (height !== 482) {
-                                _this.$alert('图片宽必须为482!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            resolve();
-                        };
-                        image.src = event.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                });
-
-                return isJPG && isLt2M && imgSize;
-                // return isJPG && isLt2M;
-            },
-            handleAvatarSuccessSignatures(res, file) {
-                this.signUrl = res.data.licenseUrl
-                this.basicdataForm.imageUrlSignatures = URL.createObjectURL(file.raw);
-            },
-            errorSignatures() {
-                console.log("yyyyyy");
-            },
-            onProgressSignatures() {
-                console.log("上传中");
-            },
-
-            // 上传公司红章
-
-            actionChapter() {
-                let url = this.$http.adornUrl(`file/image/upload?token=${this.$cookie.get('token')}&imageType=2`);
-                return url;
-            },
-            beforeAvatarUploadChapter(file) {
-                const isJPG = (file.type == 'image/png');
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
-                if (!isJPG) {
-                    this.$message.error("上传公司红章图片只能是背景透明的 png 格式!");
-                    return false;
-                }
-                if (!isLt2M) {
-                    this.$message.error("上传公司红章图片大小不能超过 2MB!");
-                    return false;
-                }
-
-                var _this = this;
-                const imgSize = new Promise(function (resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var image = new Image();
-                        image.onload = function () {
-                            var width = this.width;
-                            var height = this.height;
-                            if (width !== 169) {
-                                _this.$alert('图片长必须为169!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            if (height !== 168) {
-                                _this.$alert('图片宽必须为168!', '提示', { confirmButtonText: '确定' });
-                                reject();
-                            }
-                            resolve();
-                        };
-                        image.src = event.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                });
-
-                return isJPG && isLt2M && imgSize;
-            },
-            handleAvatarSuccessChapter(res, file) {
-                this.sealUrl = res.data.licenseUrl
-                this.basicdataForm.imageUrlChapter = URL.createObjectURL(file.raw);
-            },
-            errorChapter() {
-                console.log("yyyyyy");
-            },
-            onProgressChapter() {
-                console.log("上传中");
+            initServiceAgreementForm() {
+                const { agreement } = this.allSettingInfo
+                this.$refs.serviceAgreementFormRef.init({
+                    agreement: this.editSettingInfo.agreement || agreement,
+                })
             },
         }
     };
 
 </script>
-<style lang="scss">
-    .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .avatar-uploader .el-upload:hover {
-        border-color: #409eff;
-    }
-
-    .avatar-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 178px;
-        height: 178px;
-        line-height: 178px;
-        text-align: center;
-    }
-
-    .avatar {
-        width: 178px;
-        height: 178px;
-        display: block;
+<style lang="scss" scoped>
+    .footer {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+        padding: 0px 30px 20px;
+        justify-content: center;
     }
 
     .el-dialog {
         width: 55% !important;
         min-width: 750px;
+    }
+
+    .settingSteps {
+        width: 80%;
+        margin: 0 auto;
+        padding-top: 20px;
     }
 
     .settingSteps .el-step__head.is-process,
@@ -1210,71 +317,13 @@
         border-color: #3e8ef7;
     }
 
-    .essentialInformation,
-    .domainNameFiling,
-    .customerInformation,
-    .contractInformation,
-    .alipayIInformation,
-    .weixinLoginInfo,
-    .weixinInformation {
+    .form-wrapper {
         min-width: 350px;
         min-height: 500px;
         margin: 0 auto;
-
+        width: 80%;
         >.el-form {
-            padding: 30px 30px;
+            padding: 50px 0px 30px;
         }
-    }
-
-
-    #iconImgSize .el-upload-dragger {
-        width: 40px;
-        height: 40px;
-    }
-
-
-
-    #iconImgSize .el-upload-dragger {
-        width: 40px;
-        height: 40px;
-        font-size: 24px;
-        line-height: 40px;
-    }
-
-    #iconImgSize .el-upload-dragger .avatar {
-        width: 40px;
-        height: 40px;
-    }
-
-    #logoImgSize .el-upload-dragger {
-        width: 150px;
-        height: 50px;
-        line-height: 50px;
-        font-size: 24px;
-    }
-
-    #logoImgSize .el-upload-dragger .avatar {
-        width: 150px;
-        height: 50px;
-    }
-
-    .el-upload-dragger {
-        width: 174px;
-        height: 182px;
-        font-size: 24px;
-        color: #999;
-        line-height: 182px;
-    }
-
-    .delWXimg {
-        position: absolute;
-        left: 190px;
-        top: 79px;
-        z-index: 999;
-    }
-
-    .delWXimg img {
-        vertical-align: text-top !important;
-        cursor: pointer;
     }
 </style>
