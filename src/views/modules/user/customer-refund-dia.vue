@@ -27,7 +27,7 @@
                 <span>元/条</span>
             </el-form-item>
             <el-form-item label="退款金额：" prop="refundAmount">
-                <el-input-number v-model="dataForm.refundAmount" :min="0"></el-input-number>
+                <el-input-number v-model="dataForm.refundAmount" disabled :min="0"></el-input-number>
                 <span>元</span>
             </el-form-item>
             <el-form-item label="退款方式：" prop="refundType">
@@ -56,6 +56,14 @@
                 labelPosition: 'right',
                 dataForm: {
                     category: 0,
+                    remainNumberTotal: '',
+                    phone: '',
+                    giftNumber: '',
+                    refundNumber: '',
+                    price: '',
+                    refundAmount: '',
+                    refundType: '',
+                    remark: '',
                 },
                 dataRule: {
                     phone: [
@@ -83,7 +91,7 @@
                         { required: true, message: '请选择退款方式', trigger: 'blur' }
                     ],
                     remark: [
-                        { required: true, message: '请输入备注', trigger: 'blur' }
+                        { required: false, message: '请输入备注', trigger: 'blur' }
                     ]
                 },
                 customerInfo: {},
@@ -92,11 +100,19 @@
         watch: {
             'dataForm.category'() {
                 if (this.dataForm.category === 0) {
-                    this.dataForm.price = this.customerInfo.xxx
+                    this.dataForm.remainNumberTotal = this.customerInfo.emptyCount
+                    this.dataForm.giftNumber = this.customerInfo.refundableEmptyNum
                 } else {
-                    this.dataForm.price = this.customerInfo.xxx
+                    this.dataForm.remainNumberTotal = this.customerInfo.realtimeCount
+                    this.dataForm.giftNumber = this.customerInfo.refundableRealTimeNum
                 }
-            }
+            },
+            'dataForm.price'() {
+                this.dataForm.refundAmount = (this.dataForm.refundNumber || 0) * (this.dataForm.price || 0)
+            },
+            'dataForm.refundNumber'() {
+                this.dataForm.refundAmount = (this.dataForm.refundNumber || 0) * (this.dataForm.price || 0)
+            },
         },
         methods: {
             init(record) {
@@ -118,16 +134,23 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.customerInfo = data.data || {}
-                        this.dataForm.price = this.customerInfo.xxx
-                        this.dataForm.phone = this.customerInfo.phone
-                        this.dataForm.remainNumberTotal = this.customerInfo.remainNumberTotal
-                        this.dataForm.giftNumber = this.customerInfo.giftNumber
+                        this.dataForm = {
+                            ...this.dataForm,
+                            phone: this.customerInfo.custPhone,
+                            remainNumberTotal: this.customerInfo.emptyCount,
+                            giftNumber: this.customerInfo.refundableEmptyNum,
+                        }
                     }
                 })
             },
             handleSubmit() {
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
+                        const { refundNumber, giftNumber } = this.dataForm
+                        if (refundNumber > giftNumber) {
+                            this.$message.warning('退款条数不可超出可退条数')
+                            return false
+                        }
                         this.$http({
                             url: this.$http.adornUrl(`agent/cust/refunds?token=${this.$cookie.get('token')}`),
                             method: 'post',

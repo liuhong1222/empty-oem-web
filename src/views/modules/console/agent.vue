@@ -38,7 +38,7 @@
             </el-col>
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                <h2>我的空号检测客户</h2>
+                <h2>空号检测统计</h2>
                 <ul class="customerList">
                     <li v-for="(item, index) in emptyCustomList" :key="index">
                     <p>{{ item.title }}</p>
@@ -49,7 +49,7 @@
             </el-col>
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                <h2>我的实时检测客户</h2>
+                <h2>实时检测统计</h2>
                 <ul class="customerList">
                     <li v-for="(item, index) in realCustomList" :key="index">
                     <p>{{ item.title }}</p>
@@ -222,26 +222,26 @@ export default {
         }
         return {
             basicList: [ // 基本信息
-                { title: '空号代理价（元/条）', field: 'emptyPrice', btnText: '', flag: false },
-                { title: '空号余额（万条）', field: 'emptyMoney', btnText: '充值', flag: true },
-                { title: '空号预警值（万条）', field: 'emptyWarnNumber', btnText: '修改', flag: true },
+                { title: '空号代理价（元/条）', field: 'price', btnText: '', flag: false },
+                { title: '空号余额（万条）', field: 'emptyBalance', btnText: '充值', flag: true },
+                { title: '空号预警值（万条）', field: 'warningsNumber', btnText: '修改', flag: true },
                 { title: '实时代理价（元/条）', field: 'realPrice', btnText: '', flag: false },
-                { title: '实时余额（万条）', field: 'realMoney', btnText: '充值', flag: true },
-                { title: '实时预警值（万条）', field: 'realCount', btnText: '修改', flag: true },
+                { title: '实时余额（万条）', field: 'realtimeBalance', btnText: '充值', flag: true },
+                { title: '实时预警值（万条）', field: 'realWarningsNumber', btnText: '修改', flag: true },
                 { title: '手机号', field: 'mobile', btnText: '更改', flag: true, isFontSmall: true },
                 { title: '邮箱', field: 'email', btnText: '更改', flag: true, isFontSmall: true }
             ],
             emptyCustomList: [
-                { title: '客户数量', field: '' },
-                { title: '客户充值总计（元）', field: '' },
-                { title: '客户消费条数（条）', field: '' },
-                { title: '充值总条数（条）', field: '' }
+                { title: '客户数量', field: 'custNums' },
+                { title: '客户充值总计（元）', field: 'custRechargeSum' },
+                { title: '客户消费条数（条）', field: 'emptyConsume' },
+                { title: '充值总条数（条）', field: 'custRechargeNumberSum' }
             ],
             realCustomList: [
-                { title: '客户数量', field: '' },
-                { title: '客户充值总计（元）', field: '' },
-                { title: '客户消费条数（条）', field: '' },
-                { title: '充值总条数（条）', field: '' }
+                { title: '客户数量', field: 'custNums' },
+                { title: '客户充值总计（元）', field: 'custRealtimeRechargeSum' },
+                { title: '客户消费条数（条）', field: 'realTimeConsume' },
+                { title: '充值总条数（条）', field: 'custRealtimeRechargeNumberSum' }
             ],
             agentInfo: {},
             deskInfo: {},
@@ -337,7 +337,7 @@ export default {
                 this.giveSwitch = autoPresentCfg ? true : false
                 sessionStorage.setItem('agentInfo', this.$json.stringify(agentInfo || '{}'))
                 this.copyinput = referralLink
-                this.deskInfo = {...(data.data || {})}
+                this.deskInfo = {...(data.data || {}), ...(agentInfo || {})}
                 this.agentInfo = agentInfo || {}
             } else {
                 this.$message.error(data.msg)

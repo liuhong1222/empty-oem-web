@@ -139,7 +139,7 @@
 // import perEditEnterise from './user-per-edit-enterise'
 import perSeeEnterprise from "./user-per-see-enterprise";
 import perRechargePrise from "./user-per-recharge-prise";
-import perRefundPrise from "./user-per-refund-prise";
+// import perRefundPrise from "./user-per-refund-prise";
 import transferOrAgent from "./user-transfer-agent";
 import CustomerRefundDia from './customer-refund-dia.vue';
 export default {
@@ -182,7 +182,7 @@ export default {
     // perEditEnterise,
     perSeeEnterprise,
     perRechargePrise,
-    perRefundPrise,
+    // perRefundPrise,
     transferOrAgent,
     CustomerRefundDia,
   },
@@ -288,12 +288,10 @@ export default {
     canPresentBtn(userId) {
       this.$http({
         url: this.$http.adornUrl(
-          `agent/cust/presentNum?token=${this.$cookie.get("token")}`
+          `agent/cust/presentNum?token=${this.$cookie.get("token")}&custId=${userId}`
         ),
         method: "post",
-        params: this.$http.adornParams({
-          userId: userId,
-        }),
+        params: this.$http.adornParams({}),
       }).then(({ data }) => {
         if (data.code == "0") {
           this.$message.success(data.msg);
@@ -323,14 +321,9 @@ export default {
     },
     // 充值个人，企业
     rechargedataBtn(row) {
-      let arr = this.arr; // 传id和当前修改的是企业还是个人
       this.chargeVisible = true;
-      this.arr[0] = row.customerId;
-      this.arr[1] = row.user_type;
-      this.arr[2] = row.customerId;
-      this.arr[3] = row.phone;
       this.$nextTick(() => {
-        this.$refs.rechargecon.rechargeInit(arr);
+        this.$refs.rechargecon.rechargeInit(row);
       });
     },
     // 导出
@@ -368,15 +361,6 @@ export default {
       switch (key) {
         case "refund": {
           // 退款
-          let arr = this.arr; // 传id和当前修改的是企业还是个人
-          this.refundVisible = true;
-          this.arr[0] = record.id;
-          this.arr[1] = record.user_type;
-          this.arr[2] = record.creUserId;
-          this.arr[3] = record.user_phone;
-          // this.$nextTick(() => {
-          //   this.$refs.refundcon.refundInit(arr);
-          // });
           this.$refs.customerRefundDiaRef.init(record);
           break;
         }
@@ -390,7 +374,7 @@ export default {
         }
         case "give": {
           // 注册赠送
-          this.canPresentBtn(record.creUserId);
+          this.canPresentBtn(record.customerId);
           break;
         }
         case "viewRechargeRecord": {

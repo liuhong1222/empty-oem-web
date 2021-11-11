@@ -4,7 +4,7 @@
       <tbody>
         <tr class="discribe-row">
           <td class="discribe-col title">所属代理商编号</td>
-          <td class="discribe-col">{{ detailInfo.agentId }}</td>
+          <td class="discribe-col">{{ detailInfo.agentId + '' }}</td>
           <td class="discribe-col title">代理商名称</td>
           <td class="discribe-col">{{ detailInfo.agentName }}</td>
         </tr>
@@ -51,9 +51,7 @@ export default {
       this.dialogVisible = true;
       this.$http({
         url: this.$http.adornUrl(
-          `agent/agentInfo/detail?token=${this.$cookie.get("token")}&agentId=${
-            record.id
-          }`
+          `agent/goods/info/${record.id}?token=${this.$cookie.get("token")}`
         ),
         method: "get",
         params: this.$http.adornParams(),

@@ -5,7 +5,7 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="dataForm.roleName" placeholder="角色名称"></el-input>
+        <el-input v-model="dataForm.roleName" disabled placeholder="角色名称"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
@@ -73,16 +73,18 @@
             })
           })
         }).then(() => {
-          this.dataForm.id = id || 0
-          if (id) {
+          if (id || id === 0) {
             this.$http({
               url: this.$http.adornUrl(`sys/role/info/${id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.roleName = data.role.roleName
-                this.dataForm.remark = data.role.remark
+                this.dataForm = {
+                  id: id,
+                  roleName: data.role.name,
+                  remark: data.role.remark,
+                }
                 var idx = data.role.menuIdList.indexOf(this.tempKey)
                 if (idx !== -1) {
                   data.role.menuIdList.splice(idx, data.role.menuIdList.length - idx)
@@ -101,8 +103,8 @@
               url: this.$http.adornUrl(`/sys/role/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'roleId': this.dataForm.id || undefined,
-                'roleName': this.dataForm.roleName,
+                'id': this.dataForm.id,
+                'name': this.dataForm.roleName,
                 'remark': this.dataForm.remark,
                 'menuIdList': [].concat(this.$refs.menuListTree.getCheckedKeys(), [this.tempKey], this.$refs.menuListTree.getHalfCheckedKeys())
               })

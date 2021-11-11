@@ -28,23 +28,30 @@
                 :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column prop="payTime" label="退款时间" align="center">
+                <el-table-column prop="name" label=" 客户名称" width="150" align="center">
                 </el-table-column>
-                <!-- <el-table-column prop="userId" label=" 客户编号" width="80" align="center">
-                </el-table-column> -->
-                <el-table-column prop="userName" label=" 客户名称" align="center">
+                <el-table-column prop="phone" label="手机号" width="150" align="center">
                 </el-table-column>
-                <el-table-column prop="userMobile" label="手机号" align="center">
+                <el-table-column prop="companyName" width="150" label="代理商名称" align="center" v-if="disableAgentName">
                 </el-table-column>
-                <el-table-column prop="agentCompanyName" label="代理名称" align="center" v-if="disableAgentName">
+                <el-table-column prop="category" width="120" label="产品名称" align="center">
+                    <template slot-scope="scope">
+                        {{ scope.row.category ? '实时检测' : '空号检测' }}
+                    </template>
                 </el-table-column>
-                <el-table-column prop="price" label="单价（元/条）" align="center">
+                <el-table-column prop="createTime" width="150" label="退款时间" align="center">
                 </el-table-column>
-                <el-table-column prop="number" label="条数" align="center">
+                <el-table-column prop="price" width="150" label="单价（元/条）" align="center">
                 </el-table-column>
-                <el-table-column prop="money" label="金额（元）" align="center">
+                <el-table-column prop="refundNumber" width="150" label="退款条数" align="center">
                 </el-table-column>
-                <el-table-column prop="remark" label="备注" align="center">
+                <el-table-column prop="refundAmount" width="150" label="退款金额（元）" align="center">
+                </el-table-column>
+                <el-table-column prop="openingBalance" width="150" label="期初余条" align="center">
+                </el-table-column>
+                <el-table-column prop="closingBalance" width="150" label="期末余条" align="center">
+                </el-table-column>
+                <el-table-column prop="remark" label="备注" min-width="150" align="center">
                 </el-table-column>
             </el-table>
         </div>
@@ -80,7 +87,7 @@
                     disabledDate(time) {
                         return time.getTime() > Date.now() - 8.64e6
                     }
-                }
+                },
             }
         },
         activated() {
@@ -121,8 +128,8 @@
                         }
                         this.refundTableData = data.data.list
                         this.totalPage = data.data.total
-                        this.money = data.data.totalInfo.money
-                        this.number = data.data.totalInfo.number
+                        this.money = data.data.totalInfo.totalRefundMoney
+                        this.number = data.data.totalInfo.totalRefundNum
                         if (data.data.list.length == 0) {
                             this.disabled = true
                         } else {
@@ -154,14 +161,14 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'number') {
+                    if (column.property === 'refundNumber') {
                         sums[index] = this.number
                         sums[index] += ' 条';
-                    } else if (column.property === 'money') {
+                    } else if (column.property === 'refundAmount') {
                         sums[index] = this.money
                         sums[index] += ' 元';
                     } else {
-                        sums[index] = '--';
+                        sums[index] = '';
                     }
                 });
 

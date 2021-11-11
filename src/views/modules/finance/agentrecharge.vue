@@ -33,23 +33,26 @@
                 :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
-                <el-table-column prop="agentId" label="代理商序号" align="center">
+                <el-table-column prop="agentId" min-width="150" label="代理商序号" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.agentId + '' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="companyName" label="代理商名称" align="center">
+                <el-table-column prop="companyName" min-width="150" label="代理商名称" align="center">
                 </el-table-column>
-                <el-table-column prop="agentMobile" label="手机号" align="center">
+                <el-table-column prop="agentMobile" min-width="150" label="手机号" align="center">
                 </el-table-column>
-                <el-table-column prop="payTime" label="充值时间" align="center">
+                <el-table-column prop="payTime" width="150" label="充值时间" align="center">
                 </el-table-column>
-                <el-table-column prop="orderNo" label=" 订单编号" align="center">
+                <el-table-column prop="orderNo" width="150" label=" 订单编号" align="center">
                 </el-table-column>
-                <el-table-column prop="levelName" label="代理等级" align="center">
+                <el-table-column prop="levelName" width="150" label="代理等级" align="center">
                 </el-table-column>
-                <el-table-column prop="price" label="单价（元/条）" align="center">
+                <el-table-column prop="price" width="150" label="单价（元/条）" align="center">
                 </el-table-column>
-                <el-table-column prop="number" label="条数" align="center">
+                <el-table-column prop="number" width="150" label="条数" align="center">
                 </el-table-column>
-                <el-table-column prop="money" label="金额（元）" align="center">
+                <el-table-column prop="money" width="150" label="金额（元）" align="center">
                 </el-table-column>
                 <el-table-column prop="payTypeName" label="方式" width="120" align="center">
                 </el-table-column>
@@ -152,7 +155,7 @@
                         sums[index] = this.money
                         sums[index] += ' 元';
                     } else {
-                        sums[index] = '--';
+                        sums[index] = '';
                     }
                 });
 

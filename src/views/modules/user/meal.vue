@@ -3,7 +3,7 @@
         <div class="topSearch">
             <h2>套餐管理</h2>
             <el-form :inline="true" :model="searchData">
-                <el-form-item label="代理商：">
+                <el-form-item label="代理商：" v-if="isAdmin">
                     <el-select v-model="searchData.agentId" placeholder="代理商">
                         <el-option label="全部" value="-1"></el-option>
                         <el-option v-for="item in agentList" :label="item.companyName" :key="item.id" :value="item.id"></el-option>
@@ -27,6 +27,7 @@
                 :data="tableData"
                 style="width: 100%"
                 v-loading="dataListLoading"
+                :header-cell-style="getRowClass"
             >
                 <el-table-column
                     type="index"
@@ -35,19 +36,19 @@
                     width="80"
                     label="序号"
                 ></el-table-column>
-                <el-table-column prop="agentName" label="代理商名称" align="center"></el-table-column>
-                <el-table-column prop="category" label="产品名称" align="center">
+                <el-table-column width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center"></el-table-column>
+                <el-table-column width="120" prop="category" label="产品名称" align="center">
                     <template slot-scope="scope">
                         {{ scope.row.category ? '实时检测' : '空号检测' }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="name" label="充值套餐名称" align="center"></el-table-column>
-                <el-table-column prop="specifications" label="充值套餐条数" align="center"></el-table-column>
-                <el-table-column prop="price" label="充值套餐价格" align="center"></el-table-column>
-                <el-table-column prop="minPayAmount" label="最低充值金额" align="center"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
-                <el-table-column prop="remark" label="套餐说明" align="center"></el-table-column>
-                <el-table-column label="操作" align="center" width="150">
+                <el-table-column width="150" prop="name" label="充值套餐名称" align="center"></el-table-column>
+                <el-table-column width="150" prop="specifications" label="充值套餐条数" align="center"></el-table-column>
+                <el-table-column width="150" prop="price" label="充值套餐价格" align="center"></el-table-column>
+                <el-table-column width="150" prop="minPayAmount" label="最低充值金额" align="center"></el-table-column>
+                <el-table-column width="150" prop="createTime" label="创建时间" align="center"></el-table-column>
+                <el-table-column min-width="150" prop="remark" label="套餐说明" align="center"></el-table-column>
+                <el-table-column label="操作" align="center" min-width="150">
                     <template slot-scope="scope">
                         <el-button @click="handleOperate('view', scope.row)" type="text" size="small">查看</el-button>
                         <el-button @click="handleOperate('edit', scope.row)" type="text" size="small">修改</el-button>
@@ -77,9 +78,10 @@ import MealAddOrUpdate from './meal-add-or-update.vue'
 export default {
   data () {
     return {
+      isAdmin: false,
       searchData: {
-        category: undefined,
-        agentId: undefined,
+        category: '-1',
+        agentId: '-1',
       },
       tableData: [],
       pageIndex: 1,
@@ -90,19 +92,43 @@ export default {
     }
   },
   components: { MealDetailDialog, MealAddOrUpdate },
+  activated () {
+    this.initPage()
+  },
   created () {
-    // this.getTableData()
+    this.initPage()
   },
   methods: {
-    getTableData () {
-      this.dataListLoading = true
+    initPage() {
+      this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
+      this.isAdmin && this.getAgentList()
+      this.getTableData(1)
+    },
+    getAgentList() {
       this.$http({
-        url: this.$http.adornUrl(`/userManage/goods?token=${this.$cookie.get('token')}`),
-        method: 'get',
-        params: this.$http.adornParams({
+        url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+        method: 'post',
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.agentList = data.data || []
+        } else {
+          this.agentList = []
+        }
+      })
+    },
+    getTableData (currPage) {
+      this.dataListLoading = true
+      this.pageIndex = currPage || this.pageIndex
+      this.$http({
+        url: this.$http.adornUrl(`agent/goods/getPageList?token=${this.$cookie.get('token')}`),
+        method: 'post',
+        data: {
           currentPage: this.pageIndex,
-          pageSize: this.pageSize
-        })
+          pageSize: this.pageSize,
+          agentId: this.searchData.agentId === '-1' ? undefined : this.searchData.agentId,
+          category: this.searchData.category === '-1' ? undefined : this.searchData.category,
+        }
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.tableData = data.data.list
@@ -128,6 +154,13 @@ export default {
     currentChangeHandle (val) {
       this.pageIndex = val
       this.getTableData()
+    },
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return "background-color: #f8f8f8;color:#666;";
+      } else {
+        return "";
+      }
     },
     handleOperate(type, record) {
         switch (type) {
