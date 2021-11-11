@@ -2,12 +2,12 @@
     <div class="main">
         <el-row :gutter="20">
             <el-col :span="12">
-                <div class="grid-content bg-purple" style="height: 540px;">
+                <div class="grid-content bg-purple" style="height: 490px;">
                     <h2>嗨！{{ agentInfo.userName }}</h2>
                     <ul class="cf basic-mess">
                         <li v-for="(item, index) in basicList" :key="index">
                             <p>{{item.title}}</p>
-                            <div class="statistic-data" :style="item.isFontSmall ? { fontSize: '14px' } : {}">11{{deskInfo[item.field]}}</div>
+                            <div class="statistic-data" :style="item.isFontSmall ? { fontSize: '14px' } : {}">{{deskInfo[item.field]}}</div>
                             <button v-show="item.flag" @click="handleOneCardClick(index, item)">
                                 {{ item.title === '邮箱' && (deskInfo[item.field] === '' || !deskInfo[item.field]) ? '添加' : item.btnText }}
                             </button>
@@ -19,7 +19,7 @@
                 </div>
             </el-col>
             <el-col :span="12">
-                <div class="grid-content bg-purple" style="height: 540px;">
+                <div class="grid-content bg-purple" style="height: 490px;">
                     <div>
                         <h2>充值记录</h2>
                         <el-button type="text" style="float:right" @click="showDetails()">查看详情</el-button>
@@ -36,21 +36,190 @@
                     </el-table>
                 </div>
             </el-col>
+            <el-col :span="12">
+                <div class="grid-content bg-purple">
+                <h2>我的空号检测客户</h2>
+                <ul class="customerList">
+                    <li v-for="(item, index) in emptyCustomList" :key="index">
+                    <p>{{ item.title }}</p>
+                    <p>{{ deskInfo[item.field] }}</p>
+                    </li>
+                </ul>
+                </div>
+            </el-col>
+            <el-col :span="12">
+                <div class="grid-content bg-purple">
+                <h2>我的实时检测客户</h2>
+                <ul class="customerList">
+                    <li v-for="(item, index) in realCustomList" :key="index">
+                    <p>{{ item.title }}</p>
+                    <p>{{ deskInfo[item.field] }}</p>
+                    </li>
+                </ul>
+                </div>
+            </el-col>
+            <el-col :span="24" style="position: relative;">
+                <div class="grid-content bg-purple">
+                    <div>
+                        <h2>充值套餐</h2>
+                        <el-button type="text" style="float:right" @click="editMeal">修改</el-button>
+                    </div>
+                    <ul class="cf mealPackage">
+                        <li v-for="(item,index) in mealList" :key="index">
+                        <p><span>{{item.packageName}}</span><span class="line"></span></p>
+                        <span class="moneyMeal">{{item.money}}元</span>
+                        <span v-if="index == '3'">/{{item.number}}条</span>
+                        <span class="label" v-else>/{{item.number}}万条</span>
+                        </li>
+                    </ul>
+                </div>
+            </el-col>
+            <el-col :span="12">
+                <div class="grid-content bg-purple">
+                    <h2>注册赠送</h2>
+                    <div class="giveCounts">
+                        <span>自动赠送</span>
+                        <el-switch v-model="giveSwitch" @change="checkSwitch"></el-switch>
+                        <span>（关闭后，系统将不会自动赠送5000条）</span>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="12" v-if="myReject">
+                <div class="grid-content bg-purple">
+                    <h2>我的待办</h2>
+                    <div style="margin:20px;line-height:35px;" class="cf">
+                        <span style="float:left">你的设置已被管理员驳回</span>
+                        <el-button type="primary" style="float:right;background-color:#4680ff;" @click="rejectRet()">重新设置</el-button>
+                    </div>
+                    <div style="margin:20px">
+                        <span>驳回原因：</span>
+                        <span style="line-height:25px" id="remarkCon">{{remarksCon}}</span>
+                    </div>
+                </div>
+            </el-col>
         </el-row>
+
+        <!-- 添加邮箱弹窗 -->
+        <el-dialog title="添加邮箱" :visible.sync="addEmailVisible">
+            <el-form :model="addemailform" :rules="addemailrules" ref="addemailruleForm">
+                <el-form-item label="新邮箱" prop="email">
+                <el-input v-model="addemailform.email"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="addEmailBtn()">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 更改邮箱弹窗 -->
+        <el-dialog title="重新绑定邮箱" :visible.sync="reEmailVisible">
+            <el-form :model="reemailform" :rules="reemailrules" ref="reemailruleForm">
+                <el-form-item label="原邮箱">
+                <el-input v-model="reemailform.oldemail" id="emailInput" readonly></el-input>
+                </el-form-item>
+                <el-form-item label="新邮箱" prop="newemail">
+                <el-input v-model="reemailform.newemail"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer">
+                <el-button type="primary" @click="reEmailBtn()">确 定</el-button>
+            </div>
+        </el-dialog>
+
         <!-- 复制链接弹窗 -->
         <el-dialog title="复制推广链接" :visible.sync="copyVisible" width="30%">
-        <el-input v-model="copyinput" id="copyInput"></el-input>
-        <el-button type="primary" id="copyBtn" v-clipboard:copy="copyinput" v-clipboard:success="onCopy"
-            v-clipboard:error="onError">复制链接</el-button>
+            <el-input v-model="copyinput" id="copyInput"></el-input>
+            <el-button type="primary" id="copyBtn" v-clipboard:copy="copyinput" v-clipboard:success="onCopy"
+                v-clipboard:error="onError">复制链接</el-button>
         </el-dialog>
+
+        <!-- 修改套餐弹窗 -->
+        <el-dialog title="套餐修改" :visible.sync="editmealVisible" id="mealDialog" width="460px">
+            <div>
+                <div class="divInput" v-for="(item,i) in mealList" :key="i">
+                <span class="label" style="width:90px;display:inline-block;text-align: right;margin-right: 5px">{{item.packageName}}：</span>
+                <div class="mealinput">
+                    <input type="text" v-if="i == '3'" v-model="dat.mealMoney[i]" id="customValue" oninput="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')">
+                    <input type="text" v-else v-model="dat.mealMoney[i]" oninput="value=value.replace(/[^\d]/g,'')">
+                </div>
+                <span>元</span>
+                <div class="mealinput" style="width: 40px;">
+                    <input type="text" v-if="i == '3'" v-model="dat.count[i]" style="border:none;text-align: center;" readonly>
+                    <input type="text" v-else v-model="dat.count[i]" style="border:none;text-align: center" readonly>
+                </div>
+                <span class="label" v-if="i == '3'">条</span>
+                <span class="label" v-else>万条</span>
+                </div>
+                <p style="margin-left: 40px">
+                    注意：
+                    <p style="margin-left: 80px;margin-top: -37px">1. 充值单价不得低于<span style="color:red">0.001</span>元/条；</p>
+                    <p style="margin-left: 80px;line-height:2px">2.套餐价格必须为正整数。</p>
+                </p>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="editmealChange()">修改套餐</el-button>
+            </span>
+        </el-dialog>
+        
+        <!-- 驳回弹出框 -->
+        <el-dialog title="提示" :visible.sync="rejectDialogVisible" width="30%">
+            <span>您的设置被管理员驳回，请联系管理员或重新设置并提交。</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="rejectDialogVisible = false">稍后再说</el-button>
+                <el-button type="primary" @click="rejectRet()">前往设置</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 预警值弹窗 -->
+        <el-dialog :title="warnEditType + '预警值'" :visible.sync="warnFormVisible">
+            <el-form :model="warinform" :rules="warnRule" ref="warinform">
+                <el-form-item label-width="100px" label="当前预警值">
+                <el-input v-model="warinform.curcounts" id="curCount" disabled></el-input>
+                <span>万条</span>
+                </el-form-item>
+                <el-form-item label-width="100px" label="修改预警值" prop="counts">
+                    <el-input v-model="warinform.counts"></el-input>
+                    <span>万条</span>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="warnFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="warnFormSubmit()">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 重新绑定手机号弹框 -->
+        <re-bind-phone v-if="reBindVisible" ref="reBindPhoneCon" @refreshDataList="getAgentDeskInfo"></re-bind-phone>
+        
+        <!-- 修改密码弹框 -->
+        <update-password v-if="updatePwdVisible" ref="updatePwdCon"></update-password>
+
+        <!-- 充值弹框 -->
+        <agent-recharge-dia ref="agentRechargeDiaRef" @refresh="getAgentDeskInfo" />
     </div>
 </template>
 
 <script>
+import reBindPhone from './re-bind-phone'
+import UpdatePassword from '../../main-navbar-update-password'
+import AgentRechargeDia from './agent-recharge-dia.vue'
+import { isEmail } from '@/utils/validate'
+
 export default {
     name: 'AgentDesk',
-
+    components: {
+        reBindPhone,
+        UpdatePassword,
+        AgentRechargeDia
+    },
     data() {
+        const validateEmail = (rule, value, callback) => {
+            if (!isEmail(value)) {
+                callback(new Error('邮箱格式错误'))
+            } else {
+                callback()
+            }
+        }
         return {
             basicList: [ // 基本信息
                 { title: '空号代理价（元/条）', field: 'emptyPrice', btnText: '', flag: false },
@@ -62,13 +231,83 @@ export default {
                 { title: '手机号', field: 'mobile', btnText: '更改', flag: true, isFontSmall: true },
                 { title: '邮箱', field: 'email', btnText: '更改', flag: true, isFontSmall: true }
             ],
+            emptyCustomList: [
+                { title: '客户数量', field: '' },
+                { title: '客户充值总计（元）', field: '' },
+                { title: '客户消费条数（条）', field: '' },
+                { title: '充值总条数（条）', field: '' }
+            ],
+            realCustomList: [
+                { title: '客户数量', field: '' },
+                { title: '客户充值总计（元）', field: '' },
+                { title: '客户消费条数（条）', field: '' },
+                { title: '充值总条数（条）', field: '' }
+            ],
             agentInfo: {},
             deskInfo: {},
             rechargeRecordData: [],
+            mealList: [], //套餐
+            giveSwitch: false,
+            myReject: false,
+            remarksCon: '',
 
             // 复制链接弹窗
             copyVisible: false,
             copyinput: '',
+
+            // 修改套餐弹框
+            packageId: [],
+            editmealVisible: false,
+            dat: {
+                count: [],
+                mealMoney: [],
+                name: []
+            },
+            list: [],
+
+            // 驳回弹框（我的待办）
+            rejectDialogVisible: false,
+
+            // 绑定手机号弹框
+            reBindVisible: false,
+
+            // 修改密码弹框
+            updatePwdVisible: false,
+
+            // 添加邮箱弹窗
+            addEmailVisible: false,
+            addemailform: {
+                email: ''
+            },
+            addemailrules: {
+                email: [
+                    { required: true, message: '邮箱不能为空', trigger: 'blur' },
+                    { validator: validateEmail, trigger: 'blur' }
+                ],
+            },
+
+            // 修改邮箱弹窗
+            reEmailVisible: false,
+            reemailform: {
+                oldemail: '',
+                newemail: ''
+            },
+            reemailrules: {
+                newemail: [
+                    { required: true, message: '新邮箱不能为空', trigger: 'blur' },
+                    { validator: validateEmail, trigger: 'blur' }
+                ],
+            },
+
+            // 预警值弹窗
+            warnFormVisible: false,
+            warnEditType: '空号',
+            warinform: { counts: '', curcounts: '' },
+            warnRule: {
+                counts: [
+                    { required: true, message: '请输入修改的预警值', trigger: 'blur' }
+                ],
+            },
         };
     },
     computed: {
@@ -79,6 +318,10 @@ export default {
     activated() {
         this.getAgentDeskInfo()
         this.myRechargeList()
+        this.findAgentPackage()
+        this.rejectVisibie()
+        this.remarkDialog()
+        this.updatePwd()
     },
     methods: {
         // 获取基本信息
@@ -118,26 +361,123 @@ export default {
                 }
             })
         },
+        // 充值套餐
+        findAgentPackage() {
+            this.$http({
+                url: this.$http.adornUrl(`agent/desk/findAgentPackage?token=${this.$cookie.get('token')}`),
+                method: 'post',
+            }).then(({ data }) => {
+                if (data && data.code === 0) {
+                    this.mealList = data.data
+                    for (let i = 0; i < data.data.length; i++) {
+                        this.packageId.push(data.data[i].id)
+                    }
+                } else {
+                    this.mealList = []
+                }
+            })
+        },
+        //  控制赠送开关
+        checkSwitch(val) {
+            // 0 不自动赠送，1 自动赠送
+            this.$http({
+                url: this.$http.adornUrl(`/agent/desk/updateAutoPresentCfg?token=${this.$cookie.get('token')}`),
+                method: 'post',
+                params: this.$http.adornParams({
+                    'autoPresentCfg': val == true ? 1 : 0,
+                })
+            }).then(({ data }) => {
+                if (data && data.code === 0) {
+                    this.$message.success(data.msg);
+                } else {
+                    this.$message.error(data.msg || '操作失败');
+                }
+            })
+        },
+        // 弹出框
+        remarkDialog() {
+            if ((sessionStorage.getItem('remarkDialog')) && (sessionStorage.getItem('remarkDialog') == 'remarkDialogTr')) {
+                this.rejectDialogVisible = true
+                sessionStorage.setItem('remarkDialog', '')
+            } else {
+                this.rejectDialogVisible = false
+                sessionStorage.setItem('remarkDialog', '')
+            }
+        },
+        // 修改密码
+        updatePwd() {
+            if (sessionStorage.getItem('isFirstLogin') && (sessionStorage.getItem('isFirstLogin')) == 'true') {  //没修改过
+                this.updatePwdVisible = true
+                this.$nextTick(() => {
+                    this.$refs.updatePwdCon.init()
+                })
+                sessionStorage.removeItem('isFirstLogin')
+            } else {
+                this.updatePwdVisible = false
+                sessionStorage.removeItem('isFirstLogin')
+            }
+        },
+        rejectVisibie() {
+            if ((sessionStorage.getItem('isExamine')) && (sessionStorage.getItem('isExamine') == 'reject')) {
+                this.myReject = false
+            } else {
+                this.myReject = true
+            }
+        },
         handleOneCardClick(index, record) {
             switch (index) {
                 case 4:
                 case 1: { // 余额充值
+                    this.$refs['agentRechargeDiaRef'].init(index === 1 ? 'empty' : 'real', this.agentInfo)
                     break;
                 }
                 case 5:
                 case 2: { // 预警值修改
+                    this.warnEditType = index === 2 ? '空号' : '实时'
+                    this.warinform.curcounts = this.deskInfo[record.field]
+                    this.warnFormVisible = true;
+                    this.$nextTick(() => {
+                        this.$refs['warinform'].resetFields();
+                    })
                     break;
                 }
                 case 6: { // 修改手机号
+                    this.reBindVisible = true;
+                    this.$nextTick(() => {
+                        this.$refs.reBindPhoneCon.showInit(this.deskInfo.mobile)
+                    })
                     break;
                 }
                 case 7: { // 修改邮箱
+                    if (!this.deskInfo.email) { // 新增邮箱
+                        this.addEmailVisible = true
+                        this.$nextTick(() => {
+                            this.$refs['addemailruleForm'].resetFields();
+                        })
+                    } else { // 修改邮箱
+                        this.reemailform.oldemail = this.deskInfo.email
+                        this.reEmailVisible = true;
+                        this.$nextTick(() => {
+                            this.$refs['reemailruleForm'].resetFields();
+                        })
+                    }
                     break;
                 }
                 default:
                     break;
             }
         },
+        // 驳回,重新设置(我的待办)
+        rejectRet() {
+            this.rejectDialogVisible = false
+            this.$router.push({ name: 'user-selfsetting' })
+        },
+        // 查看充值记录详情
+        showDetails() {
+            this.$router.push({ name: 'finance-myrecharge' })
+        },
+
+        /********** 复制推广链接弹框 **********/
         copyLink() {
             this.copyVisible = true;
         },
@@ -150,6 +490,140 @@ export default {
         },
         onError: function (e) {
             this.$message.error('复制失败了哦！');
+        },
+
+        /********** 修改套餐弹框 **********/
+        editmealChange() {
+            //设置最小自定义充值
+            let min = 0.001;
+            let customVal = document.getElementById('customValue').value;
+            if (customVal < min) {
+                this.$message.error('自定义充值单价不得低于0.001元/条');
+                return false
+            }
+            //设置计算出的单价
+            let packListCount = this.dat.count;//条数
+            let packListMoney = this.dat.mealMoney //钱
+            for (let i = 0; i < 3; i++) {
+            if ((packListMoney[i] / packListCount[i]) < 10) {
+                if (i == 0) {
+                this.$message.error('套餐A的充值单价不得低于0.001元/条');
+                } else if (i == 1) {
+                this.$message.error('套餐B的充值单价不得低于0.001元/条');
+                } else if (i == 2) {
+                this.$message.error('套餐C的充值单价不得低于0.001元/条');
+                }
+
+                return;
+            }
+            }
+
+            for (let i = 0; i < this.dat.count.length; i++) {
+                let activeSubjectsObject = {};
+                for (let j = 0; j < this.dat.mealMoney.length; j++) {
+                    for (let m = 0; m < this.dat.name.length; m++) {
+                        for (let k = 0; k < this.packageId.length; k++) {
+                            if (i == j && j == k && i == k && i == m && j == m && k == m) {
+                                activeSubjectsObject.id = Number(this.packageId[i]);
+                                activeSubjectsObject.number = Number(this.dat.count[j]);
+                                activeSubjectsObject.money = Number(this.dat.mealMoney[k]);
+                                activeSubjectsObject.packageName = this.dat.name[k];
+                                this.list.push(activeSubjectsObject);
+                            }
+                        }
+                    }
+                }
+            }
+            this.$http({
+                url: this.$http.adornUrl(`agent/desk/updateAgentPackage?token=${this.$cookie.get('token')}`),
+                method: 'post',
+                data: this.$http.adornData({
+                    'list': this.list,
+                })
+            }).then(({ data }) => {
+                if (data && data.code === 0) {
+                    this.$message.success('套餐修改完成');
+                    this.editmealVisible = false;
+                    this.findAgentPackage();
+                    this.dat.count = [];
+                    this.dat.mealMoney = [];
+                    this.packageId = [];
+                    this.list = []
+                } else {
+                    this.list = []
+                    this.$message.error(data.msg);
+                }
+            })
+        },
+
+        /********** 添加邮箱弹框 **********/
+        addEmailBtn() {
+            this.$refs['addemailruleForm'].validate((valid) => {
+                if (valid) {
+                    this.$http({
+                        url: this.$http.adornUrl(`agent/desk/updateMail?token=${this.$cookie.get('token')}`),
+                        method: 'post',
+                        params: this.$http.adornParams({
+                            'mail': this.addemailform.email,
+                        })
+                    }).then(({ data }) => {
+                        if (data && data.code === 0) {
+                            this.addEmailVisible = false
+                            this.getAgentDeskInfo()
+                            this.$message.success('成功!')
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
+                }
+            })
+        },
+
+        /********** 修改邮箱弹框 **********/
+        reEmailBtn() {
+            this.$refs['reemailruleForm'].validate((valid) => {
+                if (valid) {
+                    this.$http({
+                        url: this.$http.adornUrl(`agent/desk/updateMail?token=${this.$cookie.get('token')}`),
+                        method: 'post',
+                        params: this.$http.adornParams({
+                            'mail': this.reemailform.newemail,
+                        })
+                    }).then(({ data }) => {
+                        if (data && data.code === 0) {
+                            this.reEmailVisible = false
+                            this.getAgentDeskInfo()
+                            this.$message.success('成功!')
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
+                }
+            })
+        },
+
+        /********** 预警值提交弹框 **********/
+        warnFormSubmit() {
+            this.$refs['warinform'].validate((valid) => {
+                if (valid) {
+                    let field = this.warnEditType === '空号' ? 'xxx' : 'xxxxx'
+                    this.$http({
+                        url: this.$http.adornUrl(`agent/desk/updateWarnNumber?token=${this.$cookie.get('token')}`),
+                        method: 'post',
+                        params: this.$http.adornParams({
+                            [field]: this.warinform.counts,
+                        })
+                    }).then(({ data }) => {
+                        if (data && data.code === 0) {
+                            this.warnFormVisible = false
+                            this.getAgentDeskInfo()
+                            this.$message.success('预警值修改成功!')
+                        } else {
+                            this.$message.error(data.msg)
+                        }
+                    })
+                }
+            })
         },
     },
 };
@@ -410,7 +884,7 @@ export default {
 
   .giveCounts {
     margin-top: 20px;
-    margin-left: 60px
+    margin-left: 20px
   }
 
   .giveCounts span {

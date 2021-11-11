@@ -92,19 +92,20 @@
             init(record) {
                 this.dialogVisible = true
                 this.$nextTick(() => {
-                    // this.$refs['dataForm'].resetFields()
+                    this.$refs['dataForm'].resetFields()
                     this.dataForm = {
                         category: 0,
-                        id: record.id || 0
+                        id: record.customerId || undefined
                     }
-                    if (record.id) {
+                    console.log(record)
+                    if (record.customerId) {
                         this.getDetailData(record);
                     }
                 })
             },
             getDetailData(record) {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/level/detail?token=${this.$cookie.get('token')}&id=${record.id}`),
+                    url: this.$http.adornUrl(`agent/level/detail?token=${this.$cookie.get('token')}&custId=${record.customerId}`),
                     method: 'get',
                     params: this.$http.adornParams()
                 }).then(({ data }) => {

@@ -121,7 +121,7 @@
                         ...(agentSetInfo || {}),
                         browserRightDisplay: (agentSetInfo && agentSetInfo.browserRightDisplay) ? 1 : 0
                     }
-                    this.agentSetId = agentSetId + ''
+                    this.agentSetId = agentSetId ? agentSetId + '' : undefined
                     this.isView = this.agentSetId ? true : false
                     this.$nextTick(() => {
                         if (this.isView) {

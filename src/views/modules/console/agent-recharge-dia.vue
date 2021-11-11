@@ -2,7 +2,7 @@
     <el-dialog :destroy-on-close="true" :title="'充值'" :close-on-click-modal="false" :visible.sync="dialogVisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="产品名称：" prop="category">
-                <el-radio-group v-model="dataForm.category">
+                <el-radio-group v-model="dataForm.category" disabled>
                     <el-radio :label="0">空号检测</el-radio>
                     <el-radio :label="1">实时检测</el-radio>
                 </el-radio-group>
@@ -63,12 +63,13 @@
             }
         },
         methods: {
-            init(record) {
+            init(rechargeType, agentInfo) {
                 this.dialogVisible = true
                 this.$nextTick(() => {
+                    console.log(agentInfo)
                     this.$refs['dataForm'].resetFields()
                     this.dataForm = {
-                        category: 0,
+                        category: rechargeType === 'empty' ? 0 : 1,
                         price: 10
                     }
                 })
