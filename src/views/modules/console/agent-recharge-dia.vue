@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :destroy-on-close="true" :title="'充值'" :close-on-click-modal="false" :visible.sync="dialogVisible">
+    <el-dialog :destroy-on-close="true" :title="'充值'" width="520px" :close-on-click-modal="false" :visible.sync="dialogVisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="产品名称：" prop="category">
                 <el-radio-group v-model="dataForm.category" disabled>
@@ -16,7 +16,7 @@
                 <span>元</span>
             </el-form-item>
             <el-form-item label="充值条数：" prop="count">
-                <el-input-number v-model="dataForm.count" :min="0"></el-input-number>
+                <el-input-number v-model="dataForm.count" disabled :min="0"></el-input-number>
                 <span>元</span>
             </el-form-item>
             <el-form-item label="入账类型：" prop="payType">
@@ -62,6 +62,16 @@
                 ],
             }
         },
+        watch: {
+            'dataForm.money'() {
+                if (this.dataForm.money) {
+                    this.dataForm.count = Math.ceil(Number(this.dataForm.money) / (this.dataForm.price))
+                } else {
+                    this.dataForm.count = undefined
+                }
+            },
+
+        },
         methods: {
             init(rechargeType, agentInfo) {
                 this.dialogVisible = true
@@ -70,7 +80,7 @@
                     this.$refs['dataForm'].resetFields()
                     this.dataForm = {
                         category: rechargeType === 'empty' ? 0 : 1,
-                        price: 10
+                        price: rechargeType === 'empty' ? agentInfo.price : agentInfo.realPrice
                     }
                 })
             },

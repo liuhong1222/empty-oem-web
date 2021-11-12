@@ -2,7 +2,7 @@
   <el-dialog :destroy-on-close="true" title="查看套餐" :visible.sync="dialogVisible" width="60%">
     <table class="discribe-wrapper" border>
       <tbody>
-        <tr class="discribe-row">
+        <tr class="discribe-row" v-if="isAdmin">
           <td class="discribe-col title">所属代理商编号</td>
           <td class="discribe-col">{{ detailInfo.agentId + '' }}</td>
           <td class="discribe-col title">代理商名称</td>
@@ -43,6 +43,7 @@ export default {
     return {
       dialogVisible: false,
       detailInfo: {},
+      isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1"),
     };
   },
   created() {},

@@ -55,8 +55,8 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'audit')" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? false : true">审核</el-button>
-                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'see')" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ?  true: false">查看</el-button>
+                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'audit')" :disabled="(scope.row.auditStatus || '').indexOf('待审核') != -1 ? false : true">审核</el-button>
+                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'see')" :disabled="(scope.row.auditStatus || '').indexOf('待审核') != -1 ?  true: false">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>

@@ -31,7 +31,7 @@
         <div class="agentTable">
             <el-table :data="agentOemTableData" style="width: 100%" show-summary :summary-method="getTotal" v-loading="dataListLoading"
                 :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
+                <el-table-column type="index" fixed="left" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
                 <el-table-column prop="agentId" min-width="150" label="代理商序号" align="center">
                     <template slot-scope="{ row }">

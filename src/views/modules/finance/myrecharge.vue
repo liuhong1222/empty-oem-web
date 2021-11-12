@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>充值记录</h2>
+            <h2>我的充值记录</h2>
             <el-form :inline="true" :model="agentSearchData">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="agentSearchData.dateTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
@@ -26,6 +26,11 @@
             <el-table :data="agentRegTableData" style="width: 100%" show-summary :summary-method="getTotal" v-loading="dataListLoading"
                 :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
+                </el-table-column>
+                <el-table-column prop="category" label="充值产品" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="payTime" label="充值时间" align="center">
                 </el-table-column>
@@ -133,7 +138,7 @@
                         sums[index] = this.money
                         sums[index] += ' 元';
                     } else {
-                        sums[index] = '--';
+                        sums[index] = '';
                     }
                 });
                 return sums;

@@ -12,7 +12,7 @@
             </el-form-item>
             <el-form-item label="产品名称：" prop="productId">
                 <el-select style="width: 100%;" v-model="dataForm.productId" placeholder="请选择产品">
-                    <el-option :label="item.name" :value="item.id" :key="index" v-for="(item, index) in productList"></el-option>
+                    <el-option :label="item.name" :value="item.id + ''" :key="index" v-for="(item, index) in productList"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="套餐类型：" prop="type">
@@ -107,9 +107,9 @@
                     this.dataForm = {
                         category: 0,
                         type: 0,
-                        id: record.id || undefined
+                        id: record.id !== undefined ? record.id + '' : undefined
                     }
-                    if (record.id) {
+                    if (record.id !== undefined) {
                         this.getDetailData(record);
                     } else {
                         this.getProductList()
@@ -118,12 +118,32 @@
             },
             getDetailData(record) {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/level/detail?token=${this.$cookie.get('token')}&id=${record.id}`),
-                    method: 'post',
+                    url: this.$http.adornUrl(`agent/goods/info/${record.id}?token=${this.$cookie.get('token')}`),
+                    method: 'get',
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.dataForm = data.data || {}
+                        const { type, category, name, productId, sort, unitPrice, specifications, price, minPayAmount, remark } = data.data || {}
+                        let tempObj = {
+                            id: record.id + '',
+                            type,
+                            category,
+                            name,
+                            productId: '' + productId,
+                            sort,
+                            unitPrice,
+                            remark
+                        }
+                        if (type === 1) {
+                            tempObj.minPayAmount = minPayAmount
+                            tempObj.specifications = undefined
+                            tempObj.price = undefined
+                        } else {
+                            tempObj.minPayAmount = undefined
+                            tempObj.specifications = specifications
+                            tempObj.price = price
+                        }
+                        this.dataForm = tempObj
                         this.getProductList()
                     }
                 })
@@ -133,7 +153,6 @@
                     url: this.$http.adornUrl(`agent/product/listProductsOfAgent?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        // agentId: this.agentId,
                         category: this.dataForm.category
                     })
                 }).then(({ data }) => {

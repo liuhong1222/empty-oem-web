@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>客户充值明细记录</h2>
+            <h2>客户充值记录</h2>
             <el-form :inline="true" :model="customerSearchData" @keyup.enter.native="uerRechargeList()">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="customerSearchData.dateTime" type="daterange" range-separator="至"
@@ -27,31 +27,41 @@
         <div class="agentTable">
             <el-table :data="customerTableData" style="width: 100%" show-summary :summary-method="getTotal" v-loading="dataListLoading"
                 :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
+                <el-table-column type="index" fixed="left" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
-                <el-table-column prop="payTime" label="充值时间" align="center">
+                <el-table-column prop="name" width="150" label=" 客户名称" align="center">
                 </el-table-column>
-                <!-- <el-table-column prop="userId" label=" 客户编号" align="center">
-                </el-table-column> -->
-                <el-table-column prop="userName" label=" 客户名称" align="center">
+                <el-table-column prop="companyName" width="150" label="代理商名称" align="center" v-if="disableAgentName">
                 </el-table-column>
-                <el-table-column prop="agentCompanyName" label="代理商名称" align="center" v-if="disableAgentName">
+                <el-table-column prop="phone" width="150" label="手机号" align="center">
                 </el-table-column>
-                <el-table-column prop="userMobile" label="手机号" align="center">
+                <el-table-column prop="category" label="产品名称" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="orderNo" label="订单编号" align="center">
+                <el-table-column prop="orderNo" min-width="150" label="订单编号" align="center">
                 </el-table-column>
-                <el-table-column prop="packageName" label="套餐选择" align="center">
+                <el-table-column prop="createTime" width="150" label="充值时间" align="center">
                 </el-table-column>
-                <el-table-column prop="price" label="单价（元/条）" align="center">
+                <el-table-column prop="goodsName" width="150" label="套餐" align="center">
                 </el-table-column>
-                <el-table-column prop="number" label="条数" align="center">
+                <el-table-column prop="price" width="150" label="单价（元/条）" align="center">
                 </el-table-column>
-                <el-table-column prop="money" label="金额（元）" align="center">
+                <el-table-column prop="rechargeNumber" width="150" label="条数" align="center">
                 </el-table-column>
-                <el-table-column prop="payTypeName" label="充值方式" align="center">
+                <el-table-column prop="paymentAmount" width="150" label="金额（元）" align="center">
                 </el-table-column>
-                <el-table-column prop="remark" label="备注" align="center">
+                <el-table-column prop="payType" label="充值方式" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ payTypeMap[row.payType] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="openingBalance" width="150" label="期初余条" align="center">
+                </el-table-column>
+                <el-table-column prop="closingBalance" width="150" label="期末余条" align="center">
+                </el-table-column>
+                <el-table-column prop="remark" min-width="150" label="备注" align="center">
                 </el-table-column>
             </el-table>
         </div>
@@ -89,6 +99,16 @@
                     disabledDate(time) {
                         return time.getTime() > Date.now() - 8.64e6
                     }
+                },
+                payTypeMap: {
+                    '0': '对公转账',
+                    '1': '支付宝扫码付',
+                    '2': '注册赠送',
+                    '3': '赠送',
+                    '4': '对公支付宝转账',
+                    '5': '对私支付宝',
+                    '6': '对私微信',
+                    '7': '对私转账',
                 }
             }
         },
@@ -145,8 +165,8 @@
                     if (data && data.code === 0) {
                         this.customerTableData = data.data.list
                         this.totalPage = data.data.total
-                        this.money = data.data.totalInfo.money
-                        this.number = data.data.totalInfo.number
+                        this.money = data.data.totalInfo.totalRechargeMoney
+                        this.number = data.data.totalInfo.totalRechargeNum
                         if (data.data.list.length == 0) {
                             this.disabled = true
                         } else {
@@ -178,14 +198,14 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'number') {
+                    if (column.property === 'rechargeNumber') {
                         sums[index] = this.number
                         sums[index] += ' 条';
-                    } else if (column.property === 'money') {
+                    } else if (column.property === 'paymentAmount') {
                         sums[index] = this.money
                         sums[index] += ' 元';
                     } else {
-                        sums[index] = '--';
+                        sums[index] = '';
                     }
                 });
 

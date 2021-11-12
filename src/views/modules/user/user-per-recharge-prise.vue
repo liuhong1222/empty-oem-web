@@ -11,7 +11,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="套餐选择：" prop="packageList">
-                <el-select style="width: 100%;" v-model="rechargeDataForm.packageList" placeholder="请选择套餐" @change="selectT()">
+                <el-select style="width: 100%;" v-model="rechargeDataForm.packageList" placeholder="请选择套餐" @change="selectT">
                     <el-option :value="item.id + ''" :label="item.name" v-for="(item,index) in rechargeArr" :key="index"></el-option>
                 </el-select>
             </el-form-item>
@@ -62,7 +62,7 @@
                 disabled: false,
                 labelPosition: 'right',
                 rechargeArr: [],
-                number: 0,
+                mealType: 0, // 0 普通套餐 1 自定义套餐
                 rechargeDataForm: {
                     creUserId: '',
                     userName: '',
@@ -106,20 +106,20 @@
         },
         watch: {
             'rechargeDataForm.rechargeMoney'() {
-                if (this.number == 1) {   // number为1才进行监控自动计算
+                if (this.mealType == 1) {   // mealType 为 1 才进行监控自动计算
                     if (this.rechargeDataForm.rechargeMoney && this.rechargeDataForm.price) {
-                        this.rechargeDataForm.rechargeCounts = Math.floor(Number(this.rechargeDataForm.rechargeMoney) / (this.rechargeDataForm.price));
+                        this.rechargeDataForm.rechargeCounts = Math.ceil(Number(this.rechargeDataForm.rechargeMoney) / (this.rechargeDataForm.price));
                     } else {
-                        this.rechargeDataForm.rechargeCounts = ""
+                        this.rechargeDataForm.rechargeCounts = undefined
                     }
                 }
             },
             'rechargeDataForm.price'() {
-                if (this.number == 1) {   // number为1才进行监控自动计算
+                if (this.mealType == 1) {   // mealType 为 1 才进行监控自动计算
                     if (this.rechargeDataForm.rechargeMoney && this.rechargeDataForm.price) {
-                        this.rechargeDataForm.rechargeCounts = Math.floor(Number(this.rechargeDataForm.rechargeMoney) / (this.rechargeDataForm.price));
+                        this.rechargeDataForm.rechargeCounts = Math.ceil(Number(this.rechargeDataForm.rechargeMoney) / (this.rechargeDataForm.price));
                     } else {
-                        this.rechargeDataForm.rechargeCounts = ""
+                        this.rechargeDataForm.rechargeCounts = undefined
                     }
                 }
             },
@@ -177,29 +177,27 @@
             // 点击套餐出信息
             selectT() {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/cust/getPackageInfoById?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                    params: this.$http.adornParams({
-                        'id': this.rechargeDataForm.packageList
-                    })
+                    url: this.$http.adornUrl(`agent/goods/info/${this.rechargeDataForm.packageList}?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams({})
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        if (data.data.number == 1) {
+                        if (data.data.type == 1) {
                             this.readPrice = false;
                             this.readCounts = false;
                             this.readMoney = false;
-                            this.rechargeDataForm.price = data.data.price
-                            this.rechargeDataForm.rechargeCounts = ""
-                            this.rechargeDataForm.rechargeMoney = ""
-                            this.number = 1
+                            this.rechargeDataForm.price = data.data.unitPrice
+                            this.rechargeDataForm.rechargeCounts = undefined
+                            this.rechargeDataForm.rechargeMoney = undefined
+                            this.mealType = 1
                         } else {
                             this.readPrice = true;
                             this.readCounts = true;
                             this.readMoney = true;
-                            this.rechargeDataForm.price = data.data.price
-                            this.rechargeDataForm.rechargeCounts = data.data.number
-                            this.rechargeDataForm.rechargeMoney = data.data.money
-                            this.number = 0
+                            this.rechargeDataForm.price = data.data.unitPrice
+                            this.rechargeDataForm.rechargeCounts = data.data.specifications
+                            this.rechargeDataForm.rechargeMoney = data.data.price
+                            this.mealType = 0
                         }
                     } else {
                         this.$message.error(data.msg)
@@ -221,16 +219,19 @@
             },
             regSubmit() {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/cust/recharge?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/cust/recharge`),
                     method: 'post',
-                    params: this.$http.adornParams({
-                        'agentPackageId': this.rechargeDataForm.packageList,
-                        'creUserId': this.rechargeDataForm.creUserId,
+                    data: {
+                        token: this.$cookie.get('token'),
+                        'goodsId': this.rechargeDataForm.packageList,
+                        'category': this.rechargeDataForm.category,
+                        'custId': this.rechargeDataForm.creUserId,
+                        'price': this.rechargeDataForm.price,
                         'number': this.rechargeDataForm.rechargeCounts,
                         'amount': this.rechargeDataForm.rechargeMoney,
                         'payType': this.rechargeDataForm.rechargeMethod,
                         'remark': this.rechargeDataForm.rechargeDesc
-                    })
+                    }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.chargeVisible = false

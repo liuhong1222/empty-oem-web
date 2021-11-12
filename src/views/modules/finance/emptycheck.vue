@@ -8,16 +8,16 @@
                         value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="代理商：" style="margin-left:35px;">
+                <el-form-item label="代理商：" v-if="isAdmin">
                     <el-select v-model="searchData.agentId" placeholder="代理商">
                         <el-option label="全部" :value="-1"></el-option>
-                        <el-option v-for="item in agentList" :label="item.companyName" :key="item.id" :value="item.id"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="客户名称：" style="margin-left:-15px;">
+                <el-form-item label="客户名称：">
                     <el-input v-model="searchData.customerName" placeholder="客户名称" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="手机号码：" style="margin-left:-2px;">
+                <el-form-item label="手机号码：">
                     <el-input v-model="searchData.phone" placeholder="手机号码" clearable></el-input>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
@@ -29,7 +29,7 @@
             <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="agentName" label="代理商名称" align="center">
+                <el-table-column width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center">
                 </el-table-column>
                 <el-table-column width="150" prop="phone" label=" 手机号码" align="center">
                 </el-table-column>
@@ -91,7 +91,7 @@
                     customerName: '',
                     phone: ''
                 },
-                tableData: [{ totalNumber: 1000, unknownNumber: 100, id: 1 }],
+                tableData: [],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
@@ -102,22 +102,29 @@
                     '2': 'BSP',
                     '3': 'CL',
                     '4': 'JD',
-                }
+                },
+                isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
         activated() {
-            // this.getTableData()
+            this.getTableData()
+            this.isAdmin && this.getAgentList()
         },
         methods: {
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/finance/user/refund/list?token=${this.$cookie.get('token')}`),
-                    method: 'get',
+                    url: this.$http.adornUrl(`agent/empty/getPageList?token=${this.$cookie.get('token')}`),
+                    method: 'post',
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
+                        'createTimeFrom': this.searchData.createTime[0] || undefined,
+                        'createTimeEnd': this.searchData.createTime[1] || undefined,
+                        'phone': this.searchData.phone || undefined,
+                        'customerName': this.searchData.customerName || undefined,
+                        'agentId': this.searchData.agentId === -1 ? undefined : this.searchData.agentId,
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
@@ -128,6 +135,19 @@
                         this.totalPage = 0
                     }
                     this.dataListLoading = false
+                })
+            },
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                    } else {
+                        this.agentList = []
+                    }
                 })
             },
             // 每页数

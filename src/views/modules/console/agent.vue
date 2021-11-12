@@ -26,6 +26,9 @@
                     </div>
                     <el-table :data="rechargeRecordData" style="width: 100%" :highlight-current-row="true">
                         <el-table-column prop="categary" label="充值产品">
+                            <template slot-scope="{ row }">
+                                <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="payTime" label="充值时间">
                         </el-table-column>

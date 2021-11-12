@@ -251,7 +251,7 @@
         methods: {
             computedRechargeNumber() {
                 const { price, paymentAmount } = this.chdataForm
-                this.chdataForm.rechargeNumber = price ? Math.floor((paymentAmount || 0) / price) : 0
+                this.chdataForm.rechargeNumber = price ? Math.ceil((paymentAmount || 0) / price) : 0
             },
 
             // 获取代理商列表

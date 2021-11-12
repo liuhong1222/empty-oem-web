@@ -238,7 +238,8 @@ export default {
         this.regDisabled = false;
         this.refundDisabled = false;
         this.transferDisabled = true;
-      } else if (sessionStorage.getItem("msjRoleName") == "1") {
+      }
+      if (sessionStorage.getItem("msjRoleName") == "1") {
         // 管理员
         this.regDisabled = true;
         this.refundDisabled = true;

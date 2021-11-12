@@ -26,7 +26,7 @@
         <div class="agentTable">
             <el-table :data="refundTableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal"
                 :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
+                <el-table-column type="index" fixed="left" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
                 <el-table-column prop="name" label=" 客户名称" width="150" align="center">
                 </el-table-column>
