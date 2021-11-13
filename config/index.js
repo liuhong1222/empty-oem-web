@@ -21,6 +21,11 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           '^/proxyApi': '/'
+        },
+        secure: false,
+        onProxyReq: function (proxyReq, req, res) {
+          let localIp = req.socket.remoteAddress;
+          proxyReq.setHeader('X-Real-IP', localIp)
         }
       },
       '/map_engine_file': {
@@ -28,6 +33,11 @@ module.exports = {
         // target:'http://172.16.43.34:8658/', // test
         target:'http://172.18.108.114:7001/proxy/7', // 代理服务
         changeOrigin: true,
+        secure: false,
+        onProxyReq: function (proxyReq, req, res) {
+          let localIp = req.socket.remoteAddress;
+          proxyReq.setHeader('X-Real-IP', localIp)
+        }
       }
     },
 
