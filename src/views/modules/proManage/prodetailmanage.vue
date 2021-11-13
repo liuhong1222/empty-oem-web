@@ -48,7 +48,7 @@
                 </el-table-column>
                 <el-table-column prop="state" label="状态" align="center">
                     <template slot-scope="{ row }">
-                        <span>{{ statusMap[row.apply_state] }}</span>
+                        <span>{{ statusMap[row.state] }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="redirect_way " label="跳转方式" align="center">

@@ -43,9 +43,9 @@
         </div>
         <div class="agentTable">
             <el-table :data="quesTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column prop="orderNum" label="排序" align="center">
+                <el-table-column prop="sort" label="排序" align="center">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.orderNum" @change="orderNumChange(scope.row)"></el-input>
+                        <el-input v-model="scope.row.sort" @change="orderNumChange(scope.row)"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column prop="id" label="问题ID" align="center" width="110">
@@ -207,12 +207,12 @@
             },
             // 上架，下架
             upAddOff(row) {
-                let status = row.status;
+                let status = row.state;
                 let id = row.id
                 if (status == '上架') {
                     // alert('下架')
                     this.upOffDelFun(0, id)
-                } else if (status == '下架') {
+                } else {
                     // alert('上架')
                     this.upOffDelFun(1, id)
                 }
@@ -224,8 +224,8 @@
                     url: this.$http.adornUrl(`agent/productFaq/my/updateFaqOrder?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        'orderNum': row.orderNum,
-                        'productFaqId': row.id
+                        'orderNum': row.sort,
+                        'productFaqId': row.id + ''
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
@@ -237,18 +237,18 @@
             },
             upOffDelFun(status, id) {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/productFaq/my/updateFaqOrder?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/productFaq/all/updateStatus?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        'shelfStatus': status,
-                        'productFaqId': id
+                        'state': status,
+                        'faqId': id + ''
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         if (status == 0) {
-                            this.$message.success('上架成功')
-                        } else if (status == 1) {
                             this.$message.success('下架成功')
+                        } else if (status == 1) {
+                            this.$message.success('上架成功')
                         }
                         this.getQuesData()
                     } else {
@@ -258,7 +258,7 @@
             },
             // 删除
             delBtn(id) {
-                this.$confirm(`确定对此产品进行删除操作?`, '提示', {
+                this.$confirm(`确定对此问题进行删除操作?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -267,7 +267,7 @@
                         url: this.$http.adornUrl(`agent/productFaq/my/delete?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'productFaqId': id
+                            'productFaqId': id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {

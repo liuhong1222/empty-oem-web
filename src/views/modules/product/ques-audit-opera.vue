@@ -149,7 +149,7 @@
                 })
             },
             auditChangeHandler(val) {
-                if (val == 1) {
+                if (val == 3) {
                     this.auditDisable = false
                     this.quesAuditDataForm.desc = ""
                 } else {
