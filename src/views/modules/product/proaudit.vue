@@ -45,7 +45,7 @@
                         <span>{{scope.row.jump_mode === 0 ? '内部编辑' : '外部地址' }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="update_time" label="提交时间" align="center">
+                <el-table-column prop="create_time" label="提交时间" align="center">
                 </el-table-column>
                 <el-table-column prop="sort" label="排序" align="center">
                 </el-table-column>
@@ -58,8 +58,10 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'audit')" :disabled="[1, 2].includes(scope.row.apply_state) ? false : true">审核</el-button>
-                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'see')" :disabled="[1, 2].includes(scope.row.apply_state) ?  true: false">查看</el-button>
+                        <template v-if="scope.row.auditStatus !== 5">
+                            <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'audit')" :disabled="[1, 2].includes(scope.row.apply_state) ? false : true">审核</el-button>
+                            <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'see')" :disabled="[1, 2].includes(scope.row.apply_state) ?  true: false">查看</el-button>
+                        </template>
                     </template>
                 </el-table-column>
             </el-table>

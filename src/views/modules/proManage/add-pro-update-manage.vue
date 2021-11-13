@@ -346,7 +346,7 @@
                 })
             },
             addressTab(val) {
-                if (val == 2) {
+                if (val == 1) {
                     this.addressShow = true;
                     this.contentShow = false;
                     this.$nextTick(() => {

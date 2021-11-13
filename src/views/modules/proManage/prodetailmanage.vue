@@ -42,7 +42,7 @@
                 </el-table-column>
                 <el-table-column prop="productLineName" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="product_name" label="产品名称" align="center">
+                <el-table-column prop="name" label="产品名称" align="center">
                 </el-table-column>
                 <el-table-column prop="icon" label="icon图片" align="center">
                 </el-table-column>
@@ -69,11 +69,11 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="[1, 2].indexOf(scope.row.apply_state) != -1 ? true : false">编辑</el-button>
-                        <el-button type="text" size="small" @click="onOrOffBtn(scope.row)">
+                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="[1, 2, 5].indexOf(scope.row.apply_state) != -1 ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.apply_state === 5" @click="onOrOffBtn(scope.row)">
                             {{scope.row.state === 0 ? '上架' : '下架' }}
                         </el-button>
-                        <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.apply_state === 5" @click="delBtn(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -241,7 +241,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.onOffFun(2, id)
+                    this.onOffFun(5, id)
                 }).catch(() => { })
             },
             proSortReload() {

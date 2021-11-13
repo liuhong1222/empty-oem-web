@@ -8,12 +8,12 @@
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="审核状态" style="margin-left: -60px;">
+                <el-form-item label="审核状态">
                     <el-select v-model="quesAuditForm.auditStatus" placeholder="请选择审核状态">
                         <el-option v-for="item in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="搜索类型" style="margin-left: -60px;" class="searchType">
+                <el-form-item label="搜索类型" class="searchType">
                     <el-select v-model="quesAuditForm.searchType" placeholder="请选择">
                         <el-option v-for="item in searchKeyArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
@@ -47,6 +47,8 @@
                 <el-table-column prop="state" label="状态" align="center">
                 </el-table-column>
                 <el-table-column prop="createTime" label="提交时间" align="center">
+                </el-table-column>
+                <el-table-column prop="updateTime" label="审核时间" align="center">
                 </el-table-column>
                 <el-table-column prop="applyState" label="审核状态" align="center">
                 </el-table-column>
@@ -112,21 +114,10 @@
             quesAuditDialog
         },
         activated() {
-            // if (this.quesAuditForm.auditStatus !== 0) {
-            //     this.quesAuditForm.auditStatus = 0
-            // }
-            this.getQuesAuditData()
+            this.getQuesAuditData(1)
         },
-        // created() {
-        //     // 设置默认值
-        //     if (this.quesAuditForm.auditStatus == 0) {
-        //         this.quesAuditForm.auditStatus = '待审核'
-        //     }
-        // },
         methods: {
             getQuesAuditData(cur) {
-                // let auditStatus = this.quesAuditForm.auditStatus;
-                // auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
                 this.dataListLoading = true;
                 this.$http({
                     url: this.$http.adornUrl(`agent/productFaq/all/list?token=${this.$cookie.get('token')}`),
@@ -159,9 +150,9 @@
             },
             quesAuditBtn(id, stu) {
                 this.quesAuditVisible = true,
-                    this.$nextTick(() => {
-                        this.$refs.quesAuditRef.showInit(id, stu)
-                    })
+                this.$nextTick(() => {
+                    this.$refs.quesAuditRef.showInit(id, stu)
+                })
             },
             // 每页数
             sizeChangeHandle(val) {

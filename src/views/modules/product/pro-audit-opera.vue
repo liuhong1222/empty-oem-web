@@ -86,7 +86,6 @@
                     toolbars: [],
                     readonly: true,
                     elementPathEnabled: false,
-                    // serverUrl: 'http://172.16.4.242:9999/open/agent/ueditor?token=' + `${this.$cookie.get('token')}`
                 },
                 visible: false,
                 iconsImageUrl: '',
@@ -118,15 +117,15 @@
         methods: {
             showInit(id, stu) {
                 this.proAuditDataForm.id = id
+                this.$nextTick(() => {
+                    this.$refs['proAuditDataRef'].resetFields();
+                })
                 if (stu == "audit") {
                     this.title = "审核"
                     this.auditShow = true;
                     this.seeShow = false;
                     this.seeShow1 = false;
                     this.showBnt = true;
-                    this.$nextTick(() => {
-                        this.$refs['proAuditDataRef'].resetFields();
-                    })
                 } else {
                     this.title = "查看";
                     this.auditShow = false;
@@ -147,31 +146,25 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.defaultMsgCon = data.data.product_content;
-                        if (data.data.jump_mode == 1) { //内部
+                        this.defaultMsgCon = data.data.content;
+                        if (data.data.redirect_way == 0) { //内部
                             this.linkUrl = false;
                             this.editCon = true
                         } else {
                             this.linkUrl = true;
                             this.editCon = false
                         }
-                        if (data.data.audit_status == 2 || data.data.audit_status == 4) {
-                            this.seeShow1 = true;
-                        } else if (data.data.audit_status == 1) {
-                            this.seeShow1 = false;
-                        }
                         this.proAuditDataForm.agentName = data.data.agentName;
-                        this.proAuditDataForm.proLineName = data.data.productLineName;
-                        this.proAuditDataForm.proName = data.data.product_name;
-                        this.proAuditDataForm.describe = data.data.product_desc;
-                        this.iconsImageUrl = imgUrl.imgUrl + data.data.icon_path;
-                        this.proAuditDataForm.status = data.data.shelf_status == 0 ? '下架' : '上架';
-                        this.proAuditDataForm.sort = data.data.order_num;
-                        this.proAuditDataForm.methods = data.data.jump_mode == 1 ? '内部编辑' : '外部编辑';
-                        this.proAuditDataForm.linkUrl = data.data.link_url;
-                        this.proAuditDataForm.auditRes = data.data.auditStatus;
+                        this.proAuditDataForm.proLineName = data.data.productGroupName;
+                        this.proAuditDataForm.proName = data.data.name;
+                        this.proAuditDataForm.describe = data.data.description;
+                        this.iconsImageUrl = this.$imgPreStr + data.data.icon;
+                        this.proAuditDataForm.status = data.data.state === 0 ? '下架' : '上架';
+                        this.proAuditDataForm.sort = data.data.sort;
+                        this.proAuditDataForm.methods = data.data.redirectWay;
+                        this.proAuditDataForm.linkUrl = data.data.external_links;
+                        this.proAuditDataForm.auditRes = data.data.applyState;
                         this.proAuditDataForm.auditDesc = data.data.remark;
-
                     }
                 })
 
@@ -184,7 +177,7 @@
                             method: 'post',
                             params: this.$http.adornParams({
                                 'status': this.proAuditDataForm.resource,
-                                'id': this.proAuditDataForm.id,
+                                'id': this.proAuditDataForm.id + '',
                                 'remark': this.proAuditDataForm.bhdesc
                             })
                         }).then(({ data }) => {

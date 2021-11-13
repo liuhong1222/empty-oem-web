@@ -8,16 +8,16 @@
                 </el-form-item>
                 <el-form-item label="产品名称">
                     <el-select v-model="quesDataForm.proName" placeholder="请选择产品名称">
-                        <el-option v-for="item in proArr" :label="item.productName" :key="item.productId"
-                            :value="item.productId"></el-option>
+                        <el-option v-for="(item, index) in proArr" :label="item.name" :key="index"
+                            :value="item.id + ''"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="状态" style="margin-left: -40px">
+                <el-form-item label="状态">
                     <el-select v-model="quesDataForm.status" placeholder="请选择状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="审核状态" style="margin-left: -60px;">
+                <el-form-item label="审核状态">
                     <el-select v-model="quesDataForm.auditStatus" placeholder="请选择审核状态">
                         <el-option v-for="item in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
@@ -49,26 +49,28 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="id" label="问题ID" align="center" width="110">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.id + '' }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="productName" label="产品名称" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="question" label="标题" align="center" width="150" :show-overflow-tooltip="true">
+                <el-table-column prop="title" label="标题" align="center" width="150" :show-overflow-tooltip="true">
                 </el-table-column>
-                <el-table-column prop="status" label="状态" align="center">
+                <el-table-column prop="state" label="状态" align="center">
                 </el-table-column>
                 <el-table-column prop="updateTime" label="修改时间" align="center">
                 </el-table-column>
-
-                <el-table-column prop="auditStatus" label="审核状态" align="center">
+                <el-table-column prop="applyState" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="(scope.row.auditStatus || '').indexOf('待审核') != -1 ? true : false">编辑</el-button>
-                        <el-button type="text" size="small" @click="upAddOff(scope.row)">{{ scope.row.status == '上架' ? '下架'
+                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="((scope.row.applyState || '').indexOf('待审核') != -1 || (scope.row.applyState === '已删除')) ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.applyState === '已删除'" @click="upAddOff(scope.row)">{{ scope.row.state == '上架' ? '下架'
                             :'上架' }}</el-button>
-                        <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.applyState === '已删除'" @click="delBtn(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,7 +80,7 @@
                 :page-sizes="[10, 20,30,50]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
-        <!-- 添加/编辑产品线 -->
+        <!-- 添加/编辑问题 -->
         <add-question-update v-if="addquestionUpdateVisible" ref="addquestionUpdateRef" @refreshNewsList="getQuesData"></add-question-update>
     </div>
 </template>
@@ -120,7 +122,8 @@
                     { label: '已删除', value: 5 }
                 ],
                 proArr: [],
-                quesTableData: []
+                quesTableData: [],
+                agentId: '',
             }
         },
         components: {
@@ -138,6 +141,7 @@
             // }
             this.getQuesData();
             this.getAllPro();
+            this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id
         },
 
         methods: {
@@ -173,22 +177,15 @@
                     }
                 })
             },
-            // 获取所有产品
             getAllPro() {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/productFaq/my/getProductInfo?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/product/listProductsOfAgent?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
                     method: 'post',
-                    params: this.$http.adornParams({
-                        'productName': ""
-                    })
+                    params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data)
-                        this.proArr = data.data;
-                        this.proArr.unshift({ productId: '', productName: "全部" })
-                    } else {
-                        this.proArr = [];
-                        this.$message.error(data.msg);
+                        this.proArr = data.data || []
+                        this.proArr.unshift({ id: '', name: "全部" })
                     }
                 })
             },
@@ -212,12 +209,12 @@
             upAddOff(row) {
                 let status = row.status;
                 let id = row.id
-                if (status == '上架') {  //下架
+                if (status == '上架') {
                     // alert('下架')
-                    this.upOffDelFun(1, id)
-                } else if (status == '下架') {  //上架
-                    // alert('上架')
                     this.upOffDelFun(0, id)
+                } else if (status == '下架') {
+                    // alert('上架')
+                    this.upOffDelFun(1, id)
                 }
             },
             // 排序

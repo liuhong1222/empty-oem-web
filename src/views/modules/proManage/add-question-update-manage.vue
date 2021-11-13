@@ -3,15 +3,21 @@
         <el-dialog :title="!quesAUDataForm.id ? '添加' :'修改'" :close-on-click-modal="false" :visible.sync="visible" width="550px"
             :before-close="closeNewsSeeDialod">
             <el-form :model="quesAUDataForm" label-width="100px" :rules="quesAUDataRules" ref="quesAUDataRef" class="demo-ruleForm">
-                <el-form-item label="所属产品：" prop="proName">
+                <!-- <el-form-item label="所属产品：" prop="proName">
                     <el-select v-model="quesAUDataForm.proName" filterable remote reserve-keyword placeholder="请输入关键词"
                         :remote-method="remoteMethod" :loading="loading" @change="selectOne" :disabled="disabled">
                         <el-option v-for="item in options4" :key="item.productId" :label="item.productName" :value="item.productId">
                         </el-option>
                     </el-select>
+                </el-form-item> -->
+                <el-form-item label="所属产品：" prop="proId">
+                    <el-select v-model="quesAUDataForm.proId" style="width: 100%;" placeholder="请选择所属产品">
+                        <el-option v-for="(item, index) in productList" :key="index" :label="item.name" :value="item.id + ''">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="状态：" prop="status">
-                    <el-select v-model="quesAUDataForm.status" placeholder="请选择审核状态">
+                    <el-select v-model="quesAUDataForm.status" style="width: 100%;" placeholder="请选择状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -43,6 +49,7 @@
                 loading: false,
                 visible: false,
                 disabled: false,
+                productList: [],
                 productId: '',
                 quesAUDataForm: {
                     proName: '',
@@ -50,7 +57,8 @@
                     orderNum: '',
                     title: '',
                     content: '',
-                    id: ''
+                    id: '',
+                    proId: '',
                 },
                 selectid: '',
                 quesAUDataRules: {
@@ -73,7 +81,8 @@
                 statusArr: [
                     { label: '上架', value: 1 },
                     { label: '下架', value: 0 }
-                ]
+                ],
+                agentId: ''
             }
         },
         methods: {
@@ -108,35 +117,51 @@
                     }
                 })
             },
+                
+            getAllPro() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/product/listProductsOfAgent?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
+                    method: 'post',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.productList = data.data || []
+                    } else {
+                        this.productList = []
+                    }
+                })
+            },
             showInit(id) {
-                this.quesAUDataForm.id = id
                 this.visible = true;
                 this.disabled = false;
-                if (this.quesAUDataForm.id) {
+                this.$nextTick(() => {
+                    this.$refs['quesAUDataRef'].resetFields()
+                })
+                this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id
+                this.getAllPro()
+                if (id) {
                     this.disabled = true;
                     this.$http({
                         url: this.$http.adornUrl(`agent/productFaq/my/detail?token=${this.$cookie.get('token')}`),
                         method: 'get',
                         params: this.$http.adornParams({
-                            'productFaqId': this.quesAUDataForm.id
+                            'productFaqId': id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
-                            this.quesAUDataForm.proName = data.data.productName;
-                            this.quesAUDataForm.status = data.data.status;
-                            this.quesAUDataForm.orderNum = data.data.orderNum;
-                            this.quesAUDataForm.title = data.data.question;
-                            this.quesAUDataForm.content = data.data.answer;
-                            this.productId = data.data.productId
+                            this.quesAUDataForm = {
+                                status: data.data.state,
+                                orderNum: data.data.sort,
+                                title: data.data.title,
+                                content: data.data.content,
+                                proId: data.data.productName,
+                                id: id,
+                            }
                         } else {
-
                             this.$message.error(data.msg)
                         }
                     })
                 }
-                this.$nextTick(() => {
-                    this.$refs['quesAUDataRef'].resetFields()
-                })
                 // 设置默认值
                 if (this.quesAUDataForm.status == 0) {
                     this.quesAUDataForm.status = '上架'
@@ -155,7 +180,7 @@
                             url: this.$http.adornUrl(`agent/productFaq/my/${!this.quesAUDataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'productId': this.selectid ? this.selectid : this.productId,  //选中的产品id
+                                'productId': this.quesAUDataForm.proId,  //选中的产品id
                                 'id': this.quesAUDataForm.id,
                                 'question': this.quesAUDataForm.title,
                                 'order': this.quesAUDataForm.orderNum,
@@ -178,18 +203,6 @@
                 this.visible = false;
                 this.selectid = ""
             },
-            // querySearch(queryString, cb) {
-            //     if (!this.quesAUDataForm.proName) {
-            //         return;
-            //     }
-            //     var csvS = this.csvS;
-            //     // console.log(csvS)
-            //     cb(csvS);
-            //     if (csvS) {
-            //         this.selectid = csvS[0].id;
-            //     }
-
-            // }
         }
     }
 

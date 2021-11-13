@@ -32,8 +32,8 @@
                 <!-- 审核 -->
                 <el-form-item label="审核：" prop="resource" v-if="auditShow">
                     <el-radio-group v-model="quesAuditDataForm.resource" @change="auditChangeHandler">
-                        <el-radio :label="1">通过</el-radio>
-                        <el-radio :label="quesAuditDataForm.auditStatus == '新增待审核' ? '2' : quesAuditDataForm.auditStatus == '修改待审核' ? '4': '' ">驳回</el-radio>
+                        <el-radio :label="3">通过</el-radio>
+                        <el-radio :label="4">驳回</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="驳回原因：" prop="desc" v-if="auditDisable">
@@ -85,7 +85,9 @@
         methods: {
             showInit(id, stu) {
                 this.visible = true;
-                this.quesAuditDataForm.id = id;
+                this.$nextTick(() => {
+                    this.$refs['quesAuditDataRef'].resetFields()
+                })
                 if (stu == "audit") {
                     this.title = "审核"
                     this.auditShow = true;
@@ -101,31 +103,25 @@
                     this.showBnt = false;
                 }
                 this.$http({
-                    url: this.$http.adornUrl(`agent/productFaq//all/detail?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/productFaq/all/detail?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        'productFaqId': this.quesAuditDataForm.id
+                        'productFaqId': id + ''
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        if ((data.data.auditStatus).indexOf('待审核') != -1 || (data.data.auditStatus == '已审核')) {   //包含的
-                            this.seeShow1 = false;
-                        } else {
-                            this.seeShow1 = true;
+                        this.quesAuditDataForm = {
+                            id: id,
+                            agentName: data.data.agentName,
+                            belongPro: data.data.productName,
+                            status: data.data.state,
+                            sort: data.data.sort,
+                            quesTitle: data.data.title,
+                            quesCon: data.data.content,
+                            audit: data.data.applyState,
+                            seeDesc: data.data.remark,
                         }
-                        this.quesAuditDataForm.agentName = data.data.agentName;
-                        this.quesAuditDataForm.belongPro = data.data.productName;
-                        this.quesAuditDataForm.status = data.data.status;
-                        this.quesAuditDataForm.sort = data.data.orderNum;
-                        this.quesAuditDataForm.quesTitle = data.data.question;
-                        this.quesAuditDataForm.quesCon = data.data.answer;
-                        this.quesAuditDataForm.auditStatus = data.data.auditStatus
-                        this.quesAuditDataForm.audit = data.data.auditStatus
-                        this.quesAuditDataForm.seeDesc = data.data.remark
                     }
-                })
-                this.$nextTick(() => {
-                    this.$refs['quesAuditDataRef'].resetFields()
                 })
             },
             quesAuditDataSubmit() {
@@ -136,7 +132,7 @@
                             url: this.$http.adornUrl(`agent/productFaq/all/audit?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'productFaqId': this.quesAuditDataForm.id,
+                                'productFaqId': this.quesAuditDataForm.id + '',
                                 'auditState': this.quesAuditDataForm.resource,
                                 'auditRemark': this.quesAuditDataForm.desc
                             })
