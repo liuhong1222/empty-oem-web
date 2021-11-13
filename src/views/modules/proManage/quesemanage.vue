@@ -65,8 +65,8 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="(scope.row.auditStatus).indexOf('待审核') != -1 ? true : false">编辑</el-button>
-                        <el-button type="text" size="small" @click="upAddOff(scope.row)">{{scope.row.status=='上架' ?'下架'
+                        <el-button type="text" size="small" @click="update(scope.row.id)" :disabled="(scope.row.auditStatus || '').indexOf('待审核') != -1 ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" @click="upAddOff(scope.row)">{{ scope.row.status == '上架' ? '下架'
                             :'上架' }}</el-button>
                         <el-button type="text" size="small" @click="delBtn(scope.row.id)">删除</el-button>
                     </template>
@@ -107,17 +107,17 @@
                     { label: '内容', value: 'answer' }
                 ],
                 statusArr: [
-                    { label: '全部', value: "" },
-                    { label: '上架', value: 0 },
-                    { label: '下架', value: 1 }
+                    { label: '全部', value: '' },
+                    { label: '上架', value: '1' },
+                    { label: '下架', value: '0' }
                 ],
                 auditStatusArr: [
-                    { label: '全部', value: "" },
-                    { label: '新增待审核', value: 0 },
-                    { label: '已审核', value: 1 },
-                    { label: '新增已驳回', value: 2 },
-                    { label: '修改待审核', value: 3 },
-                    { label: '修改驳回', value: 4 },
+                    { label: '全部', value: '' },
+                    { label: '创建待审核', value: 1 },
+                    { label: '修改待审核', value: 2 },
+                    { label: '已审核', value: 3 },
+                    { label: '已驳回', value: 4 },
+                    { label: '已删除', value: 5 }
                 ],
                 proArr: [],
                 quesTableData: []

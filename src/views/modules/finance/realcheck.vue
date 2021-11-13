@@ -87,6 +87,7 @@
     export default {
         data() {
             return {
+                totalCount: 0,
                 dataListLoading: false,
                 searchData: {
                     createTime: [],
@@ -111,9 +112,10 @@
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/realtimeCheck/getPageList?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/realtimeCheck/getPageList`),
                     method: 'post',
-                    params: this.$http.adornParams({
+                    data: {
+                        'token': this.$cookie.get('token'),
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'createTimeFrom': this.searchData.createTime[0] || undefined,
@@ -121,11 +123,12 @@
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
                         'agentId': this.searchData.agentId === -1 ? undefined : this.searchData.agentId,
-                    })
+                    }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
+                        this.totalCount = data.data.totalInfo.totalSize
                     } else {
                         this.tableData = []
                         this.totalPage = 0
@@ -172,10 +175,8 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'checkType') {
-                        sums[index] = `接口${10223}条`
-                    } else if (column.property === 'line') {
-                        sums[index] = `共${10223}条`
+                    if (column.property === 'line') {
+                        sums[index] = `共${this.totalCount}条`
                     } else {
                         sums[index] = '';
                     }

@@ -57,8 +57,8 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row)" :disabled="scope.row.audit_status==0 ? true : false">编辑</el-button>
-                        <el-button type="text" size="small" @click="onOrOff(scope.row)">{{scope.row.shelf_status==0
+                        <el-button type="text" size="small" @click="update(scope.row)" :disabled="[1, 2].includes(scope.row.applyState) ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" @click="onOrOff(scope.row)">{{scope.row.state == 1
                             ? '下架' : '上架' }}</el-button>
                         <el-button type="text" size="small" @click="del(scope.row.id)">删除</el-button>
                     </template>

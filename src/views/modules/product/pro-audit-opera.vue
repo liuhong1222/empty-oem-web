@@ -143,7 +143,7 @@
                     url: this.$http.adornUrl(`agent/product/findById?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        'id': this.proAuditDataForm.id
+                        'id': this.proAuditDataForm.id + ''
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {

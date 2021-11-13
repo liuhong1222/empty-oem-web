@@ -22,13 +22,13 @@
                 </el-table-column>
                 <el-table-column width="150" prop="createDate" label="日期" align="center">
                 </el-table-column>
-                <el-table-column v-if="isAdmin" width="150" prop="agentName" label="代理商名称" align="center">
+                <el-table-column v-if="isAdmin" min-width="150" prop="agentName" label="代理商名称" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="useCount" label="用户数" align="center">
+                <el-table-column min-width="120" prop="useCount" label="用户数" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="newUserCount" label="新增用户数" align="center">
+                <el-table-column min-width="120" prop="newUserCount" label="新增用户数" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="rechargeNum" label="充值金额" align="center">
+                <el-table-column min-width="120" prop="rechargeNum" label="充值金额" align="center">
                 </el-table-column>
                 <el-table-column label="空号检测" align="center">
                     <el-table-column width="120" prop="emptyUseCount" label="消耗条数" align="center">
@@ -61,7 +61,7 @@
                     createDate: [],
                     agentName: undefined,
                 },
-                tableData: [{ id: 1 }],
+                tableData: [],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
@@ -69,7 +69,7 @@
             }
         },
         activated() {
-            // this.getTableData()
+            // this.getTableData(1)
 
             // msjRoleName 1：管理员 2：代理商
             this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")

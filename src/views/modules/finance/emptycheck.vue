@@ -91,6 +91,7 @@
                     customerName: '',
                     phone: ''
                 },
+                totalInfo: {},
                 tableData: [],
                 pageIndex: 1,
                 pageSize: 10,
@@ -115,9 +116,10 @@
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/empty/getPageList?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/empty/getPageList`),
                     method: 'post',
-                    params: this.$http.adornParams({
+                    data: {
+                        'token': this.$cookie.get('token'),
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'createTimeFrom': this.searchData.createTime[0] || undefined,
@@ -125,11 +127,12 @@
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
                         'agentId': this.searchData.agentId === -1 ? undefined : this.searchData.agentId,
-                    })
+                    }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
+                        this.totalInfo = data.data.totalInfo || {}
                     } else {
                         this.tableData = []
                         this.totalPage = 0
@@ -177,11 +180,11 @@
                         return;
                     }
                     if (column.property === 'line') {
-                        sums[index] = `接口${10223}条`
+                        sums[index] = `接口${this.totalInfo.xxx}条`
                     } else if (column.property === 'poolNumber') {
-                        sums[index] = `号池${10223}条`
+                        sums[index] = `号池${this.totalInfo.xxx}条`
                     } else if (column.property === 'totalNumber') {
-                        sums[index] = `共${10223}条`
+                        sums[index] = `共${this.totalInfo.xxx}条`
                     } else {
                         sums[index] = '';
                     }

@@ -31,21 +31,24 @@
         </div>
         <div class="agentTable">
             <el-table :data="proTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column prop="orderNum" label="排序" align="center">
+                <el-table-column prop="sort" label="排序" align="center">
                 </el-table-column>
                 <el-table-column prop="id" label="问题ID" align="center" width="110">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.id + '' }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="agentName" label="代理商名称" align="center" width="110">
                 </el-table-column>
                 <el-table-column prop="productName" label="所属产品" align="center">
                 </el-table-column>
-                <el-table-column prop="question" label="标题" align="center">
+                <el-table-column prop="title" label="标题" align="center">
                 </el-table-column>
-                <el-table-column prop="status" label="状态" align="center">
+                <el-table-column prop="state" label="状态" align="center">
                 </el-table-column>
                 <el-table-column prop="createTime" label="提交时间" align="center">
                 </el-table-column>
-                <el-table-column prop="auditStatus" label="审核状态" align="center">
+                <el-table-column prop="applyState" label="审核状态" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
@@ -91,16 +94,16 @@
                 ],
                 statusArr: [
                     { label: '全部', value: "" },
-                    { label: '上架', value: 0 },
-                    { label: '下架', value: 1 }
+                    { label: '上架', value: 1 },
+                    { label: '下架', value: 0 }
                 ],
                 auditStatusArr: [
-                    { label: '全部', value: "" },
-                    { label: '新增待审核', value: 0 },
-                    { label: '已审核', value: 1 },
-                    { label: '新增已驳回', value: 2 },
-                    { label: '修改待审核', value: 3 },
-                    { label: '修改驳回', value: 4 }
+                    { label: '全部', value: '' },
+                    { label: '创建待审核', value: 1 },
+                    { label: '修改待审核', value: 2 },
+                    { label: '已审核', value: 3 },
+                    { label: '已驳回', value: 4 },
+                    { label: '已删除', value: 5 }
                 ],
                 proTableData: []
             }

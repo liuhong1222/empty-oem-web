@@ -40,7 +40,6 @@
                         <el-input v-model="scope.row.sort" @change="orderNumChange(scope.row)"></el-input>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column prop="product_type_id" label="产品线ID" align="center" width="110"> </el-table-column> -->
                 <el-table-column prop="productLineName" label="产品线名称" align="center">
                 </el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center">
@@ -54,7 +53,7 @@
                 </el-table-column>
                 <el-table-column prop="redirect_way " label="跳转方式" align="center">
                     <template slot-scope="scope">
-                        <span>{{scope.row.redirect_way === 1 ? '内部编辑' : '外部地址' }}</span>
+                        <span>{{scope.row.redirect_way === 0 ? '内部编辑' : '外部地址' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="create_time" label="提交时间" align="center">
@@ -136,18 +135,9 @@
             addProUpdate
         },
         activated() {
-            // if (this.proLineForm.auditStatus !== 0) {
-            //     this.proLineForm.auditStatus = 0
-            // }
             this.getProData();
             this.getproLineName();
         },
-        // created() {
-        //     // 设置默认值
-        //     if (this.proLineForm.auditStatus == 0) {
-        //         this.proLineForm.auditStatus = '待审核'
-        //     }
-        // },
         methods: {
             // 排序
             orderNumChange(row) {
@@ -168,8 +158,6 @@
             },
             getProData(cur) {
                 this.dataListLoading = true;
-                // let auditStatus = this.proLineForm.auditStatus;
-                // auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
                 this.$http({
                     url: this.$http.adornUrl(`agent/product/list?token=${this.$cookie.get('token')}`),
                     method: 'post',

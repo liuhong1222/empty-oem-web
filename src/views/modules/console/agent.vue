@@ -431,11 +431,19 @@ export default {
             switch (index) {
                 case 4:
                 case 1: { // 余额充值
+                    if (index === 4 && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
+                        this.$message.warning('暂无实时检测代理权限')
+                        return false
+                    }
                     this.$refs['agentRechargeDiaRef'].init(index === 1 ? 'empty' : 'real', this.agentInfo)
                     break;
                 }
                 case 5:
                 case 2: { // 预警值修改
+                    if (index === 5 && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
+                        this.$message.warning('暂无实时检测代理权限')
+                        return false
+                    }
                     this.warnEditType = index === 2 ? '空号' : '实时'
                     this.warinform.curcounts = this.deskInfo[record.field]
                     this.warnFormVisible = true;

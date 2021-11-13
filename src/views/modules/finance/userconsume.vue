@@ -2,7 +2,7 @@
     <div class="main">
         <div class="topSearch">
             <h2>客户消耗记录</h2>
-            <el-form :inline="true" :model="consumeSearchData" @keyup.enter.native="consumeList()">
+            <el-form :inline="true" :model="consumeSearchData" @keyup.enter.native="consumeList(1)">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="consumeSearchData.dateTime" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions0"
@@ -19,7 +19,7 @@
                     <el-input v-model="consumeSearchData.custName" placeholder="客户名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary" @click="consumeList()">查询</el-button>
+                    <el-button type="primary" @click="consumeList(1)">查询</el-button>
                     <el-button type="primary" :disabled="disabled" @click="consumeExport()">导出</el-button>
                 </el-form-item>
             </el-form>
@@ -29,17 +29,24 @@
                 :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
-                <!-- <el-table-column prop="userId" label=" 客户编号"  align="center">
-                </el-table-column> -->
-                <el-table-column prop="userName" label=" 客户名称" align="center">
+                <el-table-column prop="name" label="客户名称" align="center">
                 </el-table-column>
-                <el-table-column prop="agentCompanyName" label="代理商名称" align="center" v-if="disableAgentName">
+                <el-table-column prop="companyName" label="代理商名称" align="center" v-if="disableAgentName">
                 </el-table-column>
-                <el-table-column prop="consumeTime" label="消耗时间" align="center">
+                <el-table-column prop="category" label="产品名称" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="number" label="消耗条数（条）" align="center">
+                <el-table-column prop="createTime" label="检测时间" align="center">
                 </el-table-column>
-                <el-table-column prop="userMobile" label="手机号" align="center">
+                <el-table-column prop="consumeNumber" label="消耗条数（条）" align="center">
+                </el-table-column>
+                <el-table-column prop="openingBalance" label="期初余条" align="center">
+                </el-table-column>
+                <el-table-column prop="closingBalance" label="期末余条" align="center">
+                </el-table-column>
+                <el-table-column prop="phone" label="手机号" align="center">
                 </el-table-column>
             </el-table>
         </div>
@@ -83,7 +90,7 @@
                 var date = new Date()
                 this.consumeSearchData.dateTime[0] = this.consumeSearchData.dateTime[1] = this.formatDate(date)
             }
-            this.consumeList()
+            this.consumeList(1)
         },
         created() {
             var date = new Date()
@@ -105,11 +112,12 @@
                 return currentdate
             },
             // 获取消耗记录接口
-            consumeList() {
+            consumeList(currPage) {
                 if (sessionStorage.getItem('msjRoleName') == '2') {
                     this.disableAgent = false
                     this.disableAgentName = false
                 }
+                this.pageIndex = currPage || this.pageIndex
                 this.dataListLoading = true
                 this.$http({
                     url: this.$http.adornUrl(`agent/finance/user/consume/list?token=${this.$cookie.get('token')}`),
@@ -127,7 +135,7 @@
                     if (data && data.code === 0) {
                         this.consumeTableData = data.data.list
                         this.totalPage = data.data.total
-                        this.number = data.data.totalInfo.number
+                        this.number = data.data.totalInfo.totalConsumeNum
                         if (data.data.list.length == 0) {
                             this.disabled = true
                         } else {
@@ -160,11 +168,11 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'number') {
+                    if (column.property === 'consumeNumber') {
                         sums[index] = this.number
                         sums[index] += ' 条';
                     } else {
-                        sums[index] = '--';
+                        sums[index] = '';
                     }
                 });
 

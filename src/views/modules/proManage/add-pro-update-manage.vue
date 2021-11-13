@@ -39,8 +39,8 @@
                 </el-form-item>
                 <el-form-item label="跳转方式" prop="methods">
                     <el-radio-group v-model="peoAUDataForm.methods" @change="addressTab">
-                        <el-radio :label="2">外部地址</el-radio>
-                        <el-radio :label="1">内部编辑</el-radio>
+                        <el-radio :label="1">外部地址</el-radio>
+                        <el-radio :label="0">内部编辑</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="链接地址：" prop="adress" v-if="addressShow">
@@ -201,7 +201,7 @@
                         url: this.$http.adornUrl(`agent/product/findById?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'id': this.peoAUDataForm.id
+                            'id': this.peoAUDataForm.id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {

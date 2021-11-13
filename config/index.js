@@ -14,15 +14,19 @@ module.exports = {
     // 代理列表, 是否开启代理通过[./dev.env.js]配置
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
-        target:'http://172.18.108.175:9999/', // jzg
+        // target:'http://172.18.108.175:8658/', // jzg
+        // target:'http://172.16.43.34:8658/', // test
         //target:'http://oem.haifou.com/open/',
+        target:'http://172.18.108.114:7001/proxy/7', // 代理服务
         changeOrigin: true,
         pathRewrite: {
           '^/proxyApi': '/'
         }
       },
       '/map_engine_file': {
-        target:'http://172.18.108.175:9999/', // jzg
+        // target:'http://172.18.108.175:8658/', // jzg
+        // target:'http://172.16.43.34:8658/', // test
+        target:'http://172.18.108.114:7001/proxy/7', // 代理服务
         changeOrigin: true,
       }
     },

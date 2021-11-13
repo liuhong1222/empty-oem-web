@@ -28,35 +28,38 @@
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
                 <el-table-column prop="id" label="产品ID" align="center" width="110">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.id + '' }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="agentName" label="代理商名称" align="center" width="110">
                 </el-table-column>
                 <el-table-column prop="productLineName" label="产品线名称" align="center">
                 </el-table-column>
-                <el-table-column prop="product_name" label="产品名称" align="center">
+                <el-table-column prop="name" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="shelf_status" label="状态" align="center">
-                    <template slot-scope="scope">
-                        <span>{{scope.row.shelf_status==0 ? '上架':'下架' }}</span>
-                    </template>
+                <el-table-column prop="shelfStatus" label="状态" align="center">
                 </el-table-column>
                 <el-table-column prop="jump_mode" label="跳转方式" align="center">
                     <template slot-scope="scope">
-                        <span>{{scope.row.jump_mode==1 ? '内部编辑':'外部地址' }}</span>
+                        <span>{{scope.row.jump_mode === 0 ? '内部编辑' : '外部地址' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="update_time" label="提交时间" align="center">
                 </el-table-column>
-                <el-table-column prop="order_num" label="排序" align="center">
+                <el-table-column prop="sort" label="排序" align="center">
                 </el-table-column>
                 <el-table-column prop="auditStatus" label="审核状态" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ auditStatusMap[row.apply_state] }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center">
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'audit')" :disabled="(scope.row.auditStatus || '').indexOf('待审核') != -1 ? false : true">审核</el-button>
-                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'see')" :disabled="(scope.row.auditStatus || '').indexOf('待审核') != -1 ?  true: false">查看</el-button>
+                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'audit')" :disabled="[1, 2].includes(scope.row.apply_state) ? false : true">审核</el-button>
+                        <el-button type="text" size="small" @click="proAuditBtn(scope.row.id,'see')" :disabled="[1, 2].includes(scope.row.apply_state) ?  true: false">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -88,17 +91,24 @@
                 },
                 statusArr: [
                     { label: '全部', value: -1 },
-                    { label: '上架', value: 0 },
-                    { label: '下架', value: 1 }
+                    { label: '上架', value: 1 },
+                    { label: '下架', value: 0 }
                 ],
                 auditStatusArr: [
                     { label: '全部', value: -1 },
-                    { label: '创建待审核', value: 0 },
-                    { label: '已审核', value: 1 },
-                    { label: '创建驳回', value: 2 },
-                    { label: '修改待审核', value: 3 },
-                    { label: '修改驳回', value: 4 }
+                    { label: '创建待审核', value: 1 },
+                    { label: '修改待审核', value: 2 },
+                    { label: '已审核', value: 3 },
+                    { label: '已驳回', value: 4 },
+                    { label: '已删除', value: 5 }
                 ],
+                auditStatusMap: {
+                    '1': '创建待审核',
+                    '2': '修改待审核',
+                    '3': '已审核',
+                    '4': '已驳回',
+                    '5': '已删除',
+                },
                 proTableData: []
             }
         },
@@ -106,30 +116,19 @@
             proAudit
         },
         activated() {
-            // if (this.proForm.auditStatus !== 0) {
-            //     this.proForm.auditStatus = 0
-            // }
             this.getProData()
         },
-        // created() {
-        //     // 设置默认值
-        //     if (this.proForm.auditStatus == 0) {
-        //         this.proForm.auditStatus = '待审核'
-        //     }
-        // },
         methods: {
             getProData(cur) {
                 this.dataListLoading = true;
-                // let auditStatus = this.proForm.auditStatus;
-                // auditStatus == '待审核' ? (auditStatus = 0) : auditStatus;
                 this.$http({
                     url: this.$http.adornUrl(`agent/product/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditStatus': this.proForm.auditStatus,
-                        'shelfStatus': this.proForm.status,
+                        'auditStatus': this.proForm.auditStatus === -1 ? undefined : this.proForm.auditStatus,
+                        'shelfStatus': this.proForm.status === -1 ? undefined : this.proForm.status,
                         'startTime': '' || this.proForm.dateTime == null ? '' : this.proForm.dateTime[0],
                         'endTime': '' || this.proForm.dateTime == null ? '' : this.proForm.dateTime[1]
                     })
