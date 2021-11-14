@@ -118,8 +118,8 @@
                 var date = new Date()
                 this.customerSearchData.dateTime[0] = this.customerSearchData.dateTime[1] = this.formatDate(date)
             }
-            if (this.$route.params && this.$route.params.custName) {
-                this.customerSearchData.custName = this.$route.params.custName;
+            if (this.$route.params && this.$route.params.name) {
+                this.customerSearchData.custName = this.$route.params.name;
             }
             this.uerRechargeList();
         },

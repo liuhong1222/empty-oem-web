@@ -2,19 +2,19 @@
     <div class="main">
         <div class="topSearch">
             <h2>客户转代理商记录</h2>
-            <el-form :inline="true" :model="transferSearchData" @keyup.enter.native="transferAgentList()">
+            <el-form :inline="true" :model="transferSearchData" @keyup.enter.native="transferAgentList(1)">
                 <el-form-item label="操作日期：">
                     <el-date-picker v-model="transferSearchData.dateTime" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="客户手机号：" style="margin-left:35px;" class="transferInput">
+                <el-form-item label="客户手机号：" class="transferInput">
                     <el-input v-model="transferSearchData.mobile" placeholder="请输入客户手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="转出代理商名称：" class="transferInput">
                     <el-input v-model="transferSearchData.agentName" placeholder="请输入转出代理商名称" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="转入代理商名称：" style="margin-left:-2px;" class="transferInput">
+                <el-form-item label="转入代理商名称：" class="transferInput">
                     <el-input v-model="transferSearchData.transferAgent" placeholder="请输入转入的代理商名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
@@ -74,7 +74,7 @@
             }
         },
         activated() {
-            this.transferAgentList()
+            this.transferAgentList(1)
         },
         methods: {
             // 转代理商列表

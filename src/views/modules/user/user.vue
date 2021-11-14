@@ -379,8 +379,7 @@ export default {
           break;
         }
         case "viewRechargeRecord": {
-          // 查看历史充值记录
-          console.log("查看历史充值记录");
+          // 查看历史充值记录=
           this.$router.push({ name: 'finance-userrecharge', params: {...record} })
           break;
         }

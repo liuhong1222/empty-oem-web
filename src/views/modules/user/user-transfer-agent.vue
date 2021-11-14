@@ -49,7 +49,7 @@
                 },
                 transferFormRules: {
                     transferAgent: [
-                        { required: true, message: '请输入需要转入的代理商', trigger: 'blur' }
+                        { required: true, message: '请输入需要转入的代理商', trigger: 'change' }
                     ],
                 }
             }
@@ -57,8 +57,60 @@
 
         watch: {
             'transferForm.transferAgent'() {
+                this.getAgentList()
+            }
 
-                this.csvS = [];//这是定义好的用于存放下拉提醒框中数据的数组
+        },
+        methods: {
+            transferAgentInit(row) {
+                this.transferVisible = true;
+                this.$nextTick(() => {
+                    this.$refs['transferFormRef'].resetFields();
+                })
+                this.transferForm = {
+                    transferAgent: '',
+                    creUserId: row.customerId,
+                    mobile: row.phone,
+                    createTime: row.create_time,
+                    currAgent: row.company_name,
+                    remark: ''
+                }
+                this.getAgentList()
+            },
+            // 转代理商
+            submitTransAgent() {
+                this.$refs['transferFormRef'].validate((valid) => {
+                    if (valid) {
+                        this.$http({
+                            url: this.$http.adornUrl(`agent/user/changeAgent?token=${this.$cookie.get('token')}`),
+                            method: 'post',
+                            params: this.$http.adornParams({
+                                'creUserId': this.transferForm.creUserId + '',
+                                'outAgentName': this.transferForm.currAgent,
+                                'inAgentName': this.transferForm.transferAgent,
+                                'remark': this.transferForm.remark
+                            })
+                        }).then(({ data }) => {
+                            if (data && data.code === 0) {
+                                // console.log(data)
+                                this.$message({
+                                    message: '操作成功',
+                                    type: 'success',
+                                    duration: 1500,
+                                    onClose: () => {
+                                        this.transferVisible = false
+                                        this.$emit('refreshDataList')
+                                    }
+                                })
+                            } else {
+                                this.$message.error(data.msg);
+                            }
+                        })
+                    }
+                })
+            },
+            getAgentList() {
+                this.csvS = [];
                 this.$http({
                     url: this.$http.adornUrl(`agent/user/findCompanyName?token=${this.$cookie.get('token')}`),
                     method: 'get',
@@ -83,52 +135,6 @@
                         }
                     } else {
                         this.$message.error(data.msg);
-                    }
-                })
-            }
-
-        },
-        methods: {
-            transferAgentInit(row) {
-                // console.log(row.creUserId)
-                this.transferForm.creUserId = row.creUserId
-                this.transferForm.mobile = row.user_phone;
-                this.transferForm.createTime = row.create_time;
-                this.transferForm.currAgent = row.company_name
-                this.transferVisible = true;
-                this.$nextTick(() => {
-                    this.$refs['transferFormRef'].resetFields();
-                })
-            },
-            // 转代理商
-            submitTransAgent() {
-                this.$refs['transferFormRef'].validate((valid) => {
-                    if (valid) {
-                        this.$http({
-                            url: this.$http.adornUrl(`agent/user/changeAgent?token=${this.$cookie.get('token')}`),
-                            method: 'post',
-                            params: this.$http.adornParams({
-                                'creUserId': this.transferForm.creUserId,
-                                'outAgentName': this.transferForm.currAgent,
-                                'inAgentName': this.transferForm.transferAgent,
-                                'remark': this.transferForm.remark
-                            })
-                        }).then(({ data }) => {
-                            if (data && data.code === 0) {
-                                // console.log(data)
-                                this.$message({
-                                    message: '操作成功',
-                                    type: 'success',
-                                    duration: 1500,
-                                    onClose: () => {
-                                        this.transferVisible = false
-                                        this.$emit('refreshDataList')
-                                    }
-                                })
-                            } else {
-                                this.$message.error(data.msg);
-                            }
-                        })
                     }
                 })
             },
