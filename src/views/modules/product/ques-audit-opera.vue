@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog :title="title" :close-on-click-modal="false" :visible.sync="visible" width="550px" :before-close="closeNewsSeeDialod">
+        <el-dialog :title="title" :close-on-click-modal="false" :visible.sync="visible" width="520px" :before-close="closeNewsSeeDialod">
             <el-form :model="quesAuditDataForm" label-width="100px" :rules="quesAuditDataRules" ref="quesAuditDataRef"
                 class="demo-ruleForm">
                 <el-form-item label="代理商名称：">
@@ -22,12 +22,12 @@
                     <el-input type="textarea" v-model="quesAuditDataForm.quesCon" readonly></el-input>
                 </el-form-item>
                 <!-- 查看 -->
-                <el-form-item label="审核：" v-if="seeShow">
+                <!-- <el-form-item label="审核：" v-if="seeShow">
                     <el-input v-model="quesAuditDataForm.audit" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="备注：" v-if="seeShow1">
+                </el-form-item> -->
+                <!-- <el-form-item label="备注：" v-if="seeShow1">
                     <el-input type="textarea" v-model="quesAuditDataForm.seeDesc" readonly></el-input>
-                </el-form-item>
+                </el-form-item> -->
 
                 <!-- 审核 -->
                 <el-form-item label="审核：" prop="resource" v-if="auditShow">
@@ -85,15 +85,13 @@
         methods: {
             showInit(id, stu) {
                 this.visible = true;
-                this.$nextTick(() => {
-                    this.$refs['quesAuditDataRef'].resetFields()
-                })
                 if (stu == "audit") {
                     this.title = "审核"
                     this.auditShow = true;
                     this.seeShow = false;
                     this.seeShow1 = false;
                     this.showBnt = true;
+                    this.auditDisable = false;
                 } else {
                     this.title = "查看";
                     this.auditShow = false;
@@ -102,6 +100,7 @@
                     this.seeShow1 = true;
                     this.showBnt = false;
                 }
+                this.quesAuditDataForm = {}
                 this.$http({
                     url: this.$http.adornUrl(`agent/productFaq/all/detail?token=${this.$cookie.get('token')}`),
                     method: 'post',
@@ -121,6 +120,8 @@
                             audit: data.data.applyState,
                             seeDesc: data.data.remark,
                         }
+                    } else {
+                        this.$message.error(data.msg)
                     }
                 })
             },

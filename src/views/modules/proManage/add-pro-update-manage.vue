@@ -1,16 +1,13 @@
 <template>
     <div>
-        <el-dialog :title="!peoAUDataForm.id ? '添加' :'编辑'" :close-on-click-modal="false" :visible.sync="visible" width="850px"
+        <el-dialog :title="!peoAUDataForm.id ? '添加产品' :'编辑产品'" :close-on-click-modal="false" :visible.sync="visible" width="850px"
             :before-close="closeNewsSeeDialod">
             <el-form :model="peoAUDataForm" label-width="110px" :rules="peoAUDataRules" ref="peoAUDataRef" class="demo-ruleForm">
-                <el-form-item label="产品线名称：" prop="proLineName">
-                    <el-select v-model="peoAUDataForm.proLineName" filterable remote reserve-keyword placeholder="请输入关键词"
-                        :remote-method="remoteMethod" :loading="loading" @change="selectOne" :disabled="disabled">
-                        <el-option v-for="item in options4" :key="item.id" :label="item.productName" :value="item.id">
+                <el-form-item label="产品线名称：" prop="proLineId">
+                    <el-select style="width: 100%;" v-model="peoAUDataForm.proLineId" placeholder="请选择产品线">
+                        <el-option v-for="(item, index) in proLineList" :key="index" :label="item.productName" :value="item.id + ''">
                         </el-option>
                     </el-select>
-                    <!-- <el-autocomplete style="width:100%" class="inline-input" v-model="peoAUDataForm.proLineName"
-                        :fetch-suggestions="querySearch" placeholder="请输入产品线名称……" :disabled="disabled"></el-autocomplete> -->
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="proName">
                     <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称(长度最大为11个字)……" maxLength="11"></el-input>
@@ -30,7 +27,7 @@
                     </el-upload>
                 </el-form-item><br />
                 <el-form-item label="状态：" prop="status">
-                    <el-select v-model="peoAUDataForm.status" placeholder="请选择审核状态">
+                    <el-select style="width: 100%;" v-model="peoAUDataForm.status" placeholder="请选择审核状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -67,12 +64,7 @@
         components: { UE },
         data() {
             return {
-                options4: [],
-                list: [],
-                loading: false,
                 visible: false,
-                selectid: '',
-                disabled: false,
                 addressShow: true,
                 contentShow: true,
                 title: '',
@@ -82,7 +74,6 @@
                     initialFrameHeight: 350,
                     autoFloatEnabled: false,
                     elementPathEnabled: false,
-                    // serverUrl: 'http://172.16.4.242:9999/open/agent/ueditor?token=' + `${this.$cookie.get('token')}`
                 },
                 peoAUDataForm: {
                     proLineName: '',
@@ -94,13 +85,13 @@
                     adress: '',
                     imageUrlIcon: '',
                     content: '',
-                    id: ''
+                    id: '',
+                    proLineId: ''
                 },
                 iconUrl: '',
-                productTypeId: '',
                 peoAUDataRules: {
-                    proLineName: [
-                        { required: true, message: '请输入产品线名称', trigger: 'change' }
+                    proLineId: [
+                        { required: true, message: '请选择产品线', trigger: 'change' }
                     ],
                     proName: [
                         { required: true, message: '请输入产品名称', trigger: 'blur' }
@@ -136,58 +127,40 @@
                     agentId: null,
                     file: null
                 },
+                proLineList: []
             }
         },
         methods: {
-            remoteMethod(query) {
-                this.getdata(query)
-                // if (query !== '') {
-                //     this.loading = true;
-                //     setTimeout(() => {
-                //         this.loading = false;
-                //         this.options4 = this.list.filter(item => {
-                //             return item.productName.indexOf(query) > -1;
-                //         });
-                //     }, 200);
-                // } else {
-                //     this.options4 = [];
-                // }
-            },
-            getdata(query) {
+            getdata() {
                 this.$http({
                     url: this.$http.adornUrl(`agent/line/findNameList?token=${this.$cookie.get('token')}`),
                     method: 'post',
-                    params: this.$http.adornParams({
-                        'productLineName': query
-                    })
+                    params: this.$http.adornParams({})
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        if (data.data.length == 0) {
-                            this.options4 = [];
-                            this.peoAUDataForm.proLineName = ""
-                            return;
-                        }
-                        // this.list = data.data
-                        this.loading = true;
-                        setTimeout(() => {
-                            this.loading = false;
-                            this.options4 = data.data.filter(item => {
-                                return item.productName.indexOf(query) > -1;
-                            });
-                        }, 200);
+                        this.proLineList = data.data || []
                     } else {
-                        this.options4 = [];
+                        this.proLineList = [];
                         this.$message.error(data.msg);
                     }
                 })
             },
             showInit(id) {
-
                 this.visible = true;
-                this.disabled = false;
-                this.peoAUDataForm.id = id;
-                this.peoAUDataForm.methods = 2;
-                this.iconUrl = ""
+                this.peoAUDataForm = {
+                    proName: '',
+                    describe: '',
+                    status: '',
+                    orderNum: '',
+                    methods: 2,
+                    adress: '',
+                    imageUrlIcon: '',
+                    content: '',
+                    id: '',
+                    proLineId: ''
+                }
+                this.getdata()
+                this.iconUrl = ''
                 if (this.peoAUDataForm.methods == 2) {
                     this.addressShow = true;
                     this.contentShow = false;
@@ -195,28 +168,29 @@
                     this.addressShow = false;
                     this.contentShow = true;
                 }
-                if (this.peoAUDataForm.id) {
-                    this.disabled = true;
+                if (id) {
                     this.$http({
                         url: this.$http.adornUrl(`agent/product/findById?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            'id': this.peoAUDataForm.id + ''
+                            'id': id + ''
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
-                            this.peoAUDataForm.proLineName = data.data.productLineName;
-                            this.peoAUDataForm.proName = data.data.product_name;
-                            this.peoAUDataForm.describe = data.data.product_desc;
-                            this.peoAUDataForm.imageUrlIcon = imgUrl.imgUrl + data.data.icon_path;
-                            this.peoAUDataForm.status = data.data.shelf_status;
-                            this.peoAUDataForm.orderNum = data.data.order_num;
-                            this.peoAUDataForm.methods = data.data.jump_mode;
-                            this.peoAUDataForm.adress = data.data.link_url;
-                            this.defaultMsgCon = data.data.product_content;
-                            this.productTypeId = data.data.product_type_id;
-                            if (data.data.jump_mode == 1) {
-
+                            this.peoAUDataForm = {
+                                id: id + '',
+                                proLineId: data.data.product_group_id + '',
+                                proName: data.data.name,
+                                describe: data.data.description,
+                                imageUrlIcon: this.$imgPreStr + data.data.icon,
+                                status: data.data.state,
+                                orderNum: data.data.sort,
+                                methods: data.data.redirect_way,
+                                adress: data.data.external_links,
+                            }
+                            this.iconUrl = data.data.icon
+                            this.defaultMsgCon = data.data.content;
+                            if (data.data.redirect_way == 0) { // 1 外部地址 0 内部编辑
                                 this.addressShow = false;
                                 this.contentShow = true;
                             } else {
@@ -226,33 +200,26 @@
                         }
                     })
                 }
-
                 this.$nextTick(() => {
                     this.$refs['peoAUDataRef'].resetFields()
                 })
-                // 设置默认值
-                // if (this.peoAUDataForm.status == 0) {
-                //     this.peoAUDataForm.status = '上架'
-                // }
-            },
-            selectOne(event, item) {
-                this.selectid = event
             },
             peoAUDataSubmit() {
                 if (this.$refs.ue) {
                     if (this.$refs.ue.hasContent) {   //判断是否有内容
                         this.peoAUDataForm.content = this.$refs.ue.getUEContentMsj()
+                    } else {
+                        this.peoAUDataForm.content = ''
                     }
                 }
                 this.$refs['peoAUDataRef'].validate((valid) => {
                     if (valid) {
-                        let productGroupId = this.selectid ? this.selectid : this.productTypeId
                         this.$http({
-                            url: this.$http.adornUrl(`agent/product/saveOrUpdate?token=${this.$cookie.get('token')}&productGroupId=${productGroupId}`),
+                            url: this.$http.adornUrl(`agent/product/saveOrUpdate?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
                                 'id': this.peoAUDataForm.id,
-                                // 'productGroupId': this.selectid ? this.selectid : this.productTypeId,
+                                'productGroupId': this.peoAUDataForm.proLineId,
                                 'sort': this.peoAUDataForm.orderNum,
                                 'name': this.peoAUDataForm.proName,
                                 'description': this.peoAUDataForm.describe,
@@ -282,7 +249,6 @@
                 this.$refs.upload.clearFiles()
                 if (this.$refs.ue) {
                     if (this.$refs.ue.hasContent) {   //判断是否有内容
-                        // alert(33333)
                         this.$refs.ue.execCommand()
                     }
                 }
@@ -360,23 +326,6 @@
                     })
                 }
             },
-            querySearch(queryString, cb) {
-                // console.log(queryString)
-                // console.log(cb)
-                if (!this.peoAUDataForm.proLineName) {
-                    return;
-                }
-                var csvS = this.csvS;
-                // console.log(csvS)
-                // if (csvS.length === 0) {
-                //     csvS = [{ value: '暂无数据' }]
-                // }
-                cb(csvS);
-                if (csvS.length > 0) {
-                    this.selectid = csvS[0].id;
-                }
-
-            }
         }
     }
 </script>

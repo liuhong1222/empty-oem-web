@@ -94,7 +94,7 @@
                 dataListLoading: false,
                 pageIndex: 1,
                 pageSize: 10,
-                totalPage: 100,
+                totalPage: 0,
                 quesDataForm: {
                     status: '',
                     auditStatus: '',  //默认显示待审核
@@ -129,32 +129,22 @@
         components: {
             addQuestionUpdate
         },
-        // created() {
-        //     // 设置默认值
-        //     if (this.quesDataForm.auditStatus == 0) {
-        //         this.quesDataForm.auditStatus = '待审核'
-        //     }
-        // },
         activated() {
-            // if (this.quesDataForm.auditStatus !== 0) {
-            //     this.quesDataForm.auditStatus = 0
-            // }
-            this.getQuesData();
+            this.getQuesData(1);
             this.getAllPro();
             this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id
         },
 
         methods: {
             getQuesData(cur) {
-                // let auditStatus = this.quesDataForm.auditStatus;
-                // auditStatus == '待审核' ? (auditStatus = 0) : (auditStatus = auditStatus);
                 this.dataListLoading = true;
+                this.pageIndex = cur || this.pageIndex
                 this.$http({
                     url: this.$http.adornUrl(`agent/productFaq/my/list?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
                         'productId': this.quesDataForm.proName,
-                        'currentPage': cur || this.pageIndex,
+                        'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'queryType': this.quesDataForm.searchType,
                         'content': this.quesDataForm.searchKey,
@@ -164,11 +154,8 @@
                         'endDate': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[1]
                     })
                 }).then(({ data }) => {
+                    this.dataListLoading = false;
                     if (data && data.code === 0) {
-                        this.dataListLoading = false;
-                        if (cur == 1) {
-                            this.pageIndex = 1
-                        }
                         this.quesTableData = data.data.list
                         this.totalPage = data.data.total
                     } else {
@@ -199,7 +186,7 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.dataListLoading = false;
-                        this.getQuesData();
+                        this.getQuesData(1);
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -210,16 +197,13 @@
                 let status = row.state;
                 let id = row.id
                 if (status == '上架') {
-                    // alert('下架')
                     this.upOffDelFun(0, id)
                 } else {
-                    // alert('上架')
                     this.upOffDelFun(1, id)
                 }
             },
             // 排序
             orderNumChange(row) {
-                // console.log(row.orderNum)
                 this.$http({
                     url: this.$http.adornUrl(`agent/productFaq/my/updateFaqOrder?token=${this.$cookie.get('token')}`),
                     method: 'post',
@@ -229,7 +213,7 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.getQuesData()
+                        this.getQuesData(1)
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -247,7 +231,7 @@
                     if (data && data.code === 0) {
                         if (status == 0) {
                             this.$message.success('下架成功')
-                        } else if (status == 1) {
+                        } else {
                             this.$message.success('上架成功')
                         }
                         this.getQuesData()
@@ -258,7 +242,7 @@
             },
             // 删除
             delBtn(id) {
-                this.$confirm(`确定对此问题进行删除操作?`, '提示', {
+                this.$confirm(`确定对此常见问题进行删除操作?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'

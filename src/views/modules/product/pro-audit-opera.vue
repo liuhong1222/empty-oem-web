@@ -38,12 +38,12 @@
                     <UE v-bind:defaultMsg="defaultMsgCon" :config="config" ref="ue"></UE>
                 </el-form-item>
                 <!-- 查看 -->
-                <el-form-item label="审核结果：" prop="auditRes" v-if="seeShow">
+                <!-- <el-form-item label="审核结果：" prop="auditRes" v-if="seeShow">
                     <el-input v-model="proAuditDataForm.auditRes" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="备注：" prop="auditDesc" v-if="seeShow1">
                     <el-input type="textarea" v-model="proAuditDataForm.auditDesc" readonly></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <!-- 审核 -->
                 <el-form-item label="审核结果：" prop="resource" style="margin-left: 30px" v-if="auditShow">
                     <el-radio-group v-model="proAuditDataForm.resource" @change="auditChangeHandler">
@@ -117,12 +117,13 @@
         methods: {
             showInit(id, stu) {
                 this.proAuditDataForm.id = id
-                this.$nextTick(() => {
-                    this.$refs['proAuditDataRef'].resetFields();
-                })
+                // this.$nextTick(() => {
+                //     this.$refs['proAuditDataRef'].resetFields();
+                // })
                 if (stu == "audit") {
                     this.title = "审核"
                     this.auditShow = true;
+                    this.auditDisable = false;
                     this.seeShow = false;
                     this.seeShow1 = false;
                     this.showBnt = true;
@@ -137,7 +138,6 @@
                 this.iconsImageUrl = "";
                 this.defaultMsgCon = ""
                 this.visible = true;
-
                 this.$http({
                     url: this.$http.adornUrl(`agent/product/findById?token=${this.$cookie.get('token')}`),
                     method: 'post',

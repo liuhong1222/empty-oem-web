@@ -150,7 +150,7 @@
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
-                            this.newsTableDataList(1)
+                            this.newsTableDataList()
                             this.$message({
                                 message: '操作成功',
                                 type: 'success',

@@ -99,7 +99,7 @@
             updateInfo
         },
         activated() {
-            this.messageList()
+            this.messageList(1)
         },
         methods: {
             messageList(cur) {

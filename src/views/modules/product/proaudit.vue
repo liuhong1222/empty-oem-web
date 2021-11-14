@@ -3,7 +3,7 @@
         <div class="topSearch">
             <h2>产品审核列表</h2>
             <el-form :inline="true" :model="proForm" label-width="100px">
-                <el-form-item label="状态" style="margin-left: -60px">
+                <el-form-item label="状态">
                     <el-select v-model="proForm.status" placeholder="请选择状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
@@ -85,7 +85,7 @@
                 dataListLoading: false,
                 pageIndex: 1,
                 pageSize: 10,
-                totalPage: 100,
+                totalPage: 0,
                 proForm: {
                     auditStatus: '',  //默认显示待审核
                     dateTime: '',
@@ -118,7 +118,7 @@
             proAudit
         },
         activated() {
-            this.getProData()
+            this.getProData(1)
         },
         methods: {
             getProData(cur) {
@@ -135,16 +135,14 @@
                         'endTime': '' || this.proForm.dateTime == null ? '' : this.proForm.dateTime[1]
                     })
                 }).then(({ data }) => {
+                    this.dataListLoading = false;
                     if (data && data.code === 0) {
-                        this.dataListLoading = false;
                         if (cur == 1) {
                             this.pageIndex = 1
                         }
                         this.proTableData = data.data.list
                         this.totalPage = data.data.total
-
                     } else {
-
                         this.proTableData = []
                         this.totalPage = 0
                     }

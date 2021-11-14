@@ -17,12 +17,12 @@
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="状态" style="margin-left: -35px">
+                <el-form-item label="状态">
                     <el-select v-model="proLineForm.status" placeholder="请选择状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="审核状态" style="margin-left: -35px">
+                <el-form-item label="审核状态">
                     <el-select v-model="proLineForm.auditStatus" placeholder="请选择审核状态">
                         <el-option v-for="item in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
@@ -96,7 +96,7 @@
                 dataListLoading: false,
                 pageIndex: 1,
                 pageSize: 10,
-                totalPage: 100,
+                totalPage: 0,
                 proLineForm: {
                     status: '',
                     auditStatus: '',
@@ -135,7 +135,7 @@
             addProUpdate
         },
         activated() {
-            this.getProData();
+            this.getProData(1);
             this.getproLineName();
         },
         methods: {
@@ -145,12 +145,12 @@
                     url: this.$http.adornUrl(`agent/product/updateOrder?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        'orderNum': row.order_num,
-                        'id': row.id
+                        'orderNum': row.sort,
+                        'id': row.id + ''
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.getProData()
+                        this.getProData(1)
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -171,14 +171,13 @@
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })
                 }).then(({ data }) => {
+                    this.dataListLoading = false
                     if (data && data.code === 0) {
-                        this.dataListLoading = false;
                         if (cur == 1) {
                             this.pageIndex = 1
                         }
                         this.proLineTableData = data.data.list
                         this.totalPage = data.data.total
-
                     } else {
                         this.proLineTableData = []
                         this.totalPage = 0
@@ -192,7 +191,6 @@
                     params: this.$http.adornParams({})
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data)
                         this.proLineNameArr = data.data;
                         this.proLineNameArr.unshift({ id: '', productName: "全部" })
                     } else {

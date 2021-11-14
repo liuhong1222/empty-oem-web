@@ -11,8 +11,7 @@
                     <el-upload class="upload-demo" drag :show-file-list="true" :on-success="handleAvatarSuccessIcon"
                         :on-progress="onProgressIcon" :before-upload="beforeAvatarUploadIcon" :action="actionIcon()"
                         :data="iconQueryParams" :on-error="errorIcon" ref="upload">
-                        <img v-if="proLineAUDataForm.imageUrlIcon" :src="proLineAUDataForm.imageUrlIcon" class="avatar"
-                            :limit="1">
+                        <img v-if="proLineAUDataForm.imageUrlIcon" :src="proLineAUDataForm.imageUrlIcon" class="avatar">
                         <i class="el-icon-plus"></i>
                         <div class="el-upload__tip" slot="tip">要求为背景透明的png格式，且不超过2M，长22px，宽22px，（再次上传请删除上一次上传）</div>
                         <input type="hidden" v-model="proLineAUDataForm.imageUrlIcon" />
@@ -57,7 +56,7 @@
                     proLineName: [
                         { required: true, message: '请输入产品线名称', trigger: 'blur' }
                     ],
-                    status: [
+                    state: [
                         { required: true, message: '请选择状态', trigger: 'blur' }
                     ],
                     orderNum: [
@@ -78,31 +77,30 @@
         },
         methods: {
             showInit(row) {
-                if (row) {
-                    this.proLineAUDataForm.id = row.id
-                }
                 this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id;
-                if (this.$refs['proLineAUDataForm'] !== undefined) {
-                    this.$refs['proLineAUDataForm'].resetFields()
-                }
+                this.$nextTick(() => {
+                    this.$refs['proLineAUDataForm'] && this.$refs['proLineAUDataForm'].resetFields()
+                })
                 this.visible = true;
-                this.proLineAUDataForm.imageUrlIcon = ""
-                // 设置默认值
-                this.proLineAUDataForm.state = 1
-                if (this.proLineAUDataForm.id) {
-                    this.title = '编辑'
-                    this.proLineAUDataForm.proLineName = row.name
-                    this.proLineAUDataForm.orderNum = row.sort
-                    this.proLineAUDataForm.state = row.state
-                    if (row.icon_path) {
-                        this.proLineAUDataForm.imageUrlIcon = imgUrl.imgUrl + row.icon_path;
+                if (row.id) {
+                    this.title = '编辑产品线'
+                    this.proLineAUDataForm = {
+                        proLineName: row.name,
+                        orderNum: row.sort,
+                        state: row.state,
+                        id: row.id,
+                        imageUrlIcon: this.$imgPreSre + row.icon,
                     }
+                    this.iconUrl = row.icon
                 } else {
-                    this.title = '添加'
-                    this.proLineAUDataForm.proLineName = ""
-                    this.proLineAUDataForm.orderNum = 0
-                    this.proLineAUDataForm.state = 1
-                    this.proLineAUDataForm.imageUrlIcon = ""
+                    this.title = '添加产品线'
+                    this.iconUrl = ''
+                    this.proLineAUDataForm = {
+                        proLineName: '',
+                        orderNum: '',
+                        state: 1,
+                        imageUrlIcon: '',
+                    }
                 }
             },
             proLineAUSubmit() {
@@ -191,7 +189,6 @@
             handleAvatarSuccessIcon(res, file) {
                 this.iconUrl = res.data.licenseUrl
                 this.proLineAUDataForm.imageUrlIcon = URL.createObjectURL(file.raw);
-
             },
         }
     }

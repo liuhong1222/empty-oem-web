@@ -3,7 +3,7 @@
         <div class="topSearch">
             <h2>产品线审核列表</h2>
             <el-form :inline="true" :model="proLineForm" label-width="100px">
-                <el-form-item label="审核状态" style="margin-left: -35px">
+                <el-form-item label="审核状态">
                     <el-select v-model="proLineForm.status" placeholder="请选择审核状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
@@ -61,7 +61,7 @@
                 dataListLoading: false,
                 pageIndex: 1,
                 pageSize: 10,
-                totalPage: 100,
+                totalPage: 0,
                 proLineForm: {
                     status: '',  //默认显示待审核
                     dateTime: ''
@@ -81,7 +81,7 @@
             proLineAudit
         },
         activated() {
-            this.getProLineData()
+            this.getProLineData(1)
         },
         methods: {
             getProLineData(cur) {
@@ -97,8 +97,8 @@
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })
                 }).then(({ data }) => {
+                    this.dataListLoading = false
                     if (data && data.code === 0) {
-                        this.dataListLoading = false;
                         if (cur == 1) {
                             this.pageIndex = 1
                         }

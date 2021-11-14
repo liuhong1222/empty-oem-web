@@ -4,19 +4,19 @@
             <h2>产品线管理列表</h2>
             <el-form :inline="true" :model="proLineForm" label-width="100px">
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-plus" @click="update()">添加产品线</el-button>
+                    <el-button type="primary" icon="el-icon-plus" @click="update({})">添加产品线</el-button>
                 </el-form-item>
                 <el-form-item label="选择日期：">
                     <el-date-picker v-model="proLineForm.dateTime" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="状态" style="margin-left: -35px">
+                <el-form-item label="状态">
                     <el-select v-model="proLineForm.status" placeholder="请选择状态">
                         <el-option v-for="item in statusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="审核状态" style="margin-left: -35px">
+                <el-form-item label="审核状态">
                     <el-select v-model="proLineForm.auditStatus" placeholder="请选择审核状态">
                         <el-option v-for="item in auditStatusArr" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
@@ -57,7 +57,7 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row)" :disabled="[1, 2].includes(scope.row.applyState) ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" @click="update(scope.row)" :disabled="[1, 2].includes(scope.row.apply_state) ? true : false">编辑</el-button>
                         <el-button type="text" size="small" @click="onOrOff(scope.row)">{{scope.row.state == 1
                             ? '下架' : '上架' }}</el-button>
                         <el-button type="text" size="small" @click="del(scope.row.id)">删除</el-button>
@@ -110,7 +110,7 @@
             addProlineUpdate
         },
         activated() {
-            this.getProLineData()
+            this.getProLineData(1)
         },
         methods: {
             // 排序
@@ -119,12 +119,12 @@
                     url: this.$http.adornUrl(`agent/line/updateOrder?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
-                        'orderNum': row.order_num,
-                        'id': row.id
+                        'sort': row.sort,
+                        'id': row.id + ''
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.getProLineData()
+                        this.getProLineData(1)
                     } else {
                         this.$message.error(data.msg)
                     }
@@ -144,8 +144,8 @@
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })
                 }).then(({ data }) => {
+                    this.dataListLoading = false
                     if (data && data.code === 0) {
-                        this.dataListLoading = false;
                         if (cur == 1) {
                             this.pageIndex = 1
                         }
@@ -158,17 +158,15 @@
                     }
                 })
             },
-            update(id) {
+            update(record) {
                 this.addProlineUpdateVisible = true;
                 this.$nextTick(() => {
-                    this.$refs.addProlineUpdateRef.showInit(id)
+                    this.$refs.addProlineUpdateRef.showInit(record)
                 })
             },
             // 上架或者下架
             onOrOff(row) {
-                let shelf_status = row.shelf_status;
-                let id = row.id
-                this.onOff(shelf_status == 1 ? 0 : 1, id)
+                this.onOff(row.state == 1 ? 0 : 1, row.id)
             },
             onOff(shelf_status, id) {
                 this.$http({
@@ -176,15 +174,15 @@
                     method: 'post',
                     params: this.$http.adornParams({
                         'status': shelf_status,
-                        'id': id
+                        'id': id + ''
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        if (shelf_status == 0) {
+                        if (shelf_status == 1) {
                             this.$message.success('上架成功')
-                        } else if (shelf_status == 1) {
+                        } else if (shelf_status == 0) {
                             this.$message.success('下架成功')
-                        } else if (shelf_status == 2) {
+                        } else {
                             this.$message.success('删除成功')
                         }
                         this.getProLineData()
@@ -200,7 +198,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.onOff(2, id)
+                    this.onOff(5, id)
                 }).catch(() => { })
             },
             proLinesortReload() {

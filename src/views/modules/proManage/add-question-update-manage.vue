@@ -1,18 +1,10 @@
 <template>
     <div>
-        <el-dialog :title="!quesAUDataForm.id ? '添加' :'修改'" :close-on-click-modal="false" :visible.sync="visible" width="550px"
-            :before-close="closeNewsSeeDialod">
+        <el-dialog :title="!quesAUDataForm.id ? '添加常见问题' :'修改常见问题'" :close-on-click-modal="false" :visible.sync="visible" width="520px">
             <el-form :model="quesAUDataForm" label-width="100px" :rules="quesAUDataRules" ref="quesAUDataRef" class="demo-ruleForm">
-                <!-- <el-form-item label="所属产品：" prop="proName">
-                    <el-select v-model="quesAUDataForm.proName" filterable remote reserve-keyword placeholder="请输入关键词"
-                        :remote-method="remoteMethod" :loading="loading" @change="selectOne" :disabled="disabled">
-                        <el-option v-for="item in options4" :key="item.productId" :label="item.productName" :value="item.productId">
-                        </el-option>
-                    </el-select>
-                </el-form-item> -->
                 <el-form-item label="所属产品：" prop="proId">
                     <el-select v-model="quesAUDataForm.proId" style="width: 100%;" placeholder="请选择所属产品">
-                        <el-option v-for="(item, index) in productList" :key="index" :label="item.name" :value="item.id + ''">
+                        <el-option v-for="(item, index) in product" :key="index" :label="item.name" :value="item.id + ''">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -44,13 +36,8 @@
     export default {
         data() {
             return {
-                options4: [],
-                list: [],
-                loading: false,
                 visible: false,
-                disabled: false,
-                productList: [],
-                productId: '',
+                product: [],
                 quesAUDataForm: {
                     proName: '',
                     status: 0,
@@ -60,10 +47,9 @@
                     id: '',
                     proId: '',
                 },
-                selectid: '',
                 quesAUDataRules: {
-                    proName: [
-                        { required: true, message: '请输入所属产品', trigger: 'change' }
+                    proId: [
+                        { required: true, message: '请选择所属产品', trigger: 'change' }
                     ],
                     status: [
                         { required: true, message: '请选择状态', trigger: 'blur' }
@@ -86,38 +72,6 @@
             }
         },
         methods: {
-            remoteMethod(query) {
-                this.getData(query)
-            },
-            getData(query) {
-                this.$http({
-                    url: this.$http.adornUrl(`agent/productFaq/my/getProductInfo?token=${this.$cookie.get('token')}`),
-                    method: 'post',
-                    params: this.$http.adornParams({
-                        'productName': query
-                    })
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        if (data.data.length == 0) {
-                            this.options4 = [];
-                            this.quesAUDataForm.proName = ""
-                            return;
-                        }
-                        // this.list = data.data
-                        this.loading = true;
-                        setTimeout(() => {
-                            this.loading = false;
-                            this.options4 = data.data.filter(item => {
-                                return item.productName.indexOf(query) > -1;
-                            });
-                        }, 200);
-                    } else {
-                        this.options4 = [];
-                        this.$message.error(data.msg);
-                    }
-                })
-            },
-                
             getAllPro() {
                 this.$http({
                     url: this.$http.adornUrl(`agent/product/listProductsOfAgent?token=${this.$cookie.get('token')}&agentId=${this.agentId}`),
@@ -125,25 +79,23 @@
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.productList = data.data || []
+                        this.product = data.data || []
                     } else {
-                        this.productList = []
+                        this.product = []
                     }
                 })
             },
             showInit(id) {
                 this.visible = true;
-                this.disabled = false;
                 this.$nextTick(() => {
                     this.$refs['quesAUDataRef'].resetFields()
                 })
                 this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id
                 this.getAllPro()
                 if (id) {
-                    this.disabled = true;
                     this.$http({
                         url: this.$http.adornUrl(`agent/productFaq/my/detail?token=${this.$cookie.get('token')}`),
-                        method: 'get',
+                        method: 'post',
                         params: this.$http.adornParams({
                             'productFaqId': id + ''
                         })
@@ -162,20 +114,10 @@
                         }
                     })
                 }
-                // 设置默认值
-                if (this.quesAUDataForm.status == 0) {
-                    this.quesAUDataForm.status = '上架'
-                };
-            },
-            selectOne(event, item) {
-                this.selectid = event
             },
             quesAUDataSubmit() {
                 this.$refs['quesAUDataRef'].validate((valid) => {
                     if (valid) {
-                        let status = this.quesAUDataForm.status;
-                        status == "上架" ? (status = 0) : (status == "下架" ? (status = 1) : status);
-                        console.log(this.quesAUDataForm.proName)
                         this.$http({
                             url: this.$http.adornUrl(`agent/productFaq/my/${!this.quesAUDataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -184,14 +126,14 @@
                                 'id': this.quesAUDataForm.id,
                                 'question': this.quesAUDataForm.title,
                                 'order': this.quesAUDataForm.orderNum,
-                                'status': status,
+                                'status': this.quesAUDataForm.status,
                                 'answer': this.quesAUDataForm.content
                             })
                         }).then(({ data }) => {
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false;
-                                this.$emit('refreshNewsList')
+                                this.$emit('refreshNewsList', 1)
                             } else {
                                 this.$message.error(data.msg)
                             }
@@ -201,7 +143,6 @@
             },
             closeNewsSeeDialod() {
                 this.visible = false;
-                this.selectid = ""
             },
         }
     }
