@@ -55,6 +55,12 @@
             }
         },
         destroyed() {
+            this.$nextTick(() => {
+                let dom = document.getElementById('editor')
+                if (dom) {
+                    dom.parentElement.removeChild(dom)
+                }
+            });
             return this.editor.destroy();
         }
     }

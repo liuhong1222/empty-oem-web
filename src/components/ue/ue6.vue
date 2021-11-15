@@ -55,6 +55,12 @@
             }
         },
         destroyed() {
+            this.$nextTick(() => {
+                let dom = document.getElementById('editor6')
+                if (dom) {
+                    dom.parentElement.removeChild(dom)
+                }
+            });
             return this.editor6.destroy();
         }
     }

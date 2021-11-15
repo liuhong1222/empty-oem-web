@@ -52,6 +52,12 @@
             }
         },
         destroyed() {
+            this.$nextTick(() => {
+                let dom = document.getElementById('editor2')
+                if (dom) {
+                    dom.parentElement.removeChild(dom)
+                }
+            });
             return this.editor2.destroy();
         }
     }
