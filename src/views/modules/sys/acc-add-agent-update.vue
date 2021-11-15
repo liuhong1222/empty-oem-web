@@ -5,9 +5,9 @@
             <el-form-item label="用户名：" prop="username">
                 <el-input v-model="accountdataForm.username" placeholder="请输入用户名" :disabled="isEdit"></el-input>
             </el-form-item>
-            <el-form-item label="代理商：" prop="agentId">
+            <el-form-item label="代理商：" v-if="isAdmin" prop="agentId">
                 <el-select style="width: 100%" class="filter-item" v-model="accountdataForm.agentId" placeholder="请选择代理商">
-                    <el-option v-for="item in agentList" :key="item.id" :label="item.name" :value="item.id">
+                    <el-option v-for="(item, index) in agentList" :key="index" :label="item.companyName" :value="item.id + ''">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -42,7 +42,8 @@
                 labelPosition: 'right',
                 accountdataForm: {},
                 agentList: [],
-                submitLoading: false
+                submitLoading: false,
+                isAdmin: false,
             }
         },
         computed: {
@@ -86,6 +87,8 @@
             updateInit(record) {
                 this.visible = true
                 this.submitLoading = false
+                this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
+                this.isAdmin && this.getAgentList()
                 if (record.username) {
                     const { username, agentId, nickname, phone, email, id } = record
                     this.accountdataForm = {
@@ -101,6 +104,19 @@
                     this.isEdit = false;
                 }
             },
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                    } else {
+                        this.agentList = []
+                    }
+                })
+            },
             accDataFormSubmit() {
                 this.$refs['accountdataFormref'].validate((valid) => {
                     if (valid) {
@@ -109,6 +125,7 @@
                             url: this.$http.adornUrl(`agent/agentSysUser/${!this.accountdataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
+                                agentId: this.accountdataForm.agentId || undefined,
                                 'userId': this.accountdataForm.id || undefined,
                                 'username': this.accountdataForm.username,
                                 'mobile': this.accountdataForm.mobile,

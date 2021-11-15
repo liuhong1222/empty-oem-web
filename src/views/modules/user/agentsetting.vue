@@ -18,9 +18,8 @@
                     <el-select v-model="searchData.auditStatusSer" placeholder="请选择审核状态">
                         <el-option label="全部" value=""></el-option>
                         <el-option label="待审核" value="0"></el-option>
-                        <el-option label="使用中" value="1"></el-option>
-                        <el-option label="已驳回" value="2"></el-option>
-                        <el-option label="待设置" value="-1"></el-option>
+                        <el-option label="已认证" value="9"></el-option>
+                        <el-option label="已驳回" value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -149,7 +148,7 @@
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="seedialog(scope.row)">查看</el-button>
                         <el-button type="text" size="small" @click="seetingDialog(scope.row)">修改</el-button>
-                        <el-button type="text" size="small" @click="del(scope.row.agentId)">删除</el-button>
+                        <!-- <el-button type="text" size="small" @click="del(scope.row.agentId)">删除</el-button> -->
                         <el-button type="text" size="small" v-if="scope.row.state === 0" @click="auditDialog(scope.row)">审核</el-button>
                     </template>
                 </el-table-column>
@@ -228,10 +227,10 @@
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'agentName': this.searchData.agentName,
-                        'agentMobile': this.searchData.agentMobile,
-                        'auditState': this.searchData.auditStatusSer,
-                        'startTimeStr': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[0],
-                        'endTimeStr': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[1]
+                        'linkmanPhone': this.searchData.agentMobile,
+                        'state': this.searchData.auditStatusSer,
+                        'startTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[0],
+                        'endTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[1]
 
                     })
                 }).then(({ data }) => {

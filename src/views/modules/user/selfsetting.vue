@@ -134,7 +134,7 @@
             },
             getBasicInfo(callback) {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/set/findBasicInfo?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/set/findBasicInfo?token=${this.$cookie.get('token')}&agentId=${this.allSettingInfo.agentId}`),
                     method: 'post',
                 }).then(({ data }) => {
                     if (data && data.code === 0) {

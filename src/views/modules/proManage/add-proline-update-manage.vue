@@ -78,30 +78,30 @@
         methods: {
             showInit(row) {
                 this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id;
+                this.visible = true;
                 this.$nextTick(() => {
                     this.$refs['proLineAUDataForm'] && this.$refs['proLineAUDataForm'].resetFields()
+                    if (row.id !== undefined && row.id + '') {
+                        this.title = '编辑产品线'
+                        this.proLineAUDataForm = {
+                            proLineName: row.name,
+                            orderNum: row.sort,
+                            state: row.state,
+                            id: row.id,
+                            imageUrlIcon: this.$imgPreStr + row.icon,
+                        }
+                        this.iconUrl = row.icon
+                    } else {
+                        this.title = '添加产品线'
+                        this.iconUrl = ''
+                        this.proLineAUDataForm = {
+                            proLineName: '',
+                            orderNum: undefined,
+                            state: 1,
+                            imageUrlIcon: undefined,
+                        }
+                    }
                 })
-                this.visible = true;
-                if (row.id) {
-                    this.title = '编辑产品线'
-                    this.proLineAUDataForm = {
-                        proLineName: row.name,
-                        orderNum: row.sort,
-                        state: row.state,
-                        id: row.id,
-                        imageUrlIcon: this.$imgPreSre + row.icon,
-                    }
-                    this.iconUrl = row.icon
-                } else {
-                    this.title = '添加产品线'
-                    this.iconUrl = ''
-                    this.proLineAUDataForm = {
-                        proLineName: '',
-                        orderNum: '',
-                        state: 1,
-                        imageUrlIcon: '',
-                    }
-                }
             },
             proLineAUSubmit() {
                 this.$refs['proLineAUDataForm'].validate((valid) => {

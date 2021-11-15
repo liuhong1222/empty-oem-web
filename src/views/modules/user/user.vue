@@ -2,7 +2,7 @@
     <div class="main">
         <div class="topSearch">
             <h2>客户列表</h2>
-            <el-form :inline="true" :model="searchData" @keyup.enter.native="getCustomList()">
+            <el-form :inline="true" :model="searchData">
                 <el-form-item label="注册时间：">
                     <el-date-picker
                         v-model="searchData.dateTime"
@@ -25,27 +25,27 @@
                         <el-option label="全部" value="-1"></el-option>
                         <el-option label="个人" value="0"></el-option>
                         <el-option label="企业" value="1"></el-option>
-                        <el-option label="其他" value="2"></el-option>
+                        <el-option label="其他" value="9"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="充值状态：">
                     <el-select v-model="searchData.rechargeState" style="width: 200px;" placeholder="请选择充值状态">
-                        <el-option label="全部" value="-1"></el-option>
-                        <el-option label="已充值" value="0"></el-option>
-                        <el-option label="未充值" value="1"></el-option>
+                        <el-option label="全部" value="4"></el-option>
+                        <el-option label="已充值" value="1"></el-option>
+                        <el-option label="未充值" value="0"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="客户名称：">
                     <el-input v-model="searchData.custName" style="width: 180px;" placeholder="请输入客户名称" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="代理商名称：" v-if="disableAgent">
-                    <el-input v-model="searchData.agentName" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
+                <el-form-item label="代理商：" v-if="disableAgent">
+                    <el-input v-model="searchData.agentName" @blur="getAgenListByName()" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="注册IP：">
                     <el-input v-model="searchData.registerIp" style="width: 180px;" placeholder="请输入注册IP" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="getCustomList()">查询</el-button>
+                    <el-button type="primary" @click="getCustomList(1)">查询</el-button>
                     <el-button type="primary" @click="exportUser()" :disabled="disabled">导出</el-button>
                 </el-form-item>
             </el-form>
@@ -69,19 +69,19 @@
                 <el-table-column prop="customerType" label="客户类型" width="120" align="center"></el-table-column>
                 <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column>
                 <el-table-column
-                    prop="company_name"
+                    prop="companyName"
                     label="代理商名称"
                     align="center"
                     width="150"
                     v-if="disableAgentName"
                 ></el-table-column>
-                <el-table-column prop="create_time" label="注册时间" width="150" align="center"></el-table-column>
-                <el-table-column prop="empty_recharge_money" width="150" label="空号充值总计（元）" align="center"></el-table-column>
-                <el-table-column prop="empty_recharge_num" width="150" label="空号充值总条数" align="center"></el-table-column>
-                <el-table-column prop="empty_count" width="150" label="空号剩余条数" align="center"></el-table-column>
-                <el-table-column prop="realtime_recharge_money" width="150" label="实时充值总计（元）" align="center"></el-table-column>
-                <el-table-column prop="realtime_recharge_num" width="150" label="实时充值总条数" align="center"></el-table-column>
-                <el-table-column prop="realtime_count" width="150" label="实时剩余条数" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="注册时间" width="150" align="center"></el-table-column>
+                <el-table-column prop="emptyRechargeMoney" width="150" label="空号充值总计（元）" align="center"></el-table-column>
+                <el-table-column prop="emptyRechargeNum" width="150" label="空号充值总条数" align="center"></el-table-column>
+                <el-table-column prop="emptyCount" width="150" label="空号剩余条数" align="center"></el-table-column>
+                <el-table-column prop="realtimeRechargeMoney" width="150" label="实时充值总计（元）" align="center"></el-table-column>
+                <el-table-column prop="realtimeRechargeNum" width="150" label="实时充值总条数" align="center"></el-table-column>
+                <el-table-column prop="realtimeCount" width="150" label="实时剩余条数" align="center"></el-table-column>
                 <el-table-column fixed="right" label="操作" align="center" width="150">
                     <template slot-scope="scope">
                         <el-button @click="perPriseSee(scope.row)" type="text" size="small">查看</el-button>
@@ -99,7 +99,7 @@
                                 <el-dropdown-item :disabled="transferDisabled" command="transferAgent">转代理商</el-dropdown-item>
                                 <el-dropdown-item :disabled="scope.row.canPresent == 'false'" command="give">注册赠送</el-dropdown-item>
                                 <el-dropdown-item command="viewRechargeRecord">查看历史充值记录</el-dropdown-item>
-                                <el-dropdown-item command="interface">{{scope.row.interface === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
+                                <el-dropdown-item command="interface">{{scope.row.apiState === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>
@@ -142,6 +142,7 @@ import perRechargePrise from "./user-per-recharge-prise";
 // import perRefundPrise from "./user-per-refund-prise";
 import transferOrAgent from "./user-transfer-agent";
 import CustomerRefundDia from './customer-refund-dia.vue';
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -176,6 +177,7 @@ export default {
           return time.getTime() > Date.now() - 8.64e6;
         },
       },
+      agentList: [],
     };
   },
   components: {
@@ -197,7 +199,7 @@ export default {
       }
     }
 
-    this.getCustomList();
+    this.getCustomList(1);
   },
   created() {
     if (sessionStorage.getItem("msjRoleName") == "1") {
@@ -206,6 +208,7 @@ export default {
       this.searchData.dateTime[0] = this.formatDate(dateSeven);
       this.searchData.dateTime[1] = this.formatDate(date);
     }
+    this.getCustomList(1);
   },
   methods: {
     formatDate(date) {
@@ -248,17 +251,15 @@ export default {
       this.pageIndex = currPage || this.pageIndex
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl(
-          `agent/cust/custList?token=${this.$cookie.get("token")}`
-        ),
-        method: "get",
-        params: this.$http.adornParams({
+        url: this.$http.adornUrl(`agent/cust/custList`),
+        method: "post",
+        data: {
+          token: this.$cookie.get("token"),
           currentPage: this.pageIndex,
           pageSize: this.pageSize,
-          agentName: this.searchData.agentName,
-          custName: this.searchData.custName,
-          custType: this.searchData.custType,
-          mobile: this.searchData.mobile,
+          name: this.searchData.custName,
+          customerType: this.searchData.custType,
+          phone: this.searchData.mobile,
           startTimeStr:
             "" || this.searchData.dateTime == null
               ? ""
@@ -267,10 +268,13 @@ export default {
             "" || this.searchData.dateTime == null
               ? ""
               : this.searchData.dateTime[1],
-        }),
+          ip: this.searchData.registerIp,
+          email: this.searchData.email,
+          haveRecharged: this.searchData.rechargeState,
+          agentList: this.agentList,
+        },
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          // console.log(data)
           this.userTableData = data.data.list;
           this.totalPage = data.data.total;
           if (data.data.list.length == 0) {
@@ -285,6 +289,21 @@ export default {
         this.dataListLoading = false;
       });
     },
+    getAgenListByName() {
+      this.$http({
+        url: this.$http.adornUrl(`agent/agentInfo/findAgentListByName?token=${this.$cookie.get("token")}`),
+        method: "post",
+        params: this.$http.adornParams({
+          name: this.searchData.agentName
+        }),
+      }).then(({ data }) => {
+        if (data.code == "0") {
+          this.agentList = (data.data || []).map(ele => ele + '')
+        } else {
+          this.agentList = []
+        }
+      });
+    },
     // 注册赠送
     canPresentBtn(userId) {
       this.$http({
@@ -293,6 +312,26 @@ export default {
         ),
         method: "post",
         params: this.$http.adornParams({}),
+      }).then(({ data }) => {
+        if (data.code == "0") {
+          this.$message.success(data.msg);
+          this.getCustomList();
+        } else {
+          this.$message.error(data.msg);
+        }
+      });
+    },
+    // 开启关闭接口
+    setApiState(record) {
+      this.$http({
+        url: this.$http.adornUrl(
+          `agent/cust/setApiState?token=${this.$cookie.get("token")}`
+        ),
+        method: "post",
+        params: this.$http.adornParams({
+          custId: record.customerId + '',
+          state: record.apiState ? 0 : 1,
+        }),
       }).then(({ data }) => {
         if (data.code == "0") {
           this.$message.success(data.msg);
@@ -329,32 +368,52 @@ export default {
     },
     // 导出
     exportUser() {
-      let startTime;
-      let endTime;
-      if (this.searchData.dateTime == null) {
-        startTime = "";
-        endTime = "";
-      } else {
-        if (this.searchData.dateTime.length == 0) {
-          startTime = "";
-          endTime = "";
-        } else {
-          startTime = this.searchData.dateTime[0];
-          endTime = this.searchData.dateTime[1];
-        }
+      let params = {
+        // token: this.$cookie.get("token"),
+        currentPage: this.pageIndex,
+        pageSize: this.pageSize,
+        name: this.searchData.custName,
+        customerType: this.searchData.custType,
+        phone: this.searchData.mobile,
+        startTimeStr:
+          "" || this.searchData.dateTime == null
+            ? ""
+            : this.searchData.dateTime[0],
+        endTimeStr:
+          "" || this.searchData.dateTime == null
+            ? ""
+            : this.searchData.dateTime[1],
+        ip: this.searchData.registerIp,
+        email: this.searchData.email,
+        haveRecharged: this.searchData.rechargeState,
+        agentList: this.agentList,
       }
+      // axios({
+      //   method: 'POST',
+      //   url: this.$http.adornUrl(`agent/cust/custListExport?token=${this.$cookie.get("token")}`),
+      //   data: params,
+      //   responseType: 'blob'
+      // }).then(res => {
+      //   if (!res) {
+      //     return false
+      //   }
+      //   const link = document.createElement('a');  // 创建元素
+      //   let blob = new Blob([res], { type: 'text/csv,charset=UTF-8'});
+      //   link.style.display = 'none';
+      //   link.href = URL.createObjectURL(blob);   // 创建下载的链接
+      //   link.setAttribute('download', '客户列表.txt');  // 给下载后的文件命名
+      //   document.body.appendChild(link);
+      //   link.click();  // 点击下载
+      //   document.body.removeChild(link);  //  下载完成移除元素
+      //   window.URL.revokeObjectURL(link.href);  // 释放掉blob对象
+      // }).catch(err => {});
+
 
       window.open(
         this.$http.adornUrl(
           `agent/cust/custListExport?token=${this.$cookie.get(
             "token"
-          )}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&custType=${
-            this.searchData.custType
-          }&custName=${this.searchData.custName}&agentName=${
-            this.searchData.agentName
-          }&mobile=${
-            this.searchData.mobile
-          }&startTimeStr=${startTime}&endTimeStr=${endTime}`
+          )}`
         )
       );
     },
@@ -385,7 +444,7 @@ export default {
         }
         case "interface": {
           // 开启关闭接口
-          console.log("开启关闭接口");
+          this.setApiState(record)
           break;
         }
         default:

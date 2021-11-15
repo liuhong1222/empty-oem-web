@@ -120,6 +120,8 @@
                 // this.$nextTick(() => {
                 //     this.$refs['proAuditDataRef'].resetFields();
                 // })
+                this.proAuditDataForm.resource = undefined
+                this.proAuditDataForm.bhdesc = undefined
                 if (stu == "audit") {
                     this.title = "审核"
                     this.auditShow = true;
@@ -195,7 +197,7 @@
             closeNewsSeeDialod() {
                 this.visible = false;
                 this.defaultMsgCon = ""
-                if (this.$refs.ue.hasContent) {   //判断是否有内容
+                if (this.$refs.ue && this.$refs.ue.hasContent) {   //判断是否有内容
                     this.$refs.ue.execCommand()
                 }
             },

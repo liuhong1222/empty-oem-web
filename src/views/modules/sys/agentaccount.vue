@@ -6,7 +6,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button @click="agentSysUserList(1)">查询</el-button>
-                <el-button type="primary" @click="agentExport()" :disabled="disabled">导出</el-button>
+                <!-- <el-button type="primary" @click="agentExport()" :disabled="disabled">导出</el-button> -->
                 <el-button type="primary" @click="addUpdateAgent()">新增</el-button>
             </el-form-item>
         </el-form>
@@ -56,12 +56,14 @@
                 pageSize: 10,
                 totalPage: 0,
                 dataListLoading: false,
+                isAdmin: false,
             }
         },
         components: {
             addAgentUpdate
         },
         activated() {
+            this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
             this.agentSysUserList(1)
         },
         methods: {
@@ -73,7 +75,7 @@
                     method: 'get',
                     params: this.$http.adornParams({
                         phone: this.accountData.phone,
-                        roleId: 2,
+                        roleId: this.isAdmin ? 1 : 2,
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                     })

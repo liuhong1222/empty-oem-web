@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.id ? '新增参数' : '修改参数'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
@@ -50,14 +50,16 @@
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/config/info/${this.dataForm.id}`),
-              method: 'get',
-              params: this.$http.adornParams()
+              url: this.$http.adornUrl(`sys/param/queryById`),
+              method: 'post',
+              params: this.$http.adornParams({
+                id: id
+              })
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.paramKey = data.config.paramKey
-                this.dataForm.paramValue = data.config.paramValue
-                this.dataForm.remark = data.config.remark
+                this.dataForm.paramKey = data.data.paramKey
+                this.dataForm.paramValue = data.data.paramValue
+                this.dataForm.remark = data.data.remark
               }
             })
           }
@@ -68,7 +70,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/config/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`sys/param/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
@@ -78,14 +80,12 @@
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
+                this.visible = false
+                this.$emit('refreshDataList', 1)
                 this.$message({
                   message: '操作成功',
                   type: 'success',
-                  duration: 1500,
-                  onClose: () => {
-                    this.visible = false
-                    this.$emit('refreshDataList')
-                  }
+                  duration: 1500
                 })
               } else {
                 this.$message.error(data.msg)
