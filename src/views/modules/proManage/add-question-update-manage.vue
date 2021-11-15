@@ -95,7 +95,7 @@
                 if (id) {
                     this.$http({
                         url: this.$http.adornUrl(`agent/productFaq/my/detail?token=${this.$cookie.get('token')}`),
-                        method: 'post',
+                        method: 'get',
                         params: this.$http.adornParams({
                             'productFaqId': id + ''
                         })
@@ -106,7 +106,7 @@
                                 orderNum: data.data.sort,
                                 title: data.data.title,
                                 content: data.data.content,
-                                proId: data.data.productName,
+                                proId: data.data.productId + '',
                                 id: id,
                             }
                         } else {
@@ -123,7 +123,7 @@
                             method: 'post',
                             params: this.$http.adornParams({
                                 'productId': this.quesAUDataForm.proId,  //选中的产品id
-                                'id': this.quesAUDataForm.id,
+                                'id': this.quesAUDataForm.id + '',
                                 'question': this.quesAUDataForm.title,
                                 'order': this.quesAUDataForm.orderNum,
                                 'status': this.quesAUDataForm.status,

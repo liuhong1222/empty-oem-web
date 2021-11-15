@@ -49,6 +49,8 @@
                 </el-table-column>
                 <el-table-column prop="sort" label="排序" align="center">
                 </el-table-column>
+                <el-table-column prop="update_time" label="审核时间" align="center">
+                </el-table-column>
                 <el-table-column prop="auditStatus" label="审核状态" align="center">
                     <template slot-scope="{ row }">
                         <span>{{ auditStatusMap[row.apply_state] }}</span>

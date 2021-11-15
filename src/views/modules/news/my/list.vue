@@ -25,11 +25,11 @@
             <el-table :data="newsTableData" style="width: 100%" :header-cell-style="getRowClass" v-loading="dataListLoading">
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
-                <!-- <el-table-column prop="agentName" label="代理商名称" align="center">
-                </el-table-column> -->
                 <el-table-column prop="title" label="新闻标题" align="center">
                 </el-table-column>
                 <el-table-column prop="commitTime" width="150" label="发布时间" align="center">
+                </el-table-column>
+                <el-table-column prop="commitTime" width="150" label="审核时间" align="center">
                 </el-table-column>
                 <el-table-column prop="auditStateName" label="状态" align="center">
                 </el-table-column>

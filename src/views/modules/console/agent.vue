@@ -174,14 +174,14 @@
         </el-dialog>
 
         <!-- 预警值弹窗 -->
-        <el-dialog :title="warnEditType + '预警值'" :visible.sync="warnFormVisible">
+        <el-dialog :title="warnEditType + '预警值'" width="520px" :visible.sync="warnFormVisible">
             <el-form :model="warinform" :rules="warnRule" ref="warinform">
                 <el-form-item label-width="100px" label="当前预警值">
-                <el-input v-model="warinform.curcounts" id="curCount" disabled></el-input>
-                <span>万条</span>
+                    <el-input v-model="warinform.curcounts" style="width: 84%; margin-right: 8px;" id="curCount" disabled></el-input>
+                    <span>万条</span>
                 </el-form-item>
                 <el-form-item label-width="100px" label="修改预警值" prop="counts">
-                    <el-input v-model="warinform.counts"></el-input>
+                    <el-input v-model="warinform.counts" style="width: 84%; margin-right: 8px;"></el-input>
                     <span>万条</span>
                 </el-form-item>
             </el-form>

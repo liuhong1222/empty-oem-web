@@ -15,9 +15,9 @@ module.exports = {
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
         // target:'http://172.18.108.175:8658/', // jzg
-        target:'http://172.16.42.144:8658/', // test
+        // target:'http://172.16.42.144:8658/', // test
         //target:'http://oem.haifou.com/open/',
-        // target:'http://172.18.108.114:7001/proxy/7', // 代理服务
+        target:'http://172.18.108.114:7001/proxy/7', // 代理服务
         changeOrigin: true,
         pathRewrite: {
           '^/proxyApi': '/'
@@ -30,8 +30,8 @@ module.exports = {
       },
       '/map_engine_file': {
         // target:'http://172.18.108.175:8658/', // jzg
-        target:'http://172.16.42.144:8658/', // test
-        // target:'http://172.18.108.114:7001/proxy/7', // 代理服务
+        // target:'http://172.16.42.144:8658/', // test
+        target:'http://172.18.108.114:7001/proxy/7', // 代理服务
         changeOrigin: true,
         secure: false,
         onProxyReq: function (proxyReq, req, res) {

@@ -1,7 +1,7 @@
 <template>
-    <el-dialog :title="!dataForm.id ? '新增代理商' : '修改代理商'" :close-on-click-modal="false" :visible.sync="visible" :before-close="closeDialog"
+    <el-dialog :title="!dataForm.id ? '新增代理商' : '修改代理商'" width="600px" :close-on-click-modal="false" :visible.sync="visible" :before-close="closeDialog"
         v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.4)">
-        <el-form :model="dataForm" :rules="datarules" ref="dataForm" label-width="150px" class="demo-ruleForm" :label-position="labelPosition">
+        <el-form class="agent-edit-form demo-ruleForm" :model="dataForm" :rules="datarules" ref="dataForm" label-width="150px" :label-position="labelPosition">
             <h3>基本信息</h3>
             <el-form-item label="上传营业执照：" prop="priseimageUrl">
                 <el-upload class="avatar-uploader" :action="priseurl" accept="image/jpeg,image/jpg,image/png" :show-file-list="false" :on-success="perisehandleAvatarSuccess"
@@ -51,19 +51,19 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="单价：" prop="price">
-                <el-input disabled v-model="dataForm.price" placeholder="单价"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.price" placeholder="单价"></el-input>
                 <span>元/条</span>
             </el-form-item>
             <el-form-item label="预警条数：" prop="warningsNumber">
-                <el-input disabled v-model="dataForm.warningsNumber" placeholder="预警条数"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.warningsNumber" placeholder="预警条数"></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="最小充值金额：" prop="minPaymentAmount">
-                <el-input disabled v-model="dataForm.minPaymentAmount" placeholder="最小充值金额"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.minPaymentAmount" placeholder="最小充值金额"></el-input>
                 <span>元</span>
             </el-form-item>
             <el-form-item label="最小充值条数：" prop="minRechargeNumber">
-                <el-input disabled v-model="dataForm.minRechargeNumber" placeholder="最小充值条数"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.minRechargeNumber" placeholder="最小充值条数"></el-input>
                 <span>条</span>
             </el-form-item>
             <h3>实时检测等级</h3>
@@ -74,19 +74,19 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="单价：" prop="realPrice">
-                <el-input disabled v-model="dataForm.realPrice" placeholder="单价"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.realPrice" placeholder="单价"></el-input>
                 <span>元/条</span>
             </el-form-item>
             <el-form-item label="预警条数：" prop="realWarningsNumber">
-                <el-input disabled v-model="dataForm.realWarningsNumber" placeholder="预警条数"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.realWarningsNumber" placeholder="预警条数"></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="最小充值金额：" prop="realMinPaymentAmount">
-                <el-input disabled v-model="dataForm.realMinPaymentAmount" placeholder="最小充值金额"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.realMinPaymentAmount" placeholder="最小充值金额"></el-input>
                 <span>元</span>
             </el-form-item>
             <el-form-item label="最小充值条数：" prop="realMinRechargeNumber">
-                <el-input disabled v-model="dataForm.realMinRechargeNumber" placeholder="最小充值条数"></el-input>
+                <el-input class="small-width-input" disabled v-model="dataForm.realMinRechargeNumber" placeholder="最小充值条数"></el-input>
                 <span>条</span>
             </el-form-item>
         </el-form>
@@ -424,5 +424,11 @@
 
     #agentNumberCss .el-input__inner {
         border: none
+    }
+</style>
+<style lang="scss" scoped>
+    .small-width-input {
+        width: 86%;
+        margin-right: 8px;
     }
 </style>

@@ -28,7 +28,7 @@
                 <span>条</span>
             </el-form-item>
             <el-form-item label="我的余额：" prop="myCounts">
-                <el-input v-model="rechargeDataForm.myCounts" placeholder="我的余额" id="myCounts" readonly></el-input>
+                <el-input style="width: 90%; margin-right: 8px;" v-model="rechargeDataForm.myCounts" placeholder="我的余额" id="myCounts" disabled></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="充值方式：" prop="rechargeMethod">

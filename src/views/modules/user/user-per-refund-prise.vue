@@ -16,15 +16,15 @@
                     <el-input v-model="refundDataForm.refundableCounts" placeholder="可退条数" id="refundableCounts" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="退款条数：" prop="refunNumber">
-                    <el-input v-model="refundDataForm.refunNumber" placeholder="退款条数不能大于剩余条数"></el-input>
+                    <el-input style="width: 90%; margin-right: 8px;" v-model="refundDataForm.refunNumber" placeholder="退款条数不能大于剩余条数"></el-input>
                     <span>条</span>
                 </el-form-item>
                 <el-form-item label="单价：" prop="refunPrice">
-                    <el-input v-model="refundDataForm.refunPrice" placeholder="单价"></el-input>
+                    <el-input style="width: 90%; margin-right: 8px;" v-model="refundDataForm.refunPrice" placeholder="单价"></el-input>
                     <span>元/条</span>
                 </el-form-item>
                 <el-form-item label="退款金额：" prop="refunMoney">
-                    <el-input v-model="refundDataForm.refunMoney" placeholder="根据条数和单价，自动计算退款金额" id="refunMoney" readonly ></el-input>
+                    <el-input style="width: 90%; margin-right: 8px;" v-model="refundDataForm.refunMoney" placeholder="根据条数和单价，自动计算退款金额" id="refunMoney" readonly ></el-input>
                     <span>元</span>
                 </el-form-item>
                 <el-form-item label="备注：" prop="desc">

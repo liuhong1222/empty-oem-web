@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :destroy-on-close="true" :title="'退款'" :close-on-click-modal="false" :visible.sync="dialogVisible">
+    <el-dialog :destroy-on-close="true" width="600px" :title="'退款'" :close-on-click-modal="false" :visible.sync="dialogVisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="手机号码：" prop="phone">
                 <el-input v-model="dataForm.phone" placeholder="请输入手机号码"></el-input>
@@ -11,11 +11,11 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="剩余条数：" prop="remainNumberTotal">
-                <el-input v-model="dataForm.remainNumberTotal" disabled></el-input>
+                <el-input style="width: 90%; margin-right: 8px;" v-model="dataForm.remainNumberTotal" disabled></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="可退条数：" prop="giftNumber">
-                <el-input v-model="dataForm.giftNumber" disabled></el-input>
+                <el-input style="width: 90%; margin-right: 8px;" v-model="dataForm.giftNumber" disabled></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="退款条数：" prop="refundNumber">

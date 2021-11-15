@@ -58,7 +58,9 @@
                 </el-table-column>
                 <el-table-column prop="create_time" label="提交时间" align="center">
                 </el-table-column>
-                <el-table-column prop="update_time" label="修改时间" align="center">
+                <!-- <el-table-column prop="update_time" label="修改时间" align="center">
+                </el-table-column> -->
+                <el-table-column prop="update_time" label="审核时间" align="center">
                 </el-table-column>
                 <el-table-column prop="apply_state" label="审核状态" align="center">
                     <template slot-scope="{ row }">

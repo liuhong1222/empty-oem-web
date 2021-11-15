@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="重新绑定手机号" :visible.sync="dialogVisible" width="520px">
+    <el-dialog title="重新绑定手机号" :visible.sync="dialogVisible" width="600px">
         <el-form :model="rePhoneForm" ref="rePhoneRef" :rules="codedataRule" label-width="150px" class="demo-ruleForm" :label-position="labelPosition">
             <el-form-item label="原手机号：">
                 <el-input v-model="rePhoneForm.phone" placeholder="原手机号" readonly></el-input>

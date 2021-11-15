@@ -49,7 +49,11 @@
                         <span>{{scope.row.state == 1 ? '上架' : '下架' }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="update_time" label="修改时间" align="center">
+                <!-- <el-table-column prop="update_time" label="修改时间" align="center">
+                </el-table-column> -->
+                <el-table-column prop="create_time" label="提交时间" align="center">
+                </el-table-column>
+                <el-table-column prop="update_time" label="审核时间" align="center">
                 </el-table-column>
                 <el-table-column prop="applyState" label="审核状态" align="center">
                 </el-table-column>

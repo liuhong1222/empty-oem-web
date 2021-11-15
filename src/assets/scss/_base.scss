@@ -369,25 +369,31 @@ li {
 }
 .el-dialog {
   width: 35%;
-  .el-input {
-    width: 75%;
-  }
-  .el-input__inner {
-    width: 100%;
-  }
-  .el-textarea__inner {
-    width: 74%;
+  // .el-input {
+  //   width: 75%;
+  // }
+  // .el-input__inner {
+  //   width: 100%;
+  // }
+  // .el-textarea__inner {
+  //   width: 74%;
+  // }
+  .el-form {
+    padding-right: 60px;
+    .el-select {
+      width: 100%;
+    }
   }
 }
 
-.el-input-number {
-  .el-input {
-    width: 100%;
-  }
-  .el-input__inner {
-    width: 100%;
-  }
-}
+// .el-input-number {
+//   .el-input {
+//     width: 100%;
+//   }
+//   .el-input__inner {
+//     width: 100%;
+//   }
+// }
 
 #chprice,
 #curCount ,

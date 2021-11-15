@@ -11,11 +11,11 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="剩余条数：" prop="remainNumberTotal">
-                <el-input v-model="dataForm.remainNumberTotal" disabled></el-input>
+                <el-input style="width: 90%; margin-right: 8px;" v-model="dataForm.remainNumberTotal" disabled></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="可退条数：" prop="giftNumber">
-                <el-input v-model="dataForm.giftNumber" disabled></el-input>
+                <el-input style="width: 90%; margin-right: 8px;" v-model="dataForm.giftNumber" disabled></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="退款条数：" prop="refundNumber">
