@@ -9,7 +9,24 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item v-if="isAdmin" label="代理商名称：" style="margin-left:35px;">
-                    <el-input v-model="searchData.agentName" placeholder="代理商名称" clearable></el-input>
+                    <el-select
+                        v-model="searchData.agentId"
+                        filterable
+                        remote
+                        clearable
+                        reserve-keyword
+                        placeholder="请输入代理商名称"
+                        :remote-method="getAgentList"
+                        :loading="agentSearchLoading"
+                    >
+                        <el-option
+                            v-for="(item, index) in agentList"
+                            :key="index"
+                            :label="item.companyName"
+                            :value="item.id + ''"
+                        >
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="getTableData(1)">查询</el-button>
@@ -20,15 +37,15 @@
             <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="createDate" label="日期" align="center">
+                <el-table-column width="150" prop="createTime" label="日期" align="center">
                 </el-table-column>
                 <el-table-column v-if="isAdmin" min-width="150" prop="agentName" label="代理商名称" align="center">
                 </el-table-column>
-                <el-table-column min-width="120" prop="useCount" label="用户数" align="center">
+                <el-table-column min-width="120" prop="custNum" label="用户数" align="center">
                 </el-table-column>
-                <el-table-column min-width="120" prop="newUserCount" label="新增用户数" align="center">
+                <el-table-column min-width="120" prop="dailyAddCustNum" label="新增用户数" align="center">
                 </el-table-column>
-                <el-table-column min-width="120" prop="rechargeNum" label="充值金额" align="center">
+                <el-table-column min-width="120" prop="totalPayment" label="充值金额" align="center">
                 </el-table-column>
                 <el-table-column label="空号检测" align="center">
                     <el-table-column width="120" prop="emptyUseCount" label="消耗条数" align="center">
@@ -59,31 +76,35 @@
                 dataListLoading: false,
                 searchData: {
                     createDate: [],
-                    agentName: undefined,
+                    agentId: undefined,
                 },
                 tableData: [],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
-                isAdmin: false
+                isAdmin: false,
+                agentSearchLoading: false,
             }
         },
         activated() {
-            // this.getTableData(1)
-
             // msjRoleName 1：管理员 2：代理商
             this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
+            this.isAdmin && this.getAgentList()
+            this.getTableData(1)
         },
         methods: {
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/finance/user/refund/list?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/dailyStastics/listAgentDaily?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
+                        'agentId': this.isAdmin ? this.searchData.agentId : this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id + '',
+                        'startTime': this.searchData.createDate && this.searchData.createDate[0] ? this.searchData.createDate[0] : undefined,
+                        'endTime': this.searchData.createDate && this.searchData.createDate[1] ? this.searchData.createDate[1] : undefined,
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
@@ -94,6 +115,24 @@
                         this.totalPage = 0
                     }
                     this.dataListLoading = false
+                })
+            },
+            // 获取代理商列表
+            getAgentList(name) {
+                this.agentSearchLoading = true
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams({
+                        name: name
+                    })
+                }).then(({ data }) => {
+                    this.agentSearchLoading = false
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                    } else {
+                        this.agentList = []
+                    }
                 })
             },
             // 每页数

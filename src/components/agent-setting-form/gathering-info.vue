@@ -116,9 +116,9 @@ export default {
         };
     },
     methods: {
-        init(initData) {let imgPreStr = 'map_engine_file/'
-            this.wxUrl = initData.payQrcodeWechat ? imgPreStr + initData.payQrcodeWechat : ''
-            this.zfbUrl = initData.payQrcodeAlipay ? imgPreStr + initData.payQrcodeAlipay : ''
+        init(initData) {
+            this.wxUrl = initData.payQrcodeWechat ? this.$imgPreStr + initData.payQrcodeWechat : ''
+            this.zfbUrl = initData.payQrcodeAlipay ? this.$imgPreStr + initData.payQrcodeAlipay : ''
             this.formData = {
                 ...initData
             }

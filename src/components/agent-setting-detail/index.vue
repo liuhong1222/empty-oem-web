@@ -14,21 +14,21 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">代理商logo</td>
                         <td class="discribe-col">
-                            <img v-if="agentSettingInfo.agentLogo" :src="`/map_engine_file/${agentSettingInfo.agentLogo}`" />
+                            <img v-if="agentSettingInfo.agentLogo" :src="`${$imgPreStr + agentSettingInfo.agentLogo}`" />
                         </td>
                         <td class="discribe-col title">代理商icon</td>
                         <td class="discribe-col">
-                            <img v-if="agentSettingInfo.agentIcon" :src="`/map_engine_file/${agentSettingInfo.agentIcon}`" />
+                            <img v-if="agentSettingInfo.agentIcon" :src="`${$imgPreStr + agentSettingInfo.agentIcon}`" />
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">代表签字</td>
                         <td class="discribe-col">
-                            <img style="width: 200px;" v-if="agentSettingInfo.deputySignature" :src="`/map_engine_file/${agentSettingInfo.deputySignature}`" />
+                            <img style="width: 200px;" v-if="agentSettingInfo.deputySignature" :src="`${$imgPreStr + agentSettingInfo.deputySignature}`" />
                         </td>
                         <td class="discribe-col title">公司红章</td>
                         <td class="discribe-col">
-                            <img v-if="agentSettingInfo.companyChop" :src="`/map_engine_file/${agentSettingInfo.companyChop}`" />
+                            <img v-if="agentSettingInfo.companyChop" :src="`${$imgPreStr + agentSettingInfo.companyChop}`" />
                         </td>
                     </tr>
                     <tr class="discribe-row">
@@ -83,7 +83,9 @@
                         <td class="discribe-col title">商务合作号</td>
                         <td class="discribe-col">{{ agentSettingInfo.businessCode }}</td>
                         <td class="discribe-col title">微信二维码</td>
-                        <td class="discribe-col">{{ agentSettingInfo.wechatQrcode }}</td>
+                        <td class="discribe-col">
+                            <img v-if="agentSettingInfo.wechatQrcode" :src="`${$imgPreStr + agentSettingInfo.wechatQrcode}`" />
+                        </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">运维人手机号</td>
@@ -95,7 +97,9 @@
                         <td class="discribe-col title">运维人昵称</td>
                         <td class="discribe-col">{{ agentSettingInfo.maintainerNickname }}</td>
                         <td class="discribe-col title">运维人微信二维码</td>
-                        <td class="discribe-col">{{ agentSettingInfo.maintainerWechatQrcode }}</td>
+                        <td class="discribe-col">
+                            <img v-if="agentSettingInfo.maintainerWechatQrcode" :src="`${$imgPreStr + agentSettingInfo.maintainerWechatQrcode}`" />
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -159,7 +163,9 @@
                         <td class="discribe-col title">微信收款人</td>
                         <td class="discribe-col">{{ agentSettingInfo.payeeWechat }}</td>
                         <td class="discribe-col title">微信收款二维码</td>
-                        <td class="discribe-col">{{ agentSettingInfo.payQrcodeWechat }}</td>
+                        <td class="discribe-col">
+                            <img v-if="agentSettingInfo.payQrcodeWechat" :src="`${$imgPreStr + agentSettingInfo.payQrcodeWechat}`" />
+                        </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">微信收款账号</td>
@@ -169,7 +175,9 @@
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">支付宝收款二维码</td>
-                        <td class="discribe-col">{{ agentSettingInfo.payQrcodeAlipay }}</td>
+                        <td class="discribe-col">
+                            <img v-if="agentSettingInfo.payQrcodeAlipay" :src="`${$imgPreStr + agentSettingInfo.payQrcodeAlipay}`" />
+                        </td>
                         <td class="discribe-col title">支付宝收款账号</td>
                         <td class="discribe-col">{{ agentSettingInfo.payAccountAlipay }}</td>
                     </tr>

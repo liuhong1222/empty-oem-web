@@ -143,6 +143,7 @@ import perRechargePrise from "./user-per-recharge-prise";
 import transferOrAgent from "./user-transfer-agent";
 import CustomerRefundDia from './customer-refund-dia.vue';
 import axios from 'axios';
+import qs from "qs";
 export default {
   data() {
     return {
@@ -369,7 +370,7 @@ export default {
     // 导出
     exportUser() {
       let params = {
-        // token: this.$cookie.get("token"),
+        token: this.$cookie.get("token"),
         currentPage: this.pageIndex,
         pageSize: this.pageSize,
         name: this.searchData.custName,
@@ -408,13 +409,10 @@ export default {
       //   window.URL.revokeObjectURL(link.href);  // 释放掉blob对象
       // }).catch(err => {});
 
-
       window.open(
         this.$http.adornUrl(
-          `agent/cust/custListExport?token=${this.$cookie.get(
-            "token"
-          )}`
-        )
+          `agent/cust/custListExport?${qs.stringify(params)}
+          `)
       );
     },
     handleClickDropdown(key, record) {

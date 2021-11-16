@@ -205,11 +205,10 @@ export default {
     },
     methods: {
         init(initData) {
-            let imgPreStr = 'map_engine_file/'
-            this.logoUrl = initData.agentLogo ? imgPreStr + initData.agentLogo : ''
-            this.iconUrl = initData.agentIcon ? imgPreStr + initData.agentIcon : ''
-            this.signUrl = initData.deputySignature ? imgPreStr + initData.deputySignature : ''
-            this.sealUrl = initData.companyChop ? imgPreStr + initData.companyChop : ''
+            this.logoUrl = initData.agentLogo ? this.$imgPreStr + initData.agentLogo : ''
+            this.iconUrl = initData.agentIcon ? this.$imgPreStr + initData.agentIcon : ''
+            this.signUrl = initData.deputySignature ? this.$imgPreStr + initData.deputySignature : ''
+            this.sealUrl = initData.companyChop ? this.$imgPreStr + initData.companyChop : ''
             this.formData = {
                 ...initData
             }

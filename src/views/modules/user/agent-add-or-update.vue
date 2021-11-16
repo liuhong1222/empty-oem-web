@@ -99,7 +99,6 @@
 </template>
 <script>
     import { isMobile } from '@/utils/validate'
-    import imgUrl from '@/utils/imgUrl'
     export default {
         data() {
             var validateMobile = (rule, value, callback) => {
@@ -218,7 +217,8 @@
                     params: this.$http.adornParams()
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.dataForm.priseimageUrl = imgUrl.imgUrl + data.data.businessLicensePath
+                        this.licensePicNo = data.data.businessLicensePath
+                        this.dataForm.priseimageUrl = this.$imgPreStr + data.data.businessLicensePath
                         this.dataForm.companyName = data.data.companyName
                         this.dataForm.shortName = data.data.companyShortName
                         this.dataForm.bussicAdress = data.data.businessLicenseAddress

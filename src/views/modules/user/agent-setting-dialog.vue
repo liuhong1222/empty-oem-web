@@ -122,7 +122,7 @@
             },
             handlePre() {
                 if (this.currStep === 0) {
-                    this.isView = true
+                    this.visible = false
                     return true
                 }
                 this.currStep = this.currStep - 1

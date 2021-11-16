@@ -14,9 +14,7 @@
                         <td class="discribe-col">{{ detailInfo.linkmanEmail }}</td>
                         <td class="discribe-col title">营业执照地址</td>
                         <td class="discribe-col">
-                            <!-- {{ detailInfo.businessLicensePath }} -->
-                            <div>{{ detailInfo.businessLicensePath }}</div>
-                            <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
+                            <img style="width: 200px;" v-if="detailInfo.businessLicensePath" :src="$imgPreStr + detailInfo.businessLicensePath">
                         </td>
                     </tr>
                     <tr class="discribe-row">

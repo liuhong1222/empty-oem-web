@@ -130,8 +130,8 @@
         </el-dialog>
 
         <!-- 复制链接弹窗 -->
-        <el-dialog title="复制推广链接" :visible.sync="copyVisible" width="30%">
-            <el-input v-model="copyinput" id="copyInput"></el-input>
+        <el-dialog title="复制推广链接" :visible.sync="copyVisible" width="520px">
+            <el-input v-model="copyinput" style="width: 80%;" id="copyInput"></el-input>
             <el-button type="primary" id="copyBtn" v-clipboard:copy="copyinput" v-clipboard:success="onCopy"
                 v-clipboard:error="onError">复制链接</el-button>
         </el-dialog>

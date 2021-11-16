@@ -16,9 +16,7 @@
                             <td class="discribe-col">{{ detailInfo.email }}</td>
                             <td class="discribe-col title">营业执照地址</td>
                             <td class="discribe-col">
-                                <div>{{ detailInfo.businessLicensePath }}</div>
-                                <!-- {{ detailInfo.businessLicensePath }} -->
-                                <!-- <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar"> -->
+                                <img style="width: 200px;" v-if="detailInfo.businessLicensePath" :src="$imgPreStr + detailInfo.businessLicensePath">
                             </td>
                         </tr>
                         <tr class="discribe-row">
@@ -57,9 +55,13 @@
                         </tr>
                         <tr class="discribe-row">
                             <td class="discribe-col title">身份证照片正面</td>
-                            <td class="discribe-col">{{ detailInfo.idCardFrontPath }}</td>
+                            <td class="discribe-col">
+                                <img style="width: 200px;" v-if="detailInfo.idCardFrontPath" :src="$imgPreStr + detailInfo.idCardFrontPath">
+                            </td>
                             <td class="discribe-col title">身份证照片背面</td>
-                            <td class="discribe-col">{{ detailInfo.idCardBackPath }}</td>
+                            <td class="discribe-col">
+                                <img style="width: 200px;" v-if="detailInfo.idCardBackPath" :src="$imgPreStr + detailInfo.idCardBackPath">
+                            </td>
                         </tr>
                         <tr class="discribe-row">
                             <td class="discribe-col title">详细地址</td>

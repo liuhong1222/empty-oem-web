@@ -107,9 +107,8 @@ export default {
     },
     methods: {
         init(initData) {
-            let imgPreStr = 'map_engine_file/'
-            this.wxUrl = initData.wechatQrcode ? imgPreStr + initData.wechatQrcode : ''
-            this.opsWxUrl = initData.maintainerWechatQrcode ? imgPreStr + initData.maintainerWechatQrcode : ''
+            this.wxUrl = initData.wechatQrcode ? this.$imgPreStr + initData.wechatQrcode : ''
+            this.opsWxUrl = initData.maintainerWechatQrcode ? this.$imgPreStr + initData.maintainerWechatQrcode : ''
             this.formData = {
                 ...initData
             }
