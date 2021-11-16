@@ -125,7 +125,7 @@
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
-                        'userMobile': this.consumeSearchData.mobile,
+                        'custMobile': this.consumeSearchData.mobile,
                         'companyName': this.consumeSearchData.agentName,
                         'userName': this.consumeSearchData.custName,
                         'startTime': '' || this.consumeSearchData.dateTime == null ? '' : this.consumeSearchData.dateTime[0],
@@ -214,7 +214,17 @@
                         endTime = this.consumeSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`agent/finance/user/consume/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&userName=${this.consumeSearchData.custName}&companyName=${this.consumeSearchData.agentName}&userMobile=${this.consumeSearchData.mobile}&startTime=${startTime}&endTime=${endTime}`))
+                window.open(this.$http.adornUrl(`
+                    agent/finance/user/consume/list/export?
+                    token=${this.$cookie.get('token')}
+                    &currentPage=${this.pageIndex}
+                    &pageSize=${this.pageSize}
+                    &userName=${this.consumeSearchData.custName}
+                    &companyName=${this.consumeSearchData.agentName}
+                    &custMobile=${this.consumeSearchData.mobile}
+                    &startTime=${startTime}
+                    &endTime=${endTime}
+                `))
 
             }
 

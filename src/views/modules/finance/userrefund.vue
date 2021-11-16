@@ -34,9 +34,9 @@
                 </el-table-column>
                 <el-table-column prop="companyName" width="150" label="代理商名称" align="center" v-if="disableAgentName">
                 </el-table-column>
-                <el-table-column prop="category" width="120" label="产品名称" align="center">
+                <el-table-column prop="category" width="150" label="产品名称" align="center">
                     <template slot-scope="scope">
-                        {{ scope.row.category ? '实时检测' : '空号检测' }}
+                        <span>{{ scope.row.category ? '实时检测' : '空号检测' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" width="150" label="退款时间" align="center">
@@ -115,7 +115,7 @@
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'userMobile': this.refundSearchData.mobile,
+                        'custMobile': this.refundSearchData.mobile,
                         'companyName': this.refundSearchData.agentName,
                         'userName': this.refundSearchData.custName,
                         'startTime': '' || this.refundSearchData.dateTime == null ? '' : this.refundSearchData.dateTime[0],
@@ -189,7 +189,17 @@
                         endTime = this.refundSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`agent/finance/user/refund/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&companyName=${this.refundSearchData.agentName}&userMobile=${this.refundSearchData.mobile}&startTime=${startTime}&endTime=${endTime}`))
+                window.open(this.$http.adornUrl(`
+                    agent/finance/user/refund/list/export?
+                    token=${this.$cookie.get('token')}
+                    &currentPage=${this.pageIndex}
+                    &pageSize=${this.pageSize}
+                    &companyName=${this.refundSearchData.agentName}
+                    &custMobile=${this.refundSearchData.mobile}
+                    &startTime=${startTime}
+                    &endTime=${endTime}
+                    &userName=${this.refundSearchData.custName}
+                `))
             }
         }
     }

@@ -11,8 +11,8 @@
       </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
-      <el-table-column type="selection" header-align="center" align="center" width="50">
-      </el-table-column>
+      <!-- <el-table-column type="selection" header-align="center" align="center" width="50">
+      </el-table-column> -->
       <el-table-column prop="id" header-align="center" align="center" width="80" label="ID">
         <template slot-scope="{ row }">
           <span>{{ row.id + '' }}</span>
@@ -116,11 +116,9 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('sys/param/delete'),
-            method: 'post',
-            data: this.$http.adornData({
-              id
-            }, false)
+            url: this.$http.adornUrl(`sys/param/delete?id=${id}`),
+            method: 'delete',
+            params: {}
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.getDataList(1)

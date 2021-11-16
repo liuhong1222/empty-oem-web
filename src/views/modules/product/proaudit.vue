@@ -131,8 +131,8 @@
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditStatus': this.proForm.auditStatus === -1 ? undefined : this.proForm.auditStatus,
-                        'shelfStatus': this.proForm.status === -1 ? undefined : this.proForm.status,
+                        'applyState': this.proForm.auditStatus === -1 ? undefined : this.proForm.auditStatus,
+                        'state': this.proForm.status === -1 ? undefined : this.proForm.status,
                         'startTime': '' || this.proForm.dateTime == null ? '' : this.proForm.dateTime[0],
                         'endTime': '' || this.proForm.dateTime == null ? '' : this.proForm.dateTime[1]
                     })

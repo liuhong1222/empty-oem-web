@@ -7,8 +7,8 @@
                     <el-select v-model="AgentInfoSearchData.status" placeholder="代理商状态">
                         <el-option label="全部" value=""></el-option>
                         <el-option label="发布待审核" value="1"></el-option>
-                        <el-option label="已审核" value="2"></el-option>
-                        <el-option label="修改待审核" value="3"></el-option>
+                        <el-option label="修改待审核" value="2"></el-option>
+                        <el-option label="已审核" value="3"></el-option>
                         <el-option label="已驳回" value="4"></el-option>
                         <el-option label="已删除" value="5"></el-option>
                     </el-select>

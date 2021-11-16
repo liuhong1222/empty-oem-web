@@ -101,7 +101,8 @@
                     rechargeMethod: [
                         { required: true, message: '请选择充值方式', trigger: 'blur' },
                     ]
-                }
+                },
+                isAdmin: false,
             }
         },
         watch: {
@@ -137,6 +138,7 @@
                     url: this.$http.adornUrl(`agent/cust/getPackageInfo?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
+                        // 'agentId': this.isAdmin ? 
                         'custId': this.rechargeDataForm.creUserId,
                         'category': this.rechargeDataForm.category
                     })
@@ -154,6 +156,8 @@
                 })
             },
             rechargeInit(record) {
+                // msjRoleName 1：管理员 2：代理商
+                this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
                 this.chargeVisible = true
                 this.$nextTick(() => {
                     this.$refs['rechargeRef'].resetFields()

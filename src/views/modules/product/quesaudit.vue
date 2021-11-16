@@ -128,8 +128,8 @@
                         'pageSize': this.pageSize,
                         'queryType': this.quesAuditForm.searchType,
                         'content': this.quesAuditForm.searchKey,
-                        'status': this.quesAuditForm.status,
-                        'auditState': this.quesAuditForm.auditStatus,
+                        'state': this.quesAuditForm.status,
+                        'applyState': this.quesAuditForm.auditStatus,
                         'startDate': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[0],
                         'endDate': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[1]
                     })

@@ -27,7 +27,7 @@
                         </tr>
                         <tr class="discribe-row">
                             <td class="discribe-col title">营业执照所在地</td>
-                            <td class="discribe-col">{{ detailInfo.businessLicensePath }}</td>
+                            <td class="discribe-col">{{ detailInfo.businessLicenseAddress }}</td>
                             <td class="discribe-col title">营业执照号</td>
                             <td class="discribe-col">
                                 <div>{{ detailInfo.businessLicenseNumber }}</div>
@@ -78,7 +78,7 @@
                     </template>
                     <tr class="discribe-row">
                         <td class="discribe-col title">单价</td>
-                        <td class="discribe-col">{{ detailInfo.price }}（元/条）</td>
+                        <td class="discribe-col">{{ detailInfo.price ? detailInfo.price + '（元/条）' : '' }}</td>
                         <td class="discribe-col title">预警条数</td>
                         <td class="discribe-col">{{ detailInfo.warningsNumber }}</td>
                     </tr>

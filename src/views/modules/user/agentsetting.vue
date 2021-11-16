@@ -2,7 +2,7 @@
     <div class="main">
         <div class="topSearch">
             <h2>代理商设置列表</h2>
-            <el-form :inline="true" :model="searchData" @keyup.enter.native="getDataList()">
+            <el-form :inline="true" :model="searchData" @keyup.enter.native="getDataList(1)">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="searchData.dateTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
@@ -23,7 +23,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="getDataList()">查询</el-button>
+                    <el-button type="primary" @click="getDataList(1)">查询</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -38,17 +38,29 @@
                         <span>{{ scope.row.agentId ? scope.row.agentId + '' : '' }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="maintainerPhone" label="手机号" width="100" align="center">
+                <el-table-column prop="linkmanPhone" label="手机号" width="100" align="center">
                 </el-table-column>
-                <el-table-column prop="create_time" label="创建时间" align="center" width="150">
+                <el-table-column prop="createTime" label="创建时间" align="center" width="150">
                 </el-table-column>
                 <el-table-column prop="agentLogo" label="LOGO" align="center" width="150">
+                    <template slot-scope="scope">
+                        <img v-if="scope.row.agentLogo" :src="$imgPreStr + scope.row.agentLogo" style="width: 130px;" />
+                    </template>
                 </el-table-column>
                 <el-table-column prop="agentIcon" label="ICON" align="center" width="150">
+                    <template slot-scope="scope">
+                        <img v-if="scope.row.agentIcon" :src="$imgPreStr + scope.row.agentIcon" style="width: 130px;" />
+                    </template>
                 </el-table-column>
                 <el-table-column prop="deputySignature" label="代理商签字" align="center" width="150">
+                    <template slot-scope="scope">
+                        <img v-if="scope.row.deputySignature" :src="$imgPreStr + scope.row.deputySignature" style="width: 130px;" />
+                    </template>
                 </el-table-column>
                 <el-table-column prop="companyChop" label="公章" align="center" width="150">
+                    <template slot-scope="scope">
+                        <img v-if="scope.row.companyChop" :src="$imgPreStr + scope.row.companyChop" style="width: 130px;" />
+                    </template>
                 </el-table-column>
                 <el-table-column prop="smsSignature" label="短信签名" align="center">
                 </el-table-column>
@@ -56,7 +68,7 @@
                 </el-table-column>
                 <el-table-column prop="beian" label="域名备案信息" id="infoHeight" align="center" width="150">
                     <template slot-scope="scope">
-                        <div>{{scope.row.licence}}</div>
+                        <div>{{scope.row.domainCopyright}}</div>
                         <div>{{scope.row.icp}}</div>
                         <div>{{scope.row.publicSecurityFiling}}</div>
                     </template>
@@ -207,7 +219,7 @@
             okAuditReject
         },
         activated() {
-            this.getDataList();
+            this.getDataList(1);
         },
         methods: {
             getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -218,8 +230,9 @@
                 }
             },
             // 获取数据列表
-            getDataList() {
+            getDataList(currPage) {
                 this.dataListLoading = true;
+                this.pageIndex = currPage || this.pageIndex
                 this.$http({
                     url: this.$http.adornUrl("agent/set/agentSetList"),
                     method: "get",
@@ -235,10 +248,8 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data.data)
                         this.dataList = data.data.list;
                         this.totalPage = data.data.total;
-                        // this.searchData.agentMobile = ""
                     } else {
                         this.dataList = [];
                         this.totaloage = 0;

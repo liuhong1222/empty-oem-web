@@ -120,6 +120,7 @@
             }
             if (this.$route.params && this.$route.params.name) {
                 this.customerSearchData.custName = this.$route.params.name;
+                this.customerSearchData.dateTime = []
             }
             this.uerRechargeList();
         },
@@ -157,7 +158,7 @@
                         'pageSize': this.pageSize,
                         'companyName': this.customerSearchData.agentName,
                         'userName': this.customerSearchData.custName,
-                        'userMobile': this.customerSearchData.custMobile,
+                        'custMobile': this.customerSearchData.custMobile,
                         'startTime': '' || this.customerSearchData.dateTime == null ? '' : this.customerSearchData.dateTime[0],
                         'endTime': '' || this.customerSearchData.dateTime == null ? '' : this.customerSearchData.dateTime[1]
                     })
@@ -233,7 +234,17 @@
                         endTime = this.customerSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`agent/finance/user/recharge/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&userName=${this.customerSearchData.custName}&companyName=${this.customerSearchData.agentName}&startTime=${startTime}&endTime=${endTime}`))
+                window.open(this.$http.adornUrl(`
+                    agent/finance/user/recharge/list/export?
+                    token=${this.$cookie.get('token')}
+                    &currentPage=${this.pageIndex}
+                    &pageSize=${this.pageSize}
+                    &userName=${this.customerSearchData.custName}
+                    &companyName=${this.customerSearchData.agentName}
+                    &startTime=${startTime}
+                    &endTime=${endTime}
+                    &custMobile=${this.customerSearchData.custMobile}
+                `))
             },
             getNowFormatDate() {
                 var date = new Date();

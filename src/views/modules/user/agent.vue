@@ -246,7 +246,7 @@
             AgentRefund
         },
         activated() {
-            this.getDataList()
+            this.getDataList(1)
         },
         methods: {
             computedRechargeNumber() {
@@ -266,7 +266,7 @@
                         'pageSize': this.pageSize,
                         'companyName': this.searchData.agentName,
                         'state': this.searchData.status === '-1' ? undefined : this.searchData.status,
-                        'linkmanPhone': this.searchData.mobile,
+                        'mobile': this.searchData.mobile,
                         'startTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[0],
                         'endTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[1]
                     })

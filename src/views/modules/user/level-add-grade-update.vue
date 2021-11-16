@@ -45,7 +45,13 @@
                 levelvisible: false,
                 labelPosition: 'right',
                 dataForm: {
-                    levelType: 0
+                    levelType: 0,
+                    level: undefined,
+                    price: undefined,
+                    warningsNumber: undefined,
+                    minRechargeNumber: undefined,
+                    minPaymentAmount: undefined,
+                    remark: undefined,
                 },
                 dataRule: {
                     levelType: [
@@ -76,10 +82,19 @@
                 this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
-                    if (record.id) {
+                    this.dataForm = {
+                        levelType: 0,
+                        level: undefined,
+                        price: undefined,
+                        warningsNumber: undefined,
+                        minRechargeNumber: undefined,
+                        minPaymentAmount: undefined,
+                        remark: undefined,
+                    }
+                    if (record.id !== undefined) {
                         const { levelType, level, price, warningsNumber, minRechargeNumber, minPaymentAmount, remark } = record
                         this.dataForm = {
-                            id: record.id,
+                            id: record.id + '',
                             levelType,
                             level,
                             price,

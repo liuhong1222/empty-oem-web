@@ -71,7 +71,7 @@
           if (valid) {
             this.$http({
               url: this.$http.adornUrl(`sys/param/${!this.dataForm.id ? 'save' : 'update'}`),
-              method: 'post',
+              method: !this.dataForm.id ? 'post' : 'put',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
                 'paramKey': this.dataForm.paramKey,

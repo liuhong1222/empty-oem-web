@@ -122,8 +122,8 @@
                         'token': this.$cookie.get('token'),
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
-                        'createTimeFrom': this.searchData.createTime[0] || undefined,
-                        'createTimeEnd': this.searchData.createTime[1] || undefined,
+                        'createTimeFrom': this.searchData.createTime && this.searchData.createTime[0] ? this.searchData.createTime[0] : undefined,
+                        'createTimeEnd': this.searchData.createTime && this.searchData.createTime[1] ? this.searchData.createTime[1] : undefined,
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
                         'agentId': this.searchData.agentId === -1 ? undefined : this.searchData.agentId,
@@ -181,11 +181,11 @@
                         return;
                     }
                     if (column.property === 'line') {
-                        sums[index] = `接口${this.totalInfo.xxx}条`
+                        sums[index] = `接口${this.totalInfo.lineTotal}条`
                     } else if (column.property === 'poolNumber') {
-                        sums[index] = `号池${this.totalInfo.xxx}条`
+                        sums[index] = `号池${this.totalInfo.poolTotal}条`
                     } else if (column.property === 'totalNumber') {
-                        sums[index] = `共${this.totalInfo.xxx}条`
+                        sums[index] = `共${this.totalInfo.totalSize}条`
                     } else {
                         sums[index] = '';
                     }

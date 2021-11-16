@@ -18,7 +18,7 @@
                     <el-input v-model="searchData.mobile" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱：" style="margin-left:25px;">
-                    <el-input v-model="searchData.email" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
+                    <el-input v-model="searchData.email" style="width: 180px;" placeholder="请输入邮箱" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="客户类型：">
                     <el-select v-model="searchData.custType" style="width: 200px;" placeholder="请选择客户类型">
@@ -335,7 +335,7 @@ export default {
         }),
       }).then(({ data }) => {
         if (data.code == "0") {
-          this.$message.success(data.msg);
+          this.$message.success('操作成功');
           this.getCustomList();
         } else {
           this.$message.error(data.msg);

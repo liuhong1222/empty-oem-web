@@ -2,7 +2,7 @@
     <div class="main">
         <div class="topSearch">
             <h2>代理商充值记录</h2>
-            <el-form :inline="true" :model="OEMSearchData" @keyup.enter.native="agentRechargeList()">
+            <el-form :inline="true" :model="OEMSearchData" @keyup.enter.native="agentRechargeList(1)">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="OEMSearchData.dateTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
@@ -23,7 +23,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary" @click="agentRechargeList()">查询</el-button>
+                    <el-button type="primary" @click="agentRechargeList(1)">查询</el-button>
                     <el-button type="primary" @click="exportxsl()" :disabled="disabled">导出</el-button>
                 </el-form-item>
             </el-form>
@@ -59,7 +59,7 @@
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20,30,50]"
+            <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20,30,50]"
                 :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
@@ -92,12 +92,13 @@
             }
         },
         activated() {
-            this.agentRechargeList()
+            this.agentRechargeList(1)
         },
         methods: {
             // 获取退款记录接口
-            agentRechargeList() {
+            agentRechargeList(currPage) {
                 this.dataListLoading = true
+                this.pageIndex = currPage || this.pageIndex
                 this.$http({
                     url: this.$http.adornUrl(`agent/finance/agent/recharge/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
@@ -112,7 +113,6 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data)
                         this.agentOemTableData = data.data.list
                         this.totalPage = data.data.total
                         this.money = data.data.totalInfo.money

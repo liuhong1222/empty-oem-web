@@ -71,8 +71,8 @@
                     transferAgent: '',
                     creUserId: row.customerId,
                     mobile: row.phone,
-                    createTime: row.create_time,
-                    currAgent: row.company_name,
+                    createTime: row.createTime,
+                    currAgent: row.companyName,
                     remark: ''
                 }
                 this.getAgentList()
