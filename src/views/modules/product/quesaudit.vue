@@ -91,8 +91,8 @@
                 },
                 searchKeyArr: [
                     { label: '全部', value: "" },
-                    { label: '标题', value: "question" },
-                    { label: '内容', value: "answer" }
+                    { label: '标题', value: "title" },
+                    { label: '内容', value: "content" }
                 ],
                 statusArr: [
                     { label: '全部', value: "" },

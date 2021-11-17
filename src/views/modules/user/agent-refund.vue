@@ -27,14 +27,12 @@
                 <span>元/条</span>
             </el-form-item>
             <el-form-item label="退款金额：" prop="refundAmount">
-                <el-input-number v-model="dataForm.refundAmount" :min="0"></el-input-number>
+                <el-input-number v-model="dataForm.refundAmount" disabled :min="0"></el-input-number>
                 <span>元</span>
             </el-form-item>
             <el-form-item label="退款方式：" prop="refundType">
                 <el-select style="width: 100%;" v-model="dataForm.refundType" placeholder="请选择退款方式">
-                    <el-option label="对公转账" value="0"></el-option>
-                    <el-option label="支付宝" value="1"></el-option>
-                    <el-option label="其他" value="2"></el-option>
+                    <el-option v-for="item in refundWayOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="备注：" prop="remark">
@@ -55,7 +53,15 @@
                 dialogVisible: false,
                 labelPosition: 'right',
                 dataForm: {
+                    agentName: '',
                     category: 0,
+                    remainNumberTotal: undefined,
+                    giftNumber: undefined,
+                    refundNumber: undefined,
+                    price: undefined,
+                    refundAmount: undefined,
+                    refundType: undefined,
+                    remark: undefined,
                 },
                 dataRule: {
                     category: [
@@ -68,20 +74,56 @@
                         { required: true, message: '请输入可退条数', trigger: 'blur' }
                     ],
                     refundNumber: [
-                        { required: true, message: '请输入退款条数', trigger: 'blur' }
+                        { required: true, message: '请输入退款条数', trigger: 'change' }
                     ],
                     price: [
-                        { required: true, message: '请输入单价', trigger: 'blur' }
+                        { required: true, message: '请输入单价', trigger: 'change' }
                     ],
                     refundAmount: [
-                        { required: true, message: '请输入退款金额', trigger: 'blur' }
+                        { required: true, message: '请输入退款金额', trigger: 'change' }
                     ],
                     refundType: [
-                        { required: true, message: '请选择退款方式', trigger: 'blur' }
+                        { required: true, message: '请选择退款方式', trigger: 'change' }
                     ],
                     remark: [
                         { required: true, message: '请输入备注', trigger: 'blur' }
                     ]
+                },
+                agentRefundInfo: {},
+                refundWayOptions: [
+                    { label: '对公转账', value: 0 },
+                    { label: '支付宝扫码付', value: 1 },
+                    { label: '注册赠送', value: 2 },
+                    { label: '赠送', value: 3 },
+                    { label: '对公支付宝转账', value: 4 },
+                    { label: '对私支付宝', value: 5 },
+                    { label: '对私微信', value: 6 },
+                    { label: '对私转账', value: 7 },
+                ],
+            }
+        },
+        watch: {
+            'dataForm.refundNumber'() {
+                if (this.dataForm.refundNumber !== undefined && this.dataForm.price !== undefined) {
+                    this.dataForm.refundAmount = this.dataForm.refundNumber * this.dataForm.price
+                } else {
+                    this.dataForm.refundAmount = undefined
+                }
+            },
+            'dataForm.price'() {
+                if (this.dataForm.refundNumber !== undefined && this.dataForm.price !== undefined) {
+                    this.dataForm.refundAmount = this.dataForm.refundNumber * this.dataForm.price
+                } else {
+                    this.dataForm.refundAmount = undefined
+                }
+            },
+            'dataForm.category' () {
+                if (this.dataForm.category) { // 实时检测
+                    this.dataForm.remainNumberTotal = this.agentRefundInfo.refundableRealtime || 0
+                    this.dataForm.giftNumber = this.agentRefundInfo.refundableRealtime || 0
+                } else { // 空号检测
+                    this.dataForm.remainNumberTotal = this.agentRefundInfo.refundableEmpty || 0
+                    this.dataForm.giftNumber = this.agentRefundInfo.refundableEmpty || 0
                 }
             }
         },
@@ -92,43 +134,62 @@
                     this.$refs['dataForm'].resetFields()
                     this.dataForm = {
                         category: 0,
-                        id: record.customerId || undefined
+                        agentName: record.companyName,
+                        id: record.id + '',
+                        remainNumberTotal: undefined,
+                        giftNumber: undefined,
+                        refundNumber: undefined,
+                        price: undefined,
+                        refundAmount: undefined,
+                        refundType: undefined,
+                        remark: undefined,
                     }
-                    if (record.customerId) {
-                        this.getDetailData(record);
-                    }
+                    this.getRefundData(record);
                 })
             },
-            getDetailData(record) {
+            getRefundData(record) {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/level/detail?token=${this.$cookie.get('token')}&custId=${record.customerId}`),
-                    method: 'get',
-                    params: this.$http.adornParams()
+                    url: this.$http.adornUrl(`agent/agentInfo/getRefundableNumOfAgent?token=${this.$cookie.get('token')}&custId=${record.customerId}`),
+                    method: 'post',
+                    params: this.$http.adornParams({
+                        agentId: record.id + ''
+                    })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.dataForm = data.data || {}
+                        this.agentRefundInfo = data.data || {}
+                        this.dataForm.remainNumberTotal = this.agentRefundInfo.refundableEmpty || 0
+                        this.dataForm.giftNumber = this.agentRefundInfo.refundableEmpty || 0
                     }
                 })
             },
             handleSubmit() {
+                if (this.dataForm.refundNumber > this.dataForm.giftNumber) {
+                    this.$message.warning('退款条数不可超过可退条数')
+                    return false
+                }
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
                         this.$http({
-                            url: this.$http.adornUrl(`agent/level/${!this.dataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
+                            url: this.$http.adornUrl(`agent/agentInfo/refundOfAgent?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'id': this.dataForm.id || undefined
+                                'agentId': this.dataForm.id,
+                                'name': this.dataForm.agentName,
+                                'price': this.dataForm.price,
+                                'refundNumber': this.dataForm.refundNumber,
+                                'refundAmount': this.dataForm.refundAmount,
+                                'refundType': this.dataForm.refundType,
+                                'category': this.dataForm.category,
+                                'remark': this.dataForm.remark,
                             })
                         }).then(({ data }) => {
                             if (data && data.code === 0) {
+                                this.dialogVisible = false
+                                this.$emit('refresh')
                                 this.$message({
                                     message: '操作成功',
                                     type: 'success',
                                     duration: 1500,
-                                    onClose: () => {
-                                        this.dialogVisible = false
-                                        this.$emit('refresh')
-                                    }
                                 })
                             } else {
                                 this.$message.error(data.msg)

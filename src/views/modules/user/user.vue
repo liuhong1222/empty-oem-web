@@ -100,6 +100,7 @@
                                 <el-dropdown-item :disabled="scope.row.canPresent == 'false' || regDisabled" command="give">注册赠送</el-dropdown-item>
                                 <el-dropdown-item command="viewRechargeRecord">查看历史充值记录</el-dropdown-item>
                                 <el-dropdown-item command="interface">{{scope.row.apiState === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
+                                <el-dropdown-item :disabled="isAdmin || scope.row.authenLevel !== 3" command="authLevel">设置用户认证等级</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>
@@ -133,6 +134,8 @@
             ref="transferAgentcon"
             @refreshDataList="getCustomList"
         ></transfer-or-agent>
+        <!--设置用户认证等级 对话框 -->
+        <set-auth-level ref="setAuthLevelRef" @refresh="getCustomList" />
     </div>
 </template>
 <script>
@@ -142,6 +145,7 @@ import perRechargePrise from "./user-per-recharge-prise";
 // import perRefundPrise from "./user-per-refund-prise";
 import transferOrAgent from "./user-transfer-agent";
 import CustomerRefundDia from './customer-refund-dia.vue';
+import SetAuthLevel from '@/components/set-auth-level/index.vue'
 import axios from 'axios';
 import qs from "qs";
 export default {
@@ -179,6 +183,7 @@ export default {
         },
       },
       agentList: [],
+      isAdmin: false,
     };
   },
   components: {
@@ -188,6 +193,7 @@ export default {
     // perRefundPrise,
     transferOrAgent,
     CustomerRefundDia,
+    SetAuthLevel,
   },
   activated() {
     if (sessionStorage.getItem("msjRoleName") == "1") {
@@ -199,7 +205,21 @@ export default {
         this.searchData.dateTime[1] = this.formatDate(date);
       }
     }
-
+    this.isAdmin = sessionStorage.getItem("msjRoleName") == "1"
+    if (sessionStorage.getItem("msjRoleName") == "2") {
+      // 代理商
+      this.disableAgent = false;
+      this.disableAgentName = false;
+      this.regDisabled = false;
+      this.refundDisabled = false;
+      this.transferDisabled = true;
+    }
+    if (sessionStorage.getItem("msjRoleName") == "1") {
+      // 管理员
+      this.regDisabled = true;
+      this.refundDisabled = true;
+      this.transferDisabled = false;
+    }
     this.getCustomList(1);
   },
   methods: {
@@ -226,20 +246,6 @@ export default {
     },
     // 获取客户列表
     getCustomList(currPage) {
-      if (sessionStorage.getItem("msjRoleName") == "2") {
-        // 代理商
-        this.disableAgent = false;
-        this.disableAgentName = false;
-        this.regDisabled = false;
-        this.refundDisabled = false;
-        this.transferDisabled = true;
-      }
-      if (sessionStorage.getItem("msjRoleName") == "1") {
-        // 管理员
-        this.regDisabled = true;
-        this.refundDisabled = true;
-        this.transferDisabled = false;
-      }
       this.pageIndex = currPage || this.pageIndex
       this.dataListLoading = true;
       this.$http({
@@ -434,6 +440,10 @@ export default {
         case "interface": {
           // 开启关闭接口
           this.setApiState(record)
+          break;
+        }
+        case 'authLevel': {
+          this.$refs.setAuthLevelRef.init(record)
           break;
         }
         default:

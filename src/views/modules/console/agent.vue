@@ -8,12 +8,12 @@
                         <li v-for="(item, index) in basicList" :key="index">
                             <p>{{item.title}}</p>
                             <div class="statistic-data" :style="item.isFontSmall ? { fontSize: '14px' } : {}">{{deskInfo[item.field]}}</div>
-                            <button v-show="item.flag" @click="handleOneCardClick(index, item)">
+                            <button class="edit-btn" v-show="item.flag" @click="handleOneCardClick(index, item)">
                                 {{ item.title === '邮箱' && (deskInfo[item.field] === '' || !deskInfo[item.field]) ? '添加' : item.btnText }}
                             </button>
                         </li>
-                        <li>
-                            <button class="copyLink" @click="copyLink">复制推广链接</button>
+                        <li class="btns-wrapper">
+                            <button class="edit-btn copyLink" @click="copyLink">复制推广链接</button>
                         </li>
                     </ul>
                 </div>
@@ -61,7 +61,7 @@
                 </ul>
                 </div>
             </el-col>
-            <el-col :span="24" style="position: relative;">
+            <el-col :span="12" style="position: relative;">
                 <div class="grid-content bg-purple">
                     <div>
                         <h2>充值套餐</h2>
@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </el-col>
-            <el-col :span="12" v-if="myReject">
+            <!-- <el-col :span="12" v-if="myReject">
                 <div class="grid-content bg-purple">
                     <h2>我的待办</h2>
                     <div style="margin:20px;line-height:35px;" class="cf">
@@ -99,7 +99,7 @@
                         <span style="line-height:25px" id="remarkCon">{{remarksCon}}</span>
                     </div>
                 </div>
-            </el-col>
+            </el-col> -->
         </el-row>
 
         <!-- 添加邮箱弹窗 -->
@@ -653,6 +653,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.btns-wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 118px;
+}
     .statistic-data {
         height: 40px;
         line-height: 40px;
@@ -694,7 +701,7 @@ export default {
     margin-bottom: 10px;
   }
 
-  .basic-mess button {
+  .edit-btn {
     outline: none;
     background-color: #fff;
     width: 48px;
@@ -704,11 +711,11 @@ export default {
     font-size: 12px;
   }
 
-  .basic-mess button.copyLink {
-    width: 110px;
+  .edit-btn.copyLink {
+    width: 118px;
     height: 36px;
     border: none;
-    margin-top: 50px;
+    margin-bottom: 20px;
     background-color: #4680ff;
     border-radius: 2px;
     font-size: 12px;

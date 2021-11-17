@@ -91,6 +91,10 @@
             }
         },
         activated() {
+            if (sessionStorage.getItem('msjRoleName') == '2') {
+                this.disableAgent = false
+                this.disableAgentName = false
+            }
             this.refundList()
         },
         methods: {
@@ -104,10 +108,6 @@
 
             // 获取退款记录接口
             refundList(cur) {
-                if (sessionStorage.getItem('msjRoleName') == '2') {
-                    this.disableAgent = false
-                    this.disableAgentName = false
-                }
                 this.dataListLoading = true
                 this.$http({
                     url: this.$http.adornUrl(`agent/finance/user/refund/list?token=${this.$cookie.get('token')}`),
@@ -189,17 +189,7 @@
                         endTime = this.refundSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`
-                    agent/finance/user/refund/list/export?
-                    token=${this.$cookie.get('token')}
-                    &currentPage=${this.pageIndex}
-                    &pageSize=${this.pageSize}
-                    &companyName=${this.refundSearchData.agentName}
-                    &custMobile=${this.refundSearchData.mobile}
-                    &startTime=${startTime}
-                    &endTime=${endTime}
-                    &userName=${this.refundSearchData.custName}
-                `))
+                window.open(this.$http.adornUrl(`agent/finance/user/refund/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&companyName=${this.refundSearchData.agentName}&custMobile=${this.refundSearchData.mobile}&startTime=${startTime}&endTime=${endTime}&userName=${this.refundSearchData.custName}`))
             }
         }
     }

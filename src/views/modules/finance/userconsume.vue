@@ -214,17 +214,7 @@
                         endTime = this.consumeSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`
-                    agent/finance/user/consume/list/export?
-                    token=${this.$cookie.get('token')}
-                    &currentPage=${this.pageIndex}
-                    &pageSize=${this.pageSize}
-                    &userName=${this.consumeSearchData.custName}
-                    &companyName=${this.consumeSearchData.agentName}
-                    &custMobile=${this.consumeSearchData.mobile}
-                    &startTime=${startTime}
-                    &endTime=${endTime}
-                `))
+                window.open(this.$http.adornUrl(`agent/finance/user/consume/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&userName=${this.consumeSearchData.custName}&companyName=${this.consumeSearchData.agentName}&custMobile=${this.consumeSearchData.mobile}&startTime=${startTime}&endTime=${endTime}`))
 
             }
 

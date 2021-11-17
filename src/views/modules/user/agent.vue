@@ -76,8 +76,8 @@
                                 <el-dropdown-item command="edit">修改</el-dropdown-item>
                                 <el-dropdown-item command="refund">退款</el-dropdown-item>
                                 <el-dropdown-item command="usable">{{scope.row.state == 0 ? '启用' : '禁用'}}</el-dropdown-item>
-                                <el-dropdown-item command="auth">{{scope.row.isOpen == 0 ? '开启认证' : '关闭认证'}}</el-dropdown-item>
                                 <el-dropdown-item command="download">号码魔方</el-dropdown-item>
+                                <el-dropdown-item command="authLevel">设置用户认证等级</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>
@@ -145,12 +145,18 @@
         <see-dia-data v-if="agentseeVisible" ref="agentseecon"></see-dia-data>
         <!--退款 对话框 -->
         <agent-refund ref="agentRefundRef" @refreshDataList="getDataList"></agent-refund>
+        <!--号码魔方上传 对话框 -->
+        <agent-upload-package ref="agentUploadPackageRef" @refreshDataList="getDataList" />
+        <!--设置用户认证等级 对话框 -->
+        <set-auth-level ref="setAuthLevelRef" @refresh="getDataList" />
     </div>
 </template>
 <script>
     import AddOrUpdate from './agent-add-or-update'
     import SeeDiaData from './agent-see-dia-data'
     import AgentRefund from './agent-refund.vue'
+    import AgentUploadPackage from './agent-upload-package.vue'
+    import SetAuthLevel from '@/components/set-auth-level/index.vue'
     export default {
         data() {
             return {
@@ -243,7 +249,9 @@
         components: {
             AddOrUpdate,
             SeeDiaData,
-            AgentRefund
+            AgentRefund,
+            AgentUploadPackage,
+            SetAuthLevel
         },
         activated() {
             this.getDataList(1)
@@ -445,14 +453,6 @@
                     }
                 })
             },
-            // 开启关闭认证
-            handleAuth(record) {
-                console.log('开启关闭认证', record)
-            },
-            // 下载号码魔方
-            handleDownloadApp(record) {
-                console.log('号码魔方', record)
-            },
             handleClickDropdown(key, record) {
                 switch(key) {
                     case 'edit': {
@@ -467,12 +467,12 @@
                         this.disableAndEnabled(record)
                         break;
                     }
-                    case 'auth': {
-                        this.handleAuth(record)
+                    case 'authLevel': {
+                        this.$refs.setAuthLevelRef.init(record)
                         break;
                     }
                     case 'download': {
-                        this.handleDownloadApp(record)
+                        this.$refs.agentUploadPackageRef.init(record)
                         break;
                     }
                     default:
