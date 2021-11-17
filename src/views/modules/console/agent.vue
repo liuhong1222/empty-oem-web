@@ -24,7 +24,7 @@
                         <h2>充值记录</h2>
                         <el-button type="text" style="float:right" @click="showDetails()">查看详情</el-button>
                     </div>
-                    <el-table :data="rechargeRecordData" style="width: 100%" :highlight-current-row="true">
+                    <el-table :header-cell-style="getRowClass" :data="rechargeRecordData" style="width: 100%" :highlight-current-row="true">
                         <el-table-column prop="categary" label="充值产品">
                             <template slot-scope="{ row }">
                                 <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
@@ -65,14 +65,14 @@
                 <div class="grid-content bg-purple">
                     <div>
                         <h2>充值套餐</h2>
-                        <el-button type="text" style="float:right" @click="editMeal">修改</el-button>
+                        <el-button type="text" style="float:right" @click="viewMeals()">查看详情</el-button>
                     </div>
-                    <ul class="cf mealPackage">
+                    <div v-if="mealList.length === 0" class="meal-empty">暂无套餐</div>
+                    <ul v-else class="cf mealPackage">
                         <li v-for="(item,index) in mealList" :key="index">
-                        <p><span>{{item.packageName}}</span><span class="line"></span></p>
-                        <span class="moneyMeal">{{item.money}}元</span>
-                        <span v-if="index == '3'">/{{item.number}}条</span>
-                        <span class="label" v-else>/{{item.number}}万条</span>
+                            <p><span>{{item.name}}</span><span class="line"></span></p>
+                            <span class="moneyMeal">{{item.price}}元</span>
+                            <span class="label">/{{item.specifications}}条</span>
                         </li>
                     </ul>
                 </div>
@@ -327,6 +327,13 @@ export default {
         this.updatePwd()
     },
     methods: {
+        getRowClass({ row, column, rowIndex, columnIndex }) {
+                if (rowIndex == 0) {
+                    return 'background-color: #f8f8f8;color:#666;'
+                } else {
+                    return ''
+                }
+            },
         // 获取基本信息
         getAgentDeskInfo() {
             this.remarksCon = sessionStorage.getItem('remarkCon')
@@ -367,14 +374,15 @@ export default {
         // 充值套餐
         findAgentPackage() {
             this.$http({
-                url: this.$http.adornUrl(`agent/desk/findAgentPackage?token=${this.$cookie.get('token')}`),
+                url: this.$http.adornUrl(`agent/goods/getPageList?token=${this.$cookie.get('token')}`),
                 method: 'post',
+                data: {
+                    currentPage: 1,
+                    pageSize: 4,
+                }
             }).then(({ data }) => {
                 if (data && data.code === 0) {
-                    this.mealList = data.data
-                    for (let i = 0; i < data.data.length; i++) {
-                        this.packageId.push(data.data[i].id)
-                    }
+                    this.mealList = data.data.list || []
                 } else {
                     this.mealList = []
                 }
@@ -486,6 +494,10 @@ export default {
         // 查看充值记录详情
         showDetails() {
             this.$router.push({ name: 'finance-myrecharge' })
+        },
+        // 查看充值记录详情
+        viewMeals() {
+            this.$router.push({ name: 'user-meal' })
         },
         // 修改套餐
         editMeal() {
@@ -653,6 +665,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.meal-empty {
+    width: 100%;
+    height: 200px;
+    text-align: center;
+    line-height: 200px;
+    font-size: 12px;
+    color: #666;
+}
 .btns-wrapper {
     display: flex;
     align-items: center;
@@ -799,6 +819,7 @@ export default {
       font-size: 24px;
       font-weight: 700;
       color: #666;
+      display: block;
     }
 
     >p span {
@@ -822,10 +843,10 @@ export default {
     background-color: #08d8d8;
   }
 
-  .mealPackage li:last-child {
+  .mealPackage li:nth-child(4) {
     width: 95%;
     position: absolute;
-    bottom: 0;
+    bottom: 6px;
     right: 12px;
     text-align: left;
     padding-left: 20px;
@@ -837,6 +858,10 @@ export default {
       .line {
         height: 0
       }
+    }
+
+    >.moneyMeal {
+        display: inline-block;
     }
 
     span.moneyMeal {

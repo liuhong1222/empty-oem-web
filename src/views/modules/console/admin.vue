@@ -20,7 +20,7 @@
                         <h2>代理商充值记录</h2>
                         <el-button type="text" style="float:right" @click="showDetails()">查看详情</el-button>
                     </div>
-                    <el-table :data="tableData" height="250" style="width: 100%" :highlight-current-row="false">
+                    <el-table :header-cell-style="getRowClass" :data="tableData" height="250" style="width: 100%" :highlight-current-row="false">
                         <el-table-column prop="companyName" label="代理商名称">
                         </el-table-column>
                         <el-table-column prop="category" label="充值产品">
@@ -164,7 +164,13 @@
             UpdatePassword
         },
         methods: {
-
+            getRowClass({ row, column, rowIndex, columnIndex }) {
+                if (rowIndex == 0) {
+                    return 'background-color: #f8f8f8;color:#666;'
+                } else {
+                    return ''
+                }
+            },
             basicInfoBtn(arrindex, con) {
                 if (arrindex == 1) {  //概更改手机号
                     this.reBindVisible = true;

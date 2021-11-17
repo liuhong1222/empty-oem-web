@@ -61,6 +61,9 @@
                 <el-table-column width="120" prop="unknown" label=" 号码错误" align="center">
                 </el-table-column>
                 <el-table-column width="120" prop="exceptionFailCount" label=" 未知" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.exceptionFailCount || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
                 </el-table-column>

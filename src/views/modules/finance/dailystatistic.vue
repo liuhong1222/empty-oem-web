@@ -37,7 +37,7 @@
             <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="createTime" label="日期" align="center">
+                <el-table-column width="150" prop="dayInt" label="日期" align="center">
                 </el-table-column>
                 <el-table-column v-if="isAdmin" min-width="150" prop="agentName" label="代理商名称" align="center">
                 </el-table-column>
@@ -48,13 +48,13 @@
                 <el-table-column min-width="120" prop="totalPayment" label="充值金额" align="center">
                 </el-table-column>
                 <el-table-column label="空号检测" align="center">
-                    <el-table-column width="120" prop="emptyUseCount" label="消耗条数" align="center">
+                    <el-table-column width="120" prop="emptyConsume" label="消耗条数" align="center">
                     </el-table-column>
                     <el-table-column width="120" prop="emptyRemainCount" label="剩余条数" align="center">
                     </el-table-column>
                 </el-table-column>
                 <el-table-column label="实时检测" align="center">
-                    <el-table-column width="120" prop="realUseCount" label="消耗条数" align="center">
+                    <el-table-column width="120" prop="realtimeConsume" label="消耗条数" align="center">
                     </el-table-column>
                     <el-table-column width="120" prop="realRemainCount" label="剩余条数" align="center">
                     </el-table-column>

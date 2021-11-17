@@ -39,7 +39,7 @@
                     <el-input v-model="searchData.custName" style="width: 180px;" placeholder="请输入客户名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="代理商：" v-if="disableAgent">
-                    <el-input v-model="searchData.agentName" @blur="getAgenListByName()" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
+                    <el-input v-model="searchData.agentName" @input="getAgenListByName()" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="注册IP：">
                     <el-input v-model="searchData.registerIp" style="width: 180px;" placeholder="请输入注册IP" clearable></el-input>

@@ -96,9 +96,6 @@ export default {
   activated () {
     this.initPage()
   },
-  created () {
-    this.initPage()
-  },
   methods: {
     initPage() {
       this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
