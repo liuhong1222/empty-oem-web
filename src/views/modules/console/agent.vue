@@ -335,11 +335,11 @@ export default {
             method: 'post',
             }).then(({ data }) => {
             if (data && data.code === 0) {
-                const { autoPresentCfg, agentInfo, referralLink } = (data.data || {})
+                const { autoPresentCfg, agentInfo, domain } = (data.data || {})
                 // 0不自动赠送，1自动赠送
                 this.giveSwitch = autoPresentCfg ? true : false
                 sessionStorage.setItem('agentInfo', this.$json.stringify(agentInfo || '{}'))
-                this.copyinput = referralLink
+                this.copyinput = domain
                 this.deskInfo = {...(data.data || {}), ...(agentInfo || {})}
                 this.agentInfo = agentInfo || {}
             } else {

@@ -157,7 +157,6 @@
         activated() {
             this.oemRegRecode(),
             this.getAdminDeskInfo(),
-            // this.myAgent(),
             this.updatePwd()
         },
         components: {
@@ -190,19 +189,6 @@
                     }
                 }
             },
-            // 我的代办
-            myAgent() {
-                this.$http({
-                    url: this.$http.adornUrl(`agent/stats/agentCanUpgrade/count?token=${this.$cookie.get('token')}`),
-                    method: 'get',
-                }).then(({ data }) => {
-                    if (data && data.code === 0) {
-                        this.basicInfoList[0].data = data.data.countAgentCanUpgrade
-                    } else {
-                        this.$message.error(data.msg)
-                    }
-                })
-            },
             // 修改密码
             updatePwd() {
                 if (sessionStorage.getItem('isFirstLogin') && (sessionStorage.getItem('isFirstLogin')) == 'true') {  //没修改过
@@ -225,6 +211,7 @@
                     if (data && data.code === 0) {
                         this.basicInfoList[1].data = data.data.mobile
                         this.basicInfoList[2].data = data.data.email
+                        this.basicInfoList[0].data = data.data.waitToDoNum || 0
                         this.adminInfo = data.data || {}
                     } else {
                         this.$message.error(data.msg)

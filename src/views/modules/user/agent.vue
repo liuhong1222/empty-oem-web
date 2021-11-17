@@ -90,7 +90,7 @@
             </el-pagination>
         </div>
         <!-- 充值弹窗 -->
-        <el-dialog title="充值" :visible.sync="chdataFormVisible">
+        <el-dialog title="充值" :visible.sync="chdataFormVisible" width="520px">
             <el-form :model="chdataForm" ref="chdataFormref" :rules="chdataFormrefRule" label-width="100px">
                 <el-form-item label="充值账号：" prop="agentId">
                     <el-input v-model="chdataForm.agentId" placeholder="请输入充值账号" disabled></el-input>
@@ -186,16 +186,16 @@
                         { required: true, message: '请选择产品类型', trigger: 'blur' },
                     ],
                     price: [
-                        { required: true, message: '请输入单价', trigger: 'blur' },
+                        { required: true, message: '请输入单价', trigger: 'change' },
                     ],
                     rechargeNumber: [
-                        { required: true, message: '请输入充值金额', trigger: 'blur' },
+                        { required: true, message: '请输入充值金额', trigger: 'change' },
                     ],
                     paymentAmount: [
-                        { required: true, message: '请输入充值条数', trigger: 'blur' },
+                        { required: true, message: '请输入充值条数', trigger: 'change' },
                     ],
                     payType: [
-                        { required: true, message: '请选择入账类型', trigger: 'blur' }
+                        { required: true, message: '请选择入账类型', trigger: 'change' }
                     ],
 
                 },

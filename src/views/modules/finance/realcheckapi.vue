@@ -40,6 +40,8 @@
                         <span>{{ Math.round((scope.row.size || 0) / 1024) + 'KB' }}</span>
                     </template>
                 </el-table-column>
+                <el-table-column width="120" prop="line" label="检测数" align="center">
+                </el-table-column>
                 <el-table-column width="120" prop="normal" label=" 正常" align="center">
                 </el-table-column>
                 <el-table-column width="120" prop="numberPortability" label=" 正常(携号转网)" align="center">
@@ -66,8 +68,6 @@
                     <template slot-scope="scope">
                         <span>{{ scope.row.checkType === 0 ? 'CL' : '' }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column width="120" prop="line" label="检测数" align="center">
                 </el-table-column>
                 <el-table-column width="150" prop="createTime" label="创建时间" align="center">
                 </el-table-column>

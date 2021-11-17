@@ -2,8 +2,11 @@
     <el-dialog :title="!isEdit ? '新增账号' : '修改账号'" :close-on-click-modal="false" :visible.sync="visible">
         <el-form :model="accountdataForm" :rules="accdatarules" ref="accountdataFormref" label-width="150px" class="demo-ruleForm"
             :label-position="labelPosition">
-            <el-form-item label="用户名：" prop="username">
+            <!-- <el-form-item label="用户名：" prop="username">
                 <el-input v-model="accountdataForm.username" placeholder="请输入用户名" :disabled="isEdit"></el-input>
+            </el-form-item> -->
+            <el-form-item label="手机号：" prop="phone">
+                <el-input v-model="accountdataForm.phone" placeholder="请输入手机号"></el-input>
             </el-form-item>
             <el-form-item label="代理商：" v-if="isAdmin" prop="agentId">
                 <el-select style="width: 100%" class="filter-item" v-model="accountdataForm.agentId" placeholder="请选择代理商">
@@ -14,8 +17,11 @@
             <el-form-item label="姓名：" prop="nickname">
                 <el-input v-model="accountdataForm.nickname" placeholder="请输入姓名"></el-input>
             </el-form-item>
-            <el-form-item label="手机号：" prop="phone">
-                <el-input v-model="accountdataForm.phone" placeholder="请输入手机号"></el-input>
+            <el-form-item label="性别：" prop="gender">
+                <el-radio-group v-model="accountdataForm.gender">
+                    <el-radio :label="0">女</el-radio>
+                    <el-radio :label="1">男</el-radio>
+                </el-radio-group>
             </el-form-item>
             <el-form-item label="邮箱：" prop="email">
                 <el-input v-model="accountdataForm.email" placeholder="请输入邮箱"></el-input>
@@ -40,7 +46,15 @@
                 visible: false,
                 isEdit: false,
                 labelPosition: 'right',
-                accountdataForm: {},
+                accountdataForm: {
+                    username: '',
+                    agentId: '',
+                    nickname: '',
+                    phone: '',
+                    email: '',
+                    gender: 1,
+                    password: ''
+                },
                 agentList: [],
                 submitLoading: false,
                 isAdmin: false,
@@ -63,9 +77,6 @@
                     }
                 }
                 return {
-                    username: [
-                        { required: true, message: '请输入用户名', trigger: 'blur' }
-                    ],
                     agentId: [
                         { required: true, message: '请选择代理商', trigger: 'blur' }
                     ],
@@ -89,20 +100,22 @@
                 this.submitLoading = false
                 this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
                 this.isAdmin && this.getAgentList()
-                if (record.username) {
-                    const { username, agentId, nickname, phone, email, id } = record
-                    this.accountdataForm = {
-                        username,
-                        agentId,
-                        nickname,
-                        phone,
-                        email,
-                        id: id + ''
+                this.isEdit = record.username ? true : false
+                this.$nextTick(() => {
+                    this.$refs['accountdataFormref'].resetFields()
+                    if (record.username) {
+                        const { username, agentId, nickname, phone, email, id, gender } = record
+                        this.accountdataForm = {
+                            username,
+                            agentId,
+                            nickname,
+                            phone,
+                            email,
+                            id: id + '',
+                            gender: gender || 1
+                        }
                     }
-                    this.isEdit = true
-                } else {
-                    this.isEdit = false;
-                }
+                })
             },
             getAgentList() {
                 this.$http({
@@ -122,16 +135,20 @@
                     if (valid) {
                         this.submitLoading = true;
                         this.$http({
-                            url: this.$http.adornUrl(`agent/agentSysUser/${!this.accountdataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
+                            url: this.$http.adornUrl(`sys/user/${!this.isEdit ? 'save' : 'update'}`),
                             method: 'post',
-                            params: this.$http.adornParams({
-                                agentId: this.accountdataForm.agentId || undefined,
-                                'userId': this.accountdataForm.id || undefined,
-                                'username': this.accountdataForm.username,
-                                'mobile': this.accountdataForm.mobile,
+                            data: {
+                                token: this.$cookie.get('token'),
+                                roleId: 2,
+                                agentId: this.isAdmin ? this.accountdataForm.agentId : this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id + '',
+                                gender: this.accountdataForm.gender,
+                                'id': this.isEdit ? this.accountdataForm.id : undefined,
+                                'username': this.accountdataForm.phone,
+                                'nickname': this.accountdataForm.nickname,
+                                'phone': this.accountdataForm.phone,
                                 'email': this.accountdataForm.email,
                                 'password': (this.accountdataForm.password) ? md5(this.accountdataForm.password) : this.accountdataForm.password
-                            })
+                            }
                         }).then(({ data }) => {
                             this.submitLoading = false;
                             if (data && data.code === 0) {

@@ -1,8 +1,8 @@
 <template>
     <el-dialog :destroy-on-close="true" width="600px" :title="'退款'" :close-on-click-modal="false" :visible.sync="dialogVisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
-            <el-form-item label="手机号码：" prop="phone">
-                <el-input v-model="dataForm.phone" placeholder="请输入手机号码"></el-input>
+            <el-form-item label="代理商名称：" prop="agentName">
+                <el-input v-model="dataForm.agentName" disabled placeholder="请输代理商名称"></el-input>
             </el-form-item>
             <el-form-item label="产品名称：" prop="category">
                 <el-radio-group v-model="dataForm.category">
@@ -58,9 +58,6 @@
                     category: 0,
                 },
                 dataRule: {
-                    phone: [
-                        { required: true, message: '请输入手机号码', trigger: 'blur' }
-                    ],
                     category: [
                         { required: true, message: '请选择产品名称', trigger: 'blur' }
                     ],
@@ -97,7 +94,6 @@
                         category: 0,
                         id: record.customerId || undefined
                     }
-                    console.log(record)
                     if (record.customerId) {
                         this.getDetailData(record);
                     }

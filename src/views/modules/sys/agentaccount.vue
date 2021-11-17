@@ -75,7 +75,7 @@
                     method: 'get',
                     params: this.$http.adornParams({
                         phone: this.accountData.phone,
-                        roleId: this.isAdmin ? 1 : 2,
+                        roleId: 2,
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                     })
@@ -115,17 +115,16 @@
             },
             // 删除
             delAcc(row) {
+                let userIds = [row.id + '']
                 this.$confirm(`是否删除用户${row.username}？删除后此用户将无法登录系统。`, '删除账号', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
                     this.$http({
-                        url: this.$http.adornUrl(`agent/agentSysUser/delete?token=${this.$cookie.get('token')}`),
+                        url: this.$http.adornUrl(`/sys/user/delete`),
                         method: 'post',
-                        params: this.$http.adornParams({
-                            'id': row.id + ''
-                        })
+                        data: this.$http.adornData(userIds, false)
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
                             this.agentSysUserList(1)

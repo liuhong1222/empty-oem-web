@@ -56,10 +56,10 @@
                 dataForm: {},
                 dataRule: {
                     category: [
-                        { required: true, message: '请输入充值金额', trigger: 'blur' }
+                        { required: true, message: '请输入充值金额', trigger: 'change' }
                     ],
                     money: [
-                        { required: true, message: '请输入充值金额', trigger: 'blur' }
+                        { required: true, message: '请输入充值金额', trigger: 'change' }
                     ]
                 },
                 rechargeWayOptions: [
