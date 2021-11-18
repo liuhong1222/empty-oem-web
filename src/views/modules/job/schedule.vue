@@ -1,11 +1,11 @@
 <template>
   <div class="mod-schedule">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList(1)">
       <el-form-item>
         <el-input v-model="dataForm.beanName" placeholder="bean名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList(1)">查询</el-button>
         <el-button v-if="isAuth('sys:schedule:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="isAuth('sys:schedule:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
         <el-button v-if="isAuth('sys:schedule:pause')" type="danger" @click="pauseHandle()" :disabled="dataListSelections.length <= 0">批量暂停</el-button>
@@ -45,7 +45,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]"
+    <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
@@ -79,12 +79,13 @@
       Log
     },
     activated() {
-      this.getDataList()
+      this.getDataList(1)
     },
     methods: {
       // 获取数据列表
-      getDataList() {
+      getDataList(currPage) {
         this.dataListLoading = true
+        this.pageIndex = currPage || this.pageIndex
         this.$http({
           url: this.$http.adornUrl('/sys/schedule/list'),
           method: 'get',

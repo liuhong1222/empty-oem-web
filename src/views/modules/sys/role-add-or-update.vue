@@ -100,10 +100,10 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/role/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`sys/role/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'id': this.dataForm.id,
+                'id': this.dataForm.id || undefined,
                 'name': this.dataForm.roleName,
                 'remark': this.dataForm.remark,
                 'menuIdList': [].concat(this.$refs.menuListTree.getCheckedKeys(), [this.tempKey], this.$refs.menuListTree.getHalfCheckedKeys())

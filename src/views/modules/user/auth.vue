@@ -2,7 +2,7 @@
     <div class="main">
         <div class="topSearch">
             <h2>认证审核管理</h2>
-            <el-form :inline="true" :model="searchobj" @keyup.enter.native="getCustomList()">
+            <el-form :inline="true" :model="searchobj">
                 <el-form-item label="提交时间：">
                     <el-date-picker
                         v-model="searchobj.dateTime"
@@ -14,18 +14,18 @@
                         :picker-options="pickerOptions"
                     ></el-date-picker>
                 </el-form-item>
-                <el-form-item label="手机号：" style="margin-left:25px;">
-                    <el-input v-model="searchobj.mobile" placeholder="手机号" clearable></el-input>
+                <el-form-item label="手机号：">
+                    <el-input v-model="searchobj.phone" placeholder="手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="公司名称：">
                     <el-input v-model="searchobj.companyName" placeholder="公司名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="审核状态：">
-                    <el-select v-model="searchobj.status" placeholder="审核状态">
+                    <el-select v-model="searchobj.state" placeholder="审核状态">
                         <el-option label="全部" value="-1"></el-option>
-                        <el-option label="待审核" value="1"></el-option>
-                        <el-option label="已驳回" value="2"></el-option>
-                        <el-option label="已认证" value="3"></el-option>
+                        <el-option label="待审核" value="0"></el-option>
+                        <el-option label="已驳回" value="1"></el-option>
+                        <el-option label="已认证" value="9"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -37,59 +37,89 @@
             <el-table :data="tableData" v-loading="tableloading" :header-cell-style="getRowClass" style="width: 100%">
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号" ></el-table-column>
                 <el-table-column prop="createTime" align="left" label="提交时间"></el-table-column>
-                <el-table-column prop="user_phone" align="left" label="手机号"></el-table-column>
-                <el-table-column prop="name" align="left" label="公司名称"></el-table-column>
-                <el-table-column prop="address" align="left" label="地址"></el-table-column>
-                <el-table-column prop="authStatus" align="left" label="审核状态"></el-table-column>
-                <el-table-column prop="comment" align="left" label="备注"></el-table-column>
+                <el-table-column prop="phone" align="left" label="手机号"></el-table-column>
+                <el-table-column prop="companyName" align="left" label="公司名称"></el-table-column>
+                <el-table-column prop="companyAddress" align="left" label="地址"></el-table-column>
+                <el-table-column prop="state" align="left" label="审核状态">
+                  <template slot-scope="scope">
+                        <span>{{ stateMap[scope.row.state] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="remark" align="left" label="备注"></el-table-column>
                 <el-table-column prop="authStatusVal" align="left" label="操作">
                     <template slot-scope="scope">
-                        <el-button v-if="scope.row.authStatusVal == 1" @click="modelshow(scope.row)" type="text">审核</el-button>
+                        <el-button v-if="scope.row.state == 0" @click="modelshow(scope.row)" type="text">审核</el-button>
                         <el-button v-else @click="modelshow(scope.row)" type="text">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination ref="pages" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="searchobj['currentPage']" :page-size.sync="searchobj['pageSize']" :page-sizes="[10, 20, 30, 40]" layout="total, prev, pager, next, sizes, jumper" :total="totalNumber" background></el-pagination>
+            <el-pagination layout="total, sizes, prev, pager, next, jumper" ref="pages" @size-change="handleSizeChange" @current-change="handleCurrentChange" :key="searchobj['currentPage']" :current-page="searchobj['currentPage']" :page-size.sync="searchobj['pageSize']" :page-sizes="[10, 20, 30, 40]" :total="totalNumber"></el-pagination>
         </div>
-        <el-dialog width="800px" :title="rowobj['authStatusVal'] == 1 ? '审核': '查看'" :visible.sync="dialogRowVisible">
-            <el-form :model="rowobj" :rules="dialogRules" ref="dialogForm">
-                <el-form-item label="营业执照：" label-width="180px">
-                    <viewer :options="{'navbar': false}" :images="[imgBaseUrl + rowobj.picture_url]">
-                        <img height="100" :src="imgBaseUrl + rowobj.picture_url" style="cursor: pointer">
-                    </viewer>
-                </el-form-item>
-                <el-form-item label="公司名称:" prop="name" label-width="180px">
-                    <el-input v-model="rowobj.name" ></el-input>
-                </el-form-item>
-                <el-form-item label="营业执照号:" prop="regnum" label-width="180px">
-                    <el-input v-model="rowobj.regnum" ></el-input>
-                </el-form-item>
-                <el-form-item label="公司地址:" prop="address" label-width="180px">
-                    <el-input v-model="rowobj.address" ></el-input>
-                </el-form-item>
-                <el-form-item label="法人名字:" prop="person" label-width="180px">
-                    <el-input v-model="rowobj.person" ></el-input>
-                </el-form-item>
-                <el-form-item label="证件期限:" prop="effectDate" label-width="180px" style="display: inline-block;">
-                    <el-date-picker v-model="rowobj.effectDate" type="date" value-format="yyyy-MM-dd" placeholder="开始日期" style="width: 200px"></el-date-picker>
-                </el-form-item>
-                <el-form-item class="format-date" label="至" prop="expireDate" label-width="30px" style="display: inline-block;">
-                    <div class="long-date" v-if="rowobj.expireDate == '2099-12-31'" @click="$refs.expireDate.focus()">长期</div>
-                    <el-date-picker v-model="rowobj.expireDate" :picker-options="expireOptions" type="date" value-format="yyyy-MM-dd" ref="expireDate" placeholder="结束日期" style="width: 200px"></el-date-picker>
-                </el-form-item>
-                <el-form-item label="经营范围:" prop="business" label-width="180px">
-                    <el-input v-model="rowobj.business" :rows="5" type="textarea"></el-input>
-                </el-form-item>
-                <el-form-item label="备注:" prop="comment" label-width="180px">
-                    <el-input v-model="rowobj.comment" :rows="5" type="textarea"></el-input>
+        <el-dialog width="800px" :title="rowobj['state'] == 0 ? '审核': '查看'" :visible.sync="dialogRowVisible">
+            <el-form :model="rowobj" :rules="dialogRules" ref="dialogForm" class="auth-view-form">
+                <!-- customerType 客户类型（1：企业，0：个人，9：其他） -->
+                <template v-if="rowobj.customerType === 0">
+                  <el-form-item label="身份证照片正面地址：" label-width="180px">
+                      <img v-if="rowobj.idCardFrontPath" style="width: 300px;" :src="$imgPreStr + rowobj.idCardFrontPath" />
+                  </el-form-item>
+                  <el-form-item label="身份证照片反面地址：" label-width="180px">
+                      <img v-if="rowobj.idCardFrontPath" style="width: 300px;" :src="$imgPreStr + rowobj.idCardFrontPath" />
+                  </el-form-item>
+                  <el-form-item label="身份证名称:" prop="idCardName" label-width="180px">
+                      <el-input readonly v-model="rowobj.idCardName" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="身份证号:" prop="idCardNumber" label-width="180px">
+                      <el-input readonly v-model="rowobj.idCardNumber" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="详细地址:" prop="idCardAddress" label-width="180px">
+                      <el-input readonly v-model="rowobj.idCardAddress" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="身份证有效期开始时间" prop="idCardExpireStartTime" label-width="180px">
+                      <el-input readonly v-model="rowobj.idCardExpireStartTime" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="身份证有效期结束时间:" prop="idCardExpireEndTime" label-width="180px">
+                      <el-input readonly v-model="rowobj.idCardExpireEndTime" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="联系邮箱:" prop="email" label-width="180px">
+                      <el-input readonly v-model="rowobj.email" ></el-input>
+                  </el-form-item>
+                </template>
+                <template v-else>
+                  <el-form-item label="营业执照地址：" label-width="180px">
+                      <img v-if="rowobj.businessLicensePath" style="width: 300px;" :src="$imgPreStr + rowobj.businessLicensePath" />
+                  </el-form-item>
+                  <el-form-item label="公司名称:" prop="companyName" label-width="180px">
+                      <el-input readonly v-model="rowobj.companyName" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="公司地址:" prop="companyAddress" label-width="180px">
+                      <el-input readonly v-model="rowobj.companyAddress" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="营业执照号:" prop="businessLicenseNumber" label-width="180px">
+                      <el-input readonly v-model="rowobj.businessLicenseNumber" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="企业法人:" prop="legalPerson" label-width="180px">
+                      <el-input readonly v-model="rowobj.legalPerson" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="营业执照有效期开始时间:" prop="businessLicenseExpireStartTime" label-width="180px">
+                      <el-input readonly v-model="rowobj.businessLicenseExpireStartTime" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="营业执照有效期结束时间:" prop="businessLicenseExpireEndTime" label-width="180px">
+                      <el-input readonly v-model="rowobj.businessLicenseExpireEndTime" ></el-input>
+                  </el-form-item>
+                  <el-form-item label="经营范围:" prop="businessScope" label-width="180px">
+                      <el-input readonly v-model="rowobj.businessScope" :rows="5" type="textarea"></el-input>
+                  </el-form-item>
+                </template>
+                <el-form-item label="备注:" prop="remark" label-width="180px">
+                    <el-input readonly v-model="rowobj.remark" :rows="5" type="textarea"></el-input>
                 </el-form-item>
             </el-form>
-            <div slot="footer" v-if="rowobj['authStatusVal'] == 1" class="dialog-footer">
+            <div slot="footer" v-if="rowobj['state'] == 0" class="dialog-footer">
                 <el-button @click="dialogRowVisible = false">取 消</el-button>
-                <el-button type="primary" @click="ToexamineButt({ status: 2 })">驳回</el-button>
-                <el-button type="primary" @click="ToexamineButt({ status: 3 })">通过</el-button>
+                <el-button type="primary" @click="handleAudit(9)">驳回</el-button>
+                <el-button type="primary" @click="handleAudit(1)">通过</el-button>
             </div>
         </el-dialog>
     </div>
@@ -104,9 +134,9 @@ export default {
       searchobj: {
         pageSize: 10,
         currentPage: 1,
-        mobile: '',
+        phone: '',
         companyName: '',
-        status: '',
+        state: '',
         dateTime: []
       },
       tableData: [],
@@ -119,60 +149,25 @@ export default {
       },
       rowobj: {},
       dialogRowVisible: false,
-      imgBaseUrl: urlobj['zxaImgUrl'],
       dialogRules: {
-        name: [
-            { required: true, message: '请输入公司名称', trigger: 'blur' }
-        ],
-        regnum: [
-            { required: true, message: '请输入营业执照号', trigger: 'blur' }
-        ],
-        address: [
-            { required: true, message: '请输入公司地址', trigger: 'blur' }
-        ],
-        person: [
-            { required: true, message: '请输入法人名字', trigger: 'blur' }
-        ],
-        effectDate: [
-            { required: true, message: '请选择证件开始时间', trigger: 'change' }
-        ],
-        expireDate: [
-            { required: true, message: '请选择证件到期时间', trigger: 'change' }
-        ],
-        business: [
-            { required: true, message: '请输入经营范围', trigger: 'blur' }
-        ],
-        comment: [
-            { required: true, message: '请输入备注', trigger: 'blur' }
-        ]
       },
-      expireOptions: {
-        shortcuts: [{
-          text: '长期',
-          onClick (picker) {
-            picker.$emit('pick', new Date('2099/12/31'))
-          }
-        }]
-      }
+      stateMap: {
+        '0': '待审核',
+        '1': '已认证',
+        '9': '已驳回',
+      },
     }
   },
   activated () {
-    this.getPageByMobile()
-    setInterval(() => {
-      let elemobj = $('[type=number]', '.el-pagination__editor')
-      let maxval = elemobj.prop('max')
-      maxval === '0' && elemobj.prop({ max: 1 })
-    }, 1000)
-  },
-  created () {
-    let date = new Date()
-    this.searchobj.dateTime[0] = this.formatDate(date)
-    this.searchobj.dateTime[1] = this.formatDate(date)
+    this.searchobj = {
+      ...this.searchobj,
+      dateTime: [this.formatDate(new Date()), this.formatDate(new Date())]
+    }
+    this.handleSearch()
   },
   methods: {
     modelshow (rowobj = {}) {
-      this.rowobj = { ...rowobj }
-      this.dialogRowVisible = true
+      this.getDetailData(rowobj)
     },
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
@@ -209,9 +204,10 @@ export default {
     },
     getPageByMobile () {
       this.tableloading = true
-      let { dateTime, ...paramsobj } = this.searchobj || {}
-      paramsobj['startTime'] = dateTime[0]
-      paramsobj['endTime'] = dateTime[1]
+      let { dateTime, state, ...paramsobj } = this.searchobj || {}
+      paramsobj['startTime'] = dateTime ? dateTime[0] : undefined
+      paramsobj['endTime'] = dateTime ? dateTime[1] : undefined
+      paramsobj['state'] = state === '-1' ? undefined : state
       this.$http({
         url: this.$http.adornUrl(`/agent/auth/companyAuthList?token=${this.$cookie.get('token')}`),
         method: 'post',
@@ -232,22 +228,36 @@ export default {
         this.tableloading = false
       })
     },
-    ToexamineButt (paramboj) {
-      this.$refs['dialogForm'].validate((valid) => {
-        if (valid) {
-          this.ToexamineAjax(paramboj)
-        }
-      })
-    },
-    ToexamineAjax (paramboj) {
-      let { cre_user_id, ...tempobj } = this.rowobj || {}
-      let mergeboj = { ...paramboj, ...tempobj, userId: cre_user_id }
+    getDetailData (record) {
       this.$http({
-        url: this.$http.adornUrl(`/agent/auth/updateCompanyStatus?token=${this.$cookie.get('token')}`),
+        url: this.$http.adornUrl(`agent/auth/getCustomerExtById?token=${this.$cookie.get('token')}`),
         method: 'post',
-        params: this.$http.adornParams({ ...mergeboj })
+        params: this.$http.adornParams({
+          id: record.id + ''
+        })
       }).then(({ data = {} }) => {
         if (data.code === 0) {
+          this.rowobj = {...record, ...(data.data || {})}
+          this.dialogRowVisible = true
+        } else {
+          this.$message.error(data.msg)
+        }
+      }).catch(() => {
+        this.$message.error('接口请求失败')
+      })
+    },
+    handleAudit (state) {
+      this.$http({
+        url: this.$http.adornUrl(`agent/auth/auditCustExt?token=${this.$cookie.get('token')}`),
+        method: 'post',
+        params: this.$http.adornParams({
+          id: this.rowobj.id + '',
+          customerId: this.rowobj.customerId + '',
+          state: state
+        })
+      }).then(({ data = {} }) => {
+        if (data.code === 0) {
+          this.$message.success('操作成功')
           this.getPageByMobile()
           this.dialogRowVisible = false
         } else {
@@ -259,24 +269,15 @@ export default {
     }
   },
   components: {
-    Viewer
+    // Viewer
   }
 }
 </script>
 <style lang="scss" scoped>
-    .format-date /deep/ .el-form-item__label::before{
-        content: "";
-        display: none
-    }
-    .long-date{
-        left: 30px;
-        top: 2px;
-        width: 120px;
-        position: absolute;
-        height: 36px;
-        line-height: 36px;
-        z-index: 10;
-        background-color: #fff;
-        pointer-events: none;
+    /deep/ .auth-view-form {
+      .el-textarea__inner:focus, .el-textarea__inner:hover,
+      .el-input__inner:focus, .el-input__inner:hover {
+        border-color: #dcdfe6;
+      }
     }
 </style>

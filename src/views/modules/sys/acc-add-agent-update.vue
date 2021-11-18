@@ -107,12 +107,12 @@
                         const { username, agentId, nickname, phone, email, id, gender } = record
                         this.accountdataForm = {
                             username,
-                            agentId,
+                            agentId: agentId + '',
                             nickname,
                             phone,
                             email,
                             id: id + '',
-                            gender: gender || 1
+                            gender
                         }
                     }
                 })

@@ -204,7 +204,7 @@
 <style lang="scss">
     #getoldCode,
     #getnewCode {
-        width: 30%;
+        width: 120px;
         height: 42px;
         text-align: center;
         cursor: pointer;

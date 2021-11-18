@@ -322,8 +322,8 @@ export default {
         this.getAgentDeskInfo()
         this.myRechargeList()
         this.findAgentPackage()
-        this.rejectVisibie()
-        this.remarkDialog()
+        // this.rejectVisibie()
+        // this.remarkDialog()
         this.updatePwd()
     },
     methods: {

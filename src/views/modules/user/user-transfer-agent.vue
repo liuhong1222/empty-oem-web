@@ -14,8 +14,27 @@
                 <el-input v-model="transferForm.transferAgent"></el-input>
             </el-form-item> -->
             <el-form-item label="转入代理商：" prop="transferAgent">
-                <el-autocomplete style="width:100%" class="inline-input" v-model="transferForm.transferAgent"
-                    :fetch-suggestions="querySearch" placeholder="请输入需要转入的代理商"></el-autocomplete>
+                <!-- <el-autocomplete style="width:100%" class="inline-input" v-model="transferForm.transferAgent"
+                    :fetch-suggestions="querySearch" placeholder="请输入需要转入的代理商"></el-autocomplete> -->
+                <el-select
+                    v-model="transferForm.transferAgent"
+                    filterable
+                    remote
+                    style="width:100%"
+                    clearable
+                    reserve-keyword
+                    placeholder="请输入代理商名称"
+                    :remote-method="getAgentList"
+                    :loading="agentSearchLoading"
+                >
+                    <el-option
+                        v-for="(item, index) in agentList"
+                        :key="index"
+                        :label="item.companyName"
+                        :value="item.id + ''"
+                    >
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="备注">
                 <el-input type="textarea" v-model="transferForm.remark" placeholder="请输入备注..."></el-input>
@@ -51,14 +70,16 @@
                     transferAgent: [
                         { required: true, message: '请输入需要转入的代理商', trigger: 'change' }
                     ],
-                }
+                },
+                agentList: [],
+                agentSearchLoading: false,
             }
         },
 
         watch: {
-            'transferForm.transferAgent'() {
-                this.getAgentList()
-            }
+            // 'transferForm.transferAgent'() {
+            //     this.getAgentList()
+            // }
 
         },
         methods: {
@@ -85,22 +106,19 @@
                             url: this.$http.adornUrl(`agent/user/changeAgent?token=${this.$cookie.get('token')}`),
                             method: 'post',
                             params: this.$http.adornParams({
-                                'creUserId': this.transferForm.creUserId + '',
-                                'outAgentName': this.transferForm.currAgent,
-                                'inAgentName': this.transferForm.transferAgent,
+                                'customerId': this.transferForm.creUserId + '',
+                                // 'outAgentName': this.transferForm.currAgent,
+                                'destAgentId': this.transferForm.transferAgent,
                                 'remark': this.transferForm.remark
                             })
                         }).then(({ data }) => {
                             if (data && data.code === 0) {
-                                // console.log(data)
+                                this.transferVisible = false
+                                this.$emit('refreshDataList')
                                 this.$message({
                                     message: '操作成功',
                                     type: 'success',
-                                    duration: 1500,
-                                    onClose: () => {
-                                        this.transferVisible = false
-                                        this.$emit('refreshDataList')
-                                    }
+                                    duration: 1500
                                 })
                             } else {
                                 this.$message.error(data.msg);
@@ -109,35 +127,53 @@
                     }
                 })
             },
-            getAgentList() {
-                this.csvS = [];
+            // 获取代理商列表
+            getAgentList(name) {
+                this.agentSearchLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/user/findCompanyName?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
-                        'inAgentName': this.transferForm.transferAgent
+                        name: name || undefined
                     })
                 }).then(({ data }) => {
+                    this.agentSearchLoading = false
                     if (data && data.code === 0) {
-                        this.csvList = data.data.list
-                        var len = this.csvList.length;
-                        var arr = [];
-                        for (var i = 0; i < len; i++) { //根据输入框中inputName的值进行模糊匹配
-                            if (this.csvList[i].indexOf(this.transferForm.transferAgent) >= 0) {
-                                arr.push(this.csvList[i]);//符合条件的值都放入arr中
-                            }
-                        }
-                        //el-autocomplete元素要求数组内是对象
-                        for (var i = 0; i < arr.length; i++) {
-                            var obj = { value: "" };
-                            obj.value = arr[i];
-                            this.csvS.push(obj);
-                        }
+                        this.agentList = data.data || []
                     } else {
-                        this.$message.error(data.msg);
+                        this.agentList = []
                     }
                 })
             },
+            // getAgentList() {
+                // this.csvS = [];
+                // this.$http({
+                //     url: this.$http.adornUrl(`agent/user/findCompanyName?token=${this.$cookie.get('token')}`),
+                //     method: 'get',
+                //     params: this.$http.adornParams({
+                //         'inAgentName': this.transferForm.transferAgent
+                //     })
+                // }).then(({ data }) => {
+                //     if (data && data.code === 0) {
+                //         this.csvList = data.data.list
+                //         var len = this.csvList.length;
+                //         var arr = [];
+                //         for (var i = 0; i < len; i++) { //根据输入框中inputName的值进行模糊匹配
+                //             if (this.csvList[i].indexOf(this.transferForm.transferAgent) >= 0) {
+                //                 arr.push(this.csvList[i]);//符合条件的值都放入arr中
+                //             }
+                //         }
+                //         //el-autocomplete元素要求数组内是对象
+                //         for (var i = 0; i < arr.length; i++) {
+                //             var obj = { value: "" };
+                //             obj.value = arr[i];
+                //             this.csvS.push(obj);
+                //         }
+                //     } else {
+                //         this.$message.error(data.msg);
+                //     }
+                // })
+            // },
             closeTrsdialog() {
                 this.inputName = "";
                 this.transferForm.remark = ""

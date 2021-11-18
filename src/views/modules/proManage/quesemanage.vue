@@ -76,7 +76,7 @@
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+            <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
                 :page-sizes="[10, 20,30,50]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
@@ -148,10 +148,10 @@
                         'pageSize': this.pageSize,
                         'queryType': this.quesDataForm.searchType,
                         'content': this.quesDataForm.searchKey,
-                        'status': this.quesDataForm.status,
-                        'auditState': this.quesDataForm.auditStatus,
-                        'startDate': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[0],
-                        'endDate': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[1]
+                        'state': this.quesDataForm.status,
+                        'applyState': this.quesDataForm.auditStatus,
+                        'startTime': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[0],
+                        'endTime': '' || this.quesDataForm.dateTime == null ? '' : this.quesDataForm.dateTime[1]
                     })
                 }).then(({ data }) => {
                     this.dataListLoading = false;

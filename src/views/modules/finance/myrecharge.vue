@@ -17,7 +17,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary" @click="myRechargeList()">查询</el-button>
+                    <el-button type="primary" @click="myRechargeList(1)">查询</el-button>
                     <el-button type="primary" @click="exportMyReg()" :disabled="disabled">导出</el-button>
                 </el-form-item>
             </el-form>
@@ -47,7 +47,7 @@
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10,20,30,50]"
+            <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10,20,30,50]"
                 :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
@@ -78,11 +78,12 @@
             }
         },
         activated() {
-            this.myRechargeList()
+            this.myRechargeList(1)
         },
         methods: {
-            myRechargeList() {
+            myRechargeList(currPage) {
                 this.dataListLoading = true
+                this.pageIndex = currPage || this.pageIndex
                 this.$http({
                     url: this.$http.adornUrl(`agent/finance/agent/recharge/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
@@ -95,7 +96,6 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // console.log(data)
                         this.agentRegTableData = data.data.list
                         this.totalPage = data.data.total
                         this.money = data.data.totalInfo.money

@@ -8,8 +8,8 @@
                 </el-form-item>
                 <el-form-item label="产品线名称">
                     <el-select v-model="proLineForm.proLineName" placeholder="请选择产品线名称">
-                        <el-option v-for="item in proLineNameArr" :label="item.productName" :key="item.id"
-                            :value="item.id"></el-option>
+                        <el-option v-for="item in proLineNameArr" :label="item.productName" :key="item.id + ''"
+                            :value="item.id + ''"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="选择日期：">
@@ -44,7 +44,10 @@
                 </el-table-column>
                 <el-table-column prop="name" label="产品名称" align="center">
                 </el-table-column>
-                <el-table-column prop="icon" label="icon图片" align="center">
+                <el-table-column prop="icon" label="icon图片" width="120" align="center">
+                    <template slot-scope="{ row }">
+                        <img v-if="row.icon" :src="$imgPreStr + row.icon" alt="icon" style="width: 100px;" />
+                    </template>
                 </el-table-column>
                 <el-table-column prop="state" label="状态" align="center">
                     <template slot-scope="{ row }">
@@ -81,7 +84,7 @@
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+            <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
                 :page-sizes="[10, 20,30,50]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
@@ -167,8 +170,8 @@
                         'productLineId': this.proLineForm.proLineName,
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'auditStatus': this.proLineForm.auditStatus,
-                        'shelfStatus': this.proLineForm.status,
+                        'applyState': this.proLineForm.auditStatus,
+                        'state': this.proLineForm.status,
                         'startTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[0],
                         'endTime': '' || this.proLineForm.dateTime == null ? '' : this.proLineForm.dateTime[1]
                     })

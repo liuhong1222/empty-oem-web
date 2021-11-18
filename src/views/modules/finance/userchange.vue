@@ -44,7 +44,7 @@
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+            <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
                 :page-sizes="[10,20,30,50]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
@@ -81,7 +81,7 @@
             transferAgentList(cur) {
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/user/changeAgentList?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/user/getPageList?token=${this.$cookie.get('token')}`),
                     method: 'post',
                     params: this.$http.adornParams({
                         'currentPage': cur || this.pageIndex,

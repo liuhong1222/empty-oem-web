@@ -85,7 +85,7 @@
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+            <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
                 :page-sizes="[10, 20,30,50]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
@@ -393,12 +393,14 @@
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
                             this.disableVisible = false
+                            this.$message.success('操作成功')
                             this.getDataList()
                         } else {
                             this.$message.error(data.msg)
                         }
                     })
-                } else if (this.disableTitlt == '启用') {
+                }
+                if (this.disableTitlt == '启用') {
                     this.$http({
                         url: this.$http.adornUrl(`agent/agentInfo/resume?token=${this.$cookie.get('token')}`),
                         method: 'post',
@@ -407,6 +409,7 @@
                         })
                     }).then(({ data }) => {
                         if (data && data.code === 0) {
+                            this.$message.success('操作成功')
                             this.disableVisible = false
                             this.getDataList()
                         } else {

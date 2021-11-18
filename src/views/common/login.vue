@@ -138,7 +138,7 @@ export default {
               } else if (data.roleIdList[0] == 2) {
                 this.$router.replace({ name: "console-agent" });
                 sessionStorage.setItem("msjRoleName", "2");
-                this.auditStatus();
+                // this.auditStatus();
               }
             } else {
               this.$message.error(data.msg);

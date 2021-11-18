@@ -60,6 +60,7 @@
         </div>
         <div class="agentPage">
             <el-pagination
+                :key="pageIndex"
                 @size-change="sizeChangeHandle"
                 @current-change="currentChangeHandle"
                 :current-page="pageIndex"

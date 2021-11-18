@@ -41,6 +41,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="icon" label="icon图片" align="center" width="110">
+                    <template slot-scope="{ row }">
+                        <img v-if="row.icon" :src="$imgPreStr + row.icon" alt="icon" style="width: 100px;" />
+                    </template>
                 </el-table-column>
                 <el-table-column prop="name" label="产品线名称" align="center">
                 </el-table-column>
@@ -61,16 +64,16 @@
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="update(scope.row)" :disabled="[1, 2].includes(scope.row.apply_state) ? true : false">编辑</el-button>
-                        <el-button type="text" size="small" @click="onOrOff(scope.row)">{{scope.row.state == 1
+                        <el-button type="text" size="small" @click="update(scope.row)" :disabled="[1, 2, 5].includes(scope.row.apply_state) ? true : false">编辑</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.apply_state === 5" @click="onOrOff(scope.row)">{{scope.row.state == 1
                             ? '下架' : '上架' }}</el-button>
-                        <el-button type="text" size="small" @click="del(scope.row.id)">删除</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.apply_state === 5" @click="del(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <div class="agentPage">
-            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+            <el-pagination :key="pageIndex" @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
                 :page-sizes="[10, 20,30,50]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
         </div>
