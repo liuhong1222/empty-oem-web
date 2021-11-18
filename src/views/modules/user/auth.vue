@@ -118,8 +118,8 @@
             </el-form>
             <div slot="footer" v-if="rowobj['state'] == 0" class="dialog-footer">
                 <el-button @click="dialogRowVisible = false">取 消</el-button>
-                <el-button type="primary" @click="handleAudit(9)">驳回</el-button>
-                <el-button type="primary" @click="handleAudit(1)">通过</el-button>
+                <el-button type="primary" @click="handleAudit(1)">驳回</el-button>
+                <el-button type="primary" @click="handleAudit(9)">通过</el-button>
             </div>
         </el-dialog>
     </div>
@@ -153,8 +153,8 @@ export default {
       },
       stateMap: {
         '0': '待审核',
-        '1': '已认证',
-        '9': '已驳回',
+        '9': '已认证',
+        '1': '已驳回',
       },
     }
   },

@@ -27,17 +27,17 @@
             <el-table :data="transferTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column prop="mobile" label="手机号码" align="center" width="110">
+                <el-table-column prop="phone" label="手机号码" align="center" width="110">
                 </el-table-column>
-                <el-table-column prop="custName" label="客户名称" align="center">
+                <el-table-column prop="name" label="客户名称" align="center">
                 </el-table-column>
                 <el-table-column prop="registerTime" label="注册时间" align="center">
                 </el-table-column>
-                <el-table-column prop="outAgentName" label="转出代理商" align="center">
+                <el-table-column prop="sourceCompanyName" label="转出代理商" align="center">
                 </el-table-column>
-                <el-table-column prop="inAgentName" label="转入代理商" align="center">
+                <el-table-column prop="destCompanyName" label="转入代理商" align="center">
                 </el-table-column>
-                <el-table-column prop="createTime" label="操作时间" align="center">
+                <el-table-column prop="updateTime" label="操作时间" align="center">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center" width="250">
                 </el-table-column>
@@ -83,15 +83,15 @@
                 this.$http({
                     url: this.$http.adornUrl(`agent/user/getPageList?token=${this.$cookie.get('token')}`),
                     method: 'post',
-                    params: this.$http.adornParams({
+                    data: {
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
-                        'outAgentName': this.transferSearchData.agentName,
-                        'inAgentName': this.transferSearchData.transferAgent,
-                        'mobile': this.transferSearchData.mobile,
+                        'sourceAgentName': this.transferSearchData.agentName,
+                        'destAgentName': this.transferSearchData.transferAgent,
+                        'phone': this.transferSearchData.mobile,
                         'startTime': '' || this.transferSearchData.dateTime == null ? '' : this.transferSearchData.dateTime[0],
                         'endTime': '' || this.transferSearchData.dateTime == null ? '' : this.transferSearchData.dateTime[1]
-                    })
+                    }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         if (cur == 1) {
@@ -137,7 +137,7 @@
                         endTime = this.transferSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`agent/user/changeAgentListExport?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&outAgentName=${this.transferSearchData.agentName}&inAgentName=${this.transferSearchData.transferAgent}&mobile=${this.transferSearchData.mobile}&startTime=${startTime}&endTime=${endTime}`))
+                window.open(this.$http.adornUrl(`agent/user/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&sourceAgentName=${this.transferSearchData.agentName}&destAgentName=${this.transferSearchData.transferAgent}&phone=${this.transferSearchData.mobile}&startTime=${startTime}&endTime=${endTime}`))
 
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {

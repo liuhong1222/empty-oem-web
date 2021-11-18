@@ -641,9 +641,10 @@ export default {
         warnFormSubmit() {
             this.$refs['warinform'].validate((valid) => {
                 if (valid) {
-                    let field = this.warnEditType === '空号' ? 'xxx' : 'xxxxx'
+                    let field = this.warnEditType === '空号' ? 'warnNumber' : 'realtimeWarnNumber'
+                    let apiPath = this.warnEditType === '空号' ? 'updateWarnNumber' : 'updateRealtimeWarnNumber'
                     this.$http({
-                        url: this.$http.adornUrl(`agent/desk/updateWarnNumber?token=${this.$cookie.get('token')}`),
+                        url: this.$http.adornUrl(`agent/desk/${apiPath}?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
                             [field]: this.warinform.counts,

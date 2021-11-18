@@ -105,7 +105,7 @@
                         this.$http({
                             url: this.$http.adornUrl(`agent/user/changeAgent?token=${this.$cookie.get('token')}`),
                             method: 'post',
-                            params: this.$http.adornParams({
+                            data: ({
                                 'customerId': this.transferForm.creUserId + '',
                                 // 'outAgentName': this.transferForm.currAgent,
                                 'destAgentId': this.transferForm.transferAgent,

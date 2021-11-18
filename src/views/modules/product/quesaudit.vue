@@ -130,8 +130,8 @@
                         'content': this.quesAuditForm.searchKey,
                         'state': this.quesAuditForm.status,
                         'applyState': this.quesAuditForm.auditStatus,
-                        'startDate': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[0],
-                        'endDate': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[1]
+                        'startTime': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[0],
+                        'endTime': '' || this.quesAuditForm.dateTime == null ? '' : this.quesAuditForm.dateTime[1]
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {

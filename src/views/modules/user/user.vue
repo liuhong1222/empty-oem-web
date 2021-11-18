@@ -39,7 +39,7 @@
                     <el-input v-model="searchData.custName" style="width: 180px;" placeholder="请输入客户名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="代理商：" v-if="disableAgent">
-                    <el-input v-model="searchData.agentName" @input="getAgenListByName()" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
+                    <el-input v-model="searchData.agentName" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="注册IP：">
                     <el-input v-model="searchData.registerIp" style="width: 180px;" placeholder="请输入注册IP" clearable></el-input>
@@ -100,7 +100,7 @@
                                 <el-dropdown-item :disabled="scope.row.canPresent == 'false' || regDisabled" command="give">注册赠送</el-dropdown-item>
                                 <el-dropdown-item command="viewRechargeRecord">查看历史充值记录</el-dropdown-item>
                                 <el-dropdown-item command="interface">{{scope.row.apiState === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
-                                <el-dropdown-item :disabled="isAdmin || scope.row.authenLevel !== 3" command="authLevel">设置用户认证等级</el-dropdown-item>
+                                <el-dropdown-item :disabled="isAdmin || scope.row.authenticationLimitLevel != 3 || agentInfo.authenticationLimitLevel != 3" command="authLevel">设置用户认证等级</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>
@@ -185,6 +185,7 @@ export default {
       },
       agentList: [],
       isAdmin: false,
+      agentInfo: {},
     };
   },
   components: {
@@ -214,6 +215,7 @@ export default {
       this.regDisabled = false;
       this.refundDisabled = false;
       this.transferDisabled = true;
+      this.agentInfo = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}')
     }
     if (sessionStorage.getItem("msjRoleName") == "1") {
       // 管理员
@@ -270,13 +272,14 @@ export default {
           ip: this.searchData.registerIp,
           email: this.searchData.email,
           haveRecharged: this.searchData.rechargeState,
-          agentList: this.agentList,
+          // agentList: this.agentList,
+          agentName: this.searchData.agentName
         },
       }).then(({ data }) => {
         if (data && data.code === 0) {
-          this.userTableData = data.data.list;
-          this.totalPage = data.data.total;
-          if (data.data.list.length == 0) {
+          this.userTableData = data.data.list || []
+          this.totalPage = data.data.total || 0
+          if (this.userTableData.length == 0) {
             this.disabled = true;
           } else {
             this.disabled = false;

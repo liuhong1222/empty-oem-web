@@ -50,6 +50,9 @@ export default {
             this.authLevelVisible = true;
             this.$nextTick(() => {
                 this.$refs['authLevelform'].resetFields();
+                this.authLevelform = {
+                    authLevel: record.authenticationLimitLevel || undefined
+                }
             })
             // msjRoleName 1：管理员 2：代理商
             this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
@@ -63,8 +66,9 @@ export default {
         authLevelFormSubmit() {
             this.$refs['authLevelform'].validate((valid) => {
                 if (valid) {
+                    let apiPath = this.isAdmin ? 'agent/desk/setAuthenLevel' : 'agent/cust/setAuthenLevel'
                     this.$http({
-                        url: this.$http.adornUrl(`agent/desk/setAuthenLevel?token=${this.$cookie.get('token')}`),
+                        url: this.$http.adornUrl(`${apiPath}?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
                             'authenLevel': this.authLevelform.authLevel,
