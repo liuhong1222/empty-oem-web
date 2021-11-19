@@ -5,11 +5,11 @@
                 <div class="grid-content bg-purple" style="height: 490px;">
                     <h2>嗨！{{ agentInfo.userName }}</h2>
                     <ul class="cf basic-mess">
-                        <li v-for="(item, index) in basicList" :key="index">
-                            <p>{{item.title}}</p>
+                        <li v-for="(item, index) in basicList" :style="item.liStyles || {}" :key="index">
+                            <p v-if="!['邮箱', '手机号'].includes(item.title)">{{item.title}}</p>
                             <div class="statistic-data" :style="item.isFontSmall ? { fontSize: '14px' } : {}">{{deskInfo[item.field]}}</div>
-                            <button class="edit-btn" v-show="item.flag" @click="handleOneCardClick(index, item)">
-                                {{ item.title === '邮箱' && (deskInfo[item.field] === '' || !deskInfo[item.field]) ? '添加' : item.btnText }}
+                            <button class="edit-btn" :style="item.styles || {}" v-show="item.flag" @click="handleOneCardClick(index, item)">
+                                {{ item.title === '邮箱' && (deskInfo[item.field] === '' || !deskInfo[item.field]) ? '添加邮箱' : item.btnText }}
                             </button>
                         </li>
                         <li class="btns-wrapper">
@@ -231,8 +231,8 @@ export default {
                 { title: '实时代理价（元/条）', field: 'realPrice', btnText: '', flag: false },
                 { title: '实时余额（万条）', field: 'realtimeBalance', btnText: '充值', flag: true },
                 { title: '实时预警值（万条）', field: 'realWarningsNumber', btnText: '修改', flag: true },
-                { title: '手机号', field: 'mobile', btnText: '更改', flag: true, isFontSmall: true },
-                { title: '邮箱', field: 'email', btnText: '更改', flag: true, isFontSmall: true }
+                { title: '手机号', field: 'mobile', liStyles: { height: '118px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }, styles: { borderColor: '#409EFF', width: '80px', height: '28px', background: '#409EFF' }, btnText: '更改手机号', flag: true, isFontSmall: true },
+                { title: '邮箱', field: 'email', liStyles: { height: '118px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }, styles: { borderColor: '#409EFF', width: '80px', height: '28px', background: '#409EFF' }, btnText: '更改邮箱', flag: true, isFontSmall: true }
             ],
             emptyCustomList: [
                 { title: '客户数量', field: 'custNums' },
@@ -695,53 +695,60 @@ export default {
     float: left;
     width: 33%;
     margin-bottom: 10px;
-    text-align: center;
+    // text-align: center;
     word-break: break-all;
     word-wrap: break-word;
-  }
-
-  .basic-mess li:nth-child(3) .statistic-data,
-  .basic-mess li:nth-child(6) .statistic-data {
-    color: #fd862e;
+    padding-left: 12px;
+     > p {
+         color: #717D8F;
+        font-size: 12px;
+     }
   }
 
   .basic-mess li:nth-child(7) .statistic-data,
   .basic-mess li:nth-child(8) .statistic-data {
-    color: #666;
     font-size: 18px;
   }
 
   .basic-mess .statistic-data {
     width: 100%;
     border: none;
-    text-align: center;
+    // text-align: center;
     display: block;
     font-size: 24px;
-    color: #4680ff;
+    color: #000;
     font-weight: 700;
     margin-bottom: 10px;
   }
 
+    .basic-mess li button:hover {
+        background-color: #FF5B68;
+        color: #fff;
+        border-color: #FF5B68;
+        cursor: pointer;
+    }
   .edit-btn {
     outline: none;
-    background-color: #fff;
-    width: 48px;
-    height: 24px;
-    border: solid 1px #999999;
-    color: #7b7b7b;
+    background-color: #FF5B68;
+    width: 60px;
+    height: 32px;
+    border: solid 1px #FF5B68;
+    color: #fff;
     font-size: 12px;
+    border-radius: 2px;
   }
 
-  .edit-btn.copyLink {
-    width: 118px;
-    height: 36px;
+  .basic-mess li .edit-btn.copyLink {
+    width: 108px;
+    height: 32px;
     border: none;
     margin-bottom: 20px;
-    background-color: #4680ff;
+    background-color: #409EFF;
     border-radius: 2px;
     font-size: 12px;
     color: #fff;
     cursor: pointer;
+    border-radius: 2px;
   }
 
 </style>

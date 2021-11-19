@@ -40,15 +40,15 @@
                         <span>{{ Math.round((scope.row.size || 0) / 1024) + 'KB' }}</span>
                     </template>
                 </el-table-column> -->
-                <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
+                <el-table-column min-width="120" prop="totalNumber" label="总条数" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="realNumber" label="实号包（条）" align="center">
+                <el-table-column min-width="120" prop="realNumber" label="实号包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="silentNumber" label="沉默包（条）" align="center">
+                <el-table-column min-width="120" prop="silentNumber" label="沉默包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="emptyNumber" label="空号包（条）" align="center">
+                <el-table-column min-width="120" prop="emptyNumber" label="空号包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
+                <el-table-column min-width="120" prop="riskNumber" label="风险包（条）" align="center">
                 </el-table-column>
                 <!-- <el-table-column width="120" prop="checkType" label="接口" align="center">
                     <template slot-scope="scope">
@@ -64,11 +64,11 @@
                 </el-table-column>
                 <el-table-column width="120" prop="unknownNumber" label="号池未匹配" align="center">
                 </el-table-column> -->
-                <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
+                <el-table-column min-width="120" prop="illegalNumber" label="无效数" align="center">
                 </el-table-column>
-                <el-table-column width="150" prop="createTime" label="创建时间" align="center">
+                <el-table-column min-width="150" prop="createTime" label="创建时间" align="center">
                 </el-table-column>
-                <el-table-column width="150" prop="updateTime" label="完成时间" align="center">
+                <el-table-column min-width="150" prop="updateTime" label="完成时间" align="center">
                 </el-table-column>
             </el-table>
         </div>
