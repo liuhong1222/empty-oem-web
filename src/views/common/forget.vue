@@ -5,7 +5,7 @@
                 <img src="~@/assets/img/lo_pic.jpg" alt="">
             </div>
             <div class="login-main">
-                <img src="~@/assets/img/logo.png" alt="">
+                <!-- <img src="~@/assets/img/logo.png" alt=""> -->
                 <div class="context">
                     <span></span>
                     <h3 class="login-title">找回密码</h3>
@@ -218,7 +218,7 @@
             float: right;
         }
         >.context {
-            margin-top: 90px;
+            margin-top: 50px;
             margin-bottom: 25px;
             >span {
                 width: 4px;
