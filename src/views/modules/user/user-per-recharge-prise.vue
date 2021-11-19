@@ -162,7 +162,7 @@
                 this.$nextTick(() => {
                     this.$refs['rechargeRef'].resetFields()
                     this.rechargeDataForm = {
-                        creUserId: record.customerId,
+                        creUserId: record.customerId + '',
                         userName: record.name,
                         category: 0
                     }

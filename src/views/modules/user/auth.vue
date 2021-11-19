@@ -17,8 +17,8 @@
                 <el-form-item label="手机号：">
                     <el-input v-model="searchobj.phone" placeholder="手机号" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="公司名称：">
-                    <el-input v-model="searchobj.companyName" placeholder="公司名称" clearable></el-input>
+                <el-form-item label="客户名称：">
+                    <el-input v-model="searchobj.companyName" placeholder="客户名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="审核状态：">
                     <el-select v-model="searchobj.state" placeholder="审核状态">
@@ -38,7 +38,7 @@
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号" ></el-table-column>
                 <el-table-column prop="createTime" align="left" label="提交时间"></el-table-column>
                 <el-table-column prop="phone" align="left" label="手机号"></el-table-column>
-                <el-table-column prop="companyName" align="left" label="公司名称"></el-table-column>
+                <el-table-column prop="companyName" align="left" label="客户名称"></el-table-column>
                 <el-table-column prop="companyAddress" align="left" label="地址"></el-table-column>
                 <el-table-column prop="state" align="left" label="审核状态">
                   <template slot-scope="scope">
