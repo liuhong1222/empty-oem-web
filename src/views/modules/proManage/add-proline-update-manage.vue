@@ -182,9 +182,7 @@
                     reader.readAsDataURL(file);
                 });
 
-                // todo 取消图片限制注释
-                // return isJPG && isLt2M && imgSize;
-                return isJPG && isLt2M;
+                return isJPG && isLt2M && imgSize;
             },
             handleAvatarSuccessIcon(res, file) {
                 this.iconUrl = res.data.licenseUrl

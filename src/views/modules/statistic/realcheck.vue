@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>空号检测记录</h2>
+            <h2>实时检测记录</h2>
             <el-form :inline="true">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="searchData.createTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
@@ -37,35 +37,41 @@
                 </el-table-column>
                 <el-table-column width="120" prop="size" label="文件大小" align="center">
                     <template slot-scope="scope">
-                        <span>{{ Math.round((scope.row.size || 0) / 1024) + 'KB' }}</span>
+                        <span>{{ computeFileSize(scope.row.size) }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column width="120" prop="realNumber" label="实号包（条）" align="center">
+                <el-table-column width="120" prop="line" label="检测数" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="silentNumber" label="沉默包（条）" align="center">
+                <el-table-column width="120" prop="normal" label=" 正常" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="emptyNumber" label="空号包（条）" align="center">
+                <el-table-column width="120" prop="numberPortability" label=" 正常(携号转网)" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
+                <el-table-column width="120" prop="empty" label=" 空号" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="checkType" label="接口" align="center">
+                <el-table-column width="120" prop="onCall" label=" 通话中" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="onlineButNotAvailable" label=" 不在网(空号)" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="shutdown" label=" 关机" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="suspectedShutdown" label="疑似关机" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="serviceSuspended" label=" 停机" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="unknown" label=" 号码错误" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="exceptionFailCount" label=" 未知" align="center">
                     <template slot-scope="scope">
-                        <span>{{ checkTypeMap[scope.row.checkType] || '' }}</span>
+                        <span>{{ scope.row.exceptionFailCount || 0 }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column width="120" prop="line" label="接口检测数" align="center">
+                <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="poolNumber" label="号池检测数" align="center">
-                    <template slot-scope="{ row }">
-                        <span>{{ row.totalNumber - row.unknownNumber }}</span>
+                <!-- <el-table-column width="120" prop="checkType" label=" 接口" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.checkType === 0 ? 'CL' : '' }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column width="120" prop="unknownNumber" label="号池未匹配" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column width="150" prop="createTime" label="创建时间" align="center">
                 </el-table-column>
                 <el-table-column width="150" prop="updateTime" label="完成时间" align="center">
@@ -81,9 +87,12 @@
 </template>
 
 <script>
+    import { computeFileSize } from '@/utils'
     export default {
         data() {
             return {
+                computeFileSize,
+                totalCount: 0,
                 dataListLoading: false,
                 searchData: {
                     createTime: [],
@@ -91,19 +100,11 @@
                     customerName: '',
                     phone: ''
                 },
-                totalInfo: {},
-                tableData: [],
+                tableData: [{ totalNumber: 1000, unknownNumber: 100, id: 1 }],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
                 agentList: [],
-                checkTypeMap: {
-                    '0': 'QY-old',
-                    '1': 'QY-new',
-                    '2': 'BSP',
-                    '3': 'CL',
-                    '4': 'JD',
-                },
                 isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
@@ -116,7 +117,7 @@
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/empty/getPageList`),
+                    url: this.$http.adornUrl(`agent/realtimeCheck/getPageList`),
                     method: 'post',
                     data: {
                         'token': this.$cookie.get('token'),
@@ -132,7 +133,7 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalInfo = data.data.totalInfo || {}
+                        this.totalCount = data.data.totalInfo.totalSize
                     } else {
                         this.tableData = []
                         this.totalPage = 0
@@ -180,11 +181,7 @@
                         return;
                     }
                     if (column.property === 'line') {
-                        sums[index] = `接口${this.totalInfo.lineTotal}条`
-                    } else if (column.property === 'poolNumber') {
-                        sums[index] = `号池${this.totalInfo.poolTotal}条`
-                    } else if (column.property === 'totalNumber') {
-                        sums[index] = `共${this.totalInfo.totalSize}条`
+                        sums[index] = `共${this.totalCount}条`
                     } else {
                         sums[index] = '';
                     }

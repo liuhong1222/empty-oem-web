@@ -54,9 +54,7 @@ export function treeDataTranslate (data, id = 'id', pid = 'parentId') {
 // }
 /**
  * 格式化日期
- * @param {*} data
- * @param {*} id
- * @param {*} pid
+ * @param {*} date
  */
 export function formatDate (date) {
   let seperator1 = '-'
@@ -70,4 +68,21 @@ export function formatDate (date) {
     strDate = '0' + strDate
   }
   return year + seperator1 + month + seperator1 + strDate
+}
+
+/**
+ * 计算文件大小
+ * @param {*} size
+ */
+export function computeFileSize (size) {
+  size = +size
+  if (!size) {
+    return '0KB'
+  }
+  let formatSize = (size / 1024).toFixed(2)
+  formatSize = +formatSize
+  if (formatSize < 1) {
+    return '< 1KB'
+  }
+  return formatSize + 'KB'
 }

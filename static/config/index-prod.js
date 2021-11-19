@@ -5,7 +5,8 @@
   window.SITE_CONFIG = {}
 
   // api接口请求地址
-  window.SITE_CONFIG['baseUrl'] = 'http://172.16.42.144:8658/open/' // stable 环境
+  window.SITE_CONFIG['baseUrl'] = '/open/' // stable 环境
+  // window.SITE_CONFIG['baseUrl'] = 'http://172.16.42.144:8658/open/' // stable 环境 使用绝对路径因为前后端不在同一环境下会出现跨域的问题
   // window.SITE_CONFIG['baseUrl'] = 'http://oem.haifou.com/open/' // 线上
 
   // 资源路径

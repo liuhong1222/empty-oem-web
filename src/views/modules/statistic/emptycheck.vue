@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>空号检测API记录</h2>
+            <h2>空号检测记录</h2>
             <el-form :inline="true">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="searchData.createTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
@@ -31,14 +31,16 @@
                 </el-table-column>
                 <el-table-column width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center">
                 </el-table-column>
-                <el-table-column width="150" prop="phone" label=" 手机号码" align="center">
+                <el-table-column min-width="150" prop="phone" label=" 手机号码" align="center">
                 </el-table-column>
-                <el-table-column width="150" prop="name" label=" 文件名称" align="center">
+                <el-table-column min-width="150" prop="name" label=" 文件名称" align="center">
                 </el-table-column>
                 <el-table-column width="120" prop="size" label="文件大小" align="center">
                     <template slot-scope="scope">
-                        <span>{{ Math.round((scope.row.size || 0) / 1024) + 'KB' }}</span>
+                        <span>{{ computeFileSize(scope.row.size) }}</span>
                     </template>
+                </el-table-column>
+                <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
                 </el-table-column>
                 <el-table-column width="120" prop="realNumber" label="实号包（条）" align="center">
                 </el-table-column>
@@ -48,23 +50,21 @@
                 </el-table-column>
                 <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="checkType" label="接口" align="center">
+                <!-- <el-table-column width="120" prop="checkType" label="接口" align="center">
                     <template slot-scope="scope">
                         <span>{{ checkTypeMap[scope.row.checkType] || '' }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column width="120" prop="line" label="接口检测数" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="poolNumber" label="号池检测数" align="center">
+                </el-table-column> -->
+                <!-- <el-table-column width="120" prop="line" label="接口检测数" align="center">
+                </el-table-column> -->
+                <!-- <el-table-column width="120" prop="poolNumber" label="号池检测数" align="center">
                     <template slot-scope="{ row }">
                         <span>{{ row.totalNumber - row.unknownNumber }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column width="120" prop="unknownNumber" label="号池未匹配" align="center">
-                </el-table-column>
+                </el-table-column> -->
+                <!-- <el-table-column width="120" prop="unknownNumber" label="号池未匹配" align="center">
+                </el-table-column> -->
                 <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
                 </el-table-column>
                 <el-table-column width="150" prop="createTime" label="创建时间" align="center">
                 </el-table-column>
@@ -81,9 +81,11 @@
 </template>
 
 <script>
+    import { computeFileSize } from '@/utils'
     export default {
         data() {
             return {
+                computeFileSize,
                 dataListLoading: false,
                 searchData: {
                     createTime: [],
@@ -92,7 +94,7 @@
                     phone: ''
                 },
                 totalInfo: {},
-                tableData: [{ totalNumber: 1000, unknownNumber: 100, id: 1 }],
+                tableData: [],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
@@ -116,7 +118,7 @@
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/empty/getEmptyApiList`),
+                    url: this.$http.adornUrl(`agent/empty/getPageList`),
                     method: 'post',
                     data: {
                         'token': this.$cookie.get('token'),
@@ -133,7 +135,6 @@
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
                         this.totalInfo = data.data.totalInfo || {}
-
                     } else {
                         this.tableData = []
                         this.totalPage = 0
@@ -180,11 +181,12 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'line') {
-                        sums[index] = `接口${this.totalInfo.lineTotal}条`
-                    } else if (column.property === 'poolNumber') {
-                        sums[index] = `号池${this.totalInfo.poolTotal}条`
-                    } else if (column.property === 'totalNumber') {
+                    // if (column.property === 'line') {
+                    //     sums[index] = `接口${this.totalInfo.lineTotal}条`
+                    // } else if (column.property === 'poolNumber') {
+                    //     sums[index] = `号池${this.totalInfo.poolTotal}条`
+                    // } else 
+                    if (column.property === 'totalNumber') {
                         sums[index] = `共${this.totalInfo.totalSize}条`
                     } else {
                         sums[index] = '';

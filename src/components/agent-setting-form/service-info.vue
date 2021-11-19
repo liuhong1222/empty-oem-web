@@ -136,22 +136,21 @@ export default {
                 return false;
             }
             var _this = this;
-            // todo 取消图片大小限制注释
             const imgSize = new Promise(function (resolve, reject) {
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     var image = new Image();
                     image.onload = function () {
-                        // var width = this.width;
-                        // var height = this.height;
-                        // if (width !== 100) {
-                        //     _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
-                        // if (height !== 100) {
-                        //     _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
+                        var width = this.width;
+                        var height = this.height;
+                        if (width !== 100) {
+                            _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
+                        if (height !== 100) {
+                            _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
                         resolve();
                     };
                     image.src = event.target.result;

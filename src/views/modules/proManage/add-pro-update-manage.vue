@@ -278,7 +278,6 @@
                     return false;
                 }
                 var _this = this;
-                // todo 取消图片限制注释
                 const imgSize = new Promise(function (resolve, reject) {
                     var reader = new FileReader();
                     reader.onload = function (event) {
@@ -286,14 +285,14 @@
                         image.onload = function () {
                             var width = this.width;
                             var height = this.height;
-                            // if (width !== 100) {
-                            //     _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
-                            //     reject();
-                            // }
-                            // if (height !== 100) {
-                            //     _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
-                            //     reject();
-                            // }
+                            if (width !== 100) {
+                                _this.$alert('图片长必须为100!', '提示', { confirmButtonText: '确定' });
+                                reject();
+                            }
+                            if (height !== 100) {
+                                _this.$alert('图片宽必须为100!', '提示', { confirmButtonText: '确定' });
+                                reject();
+                            }
                             resolve();
                         };
                         image.src = event.target.result;
@@ -301,8 +300,7 @@
                     reader.readAsDataURL(file);
                 });
 
-                // return isJPG && isLt2M && imgSize;
-                return isJPG;
+                return isJPG && isLt2M && imgSize;
             },
             handleAvatarSuccessIcon(res, file) {
                 this.iconUrl = res.data.licenseUrl

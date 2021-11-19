@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>实时检测API记录</h2>
+            <h2>空号检测API记录</h2>
             <el-form :inline="true">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="searchData.createTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
@@ -29,45 +29,42 @@
             <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center">
+                <el-table-column min-width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center">
                 </el-table-column>
-                <el-table-column width="150" prop="phone" label=" 手机号码" align="center">
+                <el-table-column min-width="150" prop="phone" label=" 手机号码" align="center">
                 </el-table-column>
-                <el-table-column width="150" prop="name" label=" 文件名称" align="center">
+                <!-- <el-table-column width="150" prop="name" label=" 文件名称" align="center">
                 </el-table-column>
                 <el-table-column width="120" prop="size" label="文件大小" align="center">
                     <template slot-scope="scope">
                         <span>{{ Math.round((scope.row.size || 0) / 1024) + 'KB' }}</span>
                     </template>
+                </el-table-column> -->
+                <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="line" label="检测数" align="center">
+                <el-table-column width="120" prop="realNumber" label="实号包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="normal" label=" 正常" align="center">
+                <el-table-column width="120" prop="silentNumber" label="沉默包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="numberPortability" label=" 正常(携号转网)" align="center">
+                <el-table-column width="120" prop="emptyNumber" label="空号包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="empty" label=" 空号" align="center">
+                <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
                 </el-table-column>
-                <el-table-column width="120" prop="onCall" label=" 通话中" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="onlineButNotAvailable" label=" 不在网(空号)" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="shutdown" label=" 关机" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="suspectedShutdown" label="疑似关机" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="serviceSuspended" label=" 停机" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="unknown" label=" 号码错误" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="exceptionFailCount" label=" 未知" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="checkType" label=" 接口" align="center">
+                <!-- <el-table-column width="120" prop="checkType" label="接口" align="center">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.checkType === 0 ? 'CL' : '' }}</span>
+                        <span>{{ checkTypeMap[scope.row.checkType] || '' }}</span>
                     </template>
+                </el-table-column>
+                <el-table-column width="120" prop="line" label="接口检测数" align="center">
+                </el-table-column>
+                <el-table-column width="120" prop="poolNumber" label="号池检测数" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ row.totalNumber - row.unknownNumber }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="120" prop="unknownNumber" label="号池未匹配" align="center">
+                </el-table-column> -->
+                <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
                 </el-table-column>
                 <el-table-column width="150" prop="createTime" label="创建时间" align="center">
                 </el-table-column>
@@ -87,7 +84,6 @@
     export default {
         data() {
             return {
-                totalCount: 0,
                 dataListLoading: false,
                 searchData: {
                     createTime: [],
@@ -95,11 +91,19 @@
                     customerName: '',
                     phone: ''
                 },
+                totalInfo: {},
                 tableData: [{ totalNumber: 1000, unknownNumber: 100, id: 1 }],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
                 agentList: [],
+                checkTypeMap: {
+                    '0': 'QY-old',
+                    '1': 'QY-new',
+                    '2': 'BSP',
+                    '3': 'CL',
+                    '4': 'JD',
+                },
                 isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
@@ -112,7 +116,7 @@
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
                 this.$http({
-                    url: this.$http.adornUrl(`agent/realtimeCheck/getApiList`),
+                    url: this.$http.adornUrl(`agent/empty/getEmptyApiList`),
                     method: 'post',
                     data: {
                         'token': this.$cookie.get('token'),
@@ -128,7 +132,8 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalCount = data.data.totalInfo.totalSize
+                        this.totalInfo = data.data.totalInfo || {}
+
                     } else {
                         this.tableData = []
                         this.totalPage = 0
@@ -175,8 +180,13 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'line') {
-                        sums[index] = `共${this.totalCount}条`
+                    // if (column.property === 'line') {
+                    //     sums[index] = `接口${this.totalInfo.lineTotal}条`
+                    // } else if (column.property === 'poolNumber') {
+                    //     sums[index] = `号池${this.totalInfo.poolTotal}条`
+                    // } else 
+                    if (column.property === 'totalNumber') {
+                        sums[index] = `共${this.totalInfo.totalSize}条`
                     } else {
                         sums[index] = '';
                     }

@@ -227,22 +227,21 @@ export default {
                 return false;
             }
             var _this = this;
-            // todo 取消图片大小限制注释
             const imgSize = new Promise(function (resolve, reject) {
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     var image = new Image();
                     image.onload = function () {
-                        // var width = this.width;
-                        // var height = this.height;
-                        // if (width !== 140) {
-                        //     _this.$alert('图片长必须为140!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
-                        // if (height !== 36) {
-                        //     _this.$alert('图片宽必须为36!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
+                        var width = this.width;
+                        var height = this.height;
+                        if (width !== 140) {
+                            _this.$alert('图片长必须为140!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
+                        if (height !== 36) {
+                            _this.$alert('图片宽必须为36!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
                         resolve();
                     };
                     image.src = event.target.result;
@@ -279,22 +278,21 @@ export default {
                 return false;
             }
             var _this = this;
-            // todo 取消图片大小限制注释
             const imgSize = new Promise(function (resolve, reject) {
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     var image = new Image();
                     image.onload = function () {
-                        // var width = this.width;
-                        // var height = this.height;
-                        // if (width !== 40) {
-                        //     _this.$alert('图片长必须为40!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
-                        // if (height !== 40) {
-                        //     _this.$alert('图片宽必须为40!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
+                        var width = this.width;
+                        var height = this.height;
+                        if (width !== 40) {
+                            _this.$alert('图片长必须为40!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
+                        if (height !== 40) {
+                            _this.$alert('图片宽必须为40!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
                         resolve();
                     };
                     image.src = event.target.result;
@@ -330,22 +328,21 @@ export default {
                 return false;
             }
             var _this = this;
-            // todo 取消图片大小限制注释
             const imgSize = new Promise(function (resolve, reject) {
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     var image = new Image();
                     image.onload = function () {
-                        // var width = this.width;
-                        // var height = this.height;
-                        // if (width !== 1261) {
-                        //     _this.$alert('图片长必须为1261!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
-                        // if (height !== 482) {
-                        //     _this.$alert('图片宽必须为482!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
+                        var width = this.width;
+                        var height = this.height;
+                        if (width !== 1261) {
+                            _this.$alert('图片长必须为1261!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
+                        if (height !== 482) {
+                            _this.$alert('图片宽必须为482!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
                         resolve();
                     };
                     image.src = event.target.result;
@@ -382,22 +379,21 @@ export default {
                 return false;
             }
             var _this = this;
-            // todo 取消图片大小限制注释
             const imgSize = new Promise(function (resolve, reject) {
                 var reader = new FileReader();
                 reader.onload = function (event) {
                     var image = new Image();
                     image.onload = function () {
-                        // var width = this.width;
-                        // var height = this.height;
-                        // if (width !== 169) {
-                        //     _this.$alert('图片长必须为169!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
-                        // if (height !== 168) {
-                        //     _this.$alert('图片宽必须为168!', '提示', { confirmButtonText: '确定' });
-                        //     reject();
-                        // }
+                        var width = this.width;
+                        var height = this.height;
+                        if (width !== 169) {
+                            _this.$alert('图片长必须为169!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
+                        if (height !== 168) {
+                            _this.$alert('图片宽必须为168!', '提示', { confirmButtonText: '确定' });
+                            reject();
+                        }
                         resolve();
                     };
                     image.src = event.target.result;
