@@ -388,7 +388,7 @@ export default {
         ip: this.searchData.registerIp,
         email: this.searchData.email,
         haveRecharged: this.searchData.rechargeState,
-        agentList: this.agentList,
+        agentName: this.searchData.agentName
       }
       // axios({
       //   method: 'POST',

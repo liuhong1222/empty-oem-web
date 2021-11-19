@@ -39,7 +39,7 @@
                 </el-table-column>
                 <el-table-column width="150" prop="dayInt" label="日期" align="center">
                 </el-table-column>
-                <el-table-column v-if="isAdmin" min-width="150" prop="agentName" label="代理商名称" align="center">
+                <el-table-column v-if="isAdmin" min-width="150" prop="companyName" label="代理商名称" align="center">
                 </el-table-column>
                 <el-table-column min-width="120" prop="custNum" label="用户数" align="center">
                     <template slot-scope="scope">
@@ -62,9 +62,9 @@
                             <span>{{ scope.row.emptyConsume || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="emptyRemainCount" label="剩余条数" align="center">
+                    <el-table-column width="120" prop="emptyCounts" label="剩余条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.emptyRemainCount || 0 }}</span>
+                            <span>{{ scope.row.emptyCounts || 0 }}</span>
                         </template>
                     </el-table-column>
                 </el-table-column>
@@ -74,9 +74,9 @@
                             <span>{{ scope.row.realtimeConsume || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="realRemainCount" label="剩余条数" align="center">
+                    <el-table-column width="120" prop="realtimeCounts" label="剩余条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.realRemainCount || 0 }}</span>
+                            <span>{{ scope.row.realtimeCounts || 0 }}</span>
                         </template>
                     </el-table-column>
                 </el-table-column>
@@ -91,6 +91,7 @@
 </template>
 
 <script>
+    import { formatDate } from '@/utils'
     export default {
         data() {
             return {
@@ -111,6 +112,11 @@
             // msjRoleName 1：管理员 2：代理商
             this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
             this.isAdmin && this.getAgentList()
+            let currDate = formatDate(new Date(new Date()-24*60*60*1000))
+            this.searchData = {
+                createDate: [currDate, currDate],
+                agentId: undefined,
+            }
             this.getTableData(1)
         },
         methods: {
@@ -145,7 +151,7 @@
                     url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
-                        name: name
+                        name: name || undefined
                     })
                 }).then(({ data }) => {
                     this.agentSearchLoading = false

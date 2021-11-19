@@ -8,26 +8,6 @@
                         value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item v-if="isAdmin" label="代理商名称：" style="margin-left:35px;">
-                    <el-select
-                        v-model="searchData.agentId"
-                        filterable
-                        remote
-                        clearable
-                        reserve-keyword
-                        placeholder="请输入代理商名称"
-                        :remote-method="getAgentList"
-                        :loading="agentSearchLoading"
-                    >
-                        <el-option
-                            v-for="(item, index) in agentList"
-                            :key="index"
-                            :label="item.companyName"
-                            :value="item.id + ''"
-                        >
-                        </el-option>
-                    </el-select>
-                </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="getTableData(1)">查询</el-button>
                 </el-form-item>
@@ -39,14 +19,8 @@
                 </el-table-column>
                 <el-table-column width="150" prop="dayInt" label="日期" align="center">
                 </el-table-column>
-                <!-- <el-table-column v-if="isAdmin" min-width="150" prop="agentName" label="代理商名称" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column min-width="120" prop="custNum" label="用户数" align="center">
+                <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
                 </el-table-column>
-                <el-table-column min-width="120" prop="dailyAddCustNum" label="新增用户数" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column min-width="120" prop="totalPayment" label="充值金额" align="center">
-                </el-table-column> -->
                 <el-table-column label="空号检测" align="center">
                     <el-table-column width="120" prop="emptyRechargeNum" label="充值条数" align="center">
                         <template slot-scope="scope">
@@ -162,26 +136,26 @@
 </template>
 
 <script>
+    import { formatDate } from '@/utils'
     export default {
         data() {
             return {
                 dataListLoading: false,
                 searchData: {
                     createDate: [],
-                    agentId: undefined,
                 },
                 tableData: [],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
-                isAdmin: false,
                 agentSearchLoading: false,
             }
         },
         activated() {
-            // msjRoleName 1：管理员 2：代理商
-            this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
-            this.isAdmin && this.getAgentList()
+            let currDate = formatDate(new Date(new Date()-24*60*60*1000))
+            this.searchData = {
+                createDate: [currDate, currDate],
+            }
             this.getTableData(1)
         },
         methods: {
@@ -194,7 +168,6 @@
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
-                        'agentId': this.isAdmin ? this.searchData.agentId : this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id + '',
                         'startTime': this.searchData.createDate && this.searchData.createDate[0] ? this.searchData.createDate[0] : undefined,
                         'endTime': this.searchData.createDate && this.searchData.createDate[1] ? this.searchData.createDate[1] : undefined,
                     })
@@ -207,24 +180,6 @@
                         this.totalPage = 0
                     }
                     this.dataListLoading = false
-                })
-            },
-            // 获取代理商列表
-            getAgentList(name) {
-                this.agentSearchLoading = true
-                this.$http({
-                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
-                    method: 'get',
-                    params: this.$http.adornParams({
-                        name: name
-                    })
-                }).then(({ data }) => {
-                    this.agentSearchLoading = false
-                    if (data && data.code === 0) {
-                        this.agentList = data.data || []
-                    } else {
-                        this.agentList = []
-                    }
                 })
             },
             // 每页数
@@ -254,34 +209,34 @@
                         return;
                     }
                     switch (column.property) {
-                        case 'userCount': {
-                            sums[index] = `${11111}`;
-                            break;
-                        }
-                        case 'newUserCount': {
-                            sums[index] = `${33}`;
-                            break;
-                        }
-                        case 'rechargeNum': {
-                            sums[index] = `${213}`;
-                            break;
-                        }
-                        case 'emptyUseCount': {
-                            sums[index] = `${412}`;
-                            break;
-                        }
-                        case 'emptyRemainCount': {
-                            sums[index] = `${5647}`;
-                            break;
-                        }
-                        case 'realUseCount': {
-                            sums[index] = `${25253}`;
-                            break;
-                        }
-                        case 'realRemainCount': {
-                            sums[index] = `${141455}`;
-                            break;
-                        }
+                        // case 'userCount': {
+                        //     sums[index] = `${11111}`;
+                        //     break;
+                        // }
+                        // case 'newUserCount': {
+                        //     sums[index] = `${33}`;
+                        //     break;
+                        // }
+                        // case 'rechargeNum': {
+                        //     sums[index] = `${213}`;
+                        //     break;
+                        // }
+                        // case 'emptyUseCount': {
+                        //     sums[index] = `${412}`;
+                        //     break;
+                        // }
+                        // case 'emptyRemainCount': {
+                        //     sums[index] = `${5647}`;
+                        //     break;
+                        // }
+                        // case 'realUseCount': {
+                        //     sums[index] = `${25253}`;
+                        //     break;
+                        // }
+                        // case 'realRemainCount': {
+                        //     sums[index] = `${141455}`;
+                        //     break;
+                        // }
                         default:
                             sums[index] = ``;
                             break;
