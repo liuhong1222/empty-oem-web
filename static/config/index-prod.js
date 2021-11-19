@@ -10,7 +10,7 @@
   // window.SITE_CONFIG['baseUrl'] = 'http://oem.haifou.com/open/' // 线上
 
   // 资源路径
-  window.SITE_CONFIG['imgUrl'] = '/map_engine_file/' // stable 环境
+  window.SITE_CONFIG['imgUrl'] = 'http://test.haifou.com:8088/' // stable 环境
   // window.SITE_CONFIG['imgUrl'] = 'http://shdb.253.com:8180/' // 线上
 
   // cdn地址 = 域名 + 版本号

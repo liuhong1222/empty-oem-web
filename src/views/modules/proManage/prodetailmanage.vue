@@ -46,7 +46,7 @@
                 </el-table-column>
                 <el-table-column prop="icon" label="icon图片" width="120" align="center">
                     <template slot-scope="{ row }">
-                        <img v-if="row.icon" :src="$imgPreStr + row.icon" alt="icon" style="width: 100px;" />
+                        <img v-if="row.icon" :src="$imgPreStr + row.icon" alt="icon" style="width: 40px;" />
                     </template>
                 </el-table-column>
                 <el-table-column prop="state" label="状态" align="center">

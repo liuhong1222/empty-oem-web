@@ -42,7 +42,7 @@
                 </el-table-column>
                 <el-table-column prop="icon" label="icon图片" align="center" width="110">
                     <template slot-scope="{ row }">
-                        <img v-if="row.icon" :src="$imgPreStr + row.icon" alt="icon" style="width: 100px;" />
+                        <img v-if="row.icon" :src="$imgPreStr + row.icon" alt="icon" style="max-width: 100px;" />
                     </template>
                 </el-table-column>
                 <el-table-column prop="name" label="产品线名称" align="center">

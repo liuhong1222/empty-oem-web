@@ -676,7 +676,7 @@ export default {
 }
 .btns-wrapper {
     display: flex;
-    align-items: center;
+    // align-items: center;
     flex-direction: column;
     justify-content: flex-end;
     height: 118px;

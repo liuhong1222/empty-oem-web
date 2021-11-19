@@ -44,7 +44,7 @@
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" width="150" align="center">
                 </el-table-column>
-                <el-table-column prop="offLineLevelName" label="空号检测等级" width="120" align="center">
+                <el-table-column prop="agentLevel" label="空号检测等级" width="120" align="center">
                 </el-table-column>
                 <el-table-column prop="emptyRechargeMoney" label="空号充值总计（元）" width="150" align="center">
                 </el-table-column>
@@ -54,7 +54,7 @@
                 </el-table-column>
                 <el-table-column prop="warningsNumber" label="空号预警条数" width="120" align="center">
                 </el-table-column>
-                <el-table-column prop="realLevelName" label="实时检测等级" width="120" align="center">
+                <el-table-column prop="realLevel" label="实时检测等级" width="120" align="center">
                 </el-table-column>
                 <el-table-column prop="realTimeRechargeMoney" label="实时充值总计（元）" width="150" align="center">
                 </el-table-column>
