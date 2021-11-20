@@ -8,6 +8,11 @@
             <el-table :data="oemTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
                 </el-table-column>
+                <el-table-column type="levelType" align="center" label="产品代理类型">
+                    <template slot-scope="{ row }">
+                        <span>{{ levelTypeMap[row.levelType] }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="level" label=" 代理商等级" align="center">
                 </el-table-column>
                 <el-table-column prop="price" label=单价（元/条） align="center">
@@ -37,6 +42,10 @@
                 gradeVisible: false,
                 oemTableData: [],
                 dataListLoading: false,
+                levelTypeMap: {
+                    '0': '空号检测',
+                    '1': '实时检测',
+                },
             }
         },
         components: {

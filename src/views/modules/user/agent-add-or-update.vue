@@ -19,7 +19,7 @@
                 <el-input v-model="dataForm.shortName" placeholder="公司简称"></el-input>
             </el-form-item>
             <el-form-item label="营业执照所在地：" prop="bussicAdress">
-                <el-input v-model="dataForm.bussicAdress" placeholder=".营业执照所在地"></el-input>
+                <el-input v-model="dataForm.bussicAdress" placeholder="营业执照所在地"></el-input>
             </el-form-item>
             <el-form-item label="法人姓名：" prop="lawName">
                 <el-input v-model="dataForm.lawName" placeholder="法人姓名"></el-input>
