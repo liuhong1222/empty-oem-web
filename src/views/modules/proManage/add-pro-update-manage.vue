@@ -81,7 +81,7 @@
                     describe: '',
                     status: '',
                     orderNum: '',
-                    methods: 2,
+                    methods: 1,
                     adress: '',
                     imageUrlIcon: '',
                     content: '',
@@ -152,7 +152,7 @@
                     describe: '',
                     status: '',
                     orderNum: '',
-                    methods: 2,
+                    methods: 1,
                     adress: '',
                     imageUrlIcon: '',
                     content: '',
@@ -161,7 +161,7 @@
                 }
                 this.getdata()
                 this.iconUrl = ''
-                if (this.peoAUDataForm.methods == 2) {
+                if (this.peoAUDataForm.methods == 1) {
                     this.addressShow = true;
                     this.contentShow = false;
                 } else {
