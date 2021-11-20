@@ -10,10 +10,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="proName">
-                    <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称(长度最大为11个字)……" maxLength="11"></el-input>
+                    <el-input v-model="peoAUDataForm.proName" placeholder="请输入产品名称(长度最大为11个字)" maxLength="11"></el-input>
                 </el-form-item>
                 <el-form-item label="描述：" prop="describe">
-                    <el-input type="textarea" v-model="peoAUDataForm.describe" placeholder="请简要描述下产品,最多输入50个字符……"
+                    <el-input type="textarea" v-model="peoAUDataForm.describe" placeholder="请简要描述下产品,最多输入50个字符"
                         maxlength="50"></el-input>
                 </el-form-item>
                 <el-form-item label="icon" id="iconImgSize" prop="imageUrlIcon">

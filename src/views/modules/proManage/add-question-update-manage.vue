@@ -17,10 +17,10 @@
                     <el-input-number v-model="quesAUDataForm.orderNum" controls-position="right" :min="0" label="排序号"></el-input-number>
                 </el-form-item>
                 <el-form-item label="问题标题：" prop="title">
-                    <el-input v-model="quesAUDataForm.title" placeholder="请简要描述问题……"></el-input>
+                    <el-input v-model="quesAUDataForm.title" placeholder="请简要描述问题"></el-input>
                 </el-form-item>
                 <el-form-item label="回答内容：" prop="content">
-                    <el-input type="textarea" v-model="quesAUDataForm.content" placeholder="请简要对上面的问题进行回答(最大输入500字符)……"
+                    <el-input type="textarea" v-model="quesAUDataForm.content" placeholder="请简要对上面的问题进行回答(最大输入500字符)"
                         maxlength="500"></el-input>
                 </el-form-item>
                 <el-form-item>
