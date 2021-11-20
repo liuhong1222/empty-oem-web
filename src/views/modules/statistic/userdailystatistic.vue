@@ -22,7 +22,7 @@
                 <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
                 </el-table-column>
                 <el-table-column label="空号检测" align="center">
-                    <el-table-column width="120" prop="emptyRechargeNum" label="充值条数" align="center">
+                    <!-- <el-table-column width="120" prop="emptyRechargeNum" label="充值条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.emptyRechargeNum || 0 }}</span>
                         </template>
@@ -31,7 +31,7 @@
                         <template slot-scope="scope">
                             <span>{{ scope.row.emptyRechargeMoney || 0 }}</span>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column width="120" prop="emptyConsume" label="消耗条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.emptyConsume || 0 }}</span>
@@ -59,7 +59,7 @@
                     </el-table-column>
                 </el-table-column>
                 <el-table-column label="实时检测" align="center">
-                    <el-table-column width="120" prop="realtimeRechargeNum" label="充值条数" align="center">
+                    <!-- <el-table-column width="120" prop="realtimeRechargeNum" label="充值条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.realtimeRechargeNum || 0 }}</span>
                         </template>
@@ -68,7 +68,7 @@
                         <template slot-scope="scope">
                             <span>{{ scope.row.realtimeRechargeMoney || 0 }}</span>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column width="120" prop="realtimeConsume" label="消耗条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.realtimeConsume || 0 }}</span>

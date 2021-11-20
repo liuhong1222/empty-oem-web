@@ -6,7 +6,7 @@
                     <el-input v-model="auditnewsSeeForm.newsTitle" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="新闻内容:">
-                    <UE v-bind:defaultMsg="defaultMsgCon" :config=config ref="ue"></UE>
+                    <UE v-bind:defaultMsg="defaultMsgCon" :config="config" ref="ue"></UE>
                 </el-form-item>
                 <el-form-item label="审核结果：" prop="resource" style="margin-left: 30px" v-show="seeAuditShow">
                     <el-radio-group v-model="auditnewsSeeForm.resource" @change="auditChangeHandler">

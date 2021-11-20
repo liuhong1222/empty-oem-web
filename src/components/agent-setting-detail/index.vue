@@ -1,5 +1,5 @@
 <template>
-    <el-collapse accordion v-model="activeNames">
+    <el-collapse class="view-agent-set-info" accordion v-model="activeNames">
         <el-collapse-item title="基本信息 ✚" name="1">
             <table class="discribe-wrapper" border>
                 <tbody>
@@ -282,13 +282,15 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">服务协议</td>
                         <td class="discribe-col" colspan="3" style="width: 75%;">
-                            <div style="width: 500px;">{{ agentSettingInfo.agreement }}</div>
+                            <div>
+                                <UE :defaultMsg="agentSettingInfo.agreement" :config="config" ref="ue"></UE>
+                            </div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">备注</td>
                         <td class="discribe-col" colspan="3" style="width: 75%;">
-                            <div style="width: 500px;">{{ agentSettingInfo.remark }}</div>
+                            <div style="width: 600px;">{{ agentSettingInfo.remark }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
@@ -304,7 +306,9 @@
 </template>
 
 <script>
+    import UE from '../ue/ue6.vue';
     export default {
+        components: { UE },
         data() {
             return {
                 activeNames: ['1'],
@@ -313,7 +317,15 @@
                     '0': '待审核',
                     '9': '已认证',
                     '1': '已驳回',
-                }
+                },
+                config: {
+                    initialFrameWidth: '100%',
+                    initialFrameHeight: 350,
+                    autoFloatEnabled: false,
+                    toolbars: [],
+                    readonly: true,
+                    elementPathEnabled: false,
+                },
             }
         },
         methods: {
@@ -327,6 +339,10 @@
 </script>
 
 <style lang="scss">
+
+    .view-agent-set-info .edui-default .edui-editor-bottomContainer {
+        display: none;
+    }
     #logoseeImg .el-upload,
     #logoseeImg .el-upload .avatar {
         width: 150px;
