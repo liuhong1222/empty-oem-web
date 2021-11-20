@@ -8,8 +8,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="代理商等级：" prop="level">
-                <el-input class="small-width-input" v-model="dataForm.level" placeholder="请输入代理商等级"></el-input>
-                <span>级</span>
+                <el-input v-model="dataForm.level" placeholder="请输入代理商等级"></el-input>
             </el-form-item>
             <el-form-item label="单价：" prop="price">
                 <el-input-number @change="handleInputChange" v-model="dataForm.price" :min="0"></el-input-number>
