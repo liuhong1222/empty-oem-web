@@ -35,10 +35,12 @@
         </div>
         <div class="agentTable">
             <el-table :data="proLineTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column prop="sort" label="排序" align="center">
+                <!-- <el-table-column prop="sort" label="排序" align="center">
                     <template slot-scope="scope">
                         <el-input v-model="scope.row.sort" @change="orderNumChange(scope.row)"></el-input>
                     </template>
+                </el-table-column> -->
+                <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
                 </el-table-column>
                 <el-table-column prop="productLineName" label="产品线名称" align="center">
                 </el-table-column>
