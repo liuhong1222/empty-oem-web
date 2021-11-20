@@ -87,7 +87,7 @@
                   </el-form-item>
                 </template>
                 <template v-else>
-                  <el-form-item label="营业执照地址：" label-width="180px">
+                  <el-form-item label="营业执照：" label-width="180px">
                       <img v-if="rowobj.businessLicensePath" style="width: 300px;" :src="$imgPreStr + rowobj.businessLicensePath" />
                   </el-form-item>
                   <el-form-item label="公司名称:" prop="companyName" label-width="180px">

@@ -12,7 +12,7 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">联系人邮箱</td>
                         <td class="discribe-col">{{ detailInfo.linkmanEmail }}</td>
-                        <td class="discribe-col title">营业执照地址</td>
+                        <td class="discribe-col title">营业执照</td>
                         <td class="discribe-col">
                             <img style="width: 200px;" v-if="detailInfo.businessLicensePath" :src="$imgPreStr + detailInfo.businessLicensePath">
                         </td>
@@ -42,9 +42,9 @@
                         <td class="discribe-col">{{ detailInfo.agentLevel }}</td>
                     </tr>
                     <tr class="discribe-row">
-                        <td class="discribe-col title">单价</td>
+                        <td class="discribe-col title">空号检测单价</td>
                         <td class="discribe-col">{{ detailInfo.price }}（元/条）</td>
-                        <td class="discribe-col title">预警条数</td>
+                        <td class="discribe-col title">空号检测预警条数</td>
                         <td class="discribe-col">{{ detailInfo.warningsNumber }}</td>
                     </tr>
                     <tr class="discribe-row">

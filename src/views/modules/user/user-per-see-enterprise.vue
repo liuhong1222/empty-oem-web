@@ -14,7 +14,7 @@
                         <tr class="discribe-row">
                             <td class="discribe-col title">联系人邮箱</td>
                             <td class="discribe-col">{{ detailInfo.email }}</td>
-                            <td class="discribe-col title">营业执照地址</td>
+                            <td class="discribe-col title">营业执照</td>
                             <td class="discribe-col">
                                 <img style="width: 200px;" v-if="detailInfo.businessLicensePath" :src="$imgPreStr + detailInfo.businessLicensePath">
                             </td>
