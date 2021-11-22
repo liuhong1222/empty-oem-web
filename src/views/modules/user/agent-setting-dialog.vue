@@ -13,35 +13,35 @@
         <!-- 内容显示 -->
         <div>
             <!-- 基本信息 -->
-            <div class="form-wrapper" v-if="currStep === 0 ">
+            <div class="form-wrapper" v-show="currStep === 0 ">
                 <base-info-form ref="baseInfoFormRef" />
             </div>
             <!-- 客服资料 -->
-            <div class="form-wrapper" v-if="currStep === 1">
+            <div class="form-wrapper" v-show="currStep === 1">
                 <service-info-form ref="serviceInfoFormRef" />
             </div>
             <!-- 域名备案信息 -->
-            <div class="form-wrapper" v-if="currStep === 2">
+            <div class="form-wrapper" v-show="currStep === 2">
                 <domain-info-form ref="domainInfoFormRef" />
             </div>
             <!-- 收款资料 -->
-            <div class="form-wrapper" v-if="currStep === 3">
+            <div class="form-wrapper" v-show="currStep === 3">
                 <gathering-info-form ref="gatheringInfoFormRef" />
             </div>
             <!-- 支付宝资料 -->
-            <div class="form-wrapper" v-if="currStep === 4 ">
+            <div class="form-wrapper" v-show="currStep === 4 ">
                 <alipay-info-form ref="alipayInfoFormRef" />
             </div>
             <!-- 合同资料 -->
-            <div class="form-wrapper" v-if="currStep === 5 ">
+            <div class="form-wrapper" v-show="currStep === 5 ">
                 <contract-data-form ref="contractDataFormRef" />
             </div>
             <!-- 微信资料 -->
-            <div class="form-wrapper" v-if="currStep === 6">
+            <div class="form-wrapper" v-show="currStep === 6">
                 <wechat-info-form ref="wechatInfoFormRef" />
             </div>
             <!-- 其他 -->
-            <div class="form-wrapper" v-if="currStep === 7">
+            <div class="form-wrapper" v-show="currStep === 7">
                 <service-agreement-form ref="serviceAgreementFormRef" />
             </div>
         </div>

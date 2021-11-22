@@ -282,7 +282,7 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">服务协议</td>
                         <td class="discribe-col" colspan="3" style="width: 75%;">
-                            <div>
+                            <div v-if="agentSettingInfo.agreement">
                                 <UE :defaultMsg="agentSettingInfo.agreement" :config="config" ref="ue"></UE>
                             </div>
                         </td>
