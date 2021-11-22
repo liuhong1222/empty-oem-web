@@ -143,7 +143,7 @@
                 realCheckStatic: [
                     { title: '代理商数量', field: 'realtimeAgentNums' },
                     { title: '充值总金额（元）', field: 'realtimeRechargeSum' },
-                    { title: '消耗总条数（条）', field: 'realTimeConsume' },
+                    { title: '消耗总条数（条）', field: 'realtimeConsume' },
                     { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
                 ],
                 adminInfo: {} // 管理员首页基本信息
