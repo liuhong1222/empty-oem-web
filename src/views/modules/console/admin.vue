@@ -7,7 +7,7 @@
                     <ul class="cf basicInfo">
                         <li v-for="(item,i) in basicInfoList" :key="i">
                             <p>{{item.title}}</p>
-                            <input type="text" v-model="item.data" :value="item.data" readonly>
+                            <input type="text" :value="item.data" readonly>
                             <button v-show="item.flag" @click="basicInfoBtn(i,item.data)">{{item.title === '邮箱' &&
                                 item.data === '' || item.data === null ? '添加' : item.btnText}}</button>
                         </li>
