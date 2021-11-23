@@ -9,11 +9,9 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="充值方式：">
-                    <el-select v-model="agentSearchData.type" placeholder="代理商状态">
+                    <el-select v-model="agentSearchData.type" placeholder="充值方式">
                         <el-option label="全部" value=""></el-option>
-                        <el-option label="支付宝" value="1"></el-option>
-                        <el-option label="对公转账" value="5"></el-option>
-                        <el-option label="赠送" value="6"></el-option>
+                        <el-option v-for="item in rechargeWayOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
@@ -74,7 +72,17 @@
                     disabledDate(time) {
                         return time.getTime() > Date.now() - 8.64e6
                     }
-                }
+                },
+                rechargeWayOptions: [
+                    { label: '对公转账', value: 0 },
+                    { label: '支付宝扫码付', value: 1 },
+                    { label: '注册赠送', value: 2 },
+                    { label: '赠送', value: 3 },
+                    { label: '对公支付宝转账', value: 4 },
+                    { label: '对私支付宝', value: 5 },
+                    { label: '对私微信', value: 6 },
+                    { label: '对私转账', value: 7 },
+                ],
             }
         },
         activated() {
