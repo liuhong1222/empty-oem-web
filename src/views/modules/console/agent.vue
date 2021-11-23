@@ -3,7 +3,7 @@
         <el-row :gutter="20">
             <el-col :span="12">
                 <div class="grid-content bg-purple" style="height: 490px;">
-                    <h2>嗨！{{ agentInfo.userName }}</h2>
+                    <h2>嗨！</h2>
                     <ul class="cf basic-mess">
                         <li v-for="(item, index) in basicList" :style="item.liStyles || {}" :key="index">
                             <p v-if="!['邮箱', '手机号'].includes(item.title)">{{item.title}}</p>
@@ -312,11 +312,6 @@ export default {
                 ],
             },
         };
-    },
-    computed: {
-        userName: {
-            get() { return this.$store.state.user.username }
-        }
     },
     activated() {
         this.getAgentDeskInfo()

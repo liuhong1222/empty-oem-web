@@ -34,9 +34,9 @@
                             <span>{{ scope.row.emptyRechargeMoney || 0 }}</span>
                         </template>
                     </el-table-column> -->
-                    <el-table-column width="120" prop="emptyConsume" label="消耗条数" align="center">
+                    <el-table-column width="120" prop="emptyTotal" label="消耗条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.emptyConsume || 0 }}</span>
+                            <span>{{ scope.row.emptyTotal || 0 }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column width="120" prop="realNumber" label="实号" align="center">
@@ -71,9 +71,9 @@
                             <span>{{ scope.row.realtimeRechargeMoney || 0 }}</span>
                         </template>
                     </el-table-column> -->
-                    <el-table-column width="120" prop="realtimeConsume" label="消耗条数" align="center">
+                    <el-table-column width="120" prop="realtimeTotal" label="消耗条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.realtimeConsume || 0 }}</span>
+                            <span>{{ scope.row.realtimeTotal || 0 }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column width="120" prop="normalNumber" label="正常号" align="center">

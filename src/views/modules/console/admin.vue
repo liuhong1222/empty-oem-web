@@ -3,7 +3,7 @@
         <el-row :gutter="20">
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <h2>嗨！{{ userName }}</h2>
+                    <h2>嗨！</h2>
                     <ul class="cf basicInfo">
                         <li v-for="(item,i) in basicInfoList" :key="i">
                             <p>{{item.title}}</p>
@@ -147,11 +147,6 @@
                     { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
                 ],
                 adminInfo: {} // 管理员首页基本信息
-            }
-        },
-        computed: {
-            userName: {
-                get() { return this.$store.state.user.name }
             }
         },
         activated() {
