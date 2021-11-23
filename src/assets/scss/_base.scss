@@ -424,7 +424,7 @@ li {
 
 
 .mealPackage {
-  margin-top: 60px;
+  margin-top: 80px;
 }
 .customerList{
   margin-top: 0px;
@@ -454,7 +454,6 @@ li {
   &-wrapper {
       width: 100%;
       border: 1px solid #e8e8e8;
-      border-color: #e8e8e8;
       border-collapse: collapse;
   }
   &-col {
@@ -463,7 +462,7 @@ li {
       min-height: 52px;
       height: 100%;
       word-wrap: break-word;
-      border-color: #e8e8e8;
+      border: 1px solid #e8e8e8;
       overflow-wrap: break-word;
       &.title {
           width: 20%;
