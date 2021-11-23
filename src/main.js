@@ -12,6 +12,7 @@ import { isAuth } from '@/utils'
 // import VueRouter from 'vue-router'
 import VueClipboard from 'vue-clipboard2'
 import JSONBigNumber from 'json-bigint'
+import 'babel-polyfill'
 
 window.jquery = $
 Vue.use(VueCookie)
