@@ -58,7 +58,7 @@
                         <td class="discribe-col">{{ agentSettingInfo.baiduSrc }}</td>
                         <td class="discribe-col title">百度营销账号token</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.baiduocpcToken }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.baiduocpcToken }}</div>
                         </td>
                     </tr>
                 </tbody>
@@ -190,27 +190,27 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">支付宝应用ID</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.alipayAppid }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.alipayAppid }}</div>
                         </td>
                         <td class="discribe-col title">支付宝网关地址</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.alipayGateway }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.alipayGateway }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">支付回调地址</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.alipayNotify }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.alipayNotify }}</div>
                         </td>
                         <td class="discribe-col title">支付宝公钥</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.alipayPublicKey }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.alipayPublicKey }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">应用私钥</td>
                         <td class="discribe-col" colspan="3" style="width: 75%;">
-                            <div style="width: 700px;">{{ agentSettingInfo.applicationPrivateKey }}</div>
+                            <div :style="{ width: `${contentWidth.seventyFive}px` }">{{ agentSettingInfo.applicationPrivateKey }}</div>
                         </td>
                     </tr>
                 </tbody>
@@ -250,31 +250,31 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">微信网关地址</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.wechatGateway }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.wechatGateway }}</div>
                         </td>
                         <td class="discribe-col title">微信支付回调地址</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.wechatpayNotify }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.wechatpayNotify }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">微信应用ID</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.wechatAppid }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.wechatAppid }}</div>
                         </td>
                         <td class="discribe-col title">微信mchid</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.wechatMchid }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.wechatMchid }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">微信key</td>
                         <td class="discribe-col" >
-                            <div style="width: 300px;">{{ agentSettingInfo.wechatKey }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.wechatKey }}</div>
                         </td>
                         <td class="discribe-col title">微信秘钥</td>
                         <td class="discribe-col">
-                            <div style="width: 300px;">{{ agentSettingInfo.wechatAppsecret }}</div>
+                            <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.wechatAppsecret }}</div>
                         </td>
                     </tr>
                 </tbody>
@@ -286,7 +286,7 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">服务协议</td>
                         <td class="discribe-col" colspan="3" style="width: 75%;">
-                            <div v-if="agentSettingInfo.agreement">
+                            <div :style="{ width: `${contentWidth.seventyFive}px` }" v-if="agentSettingInfo.agreement">
                                 <UE :defaultMsg="agentSettingInfo.agreement" :config="config" ref="ue"></UE>
                             </div>
                         </td>
@@ -294,7 +294,7 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">备注</td>
                         <td class="discribe-col" colspan="3" style="width: 75%;">
-                            <div style="width: 600px;">{{ agentSettingInfo.remark }}</div>
+                            <div :style="{ width: `${contentWidth.seventyFive}px` }">{{ agentSettingInfo.remark }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
@@ -330,12 +330,21 @@
                     readonly: true,
                     elementPathEnabled: false,
                 },
+                contentWidth: {
+                    thirty: 0,
+                    seventyFive: 0,
+                }
             }
         },
         methods: {
             init(initData) {
                 this.activeNames = ['1']
                 this.agentSettingInfo = initData || {}
+                let dom = document.querySelector('.view-agent-set-info')
+                this.contentWidth = {
+                    thirty: (dom.offsetWidth - 50) * (30 / 100) - 50,
+                    seventyFive: (dom.offsetWidth - 50) * (75 / 100) - 50
+                }
             },
         }
     }

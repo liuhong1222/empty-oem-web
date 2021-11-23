@@ -27,8 +27,8 @@
                 <el-input-number v-model="rechargeDataForm.rechargeCounts" :disabled="readCounts" :min="0"></el-input-number>
                 <span>条</span>
             </el-form-item>
-            <el-form-item label="我的余额：" prop="myCounts">
-                <el-input style="width: 90%; margin-right: 8px;" v-model="rechargeDataForm.myCounts" placeholder="我的余额" id="myCounts" disabled></el-input>
+            <el-form-item label="客户余额：" prop="myCounts">
+                <el-input style="width: 90%; margin-right: 8px;" v-model="rechargeDataForm.myCounts" placeholder="客户余额" id="myCounts" disabled></el-input>
                 <span>条</span>
             </el-form-item>
             <el-form-item label="充值方式：" prop="rechargeMethod">
@@ -96,7 +96,7 @@
                         { type: 'number', message: '金额必须为数字' }
                     ],
                     myCounts: [
-                        { required: true, message: '请输我的余额', trigger: 'blur' },
+                        { required: true, message: '请输客户余额', trigger: 'blur' },
                     ],
                     rechargeMethod: [
                         { required: true, message: '请选择充值方式', trigger: 'blur' },

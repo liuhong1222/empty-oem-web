@@ -128,7 +128,6 @@
         <per-recharge-prise v-if="chargeVisible" ref="rechargecon" @refreshDataList="getCustomList"></per-recharge-prise>
         <!-- 个人，企业退款 -->
         <customer-refund-dia ref="customerRefundDiaRef" @refresh="getCustomList" />
-        <!-- <per-refund-prise v-if="refundVisible" ref="refundcon" @refreshDataList="getCustomList"></per-refund-prise> -->
         <!-- 转代理商 -->
         <transfer-or-agent
             v-if="transferAgentVisible"
@@ -143,7 +142,6 @@
 // import perEditEnterise from './user-per-edit-enterise'
 import perSeeEnterprise from "./user-per-see-enterprise";
 import perRechargePrise from "./user-per-recharge-prise";
-// import perRefundPrise from "./user-per-refund-prise";
 import transferOrAgent from "./user-transfer-agent";
 import CustomerRefundDia from './customer-refund-dia.vue';
 import SetAuthLevel from '@/components/set-auth-level/index.vue'

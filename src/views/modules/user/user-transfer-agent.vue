@@ -145,35 +145,6 @@
                     }
                 })
             },
-            // getAgentList() {
-                // this.csvS = [];
-                // this.$http({
-                //     url: this.$http.adornUrl(`agent/user/findCompanyName?token=${this.$cookie.get('token')}`),
-                //     method: 'get',
-                //     params: this.$http.adornParams({
-                //         'inAgentName': this.transferForm.transferAgent
-                //     })
-                // }).then(({ data }) => {
-                //     if (data && data.code === 0) {
-                //         this.csvList = data.data.list
-                //         var len = this.csvList.length;
-                //         var arr = [];
-                //         for (var i = 0; i < len; i++) { //根据输入框中inputName的值进行模糊匹配
-                //             if (this.csvList[i].indexOf(this.transferForm.transferAgent) >= 0) {
-                //                 arr.push(this.csvList[i]);//符合条件的值都放入arr中
-                //             }
-                //         }
-                //         //el-autocomplete元素要求数组内是对象
-                //         for (var i = 0; i < arr.length; i++) {
-                //             var obj = { value: "" };
-                //             obj.value = arr[i];
-                //             this.csvS.push(obj);
-                //         }
-                //     } else {
-                //         this.$message.error(data.msg);
-                //     }
-                // })
-            // },
             closeTrsdialog() {
                 this.inputName = "";
                 this.transferForm.remark = ""

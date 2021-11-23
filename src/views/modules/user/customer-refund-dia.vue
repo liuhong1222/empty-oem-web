@@ -121,7 +121,7 @@
                     this.$refs['dataForm'].resetFields()
                     this.dataForm = {
                         category: 0,
-                        custId: record.customerId || undefined
+                        custId: record.customerId ? record.customerId + '' : undefined
                     }
                     this.getDetailData(record);
                 })
