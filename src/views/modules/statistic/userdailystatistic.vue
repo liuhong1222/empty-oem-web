@@ -4,7 +4,7 @@
             <h2>客户日统计列表</h2>
             <el-form :inline="true">
                 <el-form-item>
-                    <el-date-picker v-model="searchData.createDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+                    <el-date-picker :clearable="false" v-model="searchData.createDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
@@ -20,6 +20,8 @@
                 <el-table-column width="150" prop="dayInt" label="日期" align="center">
                 </el-table-column>
                 <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
+                </el-table-column>
+                <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                 </el-table-column>
                 <el-table-column label="空号检测" align="center">
                     <!-- <el-table-column width="120" prop="emptyRechargeNum" label="充值条数" align="center">

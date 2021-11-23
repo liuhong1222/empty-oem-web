@@ -4,7 +4,7 @@
             <h2>空号检测API记录</h2>
             <el-form :inline="true">
                 <el-form-item label="创建时间：">
-                    <el-date-picker v-model="searchData.createTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+                    <el-date-picker :clearable="false" :picker-options="datePickOption" v-model="searchData.createTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
@@ -30,6 +30,8 @@
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
                 <el-table-column min-width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center">
+                </el-table-column>
+                <el-table-column min-width="150" prop="customerName" label=" 客户名称" align="center">
                 </el-table-column>
                 <el-table-column min-width="150" prop="phone" label=" 手机号码" align="center">
                 </el-table-column>
@@ -81,6 +83,7 @@
 </template>
 
 <script>
+    import { formatDate } from '@/utils'
     export default {
         data() {
             return {
@@ -107,7 +110,24 @@
                 isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
+        computed: {
+            datePickOption () {
+                return {
+                    disabledDate(time) {
+                        let nowDate = Date.now()
+                        return (time.getTime() > nowDate - 8.64e6) || time.getTime() < nowDate - (1000 * 60 * 60 * 24 * 30)
+                    }
+                }
+            }
+        },
         activated() {
+            let currDate = formatDate(new Date())
+            this.searchData = {
+                createTime: [currDate, currDate],
+                agentId: -1,
+                customerName: '',
+                phone: ''
+            }
             this.getTableData()
             this.isAdmin && this.getAgentList()
         },
@@ -193,7 +213,7 @@
                 });
 
                 return sums;
-            }
+            },
         }
     }
 

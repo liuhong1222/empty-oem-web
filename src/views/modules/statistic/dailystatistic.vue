@@ -4,7 +4,7 @@
             <h2>日统计列表</h2>
             <el-form :inline="true">
                 <el-form-item>
-                    <el-date-picker v-model="searchData.createDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+                    <el-date-picker :clearable="false" v-model="searchData.createDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
