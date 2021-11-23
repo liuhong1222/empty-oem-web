@@ -190,27 +190,27 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">支付宝应用ID</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.alipayAppid }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.alipayAppid }}</div>
                         </td>
                         <td class="discribe-col title">支付宝网关地址</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.alipayGateway }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.alipayGateway }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">支付回调地址</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.alipayNotify }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.alipayNotify }}</div>
                         </td>
                         <td class="discribe-col title">支付宝公钥</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.alipayPublicKey }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.alipayPublicKey }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">应用私钥</td>
                         <td class="discribe-col" colspan="3" style="width: 75%;">
-                            <div style="width: 500px;">{{ agentSettingInfo.applicationPrivateKey }}</div>
+                            <div style="width: 700px;">{{ agentSettingInfo.applicationPrivateKey }}</div>
                         </td>
                     </tr>
                 </tbody>
@@ -250,28 +250,32 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">微信网关地址</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.wechatGateway }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.wechatGateway }}</div>
                         </td>
                         <td class="discribe-col title">微信支付回调地址</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.wechatpayNotify }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.wechatpayNotify }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">微信应用ID</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.wechatAppid }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.wechatAppid }}</div>
                         </td>
                         <td class="discribe-col title">微信mchid</td>
                         <td class="discribe-col">
-                            <div>{{ agentSettingInfo.wechatMchid }}</div>
+                            <div style="width: 300px;">{{ agentSettingInfo.wechatMchid }}</div>
                         </td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">微信key</td>
-                        <td class="discribe-col">{{ agentSettingInfo.wechatKey }}</td>
+                        <td class="discribe-col" >
+                            <div style="width: 300px;">{{ agentSettingInfo.wechatKey }}</div>
+                        </td>
                         <td class="discribe-col title">微信秘钥</td>
-                        <td class="discribe-col">{{ agentSettingInfo.wechatAppsecret }}</td>
+                        <td class="discribe-col">
+                            <div style="width: 300px;">{{ agentSettingInfo.wechatAppsecret }}</div>
+                        </td>
                     </tr>
                 </tbody>
             </table>

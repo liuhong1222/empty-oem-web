@@ -38,12 +38,20 @@
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号" ></el-table-column>
                 <el-table-column prop="createTime" align="left" label="提交时间"></el-table-column>
                 <el-table-column prop="phone" align="left" label="手机号"></el-table-column>
-                <el-table-column prop="companyName" align="left" label="客户名称"></el-table-column>
-                <el-table-column prop="companyAddress" align="left" label="地址"></el-table-column>
+                <el-table-column prop="companyName" align="left" label="客户名称">
+                  <template slot-scope="{ row }">
+                    <span>{{ row.customerType === 0 ? row.idCardName : row.companyName }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="companyAddress" align="left" label="地址">
+                  <template slot-scope="{ row }">
+                    <span>{{ row.customerType === 0 ? row.idCardAddress : row.companyAddress }}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="state" align="left" label="审核状态">
                   <template slot-scope="scope">
-                        <span>{{ stateMap[scope.row.state] }}</span>
-                    </template>
+                    <span>{{ stateMap[scope.row.state] }}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="remark" align="left" label="备注"></el-table-column>
                 <el-table-column prop="authStatusVal" align="left" label="操作">

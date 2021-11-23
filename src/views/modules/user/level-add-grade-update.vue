@@ -15,7 +15,7 @@
                 <span class="margin-left-8">元/条</span>
             </el-form-item>
             <el-form-item label="预警条数：" prop="warningsNumber">
-                <el-input-number v-model="dataForm.warningsNumber" :min="0"></el-input-number>
+                <el-input-number v-model="dataForm.warningsNumber" :step="1" :precision="0" :min="0"></el-input-number>
                 <span class="margin-left-8">条</span>
             </el-form-item>
             <el-form-item label="最小充值条数：" prop="minRechargeNumber">
@@ -40,6 +40,13 @@
 <script>
     export default {
         data() {
+            const validateContainDot = (rule, value, callback) => {
+                if (value && (value + '').indexOf('.') !== -1) {
+                    callback(new Error('不可为小数'))
+                } else {
+                    callback()
+                }
+            }
             return {
                 levelvisible: false,
                 labelPosition: 'right',
@@ -63,13 +70,16 @@
                         { required: true, message: '请输入单价', trigger: 'blur' }
                     ],
                     warningsNumber: [
-                        { required: true, message: '请输入预警条数', trigger: 'blur' }
+                        { required: true, message: '请输入预警条数', trigger: 'blur' },
+                        { validator: validateContainDot, trigger: 'blur' }
                     ],
                     minRechargeNumber: [
-                        { required: true, message: '请输入最小充值条数', trigger: 'blur' }
+                        { required: true, message: '请输入最小充值条数', trigger: 'blur' },
+                        { validator: validateContainDot, trigger: 'blur' }
                     ],
                     minPaymentAmount: [
-                        { required: true, message: '请输入最小充值金额', trigger: 'blur' }
+                        { required: true, message: '请输入最小充值金额', trigger: 'change' },
+                        { validator: validateContainDot, trigger: 'change' }
                     ]
                 },
                 submitLoading: false
