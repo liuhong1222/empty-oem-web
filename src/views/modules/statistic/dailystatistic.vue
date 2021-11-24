@@ -51,9 +51,9 @@
                         <span>{{ scope.row.dailyAddCustNum || 0 }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column min-width="120" prop="totalPayment" label="充值金额" align="center">
+                <el-table-column min-width="120" prop="emptyRechargeMoney" label="充值金额" align="center">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.totalPayment || 0 }}</span>
+                        <span>{{ scope.row.emptyRechargeMoney || 0 }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="空号检测" align="center">
