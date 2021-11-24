@@ -340,9 +340,9 @@ export default {
             method: 'post',
             }).then(({ data }) => {
             if (data && data.code === 0) {
-                const { autoPresentCfg, agentInfo, domain } = (data.data || {})
+                const { agentInfo, domain } = (data.data || {})
                 // 0不自动赠送，1自动赠送
-                this.giveSwitch = autoPresentCfg ? true : false
+                this.giveSwitch = (agentInfo && agentInfo.registerGift) ? true : false
                 sessionStorage.setItem('agentInfo', this.$json.stringify(agentInfo || '{}'))
                 this.copyinput = domain
                 this.deskInfo = {...(data.data || {}), ...(agentInfo || {})}
