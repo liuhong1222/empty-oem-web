@@ -94,8 +94,8 @@
                 refundWayOptions: [
                     { label: '对公转账', value: 0 },
                     { label: '支付宝扫码付', value: 1 },
-                    { label: '注册赠送', value: 2 },
-                    { label: '赠送', value: 3 },
+                    // { label: '注册赠送', value: 2 },
+                    // { label: '赠送', value: 3 },
                     { label: '对公支付宝转账', value: 4 },
                     { label: '对私支付宝', value: 5 },
                     { label: '对私微信', value: 6 },
