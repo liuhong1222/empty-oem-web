@@ -57,7 +57,7 @@
 
                 <el-form-item v-if="showBnt">
                     <el-button type="info" plain @click="closeNewsSeeDialod()">取消</el-button>
-                    <el-button type="primary" @click="proAuditDataSubmit()">确定</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="proAuditDataSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -70,6 +70,7 @@
         components: { UE },
         data() {
             return {
+                submitLoading: false,
                 auditDisable: false,
                 seeShow: false,
                 seeShow1: false,
@@ -140,6 +141,7 @@
                 this.iconsImageUrl = "";
                 this.defaultMsgCon = ""
                 this.visible = true;
+                this.submitLoading = false
                 this.$http({
                     url: this.$http.adornUrl(`agent/product/findById?token=${this.$cookie.get('token')}`),
                     method: 'post',
@@ -174,6 +176,7 @@
             proAuditDataSubmit() {
                 this.$refs['proAuditDataRef'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/product/updateStatus?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -183,6 +186,7 @@
                                 'remark': this.proAuditDataForm.bhdesc
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false

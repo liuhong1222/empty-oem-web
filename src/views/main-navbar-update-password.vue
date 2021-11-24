@@ -17,7 +17,7 @@
     <p style="margin-left: 15px">注：为保障您的数据安全，请您尽快修改初始密码。</p>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button type="primary" :loading="submitLoading" @click="dataFormSubmit()">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -43,6 +43,7 @@
       }
       return {
         visible: false,
+        submitLoading: false,
         dataForm: {
           password: '',
           newPassword: '',
@@ -93,6 +94,7 @@
       // 初始化
       init() {
         this.visible = true
+        this.submitLoading = false
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
         })
@@ -101,6 +103,7 @@
       dataFormSubmit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.submitLoading = true
             this.$http({
               url: this.$http.adornUrl('/sys/user/password'),
               method: 'post',
@@ -109,6 +112,7 @@
                 'newPassword': md5(this.dataForm.newPassword)
               })
             }).then(({ data }) => {
+              this.submitLoading = false
               if (data && data.code === 0) {
                 this.$message({
                   message: '修改成功，请重新登录!',

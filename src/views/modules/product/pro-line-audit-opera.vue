@@ -24,7 +24,7 @@
                     <el-input type="textarea" v-model="proLineDataForm.desc"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="proLineDataSubmit()">确定</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="proLineDataSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -36,6 +36,7 @@
             return {
                 visible: false,
                 auditDisable: false,
+                submitLoading: false,
                 proLineDataForm: {
                     agentName: '',
                     proLineName: '',
@@ -60,6 +61,7 @@
                 this.proLineDataForm.id = id;
                 this.visible = true;
                 this.auditDisable = false
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['proLineDataRef'].resetFields()
                 })
@@ -79,6 +81,7 @@
             proLineDataSubmit() {
                 this.$refs['proLineDataRef'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/line/updateStatus?token=${this.$cookie.get('token')}&id=${this.proLineDataForm.id}`),
                             method: 'post',
@@ -87,6 +90,7 @@
                                 'remark': this.proLineDataForm.desc
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false

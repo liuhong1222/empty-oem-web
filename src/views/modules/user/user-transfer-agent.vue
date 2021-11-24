@@ -46,7 +46,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="transferVisible = false">取 消</el-button>
-            <el-button type="primary" @click="submitTransAgent()">确 定</el-button>
+            <el-button type="primary" :loading="submitLoading" @click="submitTransAgent()">确 定</el-button>
         </span>
     </el-dialog>
 </template>
@@ -55,6 +55,7 @@
         data() {
             return {
                 transferVisible: false,
+                submitLoading: false,
                 inputName: '',
                 csvList: [],
                 csvS: [],
@@ -85,6 +86,7 @@
         methods: {
             transferAgentInit(row) {
                 this.transferVisible = true;
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['transferFormRef'].resetFields();
                 })
@@ -102,6 +104,7 @@
             submitTransAgent() {
                 this.$refs['transferFormRef'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/user/changeAgent?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -112,6 +115,7 @@
                                 'remark': this.transferForm.remark
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.transferVisible = false
                                 this.$emit('refreshDataList')

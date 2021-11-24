@@ -22,7 +22,7 @@
                 <el-input type="textarea" v-model="ruleForm.desc" :rows="20"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交发布申请</el-button>
+                <el-button :loading="submitLoading" type="primary" @click="submitForm('ruleForm')">提交发布申请</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
         </el-form>
@@ -38,6 +38,7 @@
             return {
                 releaseVisible: false,
                 selectUserVisible: false,
+                submitLoading: false,
                 childValues: "",
                 messageList: [],
                 ruleForm: {
@@ -68,6 +69,7 @@
         methods: {
             releaseShowInit() {
                 this.releaseVisible = true
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['ruleForm'].resetFields();
                 })
@@ -109,7 +111,7 @@
                 });
             },
             message() {
-
+                this.submitLoading = true
                 this.$http({
                     url: this.$http.adornUrl(`agent/message/addMessage?token=${this.$cookie.get('token')}`),
                     method: 'post',
@@ -121,6 +123,7 @@
                         'message': this.ruleForm.desc
                     })
                 }).then(({ data }) => {
+                    this.submitLoading = false
                     if (data && data.code === 0) {
                         this.$message.success('消息已提交审核!')
                         this.messageList = []

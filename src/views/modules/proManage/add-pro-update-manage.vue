@@ -50,7 +50,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="info" plain @click="closeNewsSeeDialod">取消</el-button>
-                    <el-button type="primary" @click="peoAUDataSubmit()">确定</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="peoAUDataSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -67,6 +67,7 @@
                 visible: false,
                 addressShow: true,
                 contentShow: true,
+                submitLoading: false,
                 title: '',
                 defaultMsgCon: '',
                 config: {
@@ -147,6 +148,7 @@
             },
             showInit(id) {
                 this.visible = true;
+                this.submitLoading = false
                 this.peoAUDataForm = {
                     proName: '',
                     describe: '',
@@ -214,6 +216,7 @@
                 }
                 this.$refs['peoAUDataRef'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/product/saveOrUpdate?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -230,6 +233,7 @@
                                 'externalLinks': this.peoAUDataForm.adress,
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false;

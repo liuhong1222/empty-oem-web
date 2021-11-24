@@ -49,7 +49,7 @@
             <el-button v-if="currStep === 0" @click="handlePre">取消</el-button>
             <el-button v-else @click="handlePre">上一步</el-button>
             <el-button v-if="currStep !== 7" type="primary" @click="handleNext">下一步</el-button>
-            <el-button v-else type="primary" @click="handleNext">完成</el-button>
+            <el-button v-else type="primary" :loading="submitLoading" @click="handleNext">完成</el-button>
         </div>
     </el-dialog>
 </template>
@@ -92,7 +92,8 @@
                     'initContractDataForm',
                     'initWechatInfoForm',
                     'initServiceAgreementForm',
-                ]
+                ],
+                submitLoading: false
             }
         },
         methods: {
@@ -101,6 +102,7 @@
                     agentId: record.agentId + '',
                     agentName: record.agentName
                 }
+                this.submitLoading = false
                 this.currStep = 0
                 this.editSettingInfo = {}
                 this.visible = true
@@ -162,6 +164,7 @@
                 })
             },
             addOrUpdateSetInfo(params) {
+                this.submitLoading = true
                 let url = this.agentSetId ? `agent/set/updateBasicInfo` : `agent/set/add`
                 this.$http({
                     url: this.$http.adornUrl(url),
@@ -172,6 +175,7 @@
                         agentSetId: this.agentSetId
                     }
                 }).then(({ data }) => {
+                    this.submitLoading = false
                     if (data && data.code === 0) {
                         this.visible = false
                         this.$emit("refreshDataList")

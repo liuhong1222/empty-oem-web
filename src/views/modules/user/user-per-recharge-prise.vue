@@ -47,7 +47,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="chargeVisible = false">取 消</el-button>
-            <el-button type="primary" @click="rechargeDataSubmit" :disabled="disabled">确 定</el-button>
+            <el-button type="primary" @click="rechargeDataSubmit" :loading="submitLoading">确 定</el-button>
         </span>
     </el-dialog>
 </template>
@@ -60,6 +60,7 @@
                 readMoney: true,
                 chargeVisible: false,
                 disabled: false,
+                submitLoading: false,
                 labelPosition: 'right',
                 rechargeArr: [],
                 mealType: 0, // 0 普通套餐 1 自定义套餐
@@ -159,6 +160,7 @@
                 // msjRoleName 1：管理员 2：代理商
                 this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
                 this.chargeVisible = true
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['rechargeRef'].resetFields()
                     this.rechargeDataForm = {
@@ -222,6 +224,7 @@
                 })
             },
             regSubmit() {
+                this.submitLoading = true
                 this.$http({
                     url: this.$http.adornUrl(`agent/cust/recharge`),
                     method: 'post',
@@ -237,6 +240,7 @@
                         'remark': this.rechargeDataForm.rechargeDesc
                     }
                 }).then(({ data }) => {
+                    this.submitLoading = false
                     if (data && data.code === 0) {
                         this.chargeVisible = false
                         this.$emit('refreshDataList')

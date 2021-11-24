@@ -12,7 +12,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="getUEContentBtn()" id="submitCon">提交发布申请</el-button>
+                <el-button type="primary" :loading="submitLoading" @click="getUEContentBtn()" id="submitCon">提交发布申请</el-button>
             </span>
         </el-dialog>
     </div>
@@ -24,6 +24,7 @@
         data() {
             return {
                 visible: false,
+                submitLoading: false,
                 defaultMsgCon: '',
                 config: {
                     initialFrameWidth: '100%',
@@ -52,6 +53,7 @@
             showInit(id) {
                 this.dataForm.id = id || 0
                 this.visible = true;
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['newsRuleForm'].resetFields()
                 })
@@ -77,6 +79,7 @@
                 }
                 this.$refs['newsRuleForm'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         let content = this.$refs.ue.getUEContentMsj();
                         let noLableCon = this.$refs.ue.getContentTxtMsj();
                         this.$http({
@@ -89,6 +92,7 @@
                                 'newsContent': noLableCon
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('新闻发布成功!');
                                 this.newsForm.newsTitle = "";

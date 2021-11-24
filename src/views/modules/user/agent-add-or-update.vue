@@ -92,7 +92,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
                 <el-button @click="clearAgent()">取消</el-button>
-                <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+                <el-button type="primary" :loading="submitLoading" @click="dataFormSubmit()">确定</el-button>
         </span>
     </el-dialog>
 
@@ -111,6 +111,7 @@
             return {
                 agentReadonly: false,
                 loading: false,
+                submitLoading: false,
                 priseurl: '',
                 licensePicNo: '',
                 visible: false,
@@ -199,6 +200,7 @@
             showInit(id) {
                 this.dataForm.id = id || 0
                 this.visible = true
+                this.submitLoading = false
                 this.getSpaceLevelList();
                 this.getRealLevelList();
                 this.$nextTick(() => {
@@ -274,6 +276,7 @@
             dataFormSubmit() {
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/agentInfo/${!this.dataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -302,6 +305,7 @@
                                 'realMinRechargeNumber': this.dataForm.realMinRechargeNumber,
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.visible = false
                                 this.$emit('refreshDataList', this.dataForm.id ? undefined : 1)

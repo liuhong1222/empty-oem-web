@@ -41,7 +41,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取消</el-button>
-            <el-button type="primary"  @click="handleSubmit()">确定</el-button>
+            <el-button type="primary" :loading="submitLoading" @click="handleSubmit()">确定</el-button>
         </span>
     </el-dialog>
 </template>
@@ -51,6 +51,7 @@
         data() {
             return {
                 dialogVisible: false,
+                submitLoading: false,
                 labelPosition: 'right',
                 dataForm: {
                     agentName: '',
@@ -130,6 +131,7 @@
         methods: {
             init(record) {
                 this.dialogVisible = true
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
                     this.dataForm = {
@@ -169,6 +171,7 @@
                 }
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/agentInfo/refundOfAgent?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -183,6 +186,7 @@
                                 'remark': this.dataForm.remark,
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.dialogVisible = false
                                 this.$emit('refresh')

@@ -36,9 +36,9 @@
         <span slot="footer" class="dialog-footer">
             <template v-if="!showPayCode">
                 <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary"  @click="handleSubmit()">确定</el-button>
+                <el-button type="primary" :loading="submitLoading" @click="handleSubmit()">确定</el-button>
             </template>
-            <el-button v-else type="primary"  @click="handlePayOk()">支付完成</el-button>
+            <el-button v-else type="primary" :loading="submitLoading" @click="handlePayOk()">支付完成</el-button>
         </span>
     </el-dialog>
 </template>
@@ -72,6 +72,7 @@
                     { label: '对私微信', value: 6 },
                     { label: '对私转账', value: 7 },
                 ],
+                submitLoading: false,
             }
         },
         watch: {
@@ -113,6 +114,7 @@
             handleSubmit() {
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/fund/recharge`),
                             method: 'post',
@@ -125,6 +127,7 @@
                                 'category': this.dataForm.category,
                             }
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.showPayCode = true
                                 this.payCodeUrl = data.data.payUrl
@@ -138,6 +141,7 @@
                 })
             },
             handlePayOk() {
+                this.submitLoading = true
                 this.$http({
                     url: this.$http.adornUrl(`agent/fund/findOrderStatus?token=${this.$cookie.get('token')}`),
                     method: 'post',
@@ -145,19 +149,22 @@
                         'orderNo': this.orderNo,
                     })
                 }).then(({ data }) => {
-                  if (data && data.code === 0) {
-                    this.dialogVisible = false
-                    if (data.data.orderStatus == "Success") {
-                        this.$emit('refresh')
-                        this.$message({
-                            message: '充值成功',
-                            type: 'success',
-                            duration: 1500
-                        })
+                    this.submitLoading = false
+                    if (data && data.code === 0) {
+                        this.dialogVisible = false
+                        if (data.data && data.data.orderStatus == "Success") {
+                            this.$emit('refresh')
+                            this.$message({
+                                message: '充值成功',
+                                type: 'success',
+                                duration: 1500
+                            })
+                        } else {
+                            this.$message.error('充值失败，请重新充值!')
+                        }
                     } else {
-                      this.$message.error('充值失败，请重新充值!')
+                        this.$message.error(data.msg)
                     }
-                  }
                 })
             }
         }

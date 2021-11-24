@@ -22,7 +22,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取消</el-button>
-            <el-button type="primary" @click="dataFormSubmit()">提交修改审核</el-button>
+            <el-button type="primary" :loading="submitLoading" @click="dataFormSubmit()">提交修改审核</el-button>
         </span>
     </el-dialog>
 </template>
@@ -31,6 +31,7 @@
         data() {
             return {
                 visible: false,
+                submitLoading: false,
                 updateInfoDataForm: {
                     title: '',
                     infoType: '',
@@ -65,6 +66,7 @@
             updateShowInit(id) {
                 this.dataForm.id = id
                 this.visible = true;
+                this.submitLoading = false
                 this.$http({
                     url: this.$http.adornUrl(`agent/message/my/detail?token=${this.$cookie.get('token')}&agentMessageId=${this.dataForm.id}`),
                     method: 'get',
@@ -84,6 +86,7 @@
             dataFormSubmit() {
                 this.$refs['updateInfoDataFormRef'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/message/my/update?token=${this.$cookie.get('token')}&agentMessageId=${this.dataForm.id}`),
                             method: 'post',
@@ -93,15 +96,14 @@
                                 'type': this.updateInfoDataForm.infoType,
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
+                                this.visible = false
+                                this.$emit('updateRefreshDataList')
                                 this.$message({
                                     message: '消息已提交审核!',
                                     type: 'success',
-                                    duration: 1500,
-                                    onClose: () => {
-                                        this.visible = false
-                                        this.$emit('updateRefreshDataList')
-                                    }
+                                    duration: 1500
                                 })
                             } else {
                                 this.$message.error(data.msg)

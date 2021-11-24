@@ -16,7 +16,7 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button type="primary" :loading="submitLoading" @click="dataFormSubmit()">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -26,6 +26,7 @@
     data () {
       return {
         visible: false,
+        submitLoading: false,
         dataForm: {
           id: 0,
           paramKey: '',
@@ -46,6 +47,7 @@
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true
+        this.submitLoading = false
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
           if (this.dataForm.id) {
@@ -69,6 +71,7 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.submitLoading = true
             this.$http({
               url: this.$http.adornUrl(`sys/param/${!this.dataForm.id ? 'save' : 'update'}`),
               method: !this.dataForm.id ? 'post' : 'put',
@@ -79,6 +82,7 @@
                 'remark': this.dataForm.remark
               })
             }).then(({data}) => {
+              this.submitLoading = false
               if (data && data.code === 0) {
                 this.visible = false
                 this.$emit('refreshDataList', 1)

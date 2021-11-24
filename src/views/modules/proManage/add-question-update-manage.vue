@@ -25,7 +25,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="info" plain @click="closeNewsSeeDialod()">取消</el-button>
-                    <el-button type="primary" @click="quesAUDataSubmit()">确定</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="quesAUDataSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -37,6 +37,7 @@
         data() {
             return {
                 visible: false,
+                submitLoading: false,
                 product: [],
                 quesAUDataForm: {
                     proName: '',
@@ -87,6 +88,7 @@
             },
             showInit(id) {
                 this.visible = true;
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['quesAUDataRef'].resetFields()
                 })
@@ -118,6 +120,7 @@
             quesAUDataSubmit() {
                 this.$refs['quesAUDataRef'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/productFaq/my/${!this.quesAUDataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -130,6 +133,7 @@
                                 'answer': this.quesAUDataForm.content
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false;

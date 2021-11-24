@@ -18,7 +18,7 @@
                     <el-input type="textarea" v-model="auditnewsSeeForm.desc"></el-input>
                 </el-form-item>
                 <el-form-item style="margin-left: 30px" v-show="seeAuditShow">
-                    <el-button type="primary" @click="auditSubmitForm('auditnewsSeeForm')">确定</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="auditSubmitForm('auditnewsSeeForm')">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -32,6 +32,7 @@
             return {
                 dialogVisible: false,
                 auditDisable: false,
+                submitLoading: false,
                 seeAuditShow: false, //（查看和审核）显示或者隐藏 审核按钮，和确定按钮
                 auditnewsSeeForm: {
                     newsTitle: '',
@@ -66,6 +67,7 @@
             auditShowInit(id, type) {
                 this.dataForm.id = id
                 this.dialogVisible = true
+                this.submitLoading = false
                 if (type == "see") {
                     this.title = "查看";
                     this.seeAuditShow = false;
@@ -104,6 +106,7 @@
             auditSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/news/all/audit?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -113,6 +116,7 @@
                                 'auditRemark': this.auditnewsSeeForm.desc
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('操作成功!')
                                 this.dialogVisible = false

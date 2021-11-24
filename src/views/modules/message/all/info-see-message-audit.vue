@@ -25,7 +25,7 @@
                 <el-input type="textarea" v-model="seeAuditDataForm.desc"></el-input>
             </el-form-item>
             <el-form-item v-show="seeAuditShow">
-                <el-button type="primary" @click="seeAuditDataFormBtn('seeAuditDataFormRef')">确定</el-button>
+                <el-button type="primary" :loading="submitLoading" @click="seeAuditDataFormBtn('seeAuditDataFormRef')">确定</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -58,13 +58,15 @@
                     desc: [
                         { required: true, message: '请填写驳回原因', trigger: 'blur' }
                     ]
-                }
+                },
+                submitLoading: false
             }
         },
         methods: {
             showInit(record, type) {
                 this.dataForm.id = record.id
                 this.visible = true;
+                this.submitLoading = false
                 if (type == "see") {
                     this.title = "查看";
                     this.seeAuditShow = false;
@@ -113,6 +115,7 @@
             seeAuditDataFormBtn(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/message/all/audit?token=${this.$cookie.get('token')}&agentMessageId=${this.dataForm.id}`),
                             method: 'post',
@@ -121,6 +124,7 @@
                                 'auditRemark': this.seeAuditDataForm.desc
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('操作成功!')
                                 this.visible = false

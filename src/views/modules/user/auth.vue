@@ -73,7 +73,7 @@
                       <img v-if="rowobj.idCardFrontPath" style="width: 300px;" :src="$imgPreStr + rowobj.idCardFrontPath" />
                   </el-form-item>
                   <el-form-item label="身份证照片反面地址：" label-width="180px">
-                      <img v-if="rowobj.idCardFrontPath" style="width: 300px;" :src="$imgPreStr + rowobj.idCardFrontPath" />
+                      <img v-if="rowobj.idCardBackPath" style="width: 300px;" :src="$imgPreStr + rowobj.idCardBackPath" />
                   </el-form-item>
                   <el-form-item label="身份证名称:" prop="idCardName" label-width="180px">
                       <el-input readonly v-model="rowobj.idCardName" ></el-input>
@@ -126,16 +126,14 @@
             </el-form>
             <div slot="footer" v-if="rowobj['state'] == 0" class="dialog-footer">
                 <el-button @click="dialogRowVisible = false">取 消</el-button>
-                <el-button type="primary" @click="handleAudit(1)">驳回</el-button>
-                <el-button type="primary" @click="handleAudit(9)">通过</el-button>
+                <el-button type="primary" :disabled="passLoading" :loading="rejectLoading" @click="handleAudit(1)">驳回</el-button>
+                <el-button type="primary" :disabled="rejectLoading" :loading="passLoading" @click="handleAudit(9)">通过</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
-import urlobj from '@/utils/imgUrl'
 import 'viewerjs/dist/viewer.css'
-import Viewer from 'v-viewer/src/component.vue'
 export default {
   data () {
     return {
@@ -164,6 +162,8 @@ export default {
         '9': '已认证',
         '1': '已驳回',
       },
+      passLoading: false,
+      rejectLoading: false,
     }
   },
   activated () {
@@ -175,6 +175,8 @@ export default {
   },
   methods: {
     modelshow (rowobj = {}) {
+      this.passLoading = false
+      this.rejectLoading = false
       this.getDetailData(rowobj)
     },
     getRowClass ({ row, column, rowIndex, columnIndex }) {
@@ -255,6 +257,8 @@ export default {
       })
     },
     handleAudit (state) {
+      this.passLoading = state === 9 ? true : false
+      this.rejectLoading = state === 1 ? true : false
       this.$http({
         url: this.$http.adornUrl(`agent/auth/auditCustExt?token=${this.$cookie.get('token')}`),
         method: 'post',
@@ -264,6 +268,8 @@ export default {
           state: state
         })
       }).then(({ data = {} }) => {
+        this.passLoading = false
+        this.rejectLoading = false
         if (data.code === 0) {
           this.$message.success('操作成功')
           this.getPageByMobile()

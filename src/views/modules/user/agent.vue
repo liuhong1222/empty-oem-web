@@ -124,7 +124,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="chdataFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="rechargeSubmit" :disabled="disabledcz">确 定</el-button>
+                <el-button type="primary" @click="rechargeSubmit" :loading="rechargeSubmitLoading">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -136,7 +136,7 @@
             <p v-show="qiShow">您将启用账号<input type="text" value="*****" style="border:none;min-width:50px" v-model="account">，启用后该账户将恢复正常使用。</p> -->
             <span slot="footer" class="dialog-footer">
                 <el-button @click="disableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="forbidden">确 定</el-button>
+                <el-button type="primary" :loading="stopAccountLoading" @click="forbidden">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 修改,新增 -->
@@ -164,7 +164,6 @@
                 cdAgentId: '',
                 jinorQiId: '',
                 disabled: false,
-                disabledcz: false,
                 agentseeVisible: false,
                 jinShow: false,
                 qiShow: false,
@@ -216,6 +215,7 @@
                     { label: '对私转账', value: 7 },
                 ],
                 rechargeSubmitLoading: false,
+                stopAccountLoading: false,
                 pickerOptions0: {
                     disabledDate(time) {
                         return time.getTime() > Date.now() - 8.64e6
@@ -380,10 +380,12 @@
                     this.qiShow = true
                 }
                 this.disableVisible = true
+                this.stopAccountLoading = false
             },
 
             forbidden() {
                 if (this.disableTitlt == "禁用") {
+                    this.stopAccountLoading = true
                     this.$http({
                         url: this.$http.adornUrl(`agent/agentInfo/pause?token=${this.$cookie.get('token')}`),
                         method: 'post',
@@ -391,6 +393,7 @@
                             'agentId': this.jinorQiId
                         }
                     }).then(({ data }) => {
+                        this.stopAccountLoading = false
                         if (data && data.code === 0) {
                             this.disableVisible = false
                             this.$message.success('操作成功')
@@ -401,6 +404,7 @@
                     })
                 }
                 if (this.disableTitlt == '启用') {
+                    this.stopAccountLoading = true
                     this.$http({
                         url: this.$http.adornUrl(`agent/agentInfo/resume?token=${this.$cookie.get('token')}`),
                         method: 'post',
@@ -408,6 +412,7 @@
                             'agentId': this.jinorQiId
                         })
                     }).then(({ data }) => {
+                        this.stopAccountLoading = false
                         if (data && data.code === 0) {
                             this.$message.success('操作成功')
                             this.disableVisible = false

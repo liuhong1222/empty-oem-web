@@ -18,7 +18,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="submitBindPhone">确 定</el-button>
+                <el-button type="primary" :loading="submitLoading" @click="submitBindPhone">确 定</el-button>
               </span>
     </el-dialog>
 </template>
@@ -63,12 +63,14 @@
                     newCode: [
                         { required: true, message: '请输入新手机号验证码', trigger: 'blur' },
                     ],
-                }
+                },
+                submitLoading: false,
             }
         },
         methods: {
             showInit(mobile) {
                 this.dialogVisible = true
+                this.submitLoading = false
                 this.rePhoneForm.phone = mobile
                 this.$nextTick(() => {
                     this.$refs['rePhoneRef'].resetFields()
@@ -162,6 +164,7 @@
             submitBindPhone() {
                 this.$refs['rePhoneRef'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/sms/updateMobile?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -172,6 +175,7 @@
                                 'newCode': this.rePhoneForm.newCode,
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) { //不存在
                                 this.$message({
                                     message: '修改成功，请重新登录!',

@@ -40,7 +40,7 @@
                     <el-input type="textarea" v-model="quesAuditDataForm.desc"></el-input>
                 </el-form-item>
                 <el-form-item v-if="showBnt">
-                    <el-button type="primary" @click="quesAuditDataSubmit()">确定</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="quesAuditDataSubmit()">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -56,6 +56,7 @@
                 seeShow1: false,
                 auditShow: false,
                 showBnt: false,
+                submitLoading: false,
                 title: '',
                 visible: false,
                 auditDisable: false,
@@ -85,6 +86,7 @@
         methods: {
             showInit(id, stu) {
                 this.visible = true;
+                this.submitLoading = false
                 if (stu == "audit") {
                     this.title = "审核"
                     this.auditShow = true;
@@ -128,7 +130,7 @@
             quesAuditDataSubmit() {
                 this.$refs['quesAuditDataRef'].validate((valid) => {
                     if (valid) {
-                        console.log(this.quesAuditDataForm.resource)
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/productFaq/all/audit?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -138,6 +140,7 @@
                                 'auditRemark': this.quesAuditDataForm.desc
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false

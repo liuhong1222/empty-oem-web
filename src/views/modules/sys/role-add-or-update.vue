@@ -23,7 +23,7 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button type="primary" :loading="submitLoading" @click="dataFormSubmit()">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -34,6 +34,7 @@
     data () {
       return {
         visible: false,
+        submitLoading: false,
         menuList: [],
         menuListTreeProps: {
           label: 'name',
@@ -54,6 +55,7 @@
     },
     methods: {
       init (id) {
+        this.submitLoading = false
         new Promise((resolve) => {
           this.$http({
             url: this.$http.adornUrl('sys/menu/list'),
@@ -99,6 +101,7 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.submitLoading = true
             this.$http({
               url: this.$http.adornUrl(`sys/role/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
@@ -109,6 +112,7 @@
                 'menuIdList': [].concat(this.$refs.menuListTree.getCheckedKeys(), [this.tempKey], this.$refs.menuListTree.getHalfCheckedKeys())
               })
             }).then(({data}) => {
+              this.submitLoading = false
               if (data && data.code === 0) {
                 this.visible = false
                 this.$emit('refreshDataList', 1)

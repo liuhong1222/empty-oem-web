@@ -27,7 +27,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="info" plain @click="closeNewsSeeDialod">取消</el-button>
-                    <el-button type="primary" @click="proLineAUSubmit()">提交审核</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="proLineAUSubmit()">提交审核</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -35,11 +35,11 @@
 </template>
 
 <script>
-    import imgUrl from '@/utils/imgUrl'
     export default {
         data() {
             return {
                 visible: false,
+                submitLoading: false,
                 title: '',
                 iconUrl: '',
                 proLineAUDataForm: {
@@ -79,6 +79,7 @@
             showInit(row) {
                 this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id;
                 this.visible = true;
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['proLineAUDataForm'] && this.$refs['proLineAUDataForm'].resetFields()
                     if (row.id !== undefined && row.id + '') {
@@ -106,6 +107,7 @@
             proLineAUSubmit() {
                 this.$refs['proLineAUDataForm'].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/line/saveOrUpdate`),
                             method: 'post',
@@ -119,6 +121,7 @@
                                 'icon': this.iconUrl,
                             }
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('成功')
                                 this.visible = false;

@@ -14,7 +14,7 @@
                     <el-input type="textarea" v-model="auditruleForm.desc"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="auditSubmitForm('auditruleForm')">确定</el-button>
+                    <el-button type="primary" :loading="submitLoading" @click="auditSubmitForm('auditruleForm')">确定</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -32,6 +32,7 @@
                 agentSettingInfo: {},
                 agentId: "",
                 auditDisable: false,
+                submitLoading: false,
                 dialogVisible: false,
                 labelPosition: 'right',
                 auditruleForm: {
@@ -52,7 +53,7 @@
             seeInit({ agentId }) {
                 this.dialogVisible = true
                 this.agentId = agentId + '';
-                
+                this.submitLoading = false
                 this.$http({
                     url: this.$http.adornUrl(`agent/set/findBasicInfo?token=${this.$cookie.get('token')}&agentId=${agentId}`),
                     method: 'post',
@@ -84,6 +85,7 @@
             auditSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/set/audit?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -93,6 +95,7 @@
                                 state: this.auditruleForm.resource
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.$message.success('操作成功!')
                                 this.dialogVisible = false

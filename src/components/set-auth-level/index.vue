@@ -15,7 +15,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="authLevelVisible = false">取 消</el-button>
-            <el-button type="primary" @click="authLevelFormSubmit()">确 定</el-button>
+            <el-button type="primary" :loading="submitLoading" @click="authLevelFormSubmit()">确 定</el-button>
         </div>
     </el-dialog>
 </template>
@@ -37,6 +37,7 @@ export default {
             },
             baseData: {},
             isAdmin: false,
+            submitLoading: false,
         };
     },
     methods: {
@@ -46,6 +47,7 @@ export default {
                 { label: '等级二', value: 1 },
                 { label: '等级三', value: 2 },
             ];
+            this.submitLoading = false
             this.baseData = record
             this.authLevelVisible = true;
             this.$nextTick(() => {
@@ -66,6 +68,7 @@ export default {
         authLevelFormSubmit() {
             this.$refs['authLevelform'].validate((valid) => {
                 if (valid) {
+                    this.submitLoading = true
                     let apiPath = this.isAdmin ? 'agent/desk/setAuthenLevel' : 'agent/cust/setAuthenLevel'
                     this.$http({
                         url: this.$http.adornUrl(`${apiPath}?token=${this.$cookie.get('token')}`),
@@ -76,6 +79,7 @@ export default {
                             'custId': this.isAdmin ? undefined : this.baseData.customerId + '',
                         })
                     }).then(({ data }) => {
+                        this.submitLoading = false
                         if (data && data.code === 0) {
                             this.authLevelVisible = false
                             this.$emit('refresh')

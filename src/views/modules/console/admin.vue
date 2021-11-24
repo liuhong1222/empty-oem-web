@@ -68,7 +68,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addEmailBtn()">确 定</el-button>
+                <el-button :loading="emailAddLoading" type="primary" @click="addEmailBtn()">确 定</el-button>
             </div>
         </el-dialog>
         <!-- 更改邮箱 -->
@@ -82,7 +82,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="reEmailBtn()">确 定</el-button>
+                <el-button :loading="emailEditLoading" type="primary" @click="reEmailBtn()">确 定</el-button>
             </div>
         </el-dialog>
         <!-- 重新绑定手机号 -->
@@ -146,7 +146,9 @@
                     { title: '消耗总条数（条）', field: 'realtimeConsume' },
                     { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
                 ],
-                adminInfo: {} // 管理员首页基本信息
+                adminInfo: {}, // 管理员首页基本信息
+                emailAddLoading: false,
+                emailEditLoading: false,
             }
         },
         activated() {
@@ -223,6 +225,7 @@
             addEmailBtn() {
                 this.$refs['addemailruleForm'].validate((valid) => {
                     if (valid) {
+                        this.emailAddLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/desk/updateMail?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -230,6 +233,7 @@
                                 'mail': this.addemailform.email,
                             })
                         }).then(({ data }) => {
+                            this.emailAddLoading = false
                             if (data && data.code === 0) {
                                 this.addEmailVisible = false
                                 this.basicInfoList[2].data = this.addemailform.email
@@ -245,6 +249,7 @@
             reEmailBtn() {
                 this.$refs['reemailruleForm'].validate((valid) => {
                     if (valid) {
+                        this.emailEditLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/desk/updateMail?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -252,6 +257,7 @@
                                 'mail': this.reemailform.newemail,
                             })
                         }).then(({ data }) => {
+                            this.emailEditLoading = false
                             if (data && data.code === 0) {
                                 this.reEmailVisible = false
                                 this.basicInfoList[2].data = this.reemailform.newemail

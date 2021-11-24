@@ -110,7 +110,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="addEmailBtn()">确 定</el-button>
+                <el-button type="primary" :loading="addEmailLoading" @click="addEmailBtn()">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -125,7 +125,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer">
-                <el-button type="primary" @click="reEmailBtn()">确 定</el-button>
+                <el-button type="primary" :loading="editEmailLoading" @click="reEmailBtn()">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -187,7 +187,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="warnFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="warnFormSubmit()">确 定</el-button>
+                <el-button type="primary" :loading="editWarnNumberLoading" @click="warnFormSubmit()">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -311,6 +311,9 @@ export default {
                     { required: true, message: '请输入修改的预警值', trigger: 'blur' }
                 ],
             },
+            addEmailLoading: false,
+            editEmailLoading: false,
+            editWarnNumberLoading: false,
         };
     },
     activated() {
@@ -590,6 +593,7 @@ export default {
         addEmailBtn() {
             this.$refs['addemailruleForm'].validate((valid) => {
                 if (valid) {
+                    this.addEmailLoading = true
                     this.$http({
                         url: this.$http.adornUrl(`agent/desk/updateMail?token=${this.$cookie.get('token')}`),
                         method: 'post',
@@ -597,6 +601,7 @@ export default {
                             'mail': this.addemailform.email,
                         })
                     }).then(({ data }) => {
+                        this.addEmailLoading = false
                         if (data && data.code === 0) {
                             this.addEmailVisible = false
                             this.getAgentDeskInfo()
@@ -613,6 +618,7 @@ export default {
         reEmailBtn() {
             this.$refs['reemailruleForm'].validate((valid) => {
                 if (valid) {
+                    this.editEmailLoading = true
                     this.$http({
                         url: this.$http.adornUrl(`agent/desk/updateMail?token=${this.$cookie.get('token')}`),
                         method: 'post',
@@ -620,6 +626,7 @@ export default {
                             'mail': this.reemailform.newemail,
                         })
                     }).then(({ data }) => {
+                        this.editEmailLoading = false
                         if (data && data.code === 0) {
                             this.reEmailVisible = false
                             this.getAgentDeskInfo()
@@ -636,6 +643,7 @@ export default {
         warnFormSubmit() {
             this.$refs['warinform'].validate((valid) => {
                 if (valid) {
+                    this.editWarnNumberLoading = true
                     let field = this.warnEditType === '空号' ? 'warnNumber' : 'realtimeWarnNumber'
                     let apiPath = this.warnEditType === '空号' ? 'updateWarnNumber' : 'updateRealtimeWarnNumber'
                     this.$http({
@@ -645,6 +653,7 @@ export default {
                             [field]: this.warinform.counts,
                         })
                     }).then(({ data }) => {
+                        this.editWarnNumberLoading = false
                         if (data && data.code === 0) {
                             this.warnFormVisible = false
                             this.getAgentDeskInfo()

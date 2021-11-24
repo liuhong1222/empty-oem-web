@@ -43,7 +43,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取消</el-button>
-            <el-button type="primary"  @click="handleSubmit()">确定</el-button>
+            <el-button type="primary" :loading="submitLoading" @click="handleSubmit()">确定</el-button>
         </span>
     </el-dialog>
 </template>
@@ -53,6 +53,7 @@
         data() {
             return {
                 dialogVisible: false,
+                submitLoading: false,
                 labelPosition: 'right',
                 dataForm: {
                     category: 0,
@@ -117,6 +118,7 @@
         methods: {
             init(record) {
                 this.dialogVisible = true
+                this.submitLoading = false
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
                     this.dataForm = {
@@ -151,6 +153,7 @@
                             this.$message.warning('退款条数不可超出可退条数')
                             return false
                         }
+                        this.submitLoading = true
                         this.$http({
                             url: this.$http.adornUrl(`agent/cust/refunds?token=${this.$cookie.get('token')}`),
                             method: 'post',
@@ -166,6 +169,7 @@
                                 type: 2, // 1 充值 2 退款
                             })
                         }).then(({ data }) => {
+                            this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.dialogVisible = false
                                 this.$emit('refresh')
