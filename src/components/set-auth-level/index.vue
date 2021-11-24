@@ -51,7 +51,7 @@ export default {
             this.$nextTick(() => {
                 this.$refs['authLevelform'].resetFields();
                 this.authLevelform = {
-                    authLevel: record.authenticationLimitLevel || undefined
+                    authLevel: (record.authenticationLimitLevel || record.authenticationLimitLevel === 0) ? record.authenticationLimitLevel : undefined
                 }
             })
             // msjRoleName 1：管理员 2：代理商
