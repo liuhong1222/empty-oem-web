@@ -166,8 +166,8 @@
                     if (data && data.code === 0) {
                         this.customerTableData = data.data.list
                         this.totalPage = data.data.total
-                        this.money = data.data.totalInfo.totalRechargeMoney
-                        this.number = data.data.totalInfo.totalRechargeNum
+                        this.money = data.data.totalInfo ? data.data.totalInfo.totalRechargeMoney : 0
+                        this.number = data.data.totalInfo ? data.data.totalInfo.totalRechargeNum : 0
                         if (data.data.list.length == 0) {
                             this.disabled = true
                         } else {
@@ -176,6 +176,8 @@
                     } else {
                         this.customerTableData = []
                         this.totalPage = 0
+                        this.money = 0
+                        this.number = 0
                     }
                     this.dataListLoading = false
                 })

@@ -151,6 +151,7 @@
                 pageSize: 10,
                 totalPage: 0,
                 agentSearchLoading: false,
+                totalInfo: {}
             }
         },
         activated() {
@@ -177,9 +178,11 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
+                        this.totalInfo = data.data.totalInfo || {}
                     } else {
                         this.tableData = []
                         this.totalPage = 0
+                        this.totalInfo = {}
                     }
                     this.dataListLoading = false
                 })
@@ -211,34 +214,70 @@
                         return;
                     }
                     switch (column.property) {
-                        // case 'userCount': {
-                        //     sums[index] = `${11111}`;
-                        //     break;
-                        // }
-                        // case 'newUserCount': {
-                        //     sums[index] = `${33}`;
-                        //     break;
-                        // }
-                        // case 'rechargeNum': {
-                        //     sums[index] = `${213}`;
-                        //     break;
-                        // }
-                        // case 'emptyUseCount': {
-                        //     sums[index] = `${412}`;
-                        //     break;
-                        // }
-                        // case 'emptyRemainCount': {
-                        //     sums[index] = `${5647}`;
-                        //     break;
-                        // }
-                        // case 'realUseCount': {
-                        //     sums[index] = `${25253}`;
-                        //     break;
-                        // }
-                        // case 'realRemainCount': {
-                        //     sums[index] = `${141455}`;
-                        //     break;
-                        // }
+                        case 'emptyNumber': {
+                            sums[index] = `${this.totalInfo.emptyNumber || ''}`;
+                            break;
+                        }
+                        case 'emptyTotal': {
+                            sums[index] = `${this.totalInfo.emptyTotal || ''}`;
+                            break;
+                        }
+                        case 'likeShutdownNumber': {
+                            sums[index] = `${this.totalInfo.likeShutdownNumber || ''}`;
+                            break;
+                        }
+                        case 'mnpNumber': {
+                            sums[index] = `${this.totalInfo.mnpNumber || ''}`;
+                            break;
+                        }
+                        case 'moberrNumber': {
+                            sums[index] = `${this.totalInfo.moberrNumber || ''}`;
+                            break;
+                        }
+                        case 'normalNumber': {
+                            sums[index] = `${this.totalInfo.normalNumber || ''}`;
+                            break;
+                        }
+                        case 'notOnlineNumber': {
+                            sums[index] = `${this.totalInfo.notOnlineNumber || ''}`;
+                            break;
+                        }
+                        case 'oncallNumber': {
+                            sums[index] = `${this.totalInfo.oncallNumber || ''}`;
+                            break;
+                        }
+                        case 'realNumber': {
+                            sums[index] = `${this.totalInfo.realNumber || ''}`;
+                            break;
+                        }
+                        case 'realtimeEmptyNumber': {
+                            sums[index] = `${this.totalInfo.realtimeEmptyNumber || ''}`;
+                            break;
+                        }
+                        case 'realtimeTotal': {
+                            sums[index] = `${this.totalInfo.realtimeTotal || ''}`;
+                            break;
+                        }
+                        case 'riskNumber': {
+                            sums[index] = `${this.totalInfo.riskNumber || ''}`;
+                            break;
+                        }
+                        case 'shutdownNumber': {
+                            sums[index] = `${this.totalInfo.shutdownNumber || ''}`;
+                            break;
+                        }
+                        case 'silentNumber': {
+                            sums[index] = `${this.totalInfo.silentNumber || ''}`;
+                            break;
+                        }
+                        case 'tingjiNumber': {
+                            sums[index] = `${this.totalInfo.tingjiNumber || ''}`;
+                            break;
+                        }
+                        case 'unknownNumber': {
+                            sums[index] = `${this.totalInfo.unknownNumber || ''}`;
+                            break;
+                        }
                         default:
                             sums[index] = ``;
                             break;

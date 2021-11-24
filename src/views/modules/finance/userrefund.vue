@@ -128,8 +128,8 @@
                         }
                         this.refundTableData = data.data.list
                         this.totalPage = data.data.total
-                        this.money = data.data.totalInfo.totalRefundMoney
-                        this.number = data.data.totalInfo.totalRefundNum
+                        this.money = data.data.totalInfo ? data.data.totalInfo.totalRefundMoney : 0
+                        this.number = data.data.totalInfo ? data.data.totalInfo.totalRefundNum : 0
                         if (data.data.list.length == 0) {
                             this.disabled = true
                         } else {
@@ -138,6 +138,8 @@
                     } else {
                         this.refundTableData = []
                         this.totalPage = 0
+                        this.money = 0
+                        this.number = 0
                     }
                     this.dataListLoading = false
                 })

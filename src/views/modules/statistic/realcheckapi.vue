@@ -42,7 +42,7 @@
                         <span>{{ Math.round((scope.row.size || 0) / 1024) + 'KB' }}</span>
                     </template>
                 </el-table-column> -->
-                <el-table-column width="120" prop="line" label="检测数" align="center">
+                <el-table-column width="120" prop="totalNumber" label="检测数" align="center">
                 </el-table-column>
                 <el-table-column width="120" prop="normal" label=" 正常" align="center">
                 </el-table-column>
@@ -98,7 +98,7 @@
                     customerName: '',
                     phone: ''
                 },
-                tableData: [{ totalNumber: 1000, unknownNumber: 100, id: 1 }],
+                tableData: [],
                 pageIndex: 1,
                 pageSize: 10,
                 totalPage: 0,
@@ -148,7 +148,7 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalCount = data.data.totalInfo.totalSize
+                        this.totalCount = data.data.totalInfo ? data.data.totalInfo.totalSize : 0
                     } else {
                         this.tableData = []
                         this.totalPage = 0
@@ -195,7 +195,7 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'line') {
+                    if (column.property === 'totalNumber') {
                         sums[index] = `共${this.totalCount}条`
                     } else {
                         sums[index] = '';

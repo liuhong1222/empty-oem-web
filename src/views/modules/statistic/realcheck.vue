@@ -142,10 +142,11 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalCount = data.data.totalInfo.totalSize
+                        this.totalCount = data.data.totalInfo ? data.data.totalInfo.totalSize : 0
                     } else {
                         this.tableData = []
                         this.totalPage = 0
+                        this.totalCount = 0
                     }
                     this.dataListLoading = false
                 })

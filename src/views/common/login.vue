@@ -52,6 +52,7 @@
             <el-button
               class="login-btn-submit loginBtn"
               type="primary"
+              :loading="loginLoading"
               @click="dataFormChecked()"
             >登录</el-button>
           </el-form-item>
@@ -74,6 +75,7 @@ export default {
         captcha: ""
       },
       times: 60,
+      timeindex: null,
       dataRule: {
         userName: [
           { required: true, message: "帐号不能为空", trigger: "blur" }
@@ -84,7 +86,8 @@ export default {
         verifyCode: [
           { required: true, message: "验证码不能为空", trigger: "blur" }
         ]
-      }
+      },
+      loginLoading: false,
     };
   },
   methods: {
@@ -107,6 +110,10 @@ export default {
                   this.downTimes();
                   this.$message.success("验证码已发送注意查收");
                 } else {
+                  if (this.timeindex) {
+                    clearInterval(this.timeindex)
+                    this.timeindex = null
+                  }
                   this.times = 60;
                   this.$message.error(data.msg);
                 }
@@ -119,6 +126,7 @@ export default {
     dataFormChecked() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
+          this.loginLoading = true
           this.$http({
             url: this.$http.adornUrl("sys/checkVrifyCode"),
             method: "post",
@@ -127,6 +135,7 @@ export default {
               verifyCode: this.dataForm.verifyCode
             })
           }).then(({ data }) => {
+            this.loginLoading = false
             if (data && data.code === 0) {
               this.$cookie.set("token", data.token);
               // 初始密码：true是没修改过,false是修改过
@@ -141,6 +150,11 @@ export default {
                 // this.auditStatus();
               }
             } else {
+              if (this.timeindex) {
+                clearInterval(this.timeindex)
+                this.timeindex = null
+              }
+              this.times = 60;
               this.$message.error(data.msg);
             }
           });
@@ -151,12 +165,17 @@ export default {
       this.$router.replace({ name: "forget" });
     },
     downTimes() {
+      if (this.timeindex) {
+        clearInterval(this.timeindex)
+        this.timeindex = null
+      }
       this.timeindex = setInterval(() => {
         if (this.times > 0) {
           this.times--;
         } else {
           this.times = 60;
           clearInterval(this.timeindex);
+          this.timeindex = null
         }
       }, 1000);
     },
@@ -185,7 +204,10 @@ export default {
     }
   },
   beforeDestroy() {
-    clearInterval(this.timeindex);
+    if (this.timeindex) {
+      clearInterval(this.timeindex)
+      this.timeindex = null
+    }
   }
 };
 </script>

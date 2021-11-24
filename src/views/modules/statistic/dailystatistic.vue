@@ -107,6 +107,7 @@
                 totalPage: 0,
                 isAdmin: false,
                 agentSearchLoading: false,
+                totalInfo: {},
             }
         },
         activated() {
@@ -138,9 +139,11 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
+                        this.totalInfo = data.data.totalInfo || {}
                     } else {
                         this.tableData = []
                         this.totalPage = 0
+                        this.totalInfo = {}
                     }
                     this.dataListLoading = false
                 })
@@ -190,34 +193,30 @@
                         return;
                     }
                     switch (column.property) {
-                        // case 'userCount': {
-                        //     sums[index] = `${0}`;
-                        //     break;
-                        // }
-                        // case 'newUserCount': {
-                        //     sums[index] = `${0}`;
-                        //     break;
-                        // }
-                        // case 'rechargeNum': {
-                        //     sums[index] = `${0}`;
-                        //     break;
-                        // }
-                        // case 'emptyUseCount': {
-                        //     sums[index] = `${0}`;
-                        //     break;
-                        // }
-                        // case 'emptyRemainCount': {
-                        //     sums[index] = `${0}`;
-                        //     break;
-                        // }
-                        // case 'realUseCount': {
-                        //     sums[index] = `${0}`;
-                        //     break;
-                        // }
-                        // case 'realRemainCount': {
-                        //     sums[index] = `${0}`;
-                        //     break;
-                        // }
+                        case 'dailyAddCustNum': {
+                            sums[index] = `${this.totalInfo.dailyAddCustNum || ''}`;
+                            break;
+                        }
+                        case 'custNum': {
+                            sums[index] = `${this.totalInfo.custNum || ''}`;
+                            break;
+                        }
+                        case 'emptyConsume': {
+                            sums[index] = `${this.totalInfo.emptyConsume || ''}`;
+                            break;
+                        }
+                        case 'emptyCounts': {
+                            sums[index] = `${this.totalInfo.emptyCount || ''}`;
+                            break;
+                        }
+                        case 'realtimeConsume': {
+                            sums[index] = `${this.totalInfo.realtimeConsume || ''}`;
+                            break;
+                        }
+                        case 'realtimeCounts': {
+                            sums[index] = `${this.totalInfo.realtimeCounts || ''}`;
+                            break;
+                        }
                         default:
                             sums[index] = ``;
                             break;

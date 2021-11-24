@@ -106,8 +106,8 @@
                     if (data && data.code === 0) {
                         this.agentRegTableData = data.data.list
                         this.totalPage = data.data.total
-                        this.money = data.data.totalInfo.money
-                        this.number = data.data.totalInfo.number
+                        this.money = data.data.totalInfo ? data.data.totalInfo.money : 0
+                        this.number = data.data.totalInfo ? data.data.totalInfo.number : 0
                         if (data.data.list.length == 0) {
                             this.disabled = true
                         } else {
@@ -116,6 +116,8 @@
                     } else {
                         this.agentRegTableData = []
                         this.totalPage = 0
+                        this.money = 0
+                        this.number = 0
                     }
                     this.dataListLoading = false
                 })
