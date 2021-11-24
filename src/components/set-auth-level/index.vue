@@ -42,9 +42,9 @@ export default {
     methods: {
         init(record) {
             let defalutAuthLevelList = [
-                { label: '等级一', value: 1 },
-                { label: '等级二', value: 2 },
-                { label: '等级三', value: 3 },
+                { label: '等级一', value: 0 },
+                { label: '等级二', value: 1 },
+                { label: '等级三', value: 2 },
             ];
             this.baseData = record
             this.authLevelVisible = true;
