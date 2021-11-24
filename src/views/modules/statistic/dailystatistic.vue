@@ -190,41 +190,19 @@
                 columns.forEach((column, index) => {
                     if (index === 0) {
                         sums[index] = '合计';
-                        return;
-                    }
-                    switch (column.property) {
-                        case 'dailyAddCustNum': {
-                            sums[index] = `${this.totalInfo.dailyAddCustNum || ''}`;
-                            break;
-                        }
-                        case 'custNum': {
-                            sums[index] = `${this.totalInfo.custNum || ''}`;
-                            break;
-                        }
-                        case 'emptyConsume': {
-                            sums[index] = `${this.totalInfo.emptyConsume || ''}`;
-                            break;
-                        }
-                        case 'emptyCounts': {
-                            sums[index] = `${this.totalInfo.emptyCount || ''}`;
-                            break;
-                        }
-                        case 'realtimeConsume': {
-                            sums[index] = `${this.totalInfo.realtimeConsume || ''}`;
-                            break;
-                        }
-                        case 'realtimeCounts': {
-                            sums[index] = `${this.totalInfo.realtimeCounts || ''}`;
-                            break;
-                        }
-                        default:
-                            sums[index] = ``;
-                            break;
+                    } else {
+                        sums[index] = this.dealTotalColText(column.property)
                     }
                 });
 
                 return sums;
-            }
+            },
+            dealTotalColText(field) {
+                if (this.totalInfo[field] || this.totalInfo[field] === 0) {
+                    return this.totalInfo[field]
+                }
+                return ''
+            },
         }
     }
 

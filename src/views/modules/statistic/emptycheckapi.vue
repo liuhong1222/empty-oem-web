@@ -200,11 +200,6 @@
                         sums[index] = '合计';
                         return;
                     }
-                    // if (column.property === 'line') {
-                    //     sums[index] = `接口${this.totalInfo.lineTotal}条`
-                    // } else if (column.property === 'poolNumber') {
-                    //     sums[index] = `号池${this.totalInfo.poolTotal}条`
-                    // } else 
                     if (column.property === 'totalNumber') {
                         sums[index] = `共${this.totalInfo.totalSize}条`
                     } else {

@@ -211,81 +211,19 @@
                 columns.forEach((column, index) => {
                     if (index === 0) {
                         sums[index] = '合计';
-                        return;
-                    }
-                    switch (column.property) {
-                        case 'emptyNumber': {
-                            sums[index] = `${this.totalInfo.emptyNumber || ''}`;
-                            break;
-                        }
-                        case 'emptyTotal': {
-                            sums[index] = `${this.totalInfo.emptyTotal || ''}`;
-                            break;
-                        }
-                        case 'likeShutdownNumber': {
-                            sums[index] = `${this.totalInfo.likeShutdownNumber || ''}`;
-                            break;
-                        }
-                        case 'mnpNumber': {
-                            sums[index] = `${this.totalInfo.mnpNumber || ''}`;
-                            break;
-                        }
-                        case 'moberrNumber': {
-                            sums[index] = `${this.totalInfo.moberrNumber || ''}`;
-                            break;
-                        }
-                        case 'normalNumber': {
-                            sums[index] = `${this.totalInfo.normalNumber || ''}`;
-                            break;
-                        }
-                        case 'notOnlineNumber': {
-                            sums[index] = `${this.totalInfo.notOnlineNumber || ''}`;
-                            break;
-                        }
-                        case 'oncallNumber': {
-                            sums[index] = `${this.totalInfo.oncallNumber || ''}`;
-                            break;
-                        }
-                        case 'realNumber': {
-                            sums[index] = `${this.totalInfo.realNumber || ''}`;
-                            break;
-                        }
-                        case 'realtimeEmptyNumber': {
-                            sums[index] = `${this.totalInfo.realtimeEmptyNumber || ''}`;
-                            break;
-                        }
-                        case 'realtimeTotal': {
-                            sums[index] = `${this.totalInfo.realtimeTotal || ''}`;
-                            break;
-                        }
-                        case 'riskNumber': {
-                            sums[index] = `${this.totalInfo.riskNumber || ''}`;
-                            break;
-                        }
-                        case 'shutdownNumber': {
-                            sums[index] = `${this.totalInfo.shutdownNumber || ''}`;
-                            break;
-                        }
-                        case 'silentNumber': {
-                            sums[index] = `${this.totalInfo.silentNumber || ''}`;
-                            break;
-                        }
-                        case 'tingjiNumber': {
-                            sums[index] = `${this.totalInfo.tingjiNumber || ''}`;
-                            break;
-                        }
-                        case 'unknownNumber': {
-                            sums[index] = `${this.totalInfo.unknownNumber || ''}`;
-                            break;
-                        }
-                        default:
-                            sums[index] = ``;
-                            break;
+                    } else {
+                        sums[index] = this.dealTotalColText(column.property)
                     }
                 });
 
                 return sums;
-            }
+            },
+            dealTotalColText(field) {
+                if (this.totalInfo[field] || this.totalInfo[field] === 0) {
+                    return this.totalInfo[field]
+                }
+                return ''
+            },
         }
     }
 
