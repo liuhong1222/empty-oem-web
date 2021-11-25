@@ -5,7 +5,7 @@
         <img src="~@/assets/img/lo_pic.jpg" alt />
       </div>
       <div class="login-main">
-        <!-- <img src="~@/assets/img/logo.png" alt /> -->
+        <img src="~@/assets/img/logo.png" alt />
         <div class="context">
           <span></span>
           <h3 class="login-title">登录</h3>
@@ -244,10 +244,11 @@ $lbc: #6192fc;
 
   > img {
     float: right;
+    width: 80px;
   }
 
   > .context {
-    margin-top: 50px;
+    margin-top: 80px;
     margin-bottom: 25px;
 
     > span {
