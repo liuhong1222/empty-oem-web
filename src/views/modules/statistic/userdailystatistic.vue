@@ -19,6 +19,8 @@
                 </el-table-column>
                 <el-table-column width="150" prop="dayInt" label="日期" align="center">
                 </el-table-column>
+                <el-table-column v-if="isAdmin" min-width="150" prop="companyName" label="代理商名称" align="center">
+                </el-table-column>
                 <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
                 </el-table-column>
                 <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
@@ -151,10 +153,13 @@
                 pageSize: 10,
                 totalPage: 0,
                 agentSearchLoading: false,
+                isAdmin: false,
                 totalInfo: {}
             }
         },
         activated() {
+            // msjRoleName 1：管理员 2：代理商
+            this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
             let currDate = formatDate(new Date(new Date()-24*60*60*1000))
             this.searchData = {
                 createDate: [currDate, currDate],
