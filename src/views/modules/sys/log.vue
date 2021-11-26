@@ -1,13 +1,13 @@
 <template>
   <div class="mod-log">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList(1)">
-      <!-- <el-form-item label="手机号码">
+    <!-- <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList(1)">
+      <el-form-item label="手机号码">
         <el-input v-model="dataForm.key" style="width: 220px;" placeholder="请输入手机号码" clearable></el-input>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList(1)">查询</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
     <el-table :data="dataList" border v-loading="dataListLoading" style="width: 100%">
       <el-table-column prop="logId" header-align="center" align="center" width="80" label="ID">
         <template slot-scope="{ row }">
@@ -64,7 +64,7 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'key': this.dataForm.key
+            // 'key': this.dataForm.key
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
