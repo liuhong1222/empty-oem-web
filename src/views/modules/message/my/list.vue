@@ -52,7 +52,7 @@
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" size="small" @click="auditOrSeeMess(scope.row.id,'see')">查看</el-button>
-                        <el-button type="text" size="small" :disabled="scope.row.state == 4 ? false : true" @click="updateInfo(scope.row.id)">修改</el-button>
+                        <el-button type="text" size="small" :disabled="scope.row.state == 1 ? false : true" @click="updateInfo(scope.row.id)">修改</el-button>
                         <el-button type="text" size="small" :disabled="scope.row.state == 5 ? true : false" @click="delInfoList(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
