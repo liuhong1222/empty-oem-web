@@ -83,9 +83,11 @@
                     { label: '对私微信', value: 6 },
                     { label: '对私转账', value: 7 },
                 ],
+                agentId: '',
             }
         },
         activated() {
+            this.agentId = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id;
             this.myRechargeList(1)
         },
         methods: {
@@ -178,7 +180,7 @@
                     }
                 }
 
-                window.open(this.$http.adornUrl(`agent/finance/my/recharge/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&payType=${this.agentSearchData.type}&startTime=${startTime}&endTime=${endTime}`))
+                window.open(this.$http.adornUrl(`agent/finance/agent/recharge/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&payType=${this.agentSearchData.type}&startTime=${startTime}&endTime=${endTime}&agentId=${this.agentId}`))
             }
 
         }
