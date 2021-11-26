@@ -14,6 +14,9 @@
       <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
       <el-table-column prop="id" header-align="center" align="center" width="80" label="ID">
+        <template slot-scope="{ row }">
+          <span>{{ row.id + '' }}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="角色名称">
       </el-table-column>

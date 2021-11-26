@@ -1,9 +1,9 @@
 <template>
   <div class="mod-log">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList(1)">
-      <el-form-item label="手机号码">
+      <!-- <el-form-item label="手机号码">
         <el-input v-model="dataForm.key" style="width: 220px;" placeholder="请输入手机号码" clearable></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button @click="getDataList(1)">查询</el-button>
       </el-form-item>
@@ -14,8 +14,8 @@
           <span>{{ row.logId + '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="username" header-align="center" align="center" label="手机号码">
-      </el-table-column>
+      <!-- <el-table-column prop="username" header-align="center" align="center" label="手机号码">
+      </el-table-column> -->
       <el-table-column prop="operation" header-align="center" align="center" label="用户操作">
       </el-table-column>
       <el-table-column prop="type" header-align="center" align="center" width="150" :show-overflow-tooltip="true" label="请求方法">
