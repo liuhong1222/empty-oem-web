@@ -4,8 +4,14 @@
             <h2>空号检测记录</h2>
             <el-form :inline="true">
                 <el-form-item label="创建时间：">
-                    <el-date-picker :clearable="false" v-model="searchData.createTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
-                        value-format="yyyy-MM-dd">
+                    <el-date-picker
+                        :clearable="false"
+                        v-model="searchData.time"
+                        type="date"
+                        placeholder="选择日期"
+                        value-format="yyyy-MM-dd"
+                        :picker-options="datePickOption"
+                    >
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="代理商：" v-if="isAdmin">
@@ -52,20 +58,6 @@
                 </el-table-column>
                 <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
                 </el-table-column>
-                <!-- <el-table-column width="120" prop="checkType" label="接口" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ checkTypeMap[scope.row.checkType] || '' }}</span>
-                    </template>
-                </el-table-column> -->
-                <!-- <el-table-column width="120" prop="line" label="接口检测数" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column width="120" prop="poolNumber" label="号池检测数" align="center">
-                    <template slot-scope="{ row }">
-                        <span>{{ row.totalNumber - row.unknownNumber }}</span>
-                    </template>
-                </el-table-column> -->
-                <!-- <el-table-column width="120" prop="unknownNumber" label="号池未匹配" align="center">
-                </el-table-column> -->
                 <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
                 </el-table-column>
                 <el-table-column width="150" prop="createTime" label="创建时间" align="center">
@@ -90,7 +82,7 @@
                 computeFileSize,
                 dataListLoading: false,
                 searchData: {
-                    createTime: [],
+                    time: undefined,
                     agentId: -1,
                     customerName: '',
                     phone: ''
@@ -111,10 +103,20 @@
                 isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
+        computed: {
+            datePickOption () {
+                return {
+                    disabledDate(time) {
+                        let nowDate = Date.now()
+                        return (time.getTime() > nowDate - 8.64e6) || time.getTime() < nowDate - (1000 * 60 * 60 * 24 * 30)
+                    }
+                }
+            }
+        },
         activated() {
             let currDate = formatDate(new Date())
             this.searchData = {
-                createTime: [currDate, currDate],
+                time: currDate,
                 agentId: -1,
                 customerName: '',
                 phone: ''
@@ -133,8 +135,8 @@
                         'token': this.$cookie.get('token'),
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
-                        'createTimeFrom': this.searchData.createTime && this.searchData.createTime[0] ? this.searchData.createTime[0] : undefined,
-                        'createTimeEnd': this.searchData.createTime && this.searchData.createTime[1] ? this.searchData.createTime[1] : undefined,
+                        'createTimeFrom': this.searchData.time,
+                        'createTimeEnd': this.searchData.time,
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
                         'agentId': this.searchData.agentId === -1 ? undefined : this.searchData.agentId,
