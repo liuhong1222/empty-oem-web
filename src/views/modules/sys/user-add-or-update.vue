@@ -142,13 +142,14 @@ import { isEmail, isMobile } from '@/utils/validate'
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.submitLoading = true;
+            let sha256 = require("js-sha256").sha256
             this.$http({
               url: this.$http.adornUrl(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}?token=${this.$cookie.get('token')}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
                 'username': this.dataForm.username,
-                'password': this.dataForm.password ? md5(this.dataForm.password) : this.dataForm.password,
+                'password': this.dataForm.password ? sha256(this.dataForm.password) : this.dataForm.password,
                 'email': this.dataForm.email,
                 'phone': this.dataForm.phone,
                 'state': this.dataForm.state,

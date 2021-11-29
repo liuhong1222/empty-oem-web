@@ -98,12 +98,13 @@ export default {
           this.$refs["dataForm"].validateField("password", valid => {
             if (!valid) {
               this.times = 59;
+              let sha256 = require("js-sha256").sha256
               this.$http({
                 url: this.$http.adornUrl("sys/login"),
                 method: "post",
                 data: this.$http.adornData({
                   username: this.dataForm.userName,
-                  password: md5(this.dataForm.password)
+                  password: sha256(this.dataForm.password)
                 })
               }).then(({ data }) => {
                 if (data && data.code === 0) {

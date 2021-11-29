@@ -93,12 +93,13 @@
             dataFormSubmit() {
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
+                        let sha256 = require("js-sha256").sha256
                         this.$http({
                             url: this.$http.adornUrl('/sys/user/password'),
                             method: 'post',
                             data: this.$http.adornData({
-                                'password': md5(this.dataForm.password),
-                                'newPassword': md5(this.dataForm.newPassword)
+                                'password': sha256(this.dataForm.password),
+                                'newPassword': sha256(this.dataForm.newPassword)
                             })
                         }).then(({ data }) => {
                             if (data && data.code === 0) {

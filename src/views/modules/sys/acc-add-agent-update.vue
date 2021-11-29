@@ -134,6 +134,7 @@
                 this.$refs['accountdataFormref'].validate((valid) => {
                     if (valid) {
                         this.submitLoading = true;
+                        let sha256 = require("js-sha256").sha256
                         this.$http({
                             url: this.$http.adornUrl(`sys/user/${!this.isEdit ? 'save' : 'update'}`),
                             method: 'post',
@@ -147,7 +148,7 @@
                                 'nickname': this.accountdataForm.nickname,
                                 'phone': this.accountdataForm.phone,
                                 'email': this.accountdataForm.email,
-                                'password': (this.accountdataForm.password) ? md5(this.accountdataForm.password) : this.accountdataForm.password
+                                'password': (this.accountdataForm.password) ? sha256(this.accountdataForm.password) : this.accountdataForm.password
                             }
                         }).then(({ data }) => {
                             this.submitLoading = false;
