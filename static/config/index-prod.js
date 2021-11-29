@@ -11,7 +11,7 @@
 
   // 资源路径
   window.SITE_CONFIG['imgUrl'] = 'http://test.haifou.com:8088/' // stable 环境
-  // window.SITE_CONFIG['imgUrl'] = 'http://shdb.253.com:8180/' // 线上
+  window.SITE_CONFIG['zxaImgUrl'] = 'http://test.haifou.com:8088/' // stable 环境
 
   // cdn地址 = 域名 + 版本号
   window.SITE_CONFIG['domain'] = './' // 域名

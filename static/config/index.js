@@ -9,6 +9,7 @@
     window.SITE_CONFIG['baseUrl'] = 'http://172.16.20.33:9999/open/'
 
     window.SITE_CONFIG['imgUrl'] = 'http://test.haifou.com:8088/' // 资源请求地址
+    window.SITE_CONFIG['zxaImgUrl'] = 'http://test.haifou.com:8088/'
 
     // cdn地址 = 域名 + 版本号
     window.SITE_CONFIG['domain'] = './' // 域名
