@@ -47,6 +47,7 @@
                 <el-form-item>
                     <el-button type="primary" @click="getCustomList(1)">查询</el-button>
                     <el-button type="primary" @click="exportUser()" :disabled="disabled">导出</el-button>
+                    <el-button type="primary" @click="handleAddUser" v-if="!isAdmin">新增</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -136,10 +137,12 @@
         ></transfer-or-agent>
         <!--设置用户认证等级 对话框 -->
         <set-auth-level ref="setAuthLevelRef" @refresh="getCustomList" />
+        <add-customer-dia ref="addCustomerDiaRef" @refresh="getCustomList" />
     </div>
 </template>
 <script>
 // import perEditEnterise from './user-per-edit-enterise'
+import AddCustomerDia from "./add-customer-dia.vue";
 import perSeeEnterprise from "./user-per-see-enterprise";
 import perRechargePrise from "./user-per-recharge-prise";
 import transferOrAgent from "./user-transfer-agent";
@@ -194,6 +197,7 @@ export default {
     transferOrAgent,
     CustomerRefundDia,
     SetAuthLevel,
+    AddCustomerDia,
   },
   activated() {
     if (sessionStorage.getItem("msjRoleName") == "1") {
@@ -451,6 +455,9 @@ export default {
         default:
           break;
       }
+    },
+    handleAddUser() {
+      this.$refs.addCustomerDiaRef.init()
     },
   },
 };
