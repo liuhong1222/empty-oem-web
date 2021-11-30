@@ -190,7 +190,7 @@
                 })
             },
             initBaseInfoForm() {
-                const { agentId, agentName, agentLogo, agentIcon, deputySignature, companyChop, smsSignature, domain, siteName, seoKeywords, seoDescription, la51Src, baiduSrc, baiduocpcToken } = this.allSettingInfo
+                const { apiDomain, agentId, agentName, agentLogo, agentIcon, deputySignature, companyChop, smsSignature, domain, siteName, seoKeywords, seoDescription, la51Src, baiduSrc, baiduocpcToken } = this.allSettingInfo
                 this.$refs.baseInfoFormRef.init({
                     agentId: this.editSettingInfo.agentId || agentId,
                     agentName: this.editSettingInfo.agentName || agentName,
@@ -206,6 +206,7 @@
                     la51Src: this.editSettingInfo.la51Src || la51Src,
                     baiduSrc: this.editSettingInfo.baiduSrc || baiduSrc,
                     baiduocpcToken: this.editSettingInfo.baiduocpcToken || baiduocpcToken,
+                    apiDomain: this.editSettingInfo.apiDomain || apiDomain,
                 })
             },
             initServiceInfoForm() {

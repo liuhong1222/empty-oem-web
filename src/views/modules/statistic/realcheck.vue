@@ -49,24 +49,54 @@
                     </template>
                 </el-table-column>
                 <el-table-column width="120" prop="line" label="检测数" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.line || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="normal" label=" 正常" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.normal || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="numberPortability" label=" 正常(携号转网)" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.numberPortability || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="empty" label=" 空号" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.empty || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="onCall" label=" 通话中" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.onCall || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="onlineButNotAvailable" label=" 不在网(空号)" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.onlineButNotAvailable || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="shutdown" label=" 关机" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.shutdown || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="suspectedShutdown" label="疑似关机" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.suspectedShutdown || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="serviceSuspended" label=" 停机" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.serviceSuspended || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="unknown" label=" 号码错误" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.unknown || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="120" prop="exceptionFailCount" label=" 未知" align="center">
                     <template slot-scope="scope">
@@ -74,6 +104,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.illegalNumber || 0 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column width="150" prop="createTime" label="创建时间" align="center">
                 </el-table-column>

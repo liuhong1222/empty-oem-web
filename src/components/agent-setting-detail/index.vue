@@ -61,6 +61,12 @@
                             <div :style="{ width: `${contentWidth.thirty}px` }">{{ agentSettingInfo.baiduocpcToken }}</div>
                         </td>
                     </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">API域名</td>
+                        <td class="discribe-col" colspan="3" style="width: 75%;">
+                            <div :style="{ width: `${contentWidth.seventyFive}px` }">{{ agentSettingInfo.apiDomain }}</div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </el-collapse-item>

@@ -142,6 +142,9 @@
         <el-form-item label="百度营销账号token：" prop="baiduocpcToken">
             <el-input placeholder="请输入百度营销账号token" v-model="formData.baiduocpcToken"></el-input>
         </el-form-item>
+        <el-form-item label="API域名：" prop="baiduocpcToken">
+            <el-input placeholder="请输入API域名" v-model="formData.apiDomain"></el-input>
+        </el-form-item>
     </el-form>
 </template>
 

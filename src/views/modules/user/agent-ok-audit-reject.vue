@@ -4,6 +4,12 @@
             <agent-setting-detail ref="detailRef" />
             <el-form :model="auditruleForm" :rules="auditrules" ref="auditruleForm" label-width="100px" class="demo-ruleForm"
                 style="margin-top:30px">
+                <el-form-item label="官网类型：" prop="website">
+                    <el-radio-group v-model="auditruleForm.website">
+                        <el-radio :label="1">迅龙</el-radio>
+                        <el-radio :label="2">步正云</el-radio>
+                    </el-radio-group>
+                </el-form-item>
                 <el-form-item label="审核结果：" prop="resource">
                     <el-radio-group v-model="auditruleForm.resource" @change="auditChangeHandler">
                         <el-radio :label="9">通过</el-radio>
@@ -36,10 +42,14 @@
                 dialogVisible: false,
                 labelPosition: 'right',
                 auditruleForm: {
-                    resource: '',
+                    website: 1,
+                    resource: 9,
                     desc: ''
                 },
                 auditrules: {
+                    website: [
+                        { required: true, message: '请选择官网类型', trigger: 'change' }
+                    ],
                     resource: [
                         { required: true, message: '请选择审核结果', trigger: 'change' }
                     ],
@@ -73,11 +83,11 @@
                 this.auditDisable = false
             },
             auditChangeHandler(val) {
+                this.auditruleForm.desc = ""
                 if (val == 1) {
                     this.auditDisable = true
                 } else {
                     this.auditDisable = false
-                    this.auditruleForm.desc = ""
                 }
             },
 
@@ -92,7 +102,8 @@
                             params: this.$http.adornParams({
                                 'agentId': this.agentId,
                                 'remark': this.auditruleForm.desc,
-                                state: this.auditruleForm.resource
+                                state: this.auditruleForm.resource,
+                                officialWeb: this.auditruleForm.website
                             })
                         }).then(({ data }) => {
                             this.submitLoading = false
