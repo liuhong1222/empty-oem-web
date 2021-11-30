@@ -31,7 +31,7 @@
         </div>
         <div class="agentTable">
             <el-table :data="proTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
-                <el-table-column prop="sort" label="排序" align="center">
+                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
                 <el-table-column prop="id" label="问题ID" align="center" width="110">
                     <template slot-scope="{ row }">
