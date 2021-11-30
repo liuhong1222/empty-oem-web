@@ -13,13 +13,13 @@
             label-width="100px"
         >
             <el-form-item label="手机号码：" prop="phone">
-                <el-input v-model="dataForm.phone" placeholder="请输入手机号码"></el-input>
+                <el-input v-model="dataForm.phone" placeholder="请输入"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-                <el-input type="password" v-model="dataForm.password"></el-input>
+            <el-form-item label="密码：" prop="password">
+                <el-input type="password" v-model="dataForm.password" placeholder="请输入"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="confirmPassword">
-                <el-input type="password" v-model="dataForm.confirmPassword"></el-input>
+            <el-form-item label="确认密码：" prop="confirmPassword">
+                <el-input type="password" v-model="dataForm.confirmPassword" placeholder="请输入"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { isMobile } from '@/utils/validate'
 export default {
     data() {
         const validateConfirmPassword = (rule, value, callback) => {
@@ -47,7 +48,7 @@ export default {
         };
         const validateMobile = (rule, value, callback) => {
             if (!isMobile(value)) {
-                callback(new Error('手机号格式错误!'))
+                callback(new Error('手机号格式错误'))
             } else {
                 callback()
             }
@@ -91,17 +92,17 @@ export default {
                     this.submitLoading = true;
                     let sha256 = require("js-sha256").sha256;
                     this.$http({
-                        url: this.$http.adornUrl("/sys/user/password"),
+                        url: this.$http.adornUrl("agent/cust/addCustOfAgent"),
                         method: "post",
                         data: this.$http.adornData({
                             phone: this.dataForm.phone,
-                            password: sha256(this.dataForm.password),
-                            confirmPassword: sha256(this.dataForm.confirmPassword),
+                            pwd: sha256(this.dataForm.password),
+                            secondPwd: sha256(this.dataForm.confirmPassword),
                         }),
                     }).then(({ data }) => {
                         this.submitLoading = false;
                         if (data && data.code === 0) {
-                            this.$message.success('操作成功!')
+                            this.$message.success('创建成功!')
                             this.visible = false
                             this.$emit('refresh', 1)
                         } else {
