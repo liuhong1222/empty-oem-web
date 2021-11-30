@@ -1,12 +1,9 @@
 <template>
-    <el-dialog :title="!isEdit ? '新增账号' : '修改账号'" :close-on-click-modal="false" :visible.sync="visible">
+    <el-dialog :title="!isEdit ? '新增账号' : '修改账号'" width="520px" :close-on-click-modal="false" :visible.sync="visible">
         <el-form :model="accountdataForm" :rules="accdatarules" ref="accountdataFormref" label-width="150px" class="demo-ruleForm"
             :label-position="labelPosition">
-            <!-- <el-form-item label="用户名：" prop="username">
-                <el-input v-model="accountdataForm.username" placeholder="请输入用户名" :disabled="isEdit"></el-input>
-            </el-form-item> -->
-            <el-form-item label="手机号：" prop="phone">
-                <el-input v-model="accountdataForm.phone" placeholder="请输入手机号"></el-input>
+            <el-form-item label="用户名：" prop="username">
+                <el-input v-model="accountdataForm.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item label="代理商：" v-if="isAdmin" prop="agentId">
                 <el-select style="width: 100%" class="filter-item" v-model="accountdataForm.agentId" placeholder="请选择代理商">
@@ -22,6 +19,9 @@
                     <el-radio :label="0">女</el-radio>
                     <el-radio :label="1">男</el-radio>
                 </el-radio-group>
+            </el-form-item>
+            <el-form-item label="手机号：" prop="phone">
+                <el-input v-model="accountdataForm.phone" placeholder="请输入手机号"></el-input>
             </el-form-item>
             <el-form-item label="邮箱：" prop="email">
                 <el-input v-model="accountdataForm.email" placeholder="请输入邮箱"></el-input>
@@ -77,6 +77,9 @@
                     }
                 }
                 return {
+                    username: [
+                        { required: true, message: '请输入用户名', trigger: 'blur' }
+                    ],
                     agentId: [
                         { required: true, message: '请选择代理商', trigger: 'blur' }
                     ],
@@ -144,7 +147,7 @@
                                 agentId: this.isAdmin ? this.accountdataForm.agentId : this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id + '',
                                 gender: this.accountdataForm.gender,
                                 'id': this.isEdit ? this.accountdataForm.id : undefined,
-                                'username': this.accountdataForm.phone,
+                                'username': this.accountdataForm.username,
                                 'nickname': this.accountdataForm.nickname,
                                 'phone': this.accountdataForm.phone,
                                 'email': this.accountdataForm.email,

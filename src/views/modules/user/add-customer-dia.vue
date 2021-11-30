@@ -90,14 +90,13 @@ export default {
             this.$refs["dataForm"].validate((valid) => {
                 if (valid) {
                     this.submitLoading = true;
-                    let sha256 = require("js-sha256").sha256;
                     this.$http({
                         url: this.$http.adornUrl("agent/cust/addCustOfAgent"),
                         method: "post",
                         data: this.$http.adornData({
                             phone: this.dataForm.phone,
-                            pwd: sha256(this.dataForm.password),
-                            secondPwd: sha256(this.dataForm.confirmPassword),
+                            pwd: this.dataForm.password,
+                            secondPwd: this.dataForm.confirmPassword,
                         }),
                     }).then(({ data }) => {
                         this.submitLoading = false;
