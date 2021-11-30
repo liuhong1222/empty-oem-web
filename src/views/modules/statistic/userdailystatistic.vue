@@ -14,7 +14,7 @@
             </el-form>
         </div>
         <div class="agentTable">
-            <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
+            <el-table :data="tableData" style="width: 100%" :cell-style="getColumnStyle" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
                 <el-table-column width="150" prop="dayInt" label="日期" align="center">
@@ -26,16 +26,6 @@
                 <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                 </el-table-column>
                 <el-table-column label="空号检测" align="center">
-                    <!-- <el-table-column width="120" prop="emptyRechargeNum" label="充值条数" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.emptyRechargeNum || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="emptyRechargeMoney" label="充值金额" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.emptyRechargeMoney || 0 }}</span>
-                        </template>
-                    </el-table-column> -->
                     <el-table-column width="120" prop="emptyTotal" label="消耗条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.emptyTotal || 0 }}</span>
@@ -63,16 +53,6 @@
                     </el-table-column>
                 </el-table-column>
                 <el-table-column label="实时检测" align="center">
-                    <!-- <el-table-column width="120" prop="realtimeRechargeNum" label="充值条数" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.realtimeRechargeNum || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="realtimeRechargeMoney" label="充值金额" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.realtimeRechargeMoney || 0 }}</span>
-                        </template>
-                    </el-table-column> -->
                     <el-table-column width="120" prop="realtimeTotal" label="消耗条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.realtimeTotal || 0 }}</span>
@@ -167,6 +147,23 @@
             this.getTableData(1)
         },
         methods: {
+            getColumnStyle({ row, column, rowIndex, columnIndex }) {
+                let emptyColIndexArr = []
+                let realColIndexArr = []
+                if (Boolean(sessionStorage.getItem("msjRoleName") === "1")) {
+                    emptyColIndexArr = [5, 6, 7, 8, 9]
+                    realColIndexArr = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                } else {
+                    emptyColIndexArr = [4, 5, 6, 7, 8]
+                    realColIndexArr = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+                }
+                if (emptyColIndexArr.includes(columnIndex)) {
+                    return 'background: rgba(62, 142, 247, 0.1);'
+                }
+                if (realColIndexArr.includes(columnIndex)) {
+                    return 'background: rgba(113, 64, 255, 0.1);'
+                }
+	   	    },
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true

@@ -34,7 +34,7 @@
             </el-form>
         </div>
         <div class="agentTable">
-            <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
+            <el-table :data="tableData" style="width: 100%" :cell-style="getColumnStyle" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
                 <el-table-column width="150" prop="dayInt" label="日期" align="center">
@@ -122,6 +122,23 @@
             this.getTableData(1)
         },
         methods: {
+            getColumnStyle({ row, column, rowIndex, columnIndex }) {
+                let emptyColIndexArr = []
+                let realColIndexArr = []
+                if (Boolean(sessionStorage.getItem("msjRoleName") === "1")) {
+                    emptyColIndexArr = [6, 7]
+                    realColIndexArr = [8, 9]
+                } else {
+                    emptyColIndexArr = [5, 6]
+                    realColIndexArr = [7, 8]
+                }
+                if (emptyColIndexArr.includes(columnIndex)) {
+                    return 'background: rgba(62, 142, 247, 0.1);'
+                }
+                if (realColIndexArr.includes(columnIndex)) {
+                    return 'background: rgba(113, 64, 255, 0.1);'
+                }
+	   	    },
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
