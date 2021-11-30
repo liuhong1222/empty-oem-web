@@ -20,7 +20,7 @@
         >
           <el-form-item prop="userName">
             <img src="~@/assets/img/phoneUser.jpg" alt class="icon" />
-            <el-input v-model="dataForm.userName" placeholder="请输入手机号" class="account"></el-input>
+            <el-input v-model="dataForm.userName" placeholder="请输入用户名" class="account"></el-input>
           </el-form-item>
           <el-form-item prop="password">
             <img src="~@/assets/img/keylogin.jpg" alt class="icon" />
