@@ -77,7 +77,7 @@
                 <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column>
                 <el-table-column v-if="isAdmin" prop="officialWeb" label="官网类型" width="100" align="center">
                     <template slot-scope="{ row }">
-                        <span>{{ officialWebTypeMap[row.officialWeb] || '' }}</span>
+                        <span :style="{ color: row.officialWeb === 1 ? 'rgba(62, 142, 247, 1)' : 'rgba(113, 64, 255, 1)', fontWeight: '600' }">{{ officialWebTypeMap[row.officialWeb] || '' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
