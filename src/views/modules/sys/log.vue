@@ -50,7 +50,7 @@
         selectionDataList: []
       }
     },
-    created() {
+    activated() {
       this.getDataList(1)
     },
     methods: {
