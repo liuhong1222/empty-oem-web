@@ -105,7 +105,7 @@
       addOrUpdateHandle(id) {
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id || undefined)
+          this.$refs.addOrUpdate.init(id)
         })
       },
       // 删除

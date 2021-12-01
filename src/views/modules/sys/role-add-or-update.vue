@@ -1,11 +1,11 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!isEdit ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="dataForm.roleName" :disabled="Boolean(dataForm.id)" placeholder="角色名称"></el-input>
+        <el-input v-model="dataForm.roleName" :disabled="isEdit" placeholder="角色名称"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
@@ -49,6 +49,7 @@
             { required: true, message: '角色名称不能为空', trigger: 'blur' }
           ]
         },
+        isEdit: false,
         tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
       }
     },
@@ -79,6 +80,7 @@
           })
         }).then(() => {
           if (id || id === 0) {
+            this.isEdit = true
             this.$http({
               url: this.$http.adornUrl(`sys/role/info/${id}`),
               method: 'get',
@@ -97,6 +99,8 @@
                 this.$refs.menuListTree.setCheckedKeys(data.role.menuIdList)
               }
             })
+          } else {
+            this.isEdit = false
           }
         })
       },
