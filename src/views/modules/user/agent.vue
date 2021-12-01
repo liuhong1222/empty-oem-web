@@ -22,6 +22,11 @@
                         <el-option label="锁定" value="2"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="官网类型：">
+                    <el-select v-model="searchData.officialWeb" style="width: 220px;" placeholder="请选择官网类型">
+                        <el-option v-for="item in officialWebType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="getDataList(1)">查询</el-button>
                     <el-button type="primary" @click="exporTable" :disabled="disabled">导出</el-button>
@@ -30,8 +35,13 @@
             </el-form>
         </div>
         <div class="agentTable">
-            <el-table :data="agentTableData" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
+            <el-table :data="agentTableData" :row-style="dealRowClass" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
+                </el-table-column>
+                <el-table-column prop="officialWeb" label="官网类型" width="100" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ officialWebTypeMap[row.officialWeb] || '' }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="companyName" label="代理商名称" width="150" align="center">
                 </el-table-column>
@@ -173,8 +183,9 @@
                 searchData: {
                     dateTime: [],
                     agentName: "",
-                    status: "",
-                    mobile: ""
+                    status: "-1",
+                    mobile: "",
+                    officialWeb: 0,
                 },
                 agentTableData: [],
                 pageIndex: 1,
@@ -225,7 +236,16 @@
                     '0': '禁用',
                     '1': '启用',
                     '2': '锁定'
-                }
+                },
+                officialWebType: [
+                    { value: 0, label: '全部' },
+                    { value: 1, label: '迅龙' },
+                    { value: 2, label: '步正云' },
+                ],
+                officialWebTypeMap: {
+                    '1': '迅龙',
+                    '2': '步正云',
+                },
             }
         },
         watch: {
@@ -261,6 +281,14 @@
                 const { price, paymentAmount } = this.chdataForm
                 this.chdataForm.rechargeNumber = price ? Math.ceil((paymentAmount || 0) / price) : 0
             },
+            dealRowClass({ row }) {
+                if (row.officialWeb === 1) {
+                    return 'background: #EAF3FE;'
+                }
+                if (row.officialWeb === 2) {
+                    return 'background: #F1ECFF;'
+                }
+            },
 
             // 获取代理商列表
             getDataList(curr) {
@@ -272,6 +300,7 @@
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
+                        'officialWeb': this.searchData.officialWeb || undefined,
                         'companyName': this.searchData.agentName,
                         'state': this.searchData.status === '-1' ? undefined : this.searchData.status,
                         'mobile': this.searchData.mobile,
@@ -309,8 +338,6 @@
             getRowClass({ row, column, rowIndex, columnIndex }) {
                 if (rowIndex == 0) {
                     return 'background-color: #f8f8f8;color:#666;'
-                } else {
-                    return ''
                 }
             },
             closeDialogjq() {

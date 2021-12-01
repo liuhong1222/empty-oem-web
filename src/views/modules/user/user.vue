@@ -44,6 +44,11 @@
                 <el-form-item label="注册IP：">
                     <el-input v-model="searchData.registerIp" style="width: 180px;" placeholder="请输入注册IP" clearable></el-input>
                 </el-form-item>
+                <el-form-item v-if="isAdmin" label="官网类型：">
+                    <el-select v-model="searchData.officialWeb" style="width: 180px;" placeholder="请选择官网类型">
+                        <el-option v-for="item in officialWebType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="getCustomList(1)">查询</el-button>
                     <el-button type="primary" @click="exportUser()" :disabled="disabled">导出</el-button>
@@ -57,6 +62,7 @@
                 style="width: 100%"
                 v-loading="dataListLoading"
                 :header-cell-style="getRowClass"
+                :row-style="dealRowClass"
             >
                 <el-table-column
                     type="index"
@@ -69,6 +75,11 @@
                 <el-table-column prop="phone" width="150" label="手机号码" align="center"></el-table-column>
                 <el-table-column prop="customerType" label="客户类型" width="80" align="center"></el-table-column>
                 <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column>
+                <el-table-column v-if="isAdmin" prop="officialWeb" label="官网类型" width="100" align="center">
+                    <template slot-scope="{ row }">
+                        <span>{{ officialWebTypeMap[row.officialWeb] || '' }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column
                     prop="companyName"
                     label="代理商名称"
@@ -167,6 +178,7 @@ export default {
       transferDisabled: false,
       arr: [], // 保存点击的id和区分个人和企业的id
       searchData: {
+        officialWeb: 0,
         dateTime: [],
         mobile: '',
         custType: '',
@@ -187,6 +199,15 @@ export default {
       agentList: [],
       isAdmin: false,
       agentInfo: {},
+      officialWebType: [
+        { value: 0, label: '全部' },
+        { value: 1, label: '迅龙' },
+        { value: 2, label: '步正云' },
+      ],
+      officialWebTypeMap: {
+        '1': '迅龙',
+        '2': '步正云',
+      },
     };
   },
   components: {
@@ -242,6 +263,17 @@ export default {
       var currentdate = year + seperator1 + month + seperator1 + strDate;
       return currentdate;
     },
+    dealRowClass({ row }) {
+      if (sessionStorage.getItem("msjRoleName") != "1") {
+        return ''
+      }
+      if (row.officialWeb === 1) {
+        return 'background: #EAF3FE;'
+      }
+      if (row.officialWeb === 2) {
+        return 'background: #F1ECFF;'
+      }
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background-color: #f8f8f8;color:#666;";
@@ -261,6 +293,7 @@ export default {
           currentPage: this.pageIndex,
           pageSize: this.pageSize,
           name: this.searchData.custName,
+          officialWeb: this.searchData.officialWeb || undefined,
           customerType: this.searchData.custType,
           phone: this.searchData.mobile,
           startTimeStr:
