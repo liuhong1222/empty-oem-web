@@ -51,6 +51,13 @@
 <script>
     export default {
         data() {
+            const validateContainDot = (rule, value, callback) => {
+                if (value && (value + '').indexOf('.') !== -1) {
+                    callback(new Error('不可为小数'))
+                } else {
+                    callback()
+                }
+            }
             return {
                 dialogVisible: false,
                 submitLoading: false,
@@ -80,7 +87,8 @@
                         { required: true, message: '请输入可退条数', trigger: 'blur' }
                     ],
                     refundNumber: [
-                        { required: true, message: '请输入退款条数', trigger: 'blur' }
+                        { required: true, message: '请输入退款条数', trigger: 'blur' },
+                        { validator: validateContainDot, trigger: 'blur' }
                     ],
                     price: [
                         { required: true, message: '请输入单价', trigger: 'blur' }
