@@ -344,7 +344,7 @@ export default {
                 // 0不自动赠送，1自动赠送
                 this.giveSwitch = (agentInfo && agentInfo.registerGift) ? true : false
                 sessionStorage.setItem('agentInfo', this.$json.stringify(agentInfo || '{}'))
-                this.copyinput = domain
+                this.copyinput = domain ? 'http://' + domain : ''
                 this.deskInfo = {...(data.data || {}), ...(agentInfo || {})}
                 this.agentInfo = agentInfo || {}
             } else {

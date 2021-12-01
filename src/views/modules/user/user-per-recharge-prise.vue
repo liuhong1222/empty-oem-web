@@ -165,7 +165,7 @@
                     this.$refs['rechargeRef'].resetFields()
                     this.rechargeDataForm = {
                         creUserId: record.customerId + '',
-                        userName: record.name,
+                        userName: record.phone,
                         category: 0
                     }
                     this.packagePro()

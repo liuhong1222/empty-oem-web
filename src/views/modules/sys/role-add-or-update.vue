@@ -5,7 +5,7 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="dataForm.roleName" :disabled="dataForm.id" placeholder="角色名称"></el-input>
+        <el-input v-model="dataForm.roleName" :disabled="Boolean(dataForm.id)" placeholder="角色名称"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
@@ -41,7 +41,6 @@
           children: 'children'
         },
         dataForm: {
-          id: 0,
           roleName: '',
           remark: ''
         },
@@ -71,6 +70,10 @@
             this.$nextTick(() => {
               this.$refs['dataForm'].resetFields()
               this.$refs.menuListTree.setCheckedKeys([])
+              this.dataForm = {
+                roleName: '',
+                remark: '',
+              }
               resolve()
             })
           })

@@ -73,7 +73,7 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'name': this.dataForm.roleName
+            'roleName': this.dataForm.roleName
           })
         }).then(({ data }) => {
           if (data && data.code === 0) {
@@ -105,7 +105,7 @@
       addOrUpdateHandle(id) {
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.addOrUpdate.init(id || undefined)
         })
       },
       // 删除
