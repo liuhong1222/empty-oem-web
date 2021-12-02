@@ -54,6 +54,15 @@
 <script>
     export default {
         data() {
+            const validateContainDot = (rule, value, callback) => {
+                if (value && (value + '').indexOf('.') !== -1) {
+                    callback(new Error('不可为小数'))
+                } else if (!value && value !== 0) {
+                    callback('请输入充值金额，自动算出条数')
+                } else {
+                    callback()
+                }
+            }
             return {
                 readPrice: true,
                 readCounts: true,
@@ -90,7 +99,8 @@
                         { required: true, message: '请输入单价', trigger: 'blur' },
                     ],
                     rechargeCounts: [
-                        { required: true, message: '请输入充值金额，自动算出条数', trigger: 'blur' },
+                        { required: true, message: '请输入充值金额，自动算出条数', trigger: 'change' },
+                        { validator: validateContainDot, trigger: 'change' }
                     ],
                     rechargeMoney: [
                         { required: true, message: '请输入充值金额', trigger: 'blur' },
