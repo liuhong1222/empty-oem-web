@@ -112,7 +112,7 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item :disabled="!scope.row.canRefundFlag || refundDisabled" command="refund">退款</el-dropdown-item>
                                 <el-dropdown-item :disabled="transferDisabled" command="transferAgent">转代理商</el-dropdown-item>
-                                <el-dropdown-item :disabled="!scope.row.canPresent || regDisabled" command="give">注册赠送</el-dropdown-item>
+                                <el-dropdown-item :disabled="scope.row.canPresent || regDisabled" command="give">注册赠送</el-dropdown-item>
                                 <el-dropdown-item command="viewRechargeRecord">查看历史充值记录</el-dropdown-item>
                                 <el-dropdown-item command="interface">{{scope.row.apiState === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
                                 <el-dropdown-item :disabled="isAdmin || scope.row.authenticationLimitLevel != 2 || agentInfo.authenticationLimitLevel != 2" command="authLevel">设置用户认证等级</el-dropdown-item>
