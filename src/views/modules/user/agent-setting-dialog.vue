@@ -225,7 +225,7 @@
                 })
             },
             initDomainInfoForm() {
-                const { domainCopyright, domainCompanyAddress, domainContactWay, telecomCertification, icp, publicSecurityFiling } = this.allSettingInfo
+                const { domainCopyright, domainCompanyAddress, domainContactWay, telecomCertification, icp, publicSecurityFiling, onlineBlUrl } = this.allSettingInfo
                 this.$refs.domainInfoFormRef.init({
                     domainCopyright: this.editSettingInfo.domainCopyright || domainCopyright,
                     domainCompanyAddress: this.editSettingInfo.domainCompanyAddress || domainCompanyAddress,
@@ -233,6 +233,7 @@
                     telecomCertification: this.editSettingInfo.telecomCertification || telecomCertification,
                     icp: this.editSettingInfo.icp || icp,
                     publicSecurityFiling: this.editSettingInfo.publicSecurityFiling || publicSecurityFiling,
+                    onlineBlUrl: this.editSettingInfo.onlineBlUrl || onlineBlUrl,
                 })
             },
             initGatheringInfoForm() {

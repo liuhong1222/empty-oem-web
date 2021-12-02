@@ -137,6 +137,12 @@
                             <div>{{ agentSettingInfo.publicSecurityFiling }}</div>
                         </td>
                     </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">电子营业执照地址</td>
+                        <td class="discribe-col" colspan="3" style="width: 75%;">
+                            <div :style="{ width: `${contentWidth.seventyFive}px` }">{{ agentSettingInfo.onlineBlUrl }}</div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </el-collapse-item>

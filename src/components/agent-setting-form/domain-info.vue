@@ -29,6 +29,10 @@
             <el-input v-model="formData.publicSecurityFiling" placeholder="请输入公安备案">
             </el-input>
         </el-form-item>
+        <el-form-item label="电子营业执照地址：" prop="onlineBlUrl">
+            <el-input v-model="formData.onlineBlUrl" placeholder="请输入电子营业执照地址">
+            </el-input>
+        </el-form-item>
     </el-form>
 </template>
 
