@@ -307,6 +307,7 @@ export default {
     getCustomList(currPage) {
       this.pageIndex = currPage || this.pageIndex
       this.dataListLoading = true;
+      let agentId = this.searchData.agentName === '-1' ? undefined : this.searchData.agentName
       this.$http({
         url: this.$http.adornUrl(`agent/cust/custList`),
         method: "post",
@@ -329,7 +330,7 @@ export default {
           ip: this.searchData.registerIp,
           email: this.searchData.email,
           haveRecharged: this.searchData.rechargeState,
-          agentName: this.isAdmin ? this.agentListMap[this.searchData.agentName] : undefined
+          agentId: this.isAdmin ? agentId : undefined
         },
       }).then(({ data }) => {
         if (data && data.code === 0) {
@@ -411,6 +412,7 @@ export default {
     },
     // 导出
     exportUser() {
+      let agentId = this.searchData.agentName === '-1' ? undefined : this.searchData.agentName
       let params = {
         token: this.$cookie.get("token"),
         currentPage: this.pageIndex,
@@ -429,28 +431,8 @@ export default {
         ip: this.searchData.registerIp,
         email: this.searchData.email,
         haveRecharged: this.searchData.rechargeState,
-        agentName: this.searchData.agentName
+        agentId: this.isAdmin ? agentId : undefined
       }
-      // axios({
-      //   method: 'POST',
-      //   url: this.$http.adornUrl(`agent/cust/custListExport?token=${this.$cookie.get("token")}`),
-      //   data: params,
-      //   responseType: 'blob'
-      // }).then(res => {
-      //   if (!res) {
-      //     return false
-      //   }
-      //   const link = document.createElement('a');  // 创建元素
-      //   let blob = new Blob([res], { type: 'text/csv,charset=UTF-8'});
-      //   link.style.display = 'none';
-      //   link.href = URL.createObjectURL(blob);   // 创建下载的链接
-      //   link.setAttribute('download', '客户列表.txt');  // 给下载后的文件命名
-      //   document.body.appendChild(link);
-      //   link.click();  // 点击下载
-      //   document.body.removeChild(link);  //  下载完成移除元素
-      //   window.URL.revokeObjectURL(link.href);  // 释放掉blob对象
-      // }).catch(err => {});
-
       window.open(
         this.$http.adornUrl(
           `agent/cust/custListExport?${qs.stringify(params)}
