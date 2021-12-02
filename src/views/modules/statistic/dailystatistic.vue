@@ -8,17 +8,13 @@
                         value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item v-if="isAdmin" label="代理商名称：" style="margin-left:35px;">
+                <el-form-item v-if="isAdmin" label="代理商：">
                     <el-select
+                        style="width: 220px;"
                         v-model="searchData.agentId"
-                        filterable
-                        remote
-                        clearable
-                        reserve-keyword
-                        placeholder="请输入代理商名称"
-                        :remote-method="getAgentList"
-                        :loading="agentSearchLoading"
+                        placeholder="请选择代理商"
                     >
+                        <el-option key="-1" :value="'-1'" :label="'全部'"></el-option>
                         <el-option
                             v-for="(item, index) in agentList"
                             :key="index"
@@ -28,7 +24,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item style="margin-left:6px">
+                <el-form-item>
                     <el-button type="primary" @click="getTableData(1)">查询</el-button>
                 </el-form-item>
             </el-form>
@@ -98,7 +94,7 @@
                 dataListLoading: false,
                 searchData: {
                     createDate: [],
-                    agentId: undefined,
+                    agentId: '-1',
                 },
                 tableData: [],
                 agentList: [],
@@ -117,7 +113,7 @@
             let currDate = formatDate(new Date(new Date()-24*60*60*1000))
             this.searchData = {
                 createDate: [currDate, currDate],
-                agentId: undefined,
+                agentId: '-1',
             }
             this.getTableData(1)
         },
@@ -142,13 +138,14 @@
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
+                let agentId = this.searchData.agentId === '-1' ? undefined : this.searchData.agentId
                 this.$http({
                     url: this.$http.adornUrl(`agent/dailyStastics/listAgentDaily?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
-                        'agentId': this.isAdmin ? this.searchData.agentId : this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id + '',
+                        'agentId': this.isAdmin ? agentId : this.$json.parse(sessionStorage.getItem('agentInfo') || '{}').id + '',
                         'startTime': this.searchData.createDate && this.searchData.createDate[0] ? this.searchData.createDate[0] : undefined,
                         'endTime': this.searchData.createDate && this.searchData.createDate[1] ? this.searchData.createDate[1] : undefined,
                     })
@@ -195,7 +192,7 @@
                 this.getTableData()
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {
-                if (rowIndex === this.tableData.length) {
+                if (rowIndex ===0) {
                     return 'background-color: #f8f8f8;color:#666;'
                 } else {
                     return ''

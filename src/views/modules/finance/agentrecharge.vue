@@ -8,8 +8,11 @@
                         value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="代理商名称：" style="margin-left:25px;">
-                    <el-input v-model="OEMSearchData.agentName" placeholder="代理商名称" clearable></el-input>
+                <el-form-item label="代理商：">
+                    <el-select v-model="OEMSearchData.agentName" style="width: 220px;" placeholder="请选择代理商">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="手机号：" style="margin-left:10px;">
                     <el-input v-model="OEMSearchData.agentMobile" placeholder="手机号" clearable></el-input>
@@ -74,7 +77,7 @@
                 number: '',
                 OEMSearchData: {
                     dateTime: [],
-                    agentName: "",
+                    agentName: "-1",
                     type: '',
                     agentMobile: ''
                 },
@@ -97,12 +100,32 @@
                     { label: '对私微信', value: 6 },
                     { label: '对私转账', value: 7 },
                 ],
+                agentList: [],
+                agentListMap: {},
             }
         },
         activated() {
             this.agentRechargeList(1)
+            this.getAgentList()
         },
         methods: {
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                        this.agentListMap = this.agentList.reduce((pre, curr) => {
+                            return { ...pre, [curr.id + '']: curr.companyName }
+                        }, {})
+                    } else {
+                        this.agentList = []
+                        this.agentListMap = {}
+                    }
+                })
+            },
             // 获取退款记录接口
             agentRechargeList(currPage) {
                 this.dataListLoading = true
@@ -113,7 +136,7 @@
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
-                        'companyName': this.OEMSearchData.agentName,
+                        'companyName': this.agentListMap[this.OEMSearchData.agentName],
                         'agentMobile': this.OEMSearchData.agentMobile,
                         'payType': this.OEMSearchData.type,
                         'startTime': '' || this.OEMSearchData.dateTime == null ? '' : this.OEMSearchData.dateTime[0],

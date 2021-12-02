@@ -15,7 +15,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="代理商：" v-if="isAdmin">
-                    <el-select v-model="searchData.agentId" placeholder="代理商">
+                    <el-select v-model="searchData.agentId" placeholder="请选择代理商">
                         <el-option label="全部" :value="-1"></el-option>
                         <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
                     </el-select>
@@ -35,53 +35,68 @@
             <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center">
-                </el-table-column>
-                <el-table-column min-width="150" prop="customerName" label=" 客户名称" align="center">
-                </el-table-column>
-                <el-table-column min-width="150" prop="phone" label=" 手机号码" align="center">
-                </el-table-column>
-                <el-table-column min-width="150" prop="name" label=" 文件名称" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="size" label="文件大小" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ computeFileSize(scope.row.size) }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.totalNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="realNumber" label="实号包（条）" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.realNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="silentNumber" label="沉默包（条）" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.silentNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="emptyNumber" label="空号包（条）" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.emptyNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.riskNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.illegalNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="150" prop="createTime" label="创建时间" align="center">
-                </el-table-column>
-                <el-table-column width="150" prop="updateTime" label="完成时间" align="center">
-                </el-table-column>
+                <template v-if="isAdmin">
+                    <el-table-column width="150" prop="agentName" label="代理商名称" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="name" label="文件名称" align="center">
+                    </el-table-column>
+                    <el-table-column width="120" prop="size" label="文件大小" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ computeFileSize(scope.row.size) }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="totalNumber" label="总条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.totalNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="realNumber" label="实号包（条）" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.realNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="silentNumber" label="沉默包（条）" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.silentNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="emptyNumber" label="空号包（条）" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.emptyNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="riskNumber" label="风险包（条）" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.riskNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="illegalNumber" label="无效数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.illegalNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="150" prop="createTime" label="创建时间" align="center">
+                    </el-table-column>
+                    <el-table-column width="150" prop="updateTime" label="完成时间" align="center">
+                    </el-table-column>
+                </template>
+                <template v-else>
+                    <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="120" prop="totalNumber" label="消耗条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.totalNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="createTime" label="检测时间" align="center">
+                    </el-table-column>
+                </template>
             </el-table>
         </div>
         <div class="agentPage">
@@ -111,13 +126,6 @@
                 pageSize: 10,
                 totalPage: 0,
                 agentList: [],
-                checkTypeMap: {
-                    '0': 'QY-old',
-                    '1': 'QY-new',
-                    '2': 'BSP',
-                    '3': 'CL',
-                    '4': 'JD',
-                },
                 isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
@@ -139,13 +147,14 @@
                 customerName: '',
                 phone: ''
             }
-            this.getTableData()
+            this.getTableData(1)
             this.isAdmin && this.getAgentList()
         },
         methods: {
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
+                let agentId = this.searchData.agentId === -1 ? undefined : this.searchData.agentId
                 this.$http({
                     url: this.$http.adornUrl(`agent/empty/getPageList`),
                     method: 'post',
@@ -157,7 +166,7 @@
                         'createTimeEnd': this.searchData.time,
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
-                        'agentId': this.searchData.agentId === -1 ? undefined : this.searchData.agentId,
+                        'agentId': this.isAdmin ? agentId : undefined,
                     }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
@@ -196,7 +205,7 @@
                 this.getTableData()
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {
-                if (rowIndex === this.tableData.length) {
+                if (rowIndex ===0) {
                     return 'background-color: #f8f8f8;color:#666;'
                 } else {
                     return ''

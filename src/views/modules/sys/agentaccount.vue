@@ -4,6 +4,12 @@
             <el-form-item label="手机号：">
                 <el-input v-model="accountData.phone" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
             </el-form-item>
+            <el-form-item label="代理商：" v-if="isAdmin">
+                <el-select v-model="accountData.agentId" style="width: 180px;" placeholder="请选择代理商">
+                    <el-option label="全部" value="-1"></el-option>
+                    <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item>
                 <el-button @click="agentSysUserList(1)">查询</el-button>
                 <!-- <el-button type="primary" @click="agentExport()" :disabled="disabled">导出</el-button> -->
@@ -15,7 +21,7 @@
             </el-table-column>
             <el-table-column prop="username" label=" 用户名称" align="center">
             </el-table-column>
-            <el-table-column prop="companyName" label="代理商名称" align="center">
+            <el-table-column prop="companyName"  v-if="isAdmin" label="代理商名称" align="center">
             </el-table-column>
             <el-table-column prop="nickname" label="姓名" align="center">
             </el-table-column>
@@ -49,7 +55,8 @@
                 accountVisible: false,
                 disabled: false,
                 accountData: {
-                    phone: ''
+                    phone: '',
+                    agentId: '-1'
                 },
                 accountTableData: [],
                 pageIndex: 1,
@@ -57,6 +64,7 @@
                 totalPage: 0,
                 dataListLoading: false,
                 isAdmin: false,
+                agentList: [],
             }
         },
         components: {
@@ -64,18 +72,34 @@
         },
         activated() {
             this.isAdmin = Boolean(sessionStorage.getItem("msjRoleName") === "1")
+            this.isAdmin && this.getAgentList()
             this.agentSysUserList(1)
         },
         methods: {
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                    } else {
+                        this.agentList = []
+                    }
+                })
+            },
             // 代理商账号列表
             agentSysUserList(curr) {
                 this.pageIndex = curr || this.pageIndex
+                let agentId = this.accountData.agentId === '-1' ? undefined : this.accountData.agentId
                 this.$http({
                     url: this.$http.adornUrl(`sys/user/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
                         phone: this.accountData.phone,
                         roleId: 2,
+                        agentId: this.isAdmin ? agentId : undefined,
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                     })

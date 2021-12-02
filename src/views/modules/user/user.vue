@@ -39,7 +39,10 @@
                     <el-input v-model="searchData.custName" style="width: 180px;" placeholder="请输入客户名称" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="代理商：" v-if="disableAgent">
-                    <el-input v-model="searchData.agentName" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
+                    <el-select v-model="searchData.agentName" style="width: 180px;" placeholder="请选择代理商">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="注册IP：">
                     <el-input v-model="searchData.registerIp" style="width: 180px;" placeholder="请输入注册IP" clearable></el-input>
@@ -183,7 +186,7 @@ export default {
         mobile: '',
         custType: '',
         custName: '',
-        agentName: '',
+        agentName: '-1',
         registerIp: '',
         rechargeState: ''
       },
@@ -196,7 +199,6 @@ export default {
           return time.getTime() > Date.now() - 8.64e6;
         },
       },
-      agentList: [],
       isAdmin: false,
       agentInfo: {},
       officialWebType: [
@@ -208,6 +210,8 @@ export default {
         '1': '迅龙',
         '2': '步正云',
       },
+      agentList: [],
+      agentListMap: {},
     };
   },
   components: {
@@ -230,7 +234,6 @@ export default {
         this.searchData.dateTime[1] = this.formatDate(date);
       }
     }
-    this.isAdmin = sessionStorage.getItem("msjRoleName") == "1"
     if (sessionStorage.getItem("msjRoleName") == "2") {
       // 代理商
       this.disableAgent = false;
@@ -246,9 +249,28 @@ export default {
       this.refundDisabled = true;
       this.transferDisabled = false;
     }
+    this.isAdmin = Boolean(sessionStorage.getItem('msjRoleName') == '1')
+    this.isAdmin && this.getAgentList()
     this.getCustomList(1);
   },
   methods: {
+    getAgentList() {
+      this.$http({
+        url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.agentList = data.data || []
+          this.agentListMap = this.agentList.reduce((pre, curr) => {
+            return { ...pre, [curr.id + '']: curr.companyName }
+          }, {})
+        } else {
+          this.agentList = []
+          this.agentListMap = {}
+        }
+      })
+    },
     formatDate(date) {
       var seperator1 = "-";
       var year = date.getFullYear();
@@ -307,8 +329,7 @@ export default {
           ip: this.searchData.registerIp,
           email: this.searchData.email,
           haveRecharged: this.searchData.rechargeState,
-          // agentList: this.agentList,
-          agentName: this.searchData.agentName
+          agentName: this.isAdmin ? this.agentListMap[this.searchData.agentName] : undefined
         },
       }).then(({ data }) => {
         if (data && data.code === 0) {
@@ -324,21 +345,6 @@ export default {
           this.totalPage = 0;
         }
         this.dataListLoading = false;
-      });
-    },
-    getAgenListByName() {
-      this.$http({
-        url: this.$http.adornUrl(`agent/agentInfo/findAgentListByName?token=${this.$cookie.get("token")}`),
-        method: "post",
-        params: this.$http.adornParams({
-          name: this.searchData.agentName
-        }),
-      }).then(({ data }) => {
-        if (data.code == "0") {
-          this.agentList = (data.data || []).map(ele => ele + '')
-        } else {
-          this.agentList = []
-        }
       });
     },
     // 注册赠送

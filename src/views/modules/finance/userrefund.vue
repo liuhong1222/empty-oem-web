@@ -2,22 +2,25 @@
     <div class="main">
         <div class="topSearch">
             <h2>客户退款记录</h2>
-            <el-form :inline="true" :model="refundSearchData" @keyup.enter.native="refundList()">
+            <el-form :inline="true" :model="refundSearchData" @keyup.enter.native="refundList(1)">
                 <el-form-item label="申请时间：">
                     <el-date-picker v-model="refundSearchData.dateTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                         value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="客户手机号：" style="margin-left:35px;">
+                <el-form-item label="客户手机号：">
                     <el-input v-model="refundSearchData.mobile" placeholder="客户手机号" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="代理商名称：" style="margin-left:-15px;" v-if="disableAgent">
-                    <el-input v-model="refundSearchData.agentName" placeholder="代理商名称" clearable></el-input>
+                <el-form-item label="代理商：" v-if="disableAgent">
+                    <el-select v-model="refundSearchData.agentName" style="width: 220px;" placeholder="请选择代理商">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="客户名称：" style="margin-left:-2px;">
+                <el-form-item label="客户名称：">
                     <el-input v-model="refundSearchData.custName" placeholder="客户名称" clearable></el-input>
                 </el-form-item>
-                <el-form-item style="margin-left:6px">
+                <el-form-item>
                     <el-button type="primary" @click="refundList(1)">查询</el-button>
                     <el-button type="primary" @click="refundExport" :disabled="disabled">导出</el-button>
                 </el-form-item>
@@ -75,7 +78,7 @@
                 number: '',
                 refundSearchData: {
                     dateTime: [],
-                    agentName: "",
+                    agentName: "-1",
                     custName: '',
                     mobile: ''
                 },
@@ -88,6 +91,8 @@
                         return time.getTime() > Date.now() - 8.64e6
                     }
                 },
+                agentList: [],
+                agentListMap: {},
             }
         },
         activated() {
@@ -95,9 +100,28 @@
                 this.disableAgent = false
                 this.disableAgentName = false
             }
-            this.refundList()
+            this.isAdmin = Boolean(sessionStorage.getItem('msjRoleName') == '1')
+            this.isAdmin && this.getAgentList()
+            this.refundList(1)
         },
         methods: {
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                        this.agentListMap = this.agentList.reduce((pre, curr) => {
+                            return { ...pre, [curr.id + '']: curr.companyName }
+                        }, {})
+                    } else {
+                        this.agentList = []
+                        this.agentListMap = {}
+                    }
+                })
+            },
             getRowClass({ row, column, rowIndex, columnIndex }) {
                 if (rowIndex == 0) {
                     return 'background-color: #f8f8f8;color:#666;'
@@ -116,7 +140,7 @@
                         'currentPage': cur || this.pageIndex,
                         'pageSize': this.pageSize,
                         'custMobile': this.refundSearchData.mobile,
-                        'companyName': this.refundSearchData.agentName,
+                        'companyName': this.isAdmin ? this.agentListMap[this.refundSearchData.agentName] : undefined,
                         'userName': this.refundSearchData.custName,
                         'startTime': '' || this.refundSearchData.dateTime == null ? '' : this.refundSearchData.dateTime[0],
                         'endTime': '' || this.refundSearchData.dateTime == null ? '' : this.refundSearchData.dateTime[1]

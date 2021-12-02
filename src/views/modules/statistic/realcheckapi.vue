@@ -35,76 +35,91 @@
             <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center">
-                </el-table-column>
-                <el-table-column min-width="150" prop="customerName" label=" 客户名称" align="center">
-                </el-table-column>
-                <el-table-column width="150" prop="phone" label=" 手机号码" align="center">
-                </el-table-column>
-                <el-table-column width="120" prop="totalNumber" label="检测数" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.totalNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="normal" label=" 正常" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.normal || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="numberPortability" label=" 正常(携号转网)" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.numberPortability || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="empty" label=" 空号" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.empty || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="onCall" label=" 通话中" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.onCall || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="onlineButNotAvailable" label=" 不在网(空号)" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.onlineButNotAvailable || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="shutdown" label=" 关机" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.shutdown || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="suspectedShutdown" label="疑似关机" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.suspectedShutdown || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="serviceSuspended" label=" 停机" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.serviceSuspended || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="unknown" label=" 号码错误" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.unknown || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="exceptionFailCount" label=" 未知" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.exceptionFailCount || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.illegalNumber || 0 }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column width="150" prop="createTime" label="创建时间" align="center">
-                </el-table-column>
-                <el-table-column width="150" prop="updateTime" label="完成时间" align="center">
-                </el-table-column>
+                <template v-if="isAdmin">
+                    <el-table-column width="150" prop="agentName" label="代理商名称" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
+                    </el-table-column>
+                    <el-table-column width="150" prop="phone" label="手机号码" align="center">
+                    </el-table-column>
+                    <el-table-column width="120" prop="totalNumber" label="检测数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.totalNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="normal" label=" 正常" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.normal || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="numberPortability" label=" 正常(携号转网)" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.numberPortability || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="empty" label=" 空号" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.empty || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="onCall" label=" 通话中" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.onCall || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="onlineButNotAvailable" label=" 不在网(空号)" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.onlineButNotAvailable || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="shutdown" label=" 关机" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.shutdown || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="suspectedShutdown" label="疑似关机" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.suspectedShutdown || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="serviceSuspended" label=" 停机" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.serviceSuspended || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="unknown" label=" 号码错误" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.unknown || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="exceptionFailCount" label=" 未知" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.exceptionFailCount || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.illegalNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="150" prop="createTime" label="创建时间" align="center">
+                    </el-table-column>
+                    <el-table-column width="150" prop="updateTime" label="完成时间" align="center">
+                    </el-table-column>
+                </template>
+                <template v-else>
+                    <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="120" prop="totalNumber" label="消耗条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.totalNumber || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="createTime" label="检测时间" align="center">
+                    </el-table-column>
+                </template>
             </el-table>
         </div>
         <div class="agentPage">
@@ -154,13 +169,14 @@
                 customerName: '',
                 phone: ''
             }
-            this.getTableData()
+            this.getTableData(1)
             this.isAdmin && this.getAgentList()
         },
         methods: {
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
+                let agentId = this.searchData.agentId === -1 ? undefined : this.searchData.agentId
                 this.$http({
                     url: this.$http.adornUrl(`agent/realtimeCheck/getApiList`),
                     method: 'post',
@@ -172,7 +188,7 @@
                         'createTimeEnd': this.searchData.time,
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
-                        'agentId': this.searchData.agentId === -1 ? undefined : this.searchData.agentId,
+                        'agentId': this.isAdmin ? agentId : undefined,
                     }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
@@ -211,7 +227,7 @@
                 this.getTableData()
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {
-                if (rowIndex === this.tableData.length) {
+                if (rowIndex ===0) {
                     return 'background-color: #f8f8f8;color:#666;'
                 } else {
                     return ''

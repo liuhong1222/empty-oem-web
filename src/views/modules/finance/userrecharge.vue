@@ -2,15 +2,18 @@
     <div class="main">
         <div class="topSearch">
             <h2>客户充值记录</h2>
-            <el-form :inline="true" :model="customerSearchData" @keyup.enter.native="uerRechargeList()">
+            <el-form :inline="true" :model="customerSearchData" @keyup.enter.native="uerRechargeList(1)">
                 <el-form-item label="创建时间：">
                     <el-date-picker v-model="customerSearchData.dateTime" type="daterange" range-separator="至"
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions0"
                         onPick="uerRechargeList()">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="代理商名称：" style="margin-left:5px;" v-if="disableAgent">
-                    <el-input v-model="customerSearchData.agentName" placeholder="代理商名称" clearable></el-input>
+                <el-form-item label="代理商：" v-if="disableAgent">
+                    <el-select v-model="customerSearchData.agentName" style="width: 220px;" placeholder="请选择代理商">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="客户名称：" style="margin-left:-2px;">
                     <el-input v-model="customerSearchData.custName" placeholder="客户名称" clearable></el-input>
@@ -19,7 +22,7 @@
                     <el-input v-model="customerSearchData.custMobile" placeholder="手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
-                    <el-button type="primary" @click="uerRechargeList()">查询</el-button>
+                    <el-button type="primary" @click="uerRechargeList(1)">查询</el-button>
                     <el-button type="primary" @click="regExport()" :disabled="disabled">导出</el-button>
                 </el-form-item>
             </el-form>
@@ -87,7 +90,7 @@
                 number: '',
                 customerSearchData: {
                     dateTime: [],
-                    agentName: '',
+                    agentName: '-1',
                     custName: '',
                     custMobile: ''
                 },
@@ -109,7 +112,10 @@
                     '5': '对私支付宝',
                     '6': '对私微信',
                     '7': '对私转账',
-                }
+                },
+                agentList: [],
+                agentListMap: {},
+                isAdmin: false,
             }
         },
         activated() {
@@ -122,13 +128,36 @@
                 this.customerSearchData.custName = this.$route.params.name;
                 this.customerSearchData.dateTime = []
             }
-            this.uerRechargeList();
+            if (sessionStorage.getItem('msjRoleName') == '2') {
+                this.disableAgent = false
+                this.disableAgentName = false
+            }
+            this.isAdmin = Boolean(sessionStorage.getItem('msjRoleName') == '1')
+            this.isAdmin && this.getAgentList()
+            this.uerRechargeList(1);
         },
         created() {
             var date = new Date()
             this.customerSearchData.dateTime[0] = this.customerSearchData.dateTime[1] = this.formatDate(date)
         },
         methods: {
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                        this.agentListMap = this.agentList.reduce((pre, curr) => {
+                            return { ...pre, [curr.id + '']: curr.companyName }
+                        }, {})
+                    } else {
+                        this.agentList = []
+                        this.agentListMap = {}
+                    }
+                })
+            },
             formatDate(date) {
                 var seperator1 = '-'
                 var year = date.getFullYear()
@@ -144,19 +173,16 @@
                 return currentdate
             },
             // 获取数据列表
-            uerRechargeList() {
-                if (sessionStorage.getItem('msjRoleName') == '2') {
-                    this.disableAgent = false
-                    this.disableAgentName = false
-                }
+            uerRechargeList(currPage) {
                 this.dataListLoading = true;
+                this.pageIndex = currPage || this.pageIndex
                 this.$http({
                     url: this.$http.adornUrl(`agent/finance/user/recharge/list?token=${this.$cookie.get('token')}`),
                     method: 'get',
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
-                        'companyName': this.customerSearchData.agentName,
+                        'companyName': this.isAdmin ? this.agentListMap[this.customerSearchData.agentName] : undefined,
                         'userName': this.customerSearchData.custName,
                         'custMobile': this.customerSearchData.custMobile,
                         'startTime': '' || this.customerSearchData.dateTime == null ? '' : this.customerSearchData.dateTime[0],

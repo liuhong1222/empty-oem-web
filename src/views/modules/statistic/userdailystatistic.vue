@@ -25,90 +25,109 @@
                 </el-table-column>
                 <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                 </el-table-column>
-                <el-table-column label="空号检测" align="center">
-                    <el-table-column width="120" prop="emptyTotal" label="消耗条数" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.emptyTotal || 0 }}</span>
-                        </template>
+                <template v-if="isAdmin">
+                    <el-table-column label="空号检测" align="center">
+                        <el-table-column width="120" prop="emptyTotal" label="消耗条数" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.emptyTotal || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="realNumber" label="实号" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.realNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="silentNumber" label="沉默号" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.silentNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="emptyNumber" label="空号" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.emptyNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="riskNumber" label="风险号" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.riskNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
                     </el-table-column>
-                    <el-table-column width="120" prop="realNumber" label="实号" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.realNumber || 0 }}</span>
-                        </template>
+                    <el-table-column label="实时检测" align="center">
+                        <el-table-column width="120" prop="realtimeTotal" label="消耗条数" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.realtimeTotal || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="normalNumber" label="正常号" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.normalNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="realtimeEmptyNumber" label="空号" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.realtimeEmptyNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="oncallNumber" label="通话中" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.oncallNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="notOnlineNumber" label="不在网" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.notOnlineNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="shutdownNumber" label="关机" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.shutdownNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="likeShutdownNumber" label="疑似关机" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.likeShutdownNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="tingjiNumber" label="停机" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.tingjiNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="mnpNumber" label="携号转网" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.mnpNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="moberrNumber" label="号码错误" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.moberrNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="unknownNumber" label="未知" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.unknownNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
                     </el-table-column>
-                    <el-table-column width="120" prop="silentNumber" label="沉默号" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.silentNumber || 0 }}</span>
-                        </template>
+                </template>
+                <template v-else>
+                    <el-table-column label="空号检测" align="center">
+                        <el-table-column min-width="120" prop="emptyTotal" label="消耗条数" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.emptyTotal || 0 }}</span>
+                            </template>
+                        </el-table-column>
                     </el-table-column>
-                    <el-table-column width="120" prop="emptyNumber" label="空号" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.emptyNumber || 0 }}</span>
-                        </template>
+                    <el-table-column label="实时检测" align="center">
+                        <el-table-column min-width="120" prop="realtimeTotal" label="消耗条数" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.realtimeTotal || 0 }}</span>
+                            </template>
+                        </el-table-column>
                     </el-table-column>
-                    <el-table-column width="120" prop="riskNumber" label="风险号" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.riskNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                </el-table-column>
-                <el-table-column label="实时检测" align="center">
-                    <el-table-column width="120" prop="realtimeTotal" label="消耗条数" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.realtimeTotal || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="normalNumber" label="正常号" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.normalNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="realtimeEmptyNumber" label="空号" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.realtimeEmptyNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="oncallNumber" label="通话中" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.oncallNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="notOnlineNumber" label="不在网" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.notOnlineNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="shutdownNumber" label="关机" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.shutdownNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="likeShutdownNumber" label="疑似关机" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.likeShutdownNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="tingjiNumber" label="停机" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.tingjiNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="mnpNumber" label="携号转网" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.mnpNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="moberrNumber" label="号码错误" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.moberrNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column width="120" prop="unknownNumber" label="未知" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.unknownNumber || 0 }}</span>
-                        </template>
-                    </el-table-column>
-                </el-table-column>
+                </template>
+                
             </el-table>
         </div>
         <div class="agentPage">
@@ -154,8 +173,8 @@
                     emptyColIndexArr = [5, 6, 7, 8, 9]
                     realColIndexArr = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
                 } else {
-                    emptyColIndexArr = [4, 5, 6, 7, 8]
-                    realColIndexArr = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+                    emptyColIndexArr = [4]
+                    realColIndexArr = [5]
                 }
                 if (emptyColIndexArr.includes(columnIndex)) {
                     return 'background: rgba(62, 142, 247, 0.1);'
@@ -201,7 +220,7 @@
                 this.getTableData()
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {
-                if (rowIndex === this.tableData.length) {
+                if (rowIndex ===0) {
                     return 'background-color: #f8f8f8;color:#666;'
                 } else {
                     return ''

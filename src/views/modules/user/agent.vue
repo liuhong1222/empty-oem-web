@@ -8,8 +8,11 @@
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="代理商名称：" style="margin-left:25px;">
-                    <el-input v-model="searchData.agentName" style="width: 180px;" placeholder="请输入代理商名称" clearable></el-input>
+                <el-form-item label="代理商：">
+                    <el-select v-model="searchData.agentName" style="width: 220px;" placeholder="请选择代理商">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="手机号：">
                     <el-input v-model="searchData.mobile" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
@@ -182,7 +185,7 @@
                 addSeeUpdateVisible: false,
                 searchData: {
                     dateTime: [],
-                    agentName: "",
+                    agentName: "-1",
                     status: "-1",
                     mobile: "",
                     officialWeb: 0,
@@ -246,6 +249,8 @@
                     '1': '迅龙',
                     '2': '步正云',
                 },
+                agentList: [],
+                agentListMap: {},
             }
         },
         watch: {
@@ -275,8 +280,26 @@
         },
         activated() {
             this.getDataList(1)
+            this.getAgentList()
         },
         methods: {
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                        this.agentListMap = this.agentList.reduce((pre, curr) => {
+                            return { ...pre, [curr.id + '']: curr.companyName }
+                        }, {})
+                    } else {
+                        this.agentList = []
+                        this.agentListMap = {}
+                    }
+                })
+            },
             computedRechargeNumber() {
                 const { price, paymentAmount } = this.chdataForm
                 this.chdataForm.rechargeNumber = price ? Math.ceil((paymentAmount || 0) / price) : 0
@@ -301,7 +324,7 @@
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
                         'officialWeb': this.searchData.officialWeb || undefined,
-                        'companyName': this.searchData.agentName,
+                        'companyName': this.agentListMap[this.searchData.agentName],
                         'state': this.searchData.status === '-1' ? undefined : this.searchData.status,
                         'mobile': this.searchData.mobile,
                         'startTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[0],

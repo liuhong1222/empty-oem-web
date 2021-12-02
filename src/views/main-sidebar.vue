@@ -1,7 +1,7 @@
 <template>
   <aside class="site-sidebar" :class="'site-sidebar--' + sidebarLayoutSkin">
     <div class="site-sidebar__inner">
-      <el-menu :default-active="menuActiveName || 'home'" :collapse="sidebarFold" :collapseTransition="false" class="site-sidebar__menu">
+      <el-menu :default-active="menuActiveName || 'home'" :unique-opened="true" :collapse="sidebarFold" :collapseTransition="false" class="site-sidebar__menu">
         <!-- <el-input placeholder="请输入内容" size="medium" clearable style="width:100%;margin-top:2px"> -->
         <!-- </el-input> -->
         <!-- <el-menu-item index="home" @click="$router.push({ name: 'home' })">
