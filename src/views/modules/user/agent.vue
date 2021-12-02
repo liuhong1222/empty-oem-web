@@ -326,7 +326,7 @@
                         'officialWeb': this.searchData.officialWeb || undefined,
                         'companyName': this.agentListMap[this.searchData.agentName],
                         'state': this.searchData.status === '-1' ? undefined : this.searchData.status,
-                        'mobile': this.searchData.mobile,
+                        'linkmanPhone': this.searchData.mobile,
                         'startTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[0],
                         'endTime': '' || this.searchData.dateTime == null ? '' : this.searchData.dateTime[1]
                     })

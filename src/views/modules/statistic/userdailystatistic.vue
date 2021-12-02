@@ -8,6 +8,15 @@
                         value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </el-form-item>
+                <el-form-item label="代理商：" v-if="isAdmin">
+                    <el-select v-model="searchData.agentId" placeholder="请选择代理商">
+                        <el-option label="全部" :value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="手机号码：">
+                    <el-input v-model="searchData.phone" placeholder="手机号码" clearable></el-input>
+                </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="getTableData(1)">查询</el-button>
                 </el-form-item>
@@ -146,6 +155,8 @@
                 dataListLoading: false,
                 searchData: {
                     createDate: [],
+                    agentId: -1,
+                    phone: ''
                 },
                 tableData: [],
                 pageIndex: 1,
@@ -162,8 +173,11 @@
             let currDate = formatDate(new Date(new Date()-24*60*60*1000))
             this.searchData = {
                 createDate: [currDate, currDate],
+                agentId: -1,
+                phone: ''
             }
             this.getTableData(1)
+            this.isAdmin && this.getAgentList()
         },
         methods: {
             getColumnStyle({ row, column, rowIndex, columnIndex }) {
@@ -183,9 +197,23 @@
                     return 'background: rgba(113, 64, 255, 0.1);'
                 }
 	   	    },
+            getAgentList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
+                    method: 'get',
+                    params: this.$http.adornParams()
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.agentList = data.data || []
+                    } else {
+                        this.agentList = []
+                    }
+                })
+            },
             getTableData(cur) {
                 this.pageIndex = cur || this.pageIndex;
                 this.dataListLoading = true
+                let agentId = this.searchData.agentId === -1 ? undefined : this.searchData.agentId
                 this.$http({
                     url: this.$http.adornUrl(`agent/dailyStastics/listCustDaily?token=${this.$cookie.get('token')}`),
                     method: 'get',
@@ -194,6 +222,8 @@
                         'pageSize': this.pageSize,
                         'startTime': this.searchData.createDate && this.searchData.createDate[0] ? this.searchData.createDate[0] : undefined,
                         'endTime': this.searchData.createDate && this.searchData.createDate[1] ? this.searchData.createDate[1] : undefined,
+                        'phone': this.searchData.phone || undefined,
+                        'agentId': this.isAdmin ? agentId : undefined,
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {

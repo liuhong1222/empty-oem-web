@@ -195,13 +195,15 @@
                     }
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        this.allSettingInfo = {
-                            ...this.allSettingInfo,
-                            ...params
-                        }
                         this.agentSetId = data.data || this.agentSetId
                         this.isView = true
-                        this.$nextTick(() => {
+                        this.getBasicInfo((data) => {
+                            const { agentSetInfo } = data
+                            this.allSettingInfo = {
+                                ...this.allSettingInfo,
+                                ...(agentSetInfo || {}),
+                                browserRightDisplay: (agentSetInfo && agentSetInfo.browserRightDisplay) ? 1 : 0
+                            }
                             this.$refs.detailRef.init(this.allSettingInfo)
                         })
                     } else {
