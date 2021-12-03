@@ -262,7 +262,7 @@
                         endTime = this.customerSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`agent/finance/user/recharge/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&userName=${this.customerSearchData.custName}&companyName=${this.customerSearchData.agentName}&startTime=${startTime}&endTime=${endTime}&custMobile=${this.customerSearchData.custMobile}`))
+                window.open(this.$http.adornUrl(`agent/finance/user/recharge/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&userName=${this.customerSearchData.custName}&companyName=${this.agentListMap[this.customerSearchData.agentName] || ''}&startTime=${startTime}&endTime=${endTime}&custMobile=${this.customerSearchData.custMobile}`))
             },
             getNowFormatDate() {
                 var date = new Date();

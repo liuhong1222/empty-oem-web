@@ -216,7 +216,7 @@
                         endTime = this.OEMSearchData.dateTime[1]
                     }
                 }
-                window.open(this.$http.adornUrl(`agent/finance/agent/recharge/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&companyName=${this.OEMSearchData.agentName}&agentMobile=${this.OEMSearchData.agentMobile}&payType=${this.OEMSearchData.type}&startTime=${startTime}&endTime=${endTime}`))
+                window.open(this.$http.adornUrl(`agent/finance/agent/recharge/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&companyName=${this.agentListMap[this.OEMSearchData.agentName] || ''}&agentMobile=${this.OEMSearchData.agentMobile}&payType=${this.OEMSearchData.type}&startTime=${startTime}&endTime=${endTime}`))
             }
         }
     }
