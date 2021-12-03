@@ -38,18 +38,18 @@
                 <el-form-item label="客户名称：">
                     <el-input v-model="searchData.custName" style="width: 180px;" placeholder="请输入客户名称" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="代理商：" v-if="disableAgent">
-                    <el-select v-model="searchData.agentName" style="width: 180px;" placeholder="请选择代理商">
-                        <el-option label="全部" value="-1"></el-option>
-                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
-                    </el-select>
-                </el-form-item>
                 <el-form-item label="注册IP：">
                     <el-input v-model="searchData.registerIp" style="width: 180px;" placeholder="请输入注册IP" clearable></el-input>
                 </el-form-item>
                 <el-form-item v-if="isAdmin" label="官网类型：">
-                    <el-select v-model="searchData.officialWeb" style="width: 180px;" placeholder="请选择官网类型">
+                    <el-select @change="handleOfficialWebChange" v-model="searchData.officialWeb" style="width: 180px;" placeholder="请选择官网类型">
                         <el-option v-for="item in officialWebType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="代理商：" v-if="isAdmin">
+                    <el-select v-model="searchData.agentName" style="width: 180px;" placeholder="请选择代理商">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -254,11 +254,17 @@ export default {
     this.getCustomList(1);
   },
   methods: {
-    getAgentList() {
+    handleOfficialWebChange(val) {
+      this.searchData.agentName = '-1'
+      this.getAgentList(val || undefined)
+    },
+    getAgentList(officialWeb) {
       this.$http({
         url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
         method: 'get',
-        params: this.$http.adornParams()
+        params: this.$http.adornParams({
+          officialWeb
+        })
       }).then(({ data }) => {
         if (data && data.code === 0) {
           this.agentList = data.data || []
