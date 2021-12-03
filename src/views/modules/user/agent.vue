@@ -8,12 +8,6 @@
                         start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="代理商：">
-                    <el-select v-model="searchData.agentName" style="width: 220px;" placeholder="请选择代理商">
-                        <el-option label="全部" value="-1"></el-option>
-                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
-                    </el-select>
-                </el-form-item>
                 <el-form-item label="手机号：">
                     <el-input v-model="searchData.mobile" style="width: 180px;" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
@@ -26,8 +20,14 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="官网类型：">
-                    <el-select v-model="searchData.officialWeb" style="width: 220px;" placeholder="请选择官网类型">
+                    <el-select @change="handleOfficialWebChange" v-model="searchData.officialWeb" style="width: 220px;" placeholder="请选择官网类型">
                         <el-option v-for="item in officialWebType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="代理商：">
+                    <el-select v-model="searchData.agentName" style="width: 220px;" placeholder="请选择代理商">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -280,14 +280,20 @@
         },
         activated() {
             this.getDataList(1)
-            this.getAgentList()
+            this.getAgentList(this.searchData.officialWeb || undefined)
         },
         methods: {
-            getAgentList() {
+            handleOfficialWebChange(val) {
+                this.searchData.agentName = '-1'
+                this.getAgentList(val || undefined)
+            },
+            getAgentList(officialWeb) {
                 this.$http({
                     url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),
                     method: 'get',
-                    params: this.$http.adornParams()
+                    params: this.$http.adornParams({
+                        officialWeb
+                    })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.agentList = data.data || []
