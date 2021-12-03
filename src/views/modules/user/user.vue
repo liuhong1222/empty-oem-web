@@ -250,7 +250,7 @@ export default {
       this.transferDisabled = false;
     }
     this.isAdmin = Boolean(sessionStorage.getItem('msjRoleName') == '1')
-    this.isAdmin && this.getAgentList()
+    this.isAdmin && this.getAgentList(this.searchData.officialWeb || undefined)
     this.getCustomList(1);
   },
   methods: {
