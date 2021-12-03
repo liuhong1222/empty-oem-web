@@ -431,7 +431,8 @@ export default {
         ip: this.searchData.registerIp,
         email: this.searchData.email,
         haveRecharged: this.searchData.rechargeState,
-        agentId: this.isAdmin ? agentId : undefined
+        agentId: this.isAdmin ? agentId : undefined,
+        officialWeb: this.searchData.officialWeb || undefined,
       }
       window.open(
         this.$http.adornUrl(

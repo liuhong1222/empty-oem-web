@@ -384,7 +384,7 @@
                     }
                 }
 
-                window.open(this.$http.adornUrl(`agent/agentInfo/list/export?token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&companyName=${this.agentListMap[this.searchData.agentName] || ''}&status=${this.searchData.status}&mobile=${this.searchData.mobile}&startTime=${startTime}&endTime=${endTime}`))
+                window.open(this.$http.adornUrl(`agent/agentInfo/list/export?officialWeb=${this.searchData.officialWeb || ''}&token=${this.$cookie.get('token')}&currentPage=${this.pageIndex}&pageSize=${this.pageSize}&companyName=${this.agentListMap[this.searchData.agentName] || ''}&status=${this.searchData.status}&mobile=${this.searchData.mobile}&startTime=${startTime}&endTime=${endTime}`))
             },
             addUpdateAgent(id) {
                 this.addSeeUpdateVisible = true
