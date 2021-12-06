@@ -38,6 +38,8 @@
                 </el-table-column>
                 <el-table-column prop="phone" width="150" label="手机号" align="center">
                 </el-table-column>
+                <el-table-column prop="creatorName" width="150" label="操作账号" align="center">
+                </el-table-column>
                 <el-table-column prop="category" label="产品名称" align="center">
                     <template slot-scope="{ row }">
                         <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
@@ -112,6 +114,7 @@
                     '5': '对私支付宝',
                     '6': '对私微信',
                     '7': '对私转账',
+                    '10': '认证赠送',
                 },
                 agentList: [],
                 agentListMap: {},
