@@ -14,13 +14,19 @@
                         <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="手机号：" style="margin-left:10px;">
-                    <el-input v-model="OEMSearchData.agentMobile" placeholder="手机号" clearable></el-input>
+                <el-form-item label="手机号：">
+                    <el-input v-model="OEMSearchData.agentMobile" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="充值方式：">
-                    <el-select v-model="OEMSearchData.type" placeholder="充值方式">
+                    <el-select v-model="OEMSearchData.type" placeholder="请选择充值方式">
                         <el-option label="全部" value=""></el-option>
                         <el-option v-for="item in rechargeWayOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="产品名称：">
+                    <el-select v-model="OEMSearchData.category" placeholder="请选择产品名称">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="item in categoryOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
@@ -79,8 +85,13 @@
                     dateTime: [],
                     agentName: "-1",
                     type: '',
-                    agentMobile: ''
+                    agentMobile: '',
+                    category: '-1',
                 },
+                categoryOptions: [
+                    { label: '空号检测', value: 0 },
+                    { label: '实时检测', value: 1 },
+                ],
                 agentOemTableData: [],
                 pageIndex: 1,
                 pageSize: 10,
@@ -126,7 +137,6 @@
                     }
                 })
             },
-            // 获取退款记录接口
             agentRechargeList(currPage) {
                 this.dataListLoading = true
                 this.pageIndex = currPage || this.pageIndex
@@ -139,6 +149,7 @@
                         'companyName': this.agentListMap[this.OEMSearchData.agentName],
                         'agentMobile': this.OEMSearchData.agentMobile,
                         'payType': this.OEMSearchData.type,
+                        'category': this.OEMSearchData.category === '-1' ? undefined : this.OEMSearchData.category,
                         'startTime': '' || this.OEMSearchData.dateTime == null ? '' : this.OEMSearchData.dateTime[0],
                         'endTime': '' || this.OEMSearchData.dateTime == null ? '' : this.OEMSearchData.dateTime[1]
                     })

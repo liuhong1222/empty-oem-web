@@ -15,11 +15,17 @@
                         <el-option v-for="(item, index) in agentList" :label="item.companyName" :key="index" :value="item.id + ''"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="客户名称：" style="margin-left:-2px;">
-                    <el-input v-model="customerSearchData.custName" placeholder="客户名称" clearable></el-input>
+                <el-form-item label="客户名称：">
+                    <el-input v-model="customerSearchData.custName" placeholder="请输入客户名称" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="手机号：" style="margin-left:10px;">
-                    <el-input v-model="customerSearchData.custMobile" placeholder="手机号" clearable></el-input>
+                <el-form-item label="手机号：">
+                    <el-input v-model="customerSearchData.custMobile" placeholder="请输入手机号" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="产品名称：">
+                    <el-select v-model="customerSearchData.category" placeholder="请选择产品名称">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="item in categoryOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="uerRechargeList(1)">查询</el-button>
@@ -94,8 +100,13 @@
                     dateTime: [],
                     agentName: '-1',
                     custName: '',
-                    custMobile: ''
+                    custMobile: '',
+                    category: '-1',
                 },
+                categoryOptions: [
+                    { label: '空号检测', value: 0 },
+                    { label: '实时检测', value: 1 },
+                ],
                 customerTableData: [],
                 pageIndex: 1,
                 pageSize: 10,
@@ -187,6 +198,7 @@
                         'pageSize': this.pageSize,
                         'companyName': this.isAdmin ? this.agentListMap[this.customerSearchData.agentName] : undefined,
                         'userName': this.customerSearchData.custName,
+                        'category': this.customerSearchData.category === '-1' ? undefined : this.customerSearchData.category,
                         'custMobile': this.customerSearchData.custMobile,
                         'startTime': '' || this.customerSearchData.dateTime == null ? '' : this.customerSearchData.dateTime[0],
                         'endTime': '' || this.customerSearchData.dateTime == null ? '' : this.customerSearchData.dateTime[1]
