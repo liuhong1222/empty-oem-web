@@ -126,7 +126,7 @@
                 return {
                     disabledDate(time) {
                         let nowDate = Date.now()
-                        return (time.getTime() > nowDate - 8.64e6) || time.getTime() < nowDate - (1000 * 60 * 60 * 24 * 30)
+                        return time.getTime() > nowDate - 8.64e6
                     }
                 }
             }

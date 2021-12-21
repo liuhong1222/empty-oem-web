@@ -32,11 +32,11 @@
                 :header-cell-style="getRowClass">
                 <el-table-column type="index" fixed="left" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
-                <el-table-column prop="name" width="150" label=" 客户名称" align="center">
+                <el-table-column prop="phone" fixed="left" width="150" label="手机号" align="center">
                 </el-table-column>
                 <el-table-column prop="companyName" width="150" label="代理商名称" align="center" v-if="disableAgentName">
                 </el-table-column>
-                <el-table-column prop="phone" width="150" label="手机号" align="center">
+                <el-table-column prop="name" width="150" label=" 客户名称" align="center">
                 </el-table-column>
                 <el-table-column prop="creatorName" width="150" label="操作账号" align="center">
                 </el-table-column>

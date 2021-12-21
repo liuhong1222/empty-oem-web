@@ -164,6 +164,7 @@
                 totalPage: 0,
                 agentSearchLoading: false,
                 isAdmin: false,
+                agentList: [],
                 totalInfo: {}
             }
         },

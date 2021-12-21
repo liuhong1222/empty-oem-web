@@ -75,7 +75,7 @@
                     fixed
                     label="序号"
                 ></el-table-column>
-                <el-table-column prop="phone" width="150" label="手机号码" align="center"></el-table-column>
+                <el-table-column prop="phone" fixed width="150" label="手机号码" align="center"></el-table-column>
                 <el-table-column prop="customerType" label="客户类型" width="80" align="center"></el-table-column>
                 <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column>
                 <el-table-column v-if="isAdmin" prop="officialWeb" label="官网类型" width="100" align="center">
@@ -112,7 +112,7 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item :disabled="!scope.row.canRefundFlag || refundDisabled" command="refund">退款</el-dropdown-item>
                                 <el-dropdown-item :disabled="transferDisabled" command="transferAgent">转代理商</el-dropdown-item>
-                                <el-dropdown-item :disabled="scope.row.canPresent || regDisabled" command="give">注册赠送</el-dropdown-item>
+                                <el-dropdown-item :disabled="Boolean(scope.row.canPresent || regDisabled)" command="give">注册赠送</el-dropdown-item>
                                 <el-dropdown-item command="viewRechargeRecord">查看历史充值记录</el-dropdown-item>
                                 <el-dropdown-item command="interface">{{scope.row.apiState === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
                                 <el-dropdown-item :disabled="isAdmin || scope.row.authenticationLimitLevel != 2 || agentInfo.authenticationLimitLevel != 2" command="authLevel">设置用户认证等级</el-dropdown-item>

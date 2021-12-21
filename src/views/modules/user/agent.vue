@@ -105,8 +105,8 @@
         <!-- 充值弹窗 -->
         <el-dialog title="充值" :visible.sync="chdataFormVisible" width="520px">
             <el-form :model="chdataForm" ref="chdataFormref" :rules="chdataFormrefRule" label-width="100px">
-                <el-form-item label="充值账号：" prop="agentId">
-                    <el-input v-model="chdataForm.agentId" placeholder="请输入充值账号" disabled></el-input>
+                <el-form-item label="充值账号：" prop="name">
+                    <el-input v-model="chdataForm.name" placeholder="请输入充值账号" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="category">
                     <el-radio-group v-model="chdataForm.category">
@@ -198,7 +198,7 @@
                 chdataFormVisible: false,
                 chdataForm: {},
                 chdataFormrefRule: {
-                    agentId: [
+                    name: [
                         { required: true, message: '请输入充值账号', trigger: 'blur' },
                     ],
                     category: [
