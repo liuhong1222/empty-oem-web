@@ -14,6 +14,12 @@
                         <el-option v-for="item in rechargeWayOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="产品名称：">
+                    <el-select v-model="agentSearchData.category" placeholder="请选择产品名称">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="item in categoryOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="myRechargeList(1)">查询</el-button>
                     <el-button type="primary" @click="exportMyReg()" :disabled="disabled">导出</el-button>
@@ -63,6 +69,7 @@
                 agentSearchData: {
                     dateTime: [],
                     type: '',
+                    category: '-1',
                 },
                 agentRegTableData: [],
                 pageIndex: 1,
@@ -83,6 +90,10 @@
                     { label: '对私微信', value: 6 },
                     { label: '对私转账', value: 7 },
                 ],
+                categoryOptions: [
+                    { label: '空号检测', value: 0 },
+                    { label: '实时检测', value: 1 },
+                ],
                 agentId: '',
             }
         },
@@ -100,6 +111,7 @@
                     params: this.$http.adornParams({
                         'currentPage': this.pageIndex,
                         'pageSize': this.pageSize,
+                        'category': this.agentSearchData.category === '-1' ? undefined : this.agentSearchData.category,
                         'payType': this.agentSearchData.type,
                         'startTime': '' || this.agentSearchData.dateTime == null ? '' : this.agentSearchData.dateTime[0],
                         'endTime': '' || this.agentSearchData.dateTime == null ? '' : this.agentSearchData.dateTime[1]
