@@ -87,7 +87,7 @@
 </template>
 
 <script>
-    import { formatDate } from '@/utils'
+    import { formatDate, splitObj } from '@/utils'
     export default {
         data() {
             return {
@@ -153,7 +153,7 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalInfo = data.data.totalInfo || {}
+                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume'])
                     } else {
                         this.tableData = []
                         this.totalPage = 0

@@ -86,3 +86,18 @@ export function computeFileSize (size) {
   }
   return formatSize + 'KB'
 }
+
+/**
+ * 从对象中分理出一个有指定字段组成的新对象
+ * @param {*} object
+ * @param {*} keys
+ */
+export function splitObj (object, keys) {
+  let result = {}
+  for (let key in object) {
+    if (keys.includes(key)) {
+      result[key] = object[key]
+    }
+  }
+  return result
+}
