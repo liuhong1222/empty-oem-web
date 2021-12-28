@@ -15,16 +15,16 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="手机号：">
-                    <el-input v-model="OEMSearchData.agentMobile" placeholder="请输入手机号" clearable></el-input>
+                    <el-input style="width: 200px;" v-model="OEMSearchData.agentMobile" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="充值方式：">
-                    <el-select v-model="OEMSearchData.type" placeholder="请选择充值方式">
+                    <el-select style="width: 200px;" v-model="OEMSearchData.type" placeholder="请选择充值方式">
                         <el-option label="全部" value=""></el-option>
                         <el-option v-for="item in rechargeWayOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="产品名称：">
-                    <el-select v-model="OEMSearchData.category" placeholder="请选择产品名称">
+                    <el-select style="width: 200px;" v-model="OEMSearchData.category" placeholder="请选择产品名称">
                         <el-option label="全部" value="-1"></el-option>
                         <el-option v-for="item in categoryOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>

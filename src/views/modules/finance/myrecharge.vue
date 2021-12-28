@@ -9,13 +9,13 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="充值方式：">
-                    <el-select v-model="agentSearchData.type" placeholder="充值方式">
+                    <el-select style="width: 220px;" v-model="agentSearchData.type" placeholder="充值方式">
                         <el-option label="全部" value=""></el-option>
                         <el-option v-for="item in rechargeWayOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="产品名称：">
-                    <el-select v-model="agentSearchData.category" placeholder="请选择产品名称">
+                    <el-select style="width: 220px;" v-model="agentSearchData.category" placeholder="请选择产品名称">
                         <el-option label="全部" value="-1"></el-option>
                         <el-option v-for="item in categoryOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                     </el-select>
