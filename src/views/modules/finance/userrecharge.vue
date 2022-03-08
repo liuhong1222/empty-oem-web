@@ -138,8 +138,8 @@
                 var date = new Date()
                 this.customerSearchData.dateTime[0] = this.customerSearchData.dateTime[1] = this.formatDate(date)
             }
-            if (this.$route.params && this.$route.params.name) {
-                this.customerSearchData.custName = this.$route.params.name;
+            if (this.$route.params && this.$route.params.phone) {
+                this.customerSearchData.custMobile = this.$route.params.phone;
                 this.customerSearchData.dateTime = []
             }
             if (sessionStorage.getItem('msjRoleName') == '2') {
