@@ -8,8 +8,8 @@
   window.SITE_CONFIG['baseUrl'] = '/open/'
 
   // 资源路径
-  window.SITE_CONFIG['imgUrl'] = 'http://test.haifou.com:8088/'
-  window.SITE_CONFIG['zxaImgUrl'] = 'http://test.haifou.com:8088/'
+  window.SITE_CONFIG['imgUrl'] = 'http://tp.xlhmjc.com/'
+  window.SITE_CONFIG['zxaImgUrl'] = 'http://tp.xlhmjc.com/'
 
   // cdn地址 = 域名 + 版本号
   window.SITE_CONFIG['domain'] = './' // 域名
