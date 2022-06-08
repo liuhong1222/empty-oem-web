@@ -76,13 +76,13 @@
                     label="序号"
                 ></el-table-column>
                 <el-table-column prop="phone" fixed width="150" label="手机号码" align="center"></el-table-column>
-                <el-table-column prop="customerType" label="客户类型" width="80" align="center"></el-table-column>
-                <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column>
-                <el-table-column v-if="isAdmin" prop="officialWeb" label="官网类型" width="100" align="center">
+                <!-- <el-table-column prop="customerType" label="客户类型" width="80" align="center"></el-table-column> -->
+                <!-- <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column> -->
+                <!-- <el-table-column v-if="isAdmin" prop="officialWeb" label="官网类型" width="100" align="center">
                     <template slot-scope="{ row }">
                         <span :style="{ color: row.officialWeb === 1 ? 'rgba(62, 142, 247, 1)' : 'rgba(113, 64, 255, 1)', fontWeight: '600' }">{{ officialWebTypeMap[row.officialWeb] || '' }}</span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                     prop="companyName"
                     label="代理商名称"
@@ -90,13 +90,25 @@
                     width="150"
                     v-if="disableAgentName"
                 ></el-table-column>
-                <el-table-column prop="createTime" label="注册时间" min-width="90" align="center"></el-table-column>
-                <el-table-column prop="emptyRechargeMoney" min-width="100" label="空号充值总计（元）" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="注册时间" min-width="100" align="center"></el-table-column>
+                <!-- <el-table-column prop="emptyRechargeMoney" min-width="100" label="空号充值总计（元）" align="center"></el-table-column>
                 <el-table-column prop="emptyRechargeNum" min-width="100" label="空号充值总条数" align="center"></el-table-column>
                 <el-table-column prop="emptyCount" min-width="100" label="空号剩余条数" align="center"></el-table-column>
                 <el-table-column prop="realtimeRechargeMoney" min-width="100" label="实时充值总计（元）" align="center"></el-table-column>
                 <el-table-column prop="realtimeRechargeNum" min-width="100" label="实时充值总条数" align="center"></el-table-column>
-                <el-table-column prop="realtimeCount" min-width="100" label="实时剩余条数" align="center"></el-table-column>
+                <el-table-column prop="realtimeCount" min-width="100" label="实时剩余条数" align="center"></el-table-column> -->
+                <el-table-column label="空号检测" align="center">
+                    <el-table-column min-width="120" prop="emptyRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="emptyCount" label="剩余条数" align="center"></el-table-column>
+                </el-table-column>
+                <el-table-column label="实时检测" align="center">
+                    <el-table-column min-width="120" prop="realtimeRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="realtimeCount" label="剩余条数" align="center"></el-table-column>
+                </el-table-column>
+                <el-table-column label="国际检测" align="center">
+                    <el-table-column min-width="120" prop="xxxxxxx" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="xxxxxxx" label="剩余条数" align="center"></el-table-column>
+                </el-table-column>
                 <el-table-column fixed="right" label="操作" align="center" min-width="150">
                     <template slot-scope="scope">
                         <el-button @click="perPriseSee(scope.row)" type="text" size="small">查看</el-button>

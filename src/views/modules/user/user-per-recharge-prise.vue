@@ -8,6 +8,7 @@
                 <el-radio-group v-model="rechargeDataForm.category">
                     <el-radio :label="0">空号检测</el-radio>
                     <el-radio :label="1">实时检测</el-radio>
+                    <el-radio :label="2">国际检测</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="套餐选择：" prop="packageList">
