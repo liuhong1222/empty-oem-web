@@ -158,6 +158,7 @@
                     if (data && data.code === 0) {
                         const { goodsList, emptyBalance, realtimeBalance } = data.data || {}
                         this.rechargeArr = goodsList || []
+                        // todoNew 调整 category 的判断
                         this.rechargeDataForm = {
                             ...this.rechargeDataForm,
                             myCounts: this.rechargeDataForm.category === 0 ? emptyBalance : realtimeBalance

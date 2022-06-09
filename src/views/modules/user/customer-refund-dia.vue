@@ -8,6 +8,7 @@
                 <el-radio-group v-model="dataForm.category">
                     <el-radio :label="0">空号检测</el-radio>
                     <el-radio :label="1">实时检测</el-radio>
+                    <el-radio :label="2">国际检测</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="剩余条数：" prop="remainNumberTotal">
@@ -108,6 +109,7 @@
         },
         watch: {
             'dataForm.category'() {
+                // todoNew 调整 category 对应
                 if (this.dataForm.category === 0) {
                     this.dataForm.remainNumberTotal = this.customerInfo.emptyCount
                     this.dataForm.giftNumber = this.customerInfo.refundableEmptyNum
