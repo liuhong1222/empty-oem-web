@@ -56,16 +56,26 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">实时检测预警条数</td>
                         <td class="discribe-col">{{ detailInfo.realWarningsNumber }}</td>
-                        <td class="discribe-col title">状态</td>
-                        <td class="discribe-col">{{ detailInfo.state ? '启用' : '禁用' }}</td>
+                        <td class="discribe-col title">国际检测等级名称</td>
+                        <td class="discribe-col">{{ detailInfo.xxxxxxx }}</td>
                     </tr>
                     <tr class="discribe-row">
+                        <td class="discribe-col title">国际检测单价</td>
+                        <td class="discribe-col">{{ detailInfo.xxxxxxx }}（元/条）</td>
+                        <td class="discribe-col title">国际检测预警条数</td>
+                        <td class="discribe-col">{{ detailInfo.xxxxxxx }}</td>
+                    </tr>
+                    <tr class="discribe-row">
+                        <td class="discribe-col title">状态</td>
+                        <td class="discribe-col">{{ detailInfo.state ? '启用' : '禁用' }}</td>
                         <td class="discribe-col title">备注</td>
                         <td class="discribe-col">
                             <div>{{ detailInfo.remark }}</div>
                         </td>
+                    </tr>
+                    <tr class="discribe-row">
                         <td class="discribe-col title">创建时间</td>
-                        <td class="discribe-col">{{ detailInfo.createTime }}</td>
+                        <td class="discribe-col span-3" colspan="3">{{ detailInfo.createTime }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -468,6 +468,9 @@ li {
           width: 20%;
           background-color: #fafafa;
       }
+      &.span-3 {
+        width: 80%;
+      }
     > div {
       word-wrap: break-word;
       overflow-wrap: break-word;

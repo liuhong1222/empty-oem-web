@@ -1,98 +1,135 @@
 <template>
-    <el-dialog :title="!dataForm.id ? '新增代理商' : '修改代理商'" width="600px" :close-on-click-modal="false" :visible.sync="visible" :before-close="closeDialog"
+    <el-dialog :title="!dataForm.id ? '新增代理商' : '修改代理商'" width="800px" :close-on-click-modal="false" :visible.sync="visible" :before-close="closeDialog"
         v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.4)">
+        <el-steps :active="currentStep" align-center class="steps-wrapper">
+            <el-step title="基本信息"></el-step>
+            <el-step title="联系人信息"></el-step>
+            <el-step title="空号检测等级"></el-step>
+            <el-step title="实时检测等级"></el-step>
+            <el-step title="国际检测等级"></el-step>
+        </el-steps>
         <el-form class="agent-edit-form demo-ruleForm" :model="dataForm" :rules="datarules" ref="dataForm" label-width="150px" :label-position="labelPosition">
-            <h3>基本信息</h3>
-            <el-form-item label="上传营业执照：" prop="priseimageUrl">
-                <el-upload class="avatar-uploader" :action="priseurl" accept="image/jpeg,image/jpg,image/png" :show-file-list="false" :on-success="perisehandleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="dataForm.priseimageUrl" :src="dataForm.priseimageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    <input type="hidden" v-model="dataForm.priseimageUrl" />
-                </el-upload>
-                <span>（上传后，以下部分信息可自动导入）</span>
-            </el-form-item>
-            <el-form-item label="公司名称：" prop="companyName">
-                <el-input v-model="dataForm.companyName" placeholder="公司名称"></el-input>
-            </el-form-item>
-            <el-form-item label="公司简称：" prop="shortName">
-                <el-input v-model="dataForm.shortName" placeholder="公司简称"></el-input>
-            </el-form-item>
-            <el-form-item label="营业执照所在地：" prop="bussicAdress">
-                <el-input v-model="dataForm.bussicAdress" placeholder="营业执照所在地"></el-input>
-            </el-form-item>
-            <el-form-item label="法人姓名：" prop="lawName">
-                <el-input v-model="dataForm.lawName" placeholder="法人姓名"></el-input>
-            </el-form-item>
-            <el-form-item label="营业执照号：" prop="businNum">
-                <el-input v-model="dataForm.businNum" placeholder="营业执照号"></el-input>
-            </el-form-item>
-            <el-form-item label="成立日期：" prop="busindate1">
-                <el-input v-model="dataForm.busindate1" placeholder="成立日期"></el-input>
-            </el-form-item>
-            <el-form-item label="有效期：" prop="busindate2">
-                <el-input v-model="dataForm.busindate2" placeholder="有效期"></el-input>
-            </el-form-item>
-            <h3>联系人信息</h3>
-            <el-form-item label="联系人姓名：" prop="username">
-                <el-input v-model="dataForm.username" placeholder="联系人姓名"></el-input>
-            </el-form-item>
-            <el-form-item label="联系人手机号：" prop="mobile">
-                <el-input v-model="dataForm.mobile" placeholder="联系人手机号" maxlength="11" :readonly="agentReadonly"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱：" prop="email">
-                <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
-            </el-form-item>
-            <h3>空号检测等级</h3>
-            <el-form-item label="空号检测等级：" prop="agentLevel">
-                <el-select style="width: 100%;" v-model="dataForm.agentLevel" placeholder="请选择空号检测等级" @change="changeLevel(false, 'agentLevel')">
-                    <el-option :value="item.level" :label="item.level" v-for="(item,index) in spaceLevelArr" :key="index">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="单价：" prop="price">
-                <el-input class="small-width-input" disabled v-model="dataForm.price" placeholder="单价"></el-input>
-                <span>元/条</span>
-            </el-form-item>
-            <el-form-item label="预警条数：" prop="warningsNumber">
-                <el-input class="small-width-input" disabled v-model="dataForm.warningsNumber" placeholder="预警条数"></el-input>
-                <span>条</span>
-            </el-form-item>
-            <el-form-item label="最小充值金额：" prop="minPaymentAmount">
-                <el-input class="small-width-input" disabled v-model="dataForm.minPaymentAmount" placeholder="最小充值金额"></el-input>
-                <span>元</span>
-            </el-form-item>
-            <el-form-item label="最小充值条数：" prop="minRechargeNumber">
-                <el-input class="small-width-input" disabled v-model="dataForm.minRechargeNumber" placeholder="最小充值条数"></el-input>
-                <span>条</span>
-            </el-form-item>
-            <h3>实时检测等级</h3>
-            <el-form-item label="实时检测等级：" prop="realLevel">
-                <el-select style="width: 100%;" v-model="dataForm.realLevel" placeholder="请选择实时检测等级" @change="changeLevel(true, 'realLevel')">
-                    <el-option :value="item.level + ''" :label="item.level" v-for="(item,index) in realLevelArr" :key="index">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="单价：" prop="realPrice">
-                <el-input class="small-width-input" disabled v-model="dataForm.realPrice" placeholder="单价"></el-input>
-                <span>元/条</span>
-            </el-form-item>
-            <el-form-item label="预警条数：" prop="realWarningsNumber">
-                <el-input class="small-width-input" disabled v-model="dataForm.realWarningsNumber" placeholder="预警条数"></el-input>
-                <span>条</span>
-            </el-form-item>
-            <el-form-item label="最小充值金额：" prop="realMinPaymentAmount">
-                <el-input class="small-width-input" disabled v-model="dataForm.realMinPaymentAmount" placeholder="最小充值金额"></el-input>
-                <span>元</span>
-            </el-form-item>
-            <el-form-item label="最小充值条数：" prop="realMinRechargeNumber">
-                <el-input class="small-width-input" disabled v-model="dataForm.realMinRechargeNumber" placeholder="最小充值条数"></el-input>
-                <span>条</span>
-            </el-form-item>
+            <div v-show="currentStep === 0">
+                <el-form-item label="上传营业执照：" prop="priseimageUrl">
+                    <el-upload class="avatar-uploader" :action="priseurl" accept="image/jpeg,image/jpg,image/png" :show-file-list="false" :on-success="perisehandleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                        <img v-if="dataForm.priseimageUrl" :src="dataForm.priseimageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        <input type="hidden" v-model="dataForm.priseimageUrl" />
+                    </el-upload>
+                    <span>（上传后，以下部分信息可自动导入）</span>
+                </el-form-item>
+                <el-form-item label="公司名称：" prop="companyName">
+                    <el-input v-model="dataForm.companyName" placeholder="公司名称"></el-input>
+                </el-form-item>
+                <el-form-item label="公司简称：" prop="shortName">
+                    <el-input v-model="dataForm.shortName" placeholder="公司简称"></el-input>
+                </el-form-item>
+                <el-form-item label="营业执照所在地：" prop="bussicAdress">
+                    <el-input v-model="dataForm.bussicAdress" placeholder="营业执照所在地"></el-input>
+                </el-form-item>
+                <el-form-item label="法人姓名：" prop="lawName">
+                    <el-input v-model="dataForm.lawName" placeholder="法人姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="营业执照号：" prop="businNum">
+                    <el-input v-model="dataForm.businNum" placeholder="营业执照号"></el-input>
+                </el-form-item>
+                <el-form-item label="成立日期：" prop="busindate1">
+                    <el-input v-model="dataForm.busindate1" placeholder="成立日期"></el-input>
+                </el-form-item>
+                <el-form-item label="有效期：" prop="busindate2">
+                    <el-input v-model="dataForm.busindate2" placeholder="有效期"></el-input>
+                </el-form-item>
+            </div>
+            <div v-show="currentStep === 1">
+                <el-form-item label="联系人姓名：" prop="username">
+                    <el-input v-model="dataForm.username" placeholder="联系人姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="联系人手机号：" prop="mobile">
+                    <el-input v-model="dataForm.mobile" placeholder="联系人手机号" maxlength="11" :readonly="agentReadonly"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱：" prop="email">
+                    <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
+                </el-form-item>
+            </div>
+            <div v-show="currentStep === 2">
+                <el-form-item label="空号检测等级：" prop="agentLevel">
+                    <el-select style="width: 100%;" v-model="dataForm.agentLevel" placeholder="请选择空号检测等级" @change="changeLevel('spaceLevelArr', 'agentLevel')">
+                        <el-option :value="item.level" :label="item.level" v-for="(item,index) in spaceLevelArr" :key="index">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="单价：" prop="price">
+                    <el-input class="small-width-input" disabled v-model="dataForm.price" placeholder="单价"></el-input>
+                    <span>元/条</span>
+                </el-form-item>
+                <el-form-item label="预警条数：" prop="warningsNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.warningsNumber" placeholder="预警条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+                <el-form-item label="最小充值金额：" prop="minPaymentAmount">
+                    <el-input class="small-width-input" disabled v-model="dataForm.minPaymentAmount" placeholder="最小充值金额"></el-input>
+                    <span>元</span>
+                </el-form-item>
+                <el-form-item label="最小充值条数：" prop="minRechargeNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.minRechargeNumber" placeholder="最小充值条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+            </div>
+            <div v-show="currentStep === 3">
+                <el-form-item label="实时检测等级：" prop="realLevel">
+                    <el-select style="width: 100%;" v-model="dataForm.realLevel" placeholder="请选择实时检测等级" @change="changeLevel('realLevelArr', 'realLevel')">
+                        <el-option :value="item.level + ''" :label="item.level" v-for="(item,index) in realLevelArr" :key="index">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="单价：" prop="realPrice">
+                    <el-input class="small-width-input" disabled v-model="dataForm.realPrice" placeholder="单价"></el-input>
+                    <span>元/条</span>
+                </el-form-item>
+                <el-form-item label="预警条数：" prop="realWarningsNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.realWarningsNumber" placeholder="预警条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+                <el-form-item label="最小充值金额：" prop="realMinPaymentAmount">
+                    <el-input class="small-width-input" disabled v-model="dataForm.realMinPaymentAmount" placeholder="最小充值金额"></el-input>
+                    <span>元</span>
+                </el-form-item>
+                <el-form-item label="最小充值条数：" prop="realMinRechargeNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.realMinRechargeNumber" placeholder="最小充值条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+            </div>
+            <div v-show="currentStep === 4">
+                <el-form-item label="国际检测等级：" prop="internationalLevel">
+                    <el-select style="width: 100%;" v-model="dataForm.internationalLevel" placeholder="请选择国际检测等级" @change="changeLevel('internationalLevelArr', 'internationalLevel')">
+                        <el-option :value="item.level + ''" :label="item.level" v-for="(item,index) in internationalLevelArr" :key="index">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="单价：" prop="internationalPrice">
+                    <el-input class="small-width-input" disabled v-model="dataForm.internationalPrice" placeholder="单价"></el-input>
+                    <span>元/条</span>
+                </el-form-item>
+                <el-form-item label="预警条数：" prop="internationalWarningsNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.internationalWarningsNumber" placeholder="预警条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+                <el-form-item label="最小充值金额：" prop="internationalMinPaymentAmount">
+                    <el-input class="small-width-input" disabled v-model="dataForm.internationalMinPaymentAmount" placeholder="最小充值金额"></el-input>
+                    <span>元</span>
+                </el-form-item>
+                <el-form-item label="最小充值条数：" prop="internationalMinRechargeNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.internationalMinRechargeNumber" placeholder="最小充值条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+            </div>
         </el-form>
         <span slot="footer" class="dialog-footer">
-                <el-button @click="clearAgent()">取消</el-button>
-                <el-button type="primary" :loading="submitLoading" @click="dataFormSubmit()">确定</el-button>
+            <el-button v-if="currentStep === 0" @click="clearAgent()">取消</el-button>
+            <el-button v-else @click="handleStepChange(false)">上一步</el-button>
+            <el-button v-if="currentStep !== 4" type="primary" @click="handleStepChange(true)">下一步</el-button>
+            <el-button v-else type="primary" :loading="submitLoading" @click="dataFormSubmit()">确定</el-button>
         </span>
     </el-dialog>
 
@@ -109,6 +146,7 @@
                 }
             }
             return {
+                currentStep: 0,
                 agentReadonly: false,
                 loading: false,
                 submitLoading: false,
@@ -118,6 +156,7 @@
                 labelPosition: 'right',
                 spaceLevelArr: [],
                 realLevelArr: [],
+                internationalLevelArr: [],
                 dataForm: {
                     id: 0,
                     companyName: '',
@@ -140,58 +179,63 @@
                     realWarningsNumber: '',
                     realMinPaymentAmount: '',
                     realMinRechargeNumber: '',
+                    internationalLevel: '',
+                    internationalPrice: '',
+                    internationalWarningsNumber: '',
+                    internationalMinPaymentAmount: '',
+                    internationalMinRechargeNumber: '',
                     shortName: '',
                     priseimageUrl: ''
                 },
                 datarules: {
                     priseimageUrl: [
-                        { required: true, message: '请上传营业执照', trigger: 'blur' }
+                        { required: true, message: '请上传营业执照', trigger: 'change' }
                     ],
                     companyName: [
-                        { required: true, message: '请输入公司名称', trigger: 'blur' }
+                        { required: true, message: '请输入公司名称', trigger: 'change' }
                     ],
                     shortName: [
-                        { required: true, message: '请输入公司简称', trigger: 'blur' }
+                        { required: true, message: '请输入公司简称', trigger: 'change' }
                     ],
                     bussicAdress: [
-                        { required: true, message: '请输入营业执照所在地', trigger: 'blur' }
+                        { required: true, message: '请输入营业执照所在地', trigger: 'change' }
                     ],
                     lawName: [
-                        { required: true, message: '请输入法人姓名', trigger: 'blur' }
+                        { required: true, message: '请输入法人姓名', trigger: 'change' }
                     ],
                     businNum: [
-                        { required: true, message: '请输入营业执照号', trigger: 'blur' }
+                        { required: true, message: '请输入营业执照号', trigger: 'change' }
                     ],
                     busindate1: [
-                        { required: true, message: '请输入成立日期', trigger: 'blur' }
+                        { required: true, message: '请输入成立日期', trigger: 'change' }
                     ],
                     busindate2: [
-                        { required: true, message: '请输入有效期', trigger: 'blur' }
+                        { required: true, message: '请输入有效期', trigger: 'change' }
                     ],
                     username: [
-                        { required: true, message: '请输入联系人姓名', trigger: 'blur' }
+                        { required: true, message: '请输入联系人姓名', trigger: 'change' }
                     ],
                     mobile: [
-                        { required: true, message: '请输入联系电话', trigger: 'blur' },
-                        { validator: validateMobile, trigger: 'blur' }
+                        { required: true, message: '请输入联系电话', trigger: 'change' },
+                        { validator: validateMobile, trigger: 'change' }
                     ],
                     email: [
-                        { required: true, message: '请输入邮箱', trigger: 'blur' }
+                        { required: true, message: '请输入邮箱', trigger: 'change' }
                     ],
                     agentLevel: [
-                        { required: true, message: '请选择空号检测等级', trigger: 'blur' }
+                        { required: true, message: '请选择空号检测等级', trigger: 'change' }
                     ],
                     price: [
-                        { required: true, message: '请输入单价', trigger: 'blur' }
+                        { required: true, message: '请输入单价', trigger: 'change' }
                     ],
                     warningsNumber: [
-                        { required: true, message: '请输入预警条数', trigger: 'blur' }
+                        { required: true, message: '请输入预警条数', trigger: 'change' }
                     ],
                     minPaymentAmount: [
-                        { required: true, message: '请输入最小充值金额', trigger: 'blur' }
+                        { required: true, message: '请输入最小充值金额', trigger: 'change' }
                     ],
                     minRechargeNumber: [
-                        { required: true, message: '请输入最小充值条数', trigger: 'blur' }
+                        { required: true, message: '请输入最小充值条数', trigger: 'change' }
                     ],
                 }
             }
@@ -201,8 +245,9 @@
                 this.dataForm.id = id || 0
                 this.visible = true
                 this.submitLoading = false
-                this.getSpaceLevelList();
-                this.getRealLevelList();
+                this.getSpaceLevelList()
+                this.getRealLevelList()
+                this.getInternationalLevelList
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
                 })
@@ -244,6 +289,12 @@
                         this.dataForm.realWarningsNumber = data.data.realWarningsNumber
                         this.dataForm.realMinPaymentAmount = data.data.realMinPaymentAmount
                         this.dataForm.realMinRechargeNumber = data.data.realMinRechargeNumber
+
+                        this.dataForm.internationalLevel = data.data.internationalLevel + ''
+                        this.dataForm.internationalPrice = data.data.internationalPrice
+                        this.dataForm.internationalWarningsNumber = data.data.internationalWarningsNumber
+                        this.dataForm.internationalMinPaymentAmount = data.data.internationalMinPaymentAmount
+                        this.dataForm.internationalMinRechargeNumber = data.data.internationalMinRechargeNumber
                     }
                 })
             },
@@ -259,6 +310,19 @@
                         this.spaceLevelArr = []
                     }
                 })
+            },
+            getInternationalLevelList() {
+                // this.$http({
+                //     url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=2`),
+                //     method: 'get',
+                //     param: this.$http.adornParams({})
+                // }).then(({ data }) => {
+                //     if (data && data.code === 0) {
+                //         this.internationalLevelArr = data.data || []
+                //     } else {
+                //         this.internationalLevelArr = []
+                //     }
+                // })
             },
             getRealLevelList() {
                 this.$http({
@@ -303,6 +367,11 @@
                                 'realWarningsNumber': this.dataForm.realWarningsNumber,
                                 'realMinPaymentAmount': this.dataForm.realMinPaymentAmount,
                                 'realMinRechargeNumber': this.dataForm.realMinRechargeNumber,
+                                'internationalLevel': this.dataForm.internationalLevel,
+                                'internationalPrice': this.dataForm.internationalPrice,
+                                'internationalWarningsNumber': this.dataForm.internationalWarningsNumber,
+                                'internationalMinPaymentAmount': this.dataForm.internationalMinPaymentAmount,
+                                'internationalMinRechargeNumber': this.dataForm.internationalMinRechargeNumber,
                             })
                         }).then(({ data }) => {
                             this.submitLoading = false
@@ -371,29 +440,72 @@
                 this.dataForm.busindate2 = ""
                 this.agentReadonly = false
             },
-            changeLevel(isReal, key) {
+            changeLevel(levelArrStr, key) {
                 this.$nextTick(() => {
-                    let levelArr = isReal ? this.realLevelArr : this.spaceLevelArr
+                    let levelArr = this[levelArrStr]
                     let selected = levelArr.find(item => {
                         return item.level + '' === this.dataForm[key]
                     }) || {}
-                    console.log(this.dataForm[key], selected)
                     const { price, warningsNumber, minPaymentAmount, minRechargeNumber } = selected
-                    if (isReal) {
-                        // 实时检测等级
-                        this.dataForm.realPrice = price
-                        this.dataForm.realWarningsNumber = warningsNumber
-                        this.dataForm.realMinPaymentAmount = minPaymentAmount
-                        this.dataForm.realMinRechargeNumber = minRechargeNumber
-                    } else {
-                        // 空号检测等级
-                        this.dataForm.price = price
-                        this.dataForm.warningsNumber = warningsNumber
-                        this.dataForm.minPaymentAmount = minPaymentAmount
-                        this.dataForm.minRechargeNumber = minRechargeNumber
+                    switch (key) {
+                        case 'realLevel': {
+                            // 实时检测等级
+                            this.dataForm.realPrice = price
+                            this.dataForm.realWarningsNumber = warningsNumber
+                            this.dataForm.realMinPaymentAmount = minPaymentAmount
+                            this.dataForm.realMinRechargeNumber = minRechargeNumber
+                            break;
+                        }
+                        case 'agentLevel': {
+                            // 空号检测等级
+                            this.dataForm.price = price
+                            this.dataForm.warningsNumber = warningsNumber
+                            this.dataForm.minPaymentAmount = minPaymentAmount
+                            this.dataForm.minRechargeNumber = minRechargeNumber
+                            break;
+                        }
+                        case 'internationalLevel': {
+                            // 国际检测等级
+                            this.dataForm.internationalPrice = price
+                            this.dataForm.internationalWarningsNumber = warningsNumber
+                            this.dataForm.internationalMinPaymentAmount = minPaymentAmount
+                            this.dataForm.internationalMinRechargeNumber = minRechargeNumber
+                            break;
+                        }
+                        default:
+                            break;
                     }
                 });
-            }
+            },
+            handleStepChange(isNext) {
+                if (!isNext) {
+                    this.currentStep = this.currentStep - 1
+                    return false
+                }
+                let stepFieldsMap = {
+                    '0': ['priseimageUrl', 'companyName', 'shortName', 'bussicAdress', 'lawName', 'businNum', 'busindate1', 'busindate2'],
+                    '1': ['username', 'mobile', 'email'],
+                    '2': ['agentLevel', 'price', 'warningsNumber', 'minPaymentAmount', 'minRechargeNumber'],
+                }
+                const validateFieldPromise = (field) => {
+                    return new Promise((resolve, reject) => {
+                        this.$refs['dataForm'].validateField(field,(valid) => {
+                            if (valid) {
+                                reject()
+                            } else {
+                                resolve()
+                            }
+                        })
+                    })
+                }
+                let fieldArr = stepFieldsMap[this.currentStep] || []
+                let validatePromiseArr = fieldArr.map(ele => {
+                    return validateFieldPromise(ele)
+                })
+                Promise.all(validatePromiseArr).then(() => {
+                    this.currentStep = this.currentStep + 1
+                })
+            },
         }
     }
 
@@ -434,5 +546,8 @@
     .small-width-input {
         width: 86%;
         margin-right: 8px;
+    }
+    .steps-wrapper {
+        margin-bottom: 24px;
     }
 </style>

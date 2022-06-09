@@ -53,11 +53,13 @@
                         <span>{{ stateMap[row.state] || '' }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="companyShortName" label="公司简称" width="150" align="center">
-                </el-table-column>
+                <!-- <el-table-column prop="companyShortName" label="公司简称" width="150" align="center">
+                </el-table-column> -->
                 <el-table-column prop="createTime" label="创建时间" width="150" align="center">
                 </el-table-column>
-                <el-table-column prop="agentLevel" label="空号检测等级" width="120" align="center">
+                <el-table-column prop="linkmanPhone" label="联系电话" width="120" align="center">
+                </el-table-column>
+                <!-- <el-table-column prop="agentLevel" label="空号检测等级" width="120" align="center">
                 </el-table-column>
                 <el-table-column prop="emptyRechargeMoney" label="空号充值总计（元）" width="150" align="center">
                 </el-table-column>
@@ -76,8 +78,18 @@
                 <el-table-column prop="realTimeBalance" label="实时剩余条数" width="120" align="center">
                 </el-table-column>
                 <el-table-column prop="realWarningsNumber" label="实时预警条数" width="120" align="center">
+                </el-table-column> -->
+                <el-table-column label="空号检测" align="center">
+                    <el-table-column min-width="120" prop="emptyRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="emptyBalance" label="剩余条数" align="center"></el-table-column>
                 </el-table-column>
-                <el-table-column prop="linkmanPhone" label="联系电话" width="120" align="center">
+                <el-table-column label="实时检测" align="center">
+                    <el-table-column min-width="120" prop="realTimeRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="realTimeBalance" label="剩余条数" align="center"></el-table-column>
+                </el-table-column>
+                <el-table-column label="国际检测" align="center">
+                    <el-table-column min-width="120" prop="xxxxxxx" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="xxxxxxx" label="剩余条数" align="center"></el-table-column>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
@@ -112,6 +124,7 @@
                     <el-radio-group v-model="chdataForm.category">
                         <el-radio :label="0">空号检测</el-radio>
                         <el-radio :label="1">实时检测</el-radio>
+                        <el-radio :label="2">国际检测</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="充值单价：" prop="price">
