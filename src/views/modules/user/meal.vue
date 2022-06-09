@@ -14,6 +14,7 @@
                         <el-option label="全部" value="-1"></el-option>
                         <el-option label="空号检测" value="0"></el-option>
                         <el-option label="实时检测" value="1"></el-option>
+                        <el-option label="国际检测" value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -40,7 +41,7 @@
                 <el-table-column width="150" prop="agentName" v-if="isAdmin" label="代理商名称" align="center"></el-table-column>
                 <el-table-column width="120" prop="category" label="产品名称" align="center">
                     <template slot-scope="scope">
-                        {{ scope.row.category ? '实时检测' : '空号检测' }}
+                        {{ categoryLabelMap[scope.row.category] || '' }}
                     </template>
                 </el-table-column>
                 <el-table-column width="150" prop="name" label="充值套餐名称" align="center"></el-table-column>
@@ -80,6 +81,11 @@ import MealAddOrUpdate from './meal-add-or-update.vue'
 export default {
   data () {
     return {
+      categoryLabelMap: {
+        '0': '空号检测',
+        '1': '实时检测',
+        '2': '国际检测',
+      },
       isAdmin: false,
       searchData: {
         category: '-1',

@@ -31,22 +31,22 @@
                 :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="80" label="序号">
                 </el-table-column>
-                <el-table-column prop="category" label="充值产品" align="center">
+                <el-table-column prop="category" min-width="100" label="充值产品" align="center">
                     <template slot-scope="{ row }">
-                        <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                        <span>{{ categoryLabelMap[row.category] || '' }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="payTime" label="充值时间" align="center">
+                <el-table-column prop="payTime" min-width="150" label="充值时间" align="center">
                 </el-table-column>
-                <el-table-column prop="orderNo" label=" 订单编号" align="center">
+                <el-table-column prop="orderNo" min-width="150" label=" 订单编号" align="center">
                 </el-table-column>
-                <el-table-column prop="price" label="单价（元/条）" align="center" width="150">
+                <el-table-column prop="price" label="单价（元/条）" align="center" min-width="150">
                 </el-table-column>
-                <el-table-column prop="number" label="充值条数" align="center" width="150">
+                <el-table-column prop="number" label="充值条数" align="center" min-width="150">
                 </el-table-column>
-                <el-table-column prop="money" label="充值金额（元）" width="120" align="center">
+                <el-table-column prop="money" label="充值金额（元）" min-width="120" align="center">
                 </el-table-column>
-                <el-table-column prop="payTypeName" label="方式" width="100" align="center">
+                <el-table-column prop="payTypeName" label="方式" min-width="100" align="center">
                 </el-table-column>
             </el-table>
         </div>
@@ -62,6 +62,11 @@
     export default {
         data() {
             return {
+                categoryLabelMap: {
+                    '0': '空号检测',
+                    '1': '实时检测',
+                    '2': '国际检测',
+                },
                 dataListLoading: false,
                 disabled: false,
                 number: '',
@@ -93,6 +98,7 @@
                 categoryOptions: [
                     { label: '空号检测', value: 0 },
                     { label: '实时检测', value: 1 },
+                    { label: '国际检测', value: 2 },
                 ],
                 agentId: '',
             }

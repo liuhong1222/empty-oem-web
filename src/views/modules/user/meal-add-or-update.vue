@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :destroy-on-close="true" width="520px" :title="!dataForm.id ? '创建套餐' : '修改套餐'" :close-on-click-modal="false" :visible.sync="dialogVisible">
+    <el-dialog :destroy-on-close="true" width="600px" :title="!dataForm.id ? '创建套餐' : '修改套餐'" :close-on-click-modal="false" :visible.sync="dialogVisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="充值套餐名称：" prop="name">
                 <el-input v-model="dataForm.name" placeholder="充值套餐名称"></el-input>
@@ -8,6 +8,7 @@
                 <el-radio-group v-model="dataForm.category" @change="(e) => handleFormChange('category', e)">
                     <el-radio :label="0">空号检测</el-radio>
                     <el-radio :label="1">实时检测</el-radio>
+                    <el-radio :label="2">国际检测</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="产品名称：" prop="productId">
@@ -159,6 +160,7 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
+                        // todoNew 处理默认添加产品
                         let emptyItem = { name: '空号检测', id: 1001 }
                         let realtimeItem = { name: '实时检测', id: 1002 }
                         let newList = []
