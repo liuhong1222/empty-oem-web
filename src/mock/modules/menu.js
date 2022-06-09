@@ -252,6 +252,19 @@ const adminNav = {
                   'list':null
               },
               {
+                  'menuId': 2024,
+                  'parentId':59,
+                  'parentName':null,
+                  'name':'国际检测记录',
+                  'url':'finance/internationalcheck',
+                  'perms':'',
+                  'type':1,
+                  'icon':'tubiao',
+                  'orderNum':5,
+                  'open':null,
+                  'list':null
+              },
+              {
                   'menuId':2025,
                   'parentId':59,
                   'parentName':null,
