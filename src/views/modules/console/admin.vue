@@ -37,7 +37,7 @@
                     </el-table>
                 </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
                 <div class="grid-content bg-purple">
                     <h2>代理商空号检测统计</h2>
                     <ul class="cf customerList">
@@ -48,11 +48,22 @@
                     </ul>
                 </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
                 <div class="grid-content bg-purple">
                     <h2>代理商实时检测统计</h2>
                     <ul class="cf customerList">
                         <li v-for="(item,index) in realCheckStatic" :key="index">
+                            <p>{{ item.title }}</p>
+                            <p>{{ adminInfo[item.field] }}</p>
+                        </li>
+                    </ul>
+                </div>
+            </el-col>
+            <el-col :span="8">
+                <div class="grid-content bg-purple">
+                    <h2>代理商国际号码检测统计</h2>
+                    <ul class="cf customerList">
+                        <li v-for="(item,index) in internationalCheckStatic" :key="index">
                             <p>{{ item.title }}</p>
                             <p>{{ adminInfo[item.field] }}</p>
                         </li>
@@ -147,6 +158,12 @@
                     { title: '充值总条数（条）', field: 'rechargeNumberSum' }
                 ],
                 realCheckStatic: [
+                    { title: '代理商数量', field: 'realtimeAgentNums' },
+                    { title: '充值总金额（元）', field: 'realtimeRechargeSum' },
+                    { title: '消耗总条数（条）', field: 'realtimeConsume' },
+                    { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
+                ],
+                internationalCheckStatic: [
                     { title: '代理商数量', field: 'realtimeAgentNums' },
                     { title: '充值总金额（元）', field: 'realtimeRechargeSum' },
                     { title: '消耗总条数（条）', field: 'realtimeConsume' },

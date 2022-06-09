@@ -27,7 +27,7 @@
                     <el-table :header-cell-style="getRowClass" :data="rechargeRecordData" style="width: 100%" :highlight-current-row="true">
                         <el-table-column prop="categary" label="充值产品">
                             <template slot-scope="{ row }">
-                                <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                                <span>{{ categoryLabelMap[row.category] || '' }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="payTime" label="充值时间">
@@ -39,7 +39,7 @@
                     </el-table>
                 </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
                 <div class="grid-content bg-purple">
                 <h2>空号检测统计</h2>
                 <ul class="customerList">
@@ -50,11 +50,22 @@
                 </ul>
                 </div>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
                 <div class="grid-content bg-purple">
                 <h2>实时检测统计</h2>
                 <ul class="customerList">
                     <li v-for="(item, index) in realCustomList" :key="index">
+                    <p>{{ item.title }}</p>
+                    <p>{{ deskInfo[item.field] }}</p>
+                    </li>
+                </ul>
+                </div>
+            </el-col>
+            <el-col :span="8">
+                <div class="grid-content bg-purple">
+                <h2>国际号码检测统计</h2>
+                <ul class="customerList">
+                    <li v-for="(item, index) in internationalCustomList" :key="index">
                     <p>{{ item.title }}</p>
                     <p>{{ deskInfo[item.field] }}</p>
                     </li>
@@ -224,6 +235,11 @@ export default {
             }
         }
         return {
+            categoryLabelMap: {
+              '0': '空号检测',
+              '1': '实时检测',
+              '2': '国际检测',
+            },
             basicList: [ // 基本信息
                 { title: '空号代理价（元/条）', field: 'price', btnText: '', flag: false },
                 { title: '空号余额（万条）', field: 'emptyBalance', btnText: '充值', flag: true },
@@ -241,6 +257,12 @@ export default {
                 { title: '充值总条数（条）', field: 'custRechargeNumberSum' }
             ],
             realCustomList: [
+                { title: '客户数量', field: 'custNums' },
+                { title: '客户充值总计（元）', field: 'custRealtimeRechargeSum' },
+                { title: '客户消费条数（条）', field: 'realTimeConsume' },
+                { title: '充值总条数（条）', field: 'custRealtimeRechargeNumberSum' }
+            ],
+            internationalCustomList: [
                 { title: '客户数量', field: 'custNums' },
                 { title: '客户充值总计（元）', field: 'custRealtimeRechargeSum' },
                 { title: '客户消费条数（条）', field: 'realTimeConsume' },
