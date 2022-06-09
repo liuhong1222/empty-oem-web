@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="!dataForm.id ? '新增代理商等级' : '修改代理商等级'" width="520px" :close-on-click-modal="false" :visible.sync="levelvisible">
+    <el-dialog :title="!dataForm.id ? '新增代理商等级' : '修改代理商等级'" width="600px" :close-on-click-modal="false" :visible.sync="levelvisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="产品代理类型：" prop="levelType">
                 <el-radio-group v-model="dataForm.levelType">

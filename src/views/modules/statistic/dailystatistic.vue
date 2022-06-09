@@ -133,18 +133,24 @@
             getColumnStyle({ row, column, rowIndex, columnIndex }) {
                 let emptyColIndexArr = []
                 let realColIndexArr = []
+                let internationalColIndexArr = []
                 if (Boolean(sessionStorage.getItem("msjRoleName") === "1")) {
                     emptyColIndexArr = [6, 7]
                     realColIndexArr = [8, 9]
+                    internationalColIndexArr = [10, 11]
                 } else {
                     emptyColIndexArr = [5, 6]
                     realColIndexArr = [7, 8]
+                    internationalColIndexArr = [9, 10]
                 }
                 if (emptyColIndexArr.includes(columnIndex)) {
                     return 'background: rgba(62, 142, 247, 0.1);'
                 }
                 if (realColIndexArr.includes(columnIndex)) {
                     return 'background: rgba(113, 64, 255, 0.1);'
+                }
+                if (internationalColIndexArr.includes(columnIndex)) {
+                    return 'background: #F8E6EB;'
                 }
 	   	    },
             getTableData(cur) {

@@ -208,18 +208,24 @@
             getColumnStyle({ row, column, rowIndex, columnIndex }) {
                 let emptyColIndexArr = []
                 let realColIndexArr = []
+                let internationalColIndexArr = []
                 if (Boolean(sessionStorage.getItem("msjRoleName") === "1")) {
                     emptyColIndexArr = [5, 6, 7, 8, 9]
                     realColIndexArr = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                    internationalColIndexArr = [21, 22, 23]
                 } else {
                     emptyColIndexArr = [4]
                     realColIndexArr = [5]
+                    internationalColIndexArr = [6]
                 }
                 if (emptyColIndexArr.includes(columnIndex)) {
                     return 'background: rgba(62, 142, 247, 0.1);'
                 }
                 if (realColIndexArr.includes(columnIndex)) {
                     return 'background: rgba(113, 64, 255, 0.1);'
+                }
+                if (internationalColIndexArr.includes(columnIndex)) {
+                    return 'background: #F8E6EB;'
                 }
 	   	    },
             getAgentList() {
