@@ -76,6 +76,18 @@
                         </template>
                     </el-table-column>
                 </el-table-column>
+                <el-table-column label="国际检测" align="center">
+                    <el-table-column width="120" prop="xxxxxxx" label="消耗条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.xxxxxxx || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="xxxxxxx" label="剩余条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.xxxxxxx || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                </el-table-column>
             </el-table>
         </div>
         <div class="agentPage">

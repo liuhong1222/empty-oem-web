@@ -119,6 +119,23 @@
                             </template>
                         </el-table-column>
                     </el-table-column>
+                    <el-table-column label="国际检测" align="center">
+                        <el-table-column width="120" prop="emptyTotal" label="消耗条数" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.emptyTotal || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="realNumber" label="已激活" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.realNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="120" prop="silentNumber" label="未注册" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.silentNumber || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
                 </template>
                 <template v-else>
                     <el-table-column label="空号检测" align="center">
@@ -129,6 +146,13 @@
                         </el-table-column>
                     </el-table-column>
                     <el-table-column label="实时检测" align="center">
+                        <el-table-column min-width="120" prop="realtimeTotal" label="消耗条数" align="center">
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.realtimeTotal || 0 }}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="国际检测" align="center">
                         <el-table-column min-width="120" prop="realtimeTotal" label="消耗条数" align="center">
                             <template slot-scope="scope">
                                 <span>{{ scope.row.realtimeTotal || 0 }}</span>
