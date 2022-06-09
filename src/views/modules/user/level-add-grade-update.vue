@@ -5,6 +5,7 @@
                 <el-radio-group v-model="dataForm.levelType">
                     <el-radio :label="0">空号检测</el-radio>
                     <el-radio :label="1">实时检测</el-radio>
+                    <el-radio :label="2">国际检测</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="代理商等级：" prop="level">

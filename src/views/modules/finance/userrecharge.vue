@@ -48,7 +48,7 @@
                 </el-table-column>
                 <el-table-column prop="category" label="产品名称" align="center">
                     <template slot-scope="{ row }">
-                        <span>{{ row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                        <span>{{ categoryLabelMap[row.category] || '' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="orderNo" min-width="150" label="订单编号" align="center">
@@ -88,7 +88,13 @@
 <script>
     export default {
         data() {
+            const categoryLabelMap = {
+                '0': '空号检测',
+                '1': '实时检测',
+                '2': '国际检测',
+            }
             return {
+                categoryLabelMap,
                 roleName: null,
                 dataListLoading: false,
                 disabled: false,
@@ -106,6 +112,7 @@
                 categoryOptions: [
                     { label: '空号检测', value: 0 },
                     { label: '实时检测', value: 1 },
+                    { label: '国际检测', value: 2 },
                 ],
                 customerTableData: [],
                 pageIndex: 1,

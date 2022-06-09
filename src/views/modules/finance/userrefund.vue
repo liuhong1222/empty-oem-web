@@ -39,7 +39,7 @@
                 </el-table-column>
                 <el-table-column prop="category" width="150" label="产品名称" align="center">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.category ? '实时检测' : '空号检测' }}</span>
+                        <span>{{ categoryLabelMap[scope.row.category] || '' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" width="150" label="退款时间" align="center">
@@ -70,6 +70,11 @@
     export default {
         data() {
             return {
+                categoryLabelMap: {
+                    '0': '空号检测',
+                    '1': '实时检测',
+                    '2': '国际检测',
+                },
                 dataListLoading: false,
                 disabled: false,
                 disableAgent: true,

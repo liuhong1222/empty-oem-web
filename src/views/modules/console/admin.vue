@@ -25,7 +25,7 @@
                         </el-table-column>
                         <el-table-column prop="category" label="充值产品">
                             <template slot-scope="scope">
-                                <span>{{ scope.row.category === 0 ? '空号检测' : '实时检测' }}</span>
+                                <span>{{ categoryLabelMap[scope.row.category] || '' }}</span>
                             </template>
                         </el-table-column>
                         <el-table-column prop="payTime" label="充值时间">
@@ -104,7 +104,13 @@
                     callback()
                 }
             }
+            const categoryLabelMap = {
+                '0': '空号检测',
+                '1': '实时检测',
+                '2': '国际检测',
+            }
             return {
+                categoryLabelMap,
                 addEmailVisible: false,
                 reEmailVisible: false,
                 reBindVisible: false,

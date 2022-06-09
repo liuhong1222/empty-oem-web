@@ -91,6 +91,7 @@
                 categoryOptions: [
                     { label: '空号检测', value: 0 },
                     { label: '实时检测', value: 1 },
+                    { label: '国际检测', value: 2 },
                 ],
                 agentOemTableData: [],
                 pageIndex: 1,
