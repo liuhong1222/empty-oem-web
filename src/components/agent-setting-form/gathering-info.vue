@@ -14,7 +14,7 @@
             </el-input>
         </el-form-item>
         <el-form-item label="对公收款账号：" prop="payAccountPublic">
-            <el-input v-model="formData.payAccountPublic" placeholder="请输入对公收款账号">
+            <el-input v-model="formData.payAccountPublic" maxlength="50" placeholder="请输入对公收款账号">
             </el-input>
         </el-form-item>
         <el-form-item label="对私收款人：" prop="payeePrivate">

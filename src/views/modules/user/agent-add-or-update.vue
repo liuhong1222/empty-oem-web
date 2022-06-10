@@ -1,7 +1,7 @@
 <template>
     <el-dialog :title="!dataForm.id ? '新增代理商' : '修改代理商'" width="800px" :close-on-click-modal="false" :visible.sync="visible" :before-close="closeDialog"
         v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.4)">
-        <el-steps :active="currentStep" align-center class="steps-wrapper">
+        <el-steps :active="currentStep" align-center finish-status="success" class="steps-wrapper">
             <el-step title="基本信息"></el-step>
             <el-step title="联系人信息"></el-step>
             <el-step title="空号检测等级"></el-step>
@@ -243,6 +243,7 @@
         methods: {
             showInit(id) {
                 this.dataForm.id = id || 0
+                this.currentStep = 0
                 this.visible = true
                 this.submitLoading = false
                 this.getSpaceLevelList()
