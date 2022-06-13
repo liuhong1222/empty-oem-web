@@ -39,7 +39,10 @@
             </el-col>
             <el-col :span="8">
                 <div class="grid-content bg-purple">
-                    <h2>代理商空号检测统计</h2>
+                    <h2>
+                        代理商空号检测统计
+                        <span>当月</span>
+                    </h2>
                     <ul class="cf customerList">
                         <li v-for="(item,index) in emptyCheckStatic" :key="index">
                             <p>{{ item.title }}</p>
@@ -50,7 +53,10 @@
             </el-col>
             <el-col :span="8">
                 <div class="grid-content bg-purple">
-                    <h2>代理商实时检测统计</h2>
+                    <h2>
+                        代理商实时检测统计
+                        <span>当月</span>
+                    </h2>
                     <ul class="cf customerList">
                         <li v-for="(item,index) in realCheckStatic" :key="index">
                             <p>{{ item.title }}</p>
@@ -61,7 +67,10 @@
             </el-col>
             <el-col :span="8">
                 <div class="grid-content bg-purple">
-                    <h2>代理商国际号码检测统计</h2>
+                    <h2>
+                        代理商国际号码检测统计
+                        <span>当月</span>
+                    </h2>
                     <ul class="cf customerList">
                         <li v-for="(item,index) in internationalCheckStatic" :key="index">
                             <p>{{ item.title }}</p>
@@ -348,9 +357,25 @@
     }
 
     .grid-content h2 {
-        display: inline-block;
+        display: flex;
         font-size: 20px;
         color: #333;
+        align-items: center;
+        position: relative;
+    }
+
+    .grid-content h2 > span {
+        display: inline-block;
+        position: absolute;
+        right: 0px;
+        width: 56px;
+        height: 22px;
+        line-height: 20px;
+        border-radius: 11px;
+        border: 1px solid #1890FF;
+        color: #1890FF;
+        font-size: 12px;
+        text-align: center;
     }
 
     .row-bg {
