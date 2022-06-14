@@ -109,13 +109,15 @@
         },
         watch: {
             'dataForm.category'() {
-                // todoNew 调整 category 对应
                 if (this.dataForm.category === 0) {
                     this.dataForm.remainNumberTotal = this.customerInfo.emptyCount
                     this.dataForm.giftNumber = this.customerInfo.refundableEmptyNum
-                } else {
+                } else if (this.dataForm.category === 1) {
                     this.dataForm.remainNumberTotal = this.customerInfo.realtimeCount
                     this.dataForm.giftNumber = this.customerInfo.refundableRealTimeNum
+                } else {
+                    this.dataForm.remainNumberTotal = this.customerInfo.internationalCount
+                    this.dataForm.giftNumber = this.customerInfo.refundableInternationalNum
                 }
             },
             'dataForm.price'() {

@@ -88,15 +88,21 @@
         },
         methods: {
             init(rechargeType, agentInfo) {
+                let typeInfoMap = {
+                    'empty': { category: 0, price: agentInfo.price },
+                    'realtime': { category: 1, price: agentInfo.realPrice },
+                    'international': { category: 2, price: agentInfo.internationalPrice },
+                }
                 this.dialogVisible = true
                 this.showPayCode = false
                 this.payCodeUrl = ''
                 this.orderNo = ''
                 this.$nextTick(() => {
+                    let currentTypeInfo = typeInfoMap[rechargeType] || {}
                     this.$refs['dataForm'].resetFields()
                     this.dataForm = {
-                        category: rechargeType === 'empty' ? 0 : 1,
-                        price: rechargeType === 'empty' ? agentInfo.price : agentInfo.realPrice,
+                        category: currentTypeInfo.category,
+                        price: currentTypeInfo.price,
                         payType: 1
                     }
                 })

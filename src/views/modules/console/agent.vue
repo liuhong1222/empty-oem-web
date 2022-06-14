@@ -479,8 +479,11 @@ export default {
                         this.$message.warning('暂无实时检测代理权限')
                         return false
                     }
-                    // todoNew 处理充值弹框 产品对应
-                    this.$refs['agentRechargeDiaRef'].init(type === 'emptyBalance' ? 'empty' : 'real', this.agentInfo)
+                    if (type === 'internationalBalance' && !this.agentInfo.internationalPrice) {
+                        this.$message.warning('暂无国际检测代理权限')
+                        return false
+                    }
+                    this.$refs['agentRechargeDiaRef'].init(type.replace('Balance', ''), this.agentInfo)
                     break;
                 }
                 case 'warningsNumber':
@@ -490,9 +493,17 @@ export default {
                         this.$message.warning('暂无实时检测代理权限')
                         return false
                     }
-                    // todoNew 处理充值弹框 产品对应
-                    this.warnEditType = index === 'warningsNumber' ? '空号' : '实时'
-                    this.warinform.curcounts = this.deskInfo[record.field]
+                    if (type === 'internationalWarningsNumber' && !this.agentInfo.internationalPrice) {
+                        this.$message.warning('暂无国际检测代理权限')
+                        return false
+                    }
+                    let editTypeMap = {
+                        'warningsNumber': '空号',
+                        'realWarningsNumber': '实时',
+                        'internationalWarningsNumber': '国际',
+                    }
+                    this.warnEditType = editTypeMap[type]
+                    this.warinform.curcounts = this.deskInfo[type]
                     this.warnFormVisible = true;
                     this.$nextTick(() => {
                         this.$refs['warinform'].resetFields();
@@ -685,8 +696,18 @@ export default {
             this.$refs['warinform'].validate((valid) => {
                 if (valid) {
                     this.editWarnNumberLoading = true
-                    let field = this.warnEditType === '空号' ? 'warnNumber' : 'realtimeWarnNumber'
-                    let apiPath = this.warnEditType === '空号' ? 'updateWarnNumber' : 'updateRealtimeWarnNumber'
+                    let field = undefined
+                    let apiPath = undefined
+                    if (this.warnEditType === '空号') {
+                        field = 'warnNumber'
+                        apiPath = 'updateWarnNumber'
+                    } else if (this.warnEditType === '实时') {
+                        field = 'realtimeWarnNumber'
+                        apiPath = 'updateRealtimeWarnNumber'
+                    } else {
+                        field = 'internationalWarnNumber'
+                        apiPath = 'updateInternationalWarnNumber'
+                    }
                     this.$http({
                         url: this.$http.adornUrl(`agent/desk/${apiPath}?token=${this.$cookie.get('token')}`),
                         method: 'post',

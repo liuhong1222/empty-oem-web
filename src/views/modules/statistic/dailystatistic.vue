@@ -77,14 +77,14 @@
                     </el-table-column>
                 </el-table-column>
                 <el-table-column label="国际检测" align="center">
-                    <el-table-column width="120" prop="xxxxxxx" label="消耗条数" align="center">
+                    <el-table-column width="120" prop="internationalConsume" label="消耗条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.xxxxxxx || 0 }}</span>
+                            <span>{{ scope.row.internationalConsume || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="xxxxxxx" label="剩余条数" align="center">
+                    <el-table-column width="120" prop="internationalCounts" label="剩余条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.xxxxxxx || 0 }}</span>
+                            <span>{{ scope.row.internationalCounts || 0 }}</span>
                         </template>
                     </el-table-column>
                 </el-table-column>
@@ -171,7 +171,7 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume'])
+                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume', 'internationalConsume'])
                     } else {
                         this.tableData = []
                         this.totalPage = 0
