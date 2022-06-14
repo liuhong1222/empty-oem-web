@@ -2,24 +2,38 @@
     <div class="main">
         <el-row :gutter="20">
             <el-col :span="12">
-                <div class="grid-content bg-purple" style="height: 490px;">
+                <div class="grid-content bg-purple" style="height: 590px;">
                     <h2>嗨！</h2>
-                    <ul class="cf basic-mess">
-                        <li v-for="(item, index) in basicList" :style="item.liStyles || {}" :key="index">
-                            <p v-if="!['邮箱', '手机号'].includes(item.title)">{{item.title}}</p>
-                            <div class="statistic-data" :style="item.isFontSmall ? { fontSize: '14px' } : {}">{{deskInfo[item.field]}}</div>
-                            <button class="edit-btn" :style="item.styles || {}" v-show="item.flag" @click="handleOneCardClick(index, item)">
-                                {{ item.title === '邮箱' && (deskInfo[item.field] === '' || !deskInfo[item.field]) ? '添加邮箱' : item.btnText }}
-                            </button>
-                        </li>
-                        <li class="btns-wrapper">
+                    <div class="contact-info-wrapper">
+                        <ul>
+                            <li>
+                                <span :title="deskInfo.email">手机号：{{ deskInfo.mobile }}</span>
+                                <button class="edit-btn edit-contact-btn" @click="handleOneCardClick('mobile')">
+                                    更改手机号
+                                </button>
+                            </li>
+                            <li>
+                                <span :title="deskInfo.email">邮箱：{{ deskInfo.email }}</span>
+                                <button class="edit-btn edit-contact-btn" @click="handleOneCardClick('email')">
+                                    更改邮箱
+                                </button>
+                            </li>
+                        </ul>
+                        <div>
                             <button class="edit-btn copyLink" @click="copyLink">复制推广链接</button>
+                        </div>
+                    </div>
+                    <ul class="product-info-wrapper">
+                        <li v-for="(item, index) in productInfoList" :key="index">
+                            <span class="number-box">{{ deskInfo[item.field] || '0' }}</span>
+                            <span class="title-box">{{ item.title }}</span>
+                            <button v-if="item.btnText" class="edit-btn" @click="handleOneCardClick(item.field)">{{ item.btnText }}</button>
                         </li>
                     </ul>
                 </div>
             </el-col>
             <el-col :span="12">
-                <div class="grid-content bg-purple" style="height: 490px;">
+                <div class="grid-content bg-purple" style="height: 590px;">
                     <div>
                         <h2>充值记录</h2>
                         <el-button type="text" style="float:right" @click="showDetails()">查看详情</el-button>
@@ -240,15 +254,16 @@ export default {
               '1': '实时检测',
               '2': '国际检测',
             },
-            basicList: [ // 基本信息
-                { title: '空号代理价（元/条）', field: 'price', btnText: '', flag: false },
-                { title: '空号余额（万条）', field: 'emptyBalance', btnText: '充值', flag: true },
-                { title: '空号预警值（万条）', field: 'warningsNumber', btnText: '修改', flag: true },
-                { title: '实时代理价（元/条）', field: 'realPrice', btnText: '', flag: false },
-                { title: '实时余额（万条）', field: 'realtimeBalance', btnText: '充值', flag: true },
-                { title: '实时预警值（万条）', field: 'realWarningsNumber', btnText: '修改', flag: true },
-                { title: '手机号', field: 'mobile', liStyles: { height: '118px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }, styles: { borderColor: '#409EFF', width: '80px', height: '28px', background: '#409EFF' }, btnText: '更改手机号', flag: true, isFontSmall: true },
-                { title: '邮箱', field: 'email', liStyles: { height: '118px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }, styles: { borderColor: '#409EFF', width: '80px', height: '28px', background: '#409EFF' }, btnText: '更改邮箱', flag: true, isFontSmall: true }
+            productInfoList: [
+                { title: '空号代理价（元/条）', field: 'price', btnText: '' },
+                { title: '实时代理价（元/条）', field: 'realPrice', btnText: '' },
+                { title: '国际代理价（元/条）', field: 'internationalPrice', btnText: '' },
+                { title: '空号余额（万条）', field: 'emptyBalance', btnText: '充值' },
+                { title: '实时余额（万条）', field: 'realtimeBalance', btnText: '充值' },
+                { title: '国际余额（万条）', field: 'internationalBalance', btnText: '充值' },
+                { title: '空号预警值（万条）', field: 'warningsNumber', btnText: '修改' },
+                { title: '实时预警值（万条）', field: 'realWarningsNumber', btnText: '修改' },
+                { title: '国际预警值（万条）', field: 'internationalWarningsNumber', btnText: '修改' },
             ],
             emptyCustomList: [
                 { title: '客户数量', field: 'custNums' },
@@ -455,24 +470,28 @@ export default {
                 this.myReject = true
             }
         },
-        handleOneCardClick(index, record) {
-            switch (index) {
-                case 4:
-                case 1: { // 余额充值
-                    if (index === 4 && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
+        handleOneCardClick(type) {
+            switch (type) {
+                case 'emptyBalance':
+                case 'realtimeBalance':
+                case 'internationalBalance': { // 余额充值
+                    if (type === 'realtimeBalance' && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
                         this.$message.warning('暂无实时检测代理权限')
                         return false
                     }
-                    this.$refs['agentRechargeDiaRef'].init(index === 1 ? 'empty' : 'real', this.agentInfo)
+                    // todoNew 处理充值弹框 产品对应
+                    this.$refs['agentRechargeDiaRef'].init(type === 'emptyBalance' ? 'empty' : 'real', this.agentInfo)
                     break;
                 }
-                case 5:
-                case 2: { // 预警值修改
-                    if (index === 5 && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
+                case 'warningsNumber':
+                case 'realWarningsNumber':
+                case 'internationalWarningsNumber': { // 预警值修改
+                    if (type === 'realWarningsNumber' && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
                         this.$message.warning('暂无实时检测代理权限')
                         return false
                     }
-                    this.warnEditType = index === 2 ? '空号' : '实时'
+                    // todoNew 处理充值弹框 产品对应
+                    this.warnEditType = index === 'warningsNumber' ? '空号' : '实时'
                     this.warinform.curcounts = this.deskInfo[record.field]
                     this.warnFormVisible = true;
                     this.$nextTick(() => {
@@ -480,14 +499,14 @@ export default {
                     })
                     break;
                 }
-                case 6: { // 修改手机号
+                case 'mobile': { // 修改手机号
                     this.reBindVisible = true;
                     this.$nextTick(() => {
                         this.$refs.reBindPhoneCon.showInit(this.deskInfo.mobile)
                     })
                     break;
                 }
-                case 7: { // 修改邮箱
+                case 'email': { // 修改邮箱
                     if (!this.deskInfo.email) { // 新增邮箱
                         this.addEmailVisible = true
                         this.$nextTick(() => {
@@ -692,6 +711,60 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.product-info-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0px;
+    > li {
+        width: 30%;
+        padding-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #DCDFE6;
+    }
+    > li:nth-child(3n) {
+        border-color: transparent;
+    }
+    > li:nth-child(7), > li:nth-child(8), > li:nth-child(9) {
+        padding-bottom: 0px;
+    }
+    .number-box {
+        font-size: 36px;
+        font-weight: 500;
+        color: #000000;
+        display: inline-block;
+        word-break: break-all;
+    }
+    .title-box {
+        font-size: 12px;
+        color: #717D8F;
+        margin: 4px 0px 8px;
+    }
+}
+.contact-info-wrapper {
+    display: flex;
+    > ul {
+        width: 60%;
+        padding: 0px;
+        > li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        > li > span {
+            display: inline-block;
+            width: 60%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+    > div {
+        padding-top: 20px;
+    }
+}
 .meal-empty {
     width: 100%;
     height: 200px;
@@ -746,27 +819,21 @@ export default {
     font-weight: 700;
     margin-bottom: 10px;
   }
-
-    .basic-mess li button:hover {
-        background-color: #FF5B68;
-        color: #fff;
-        border-color: #FF5B68;
-        cursor: pointer;
-    }
   .edit-btn {
     outline: none;
     background-color: #FF5B68;
     width: 60px;
-    height: 32px;
+    height: 30px;
     border: solid 1px #FF5B68;
     color: #fff;
     font-size: 12px;
     border-radius: 2px;
+    cursor: pointer;
   }
 
-  .basic-mess li .edit-btn.copyLink {
+  .edit-btn.copyLink {
     width: 108px;
-    height: 32px;
+    height: 40px;
     border: none;
     margin-bottom: 20px;
     background-color: #409EFF;
@@ -775,6 +842,14 @@ export default {
     color: #fff;
     cursor: pointer;
     border-radius: 2px;
+  }
+  .edit-btn.edit-contact-btn {
+    border-color: #DCDFE6;
+    width: 80px;
+    height: 30px;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
   }
 
 </style>

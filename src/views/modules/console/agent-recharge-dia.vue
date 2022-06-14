@@ -1,10 +1,11 @@
 <template>
-    <el-dialog :destroy-on-close="true" :title="'充值'" width="520px" :close-on-click-modal="false" :visible.sync="dialogVisible">
+    <el-dialog :destroy-on-close="true" :title="'充值'" width="600px" :close-on-click-modal="false" :visible.sync="dialogVisible">
         <el-form v-if="!showPayCode" :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="产品名称：" prop="category">
                 <el-radio-group v-model="dataForm.category" disabled>
                     <el-radio :label="0">空号检测</el-radio>
                     <el-radio :label="1">实时检测</el-radio>
+                    <el-radio :label="2">国际检测</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="充值单价：" prop="price">

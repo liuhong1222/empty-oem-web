@@ -106,8 +106,8 @@
                     <el-table-column min-width="120" prop="realtimeCount" label="剩余条数" align="center"></el-table-column>
                 </el-table-column>
                 <el-table-column label="国际检测" align="center">
-                    <el-table-column min-width="120" prop="xxxxxxx" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="xxxxxxx" label="剩余条数" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="internationalRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="internationalCount" label="剩余条数" align="center"></el-table-column>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" align="center" min-width="150">
                     <template slot-scope="scope">
