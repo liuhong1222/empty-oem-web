@@ -248,7 +248,7 @@
                 this.submitLoading = false
                 this.getSpaceLevelList()
                 this.getRealLevelList()
-                this.getInternationalLevelList
+                this.getInternationalLevelList()
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
                 })
@@ -285,13 +285,13 @@
                         this.dataForm.minPaymentAmount = data.data.minPaymentAmount
                         this.dataForm.minRechargeNumber = data.data.minRechargeNumber
 
-                        this.dataForm.realLevel = data.data.realLevel + ''
+                        this.dataForm.realLevel = data.data.realLevel ? data.data.realLevel + '' : undefined
                         this.dataForm.realPrice = data.data.realPrice
                         this.dataForm.realWarningsNumber = data.data.realWarningsNumber
                         this.dataForm.realMinPaymentAmount = data.data.realMinPaymentAmount
                         this.dataForm.realMinRechargeNumber = data.data.realMinRechargeNumber
 
-                        this.dataForm.internationalLevel = data.data.internationalLevel + ''
+                        this.dataForm.internationalLevel = data.data.internationalLevel ? data.data.internationalLevel + '' : undefined
                         this.dataForm.internationalPrice = data.data.internationalPrice
                         this.dataForm.internationalWarningsNumber = data.data.internationalWarningsNumber
                         this.dataForm.internationalMinPaymentAmount = data.data.internationalMinPaymentAmount
@@ -313,17 +313,17 @@
                 })
             },
             getInternationalLevelList() {
-                // this.$http({
-                //     url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=2`),
-                //     method: 'get',
-                //     param: this.$http.adornParams({})
-                // }).then(({ data }) => {
-                //     if (data && data.code === 0) {
-                //         this.internationalLevelArr = data.data || []
-                //     } else {
-                //         this.internationalLevelArr = []
-                //     }
-                // })
+                this.$http({
+                    url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=2`),
+                    method: 'get',
+                    param: this.$http.adornParams({})
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.internationalLevelArr = data.data || []
+                    } else {
+                        this.internationalLevelArr = []
+                    }
+                })
             },
             getRealLevelList() {
                 this.$http({

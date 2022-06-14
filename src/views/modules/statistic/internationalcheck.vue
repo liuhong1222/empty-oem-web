@@ -42,26 +42,26 @@
                     </el-table-column>
                     <el-table-column width="150" prop="phone" label="手机号码" align="center">
                     </el-table-column>
-                    <el-table-column width="150" prop="name" label="文件名称" align="center">
+                    <el-table-column width="150" prop="fileName" label="文件名称" align="center">
                     </el-table-column>
-                    <el-table-column width="120" prop="size" label="文件大小" align="center">
+                    <el-table-column width="120" prop="fileSize" label="文件大小" align="center">
                         <template slot-scope="scope">
-                            <span>{{ computeFileSize(scope.row.size) }}</span>
+                            <span>{{ computeFileSize(scope.row.fileSize) }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="line" label="检测数" align="center">
+                    <el-table-column width="120" prop="totalNumber" label="检测数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.line || 0 }}</span>
+                            <span>{{ scope.row.totalNumber || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="normal" label="已激活" align="center">
+                    <el-table-column width="120" prop="activeCount" label="已激活" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.normal || 0 }}</span>
+                            <span>{{ scope.row.activeCount || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="numberPortability" label="未注册" align="center">
+                    <el-table-column width="120" prop="noRegisterCount" label="未注册" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.numberPortability || 0 }}</span>
+                            <span>{{ scope.row.noRegisterCount || 0 }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
@@ -79,9 +79,9 @@
                     </el-table-column>
                     <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                     </el-table-column>
-                    <el-table-column min-width="120" prop="line" label="消耗条数" align="center">
+                    <el-table-column min-width="120" prop="totalNumber" label="消耗条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.line || 0 }}</span>
+                            <span>{{ scope.row.totalNumber || 0 }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column min-width="150" prop="createTime" label="检测时间" align="center">
@@ -146,7 +146,7 @@
                 this.dataListLoading = true
                 let agentId = this.searchData.agentId === -1 ? undefined : this.searchData.agentId
                 this.$http({
-                    url: this.$http.adornUrl(`agent/realtimeCheck/getPageList`),
+                    url: this.$http.adornUrl(`agent/internationalCheck/getPageList`),
                     method: 'post',
                     data: {
                         'token': this.$cookie.get('token'),
@@ -210,7 +210,7 @@
                         sums[index] = '合计';
                         return;
                     }
-                    if (column.property === 'line') {
+                    if (column.property === 'totalNumber') {
                         sums[index] = `共${this.totalCount}条`
                     } else {
                         sums[index] = '';

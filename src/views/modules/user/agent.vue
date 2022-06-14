@@ -88,8 +88,8 @@
                     <el-table-column min-width="120" prop="realTimeBalance" label="剩余条数" align="center"></el-table-column>
                 </el-table-column>
                 <el-table-column label="国际检测" align="center">
-                    <el-table-column min-width="120" prop="xxxxxxx" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="xxxxxxx" label="剩余条数" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="internationalRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
+                    <el-table-column min-width="120" prop="internationalBalance" label="剩余条数" align="center"></el-table-column>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
@@ -221,10 +221,10 @@
                         { required: true, message: '请输入单价', trigger: 'change' },
                     ],
                     rechargeNumber: [
-                        { required: true, message: '请输入充值金额', trigger: 'change' },
+                        { required: true, message: '请输入充值条数', trigger: 'change' },
                     ],
                     paymentAmount: [
-                        { required: true, message: '请输入充值条数', trigger: 'change' },
+                        { required: true, message: '请输入充值金额', trigger: 'change' },
                     ],
                     payType: [
                         { required: true, message: '请选择入账类型', trigger: 'change' }
@@ -268,14 +268,13 @@
         },
         watch: {
             'chdataForm.category'() {
-                const { emptyPrice, realPrice, category } = this.chdataForm;
-                if (category === 1) {
-                    // 实时检测
-                    this.chdataForm.price = realPrice;
-                } else {
-                    // 空号检测
-                    this.chdataForm.price = emptyPrice;
+                const { category } = this.chdataForm;
+                let priceFieldMap = {
+                    '0': 'emptyPrice',
+                    '1': 'realPrice',
+                    '2': 'internationalPrice'
                 }
+                this.chdataForm.price = this.chdataForm[priceFieldMap[category]] || 0
             },
             'chdataForm.price'() {
                 this.computedRechargeNumber()
@@ -418,7 +417,7 @@
                 })
             },
             chdataBtn(record) {
-                const { id, level, companyName, price, realPrice, linkmanPhone } = record;
+                const { id, level, companyName, price, realPrice, linkmanPhone, internationalPrice } = record;
                 this.chdataFormVisible = true
                 this.$nextTick(() => {
                     this.$refs['chdataFormref'].resetFields()
@@ -428,6 +427,7 @@
                         name: companyName,
                         phone: linkmanPhone,
                         emptyPrice: price,
+                        internationalPrice,
                         realPrice,
                         category: 0,
                         price

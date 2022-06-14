@@ -57,13 +57,13 @@
                         <td class="discribe-col title">实时检测预警条数</td>
                         <td class="discribe-col">{{ detailInfo.realWarningsNumber }}</td>
                         <td class="discribe-col title">国际检测等级名称</td>
-                        <td class="discribe-col">{{ detailInfo.xxxxxxx }}</td>
+                        <td class="discribe-col">{{ detailInfo.internationalLevel }}</td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">国际检测单价</td>
-                        <td class="discribe-col">{{ detailInfo.xxxxxxx }}（元/条）</td>
+                        <td class="discribe-col">{{ detailInfo.internationalPrice }}（元/条）</td>
                         <td class="discribe-col title">国际检测预警条数</td>
-                        <td class="discribe-col">{{ detailInfo.xxxxxxx }}</td>
+                        <td class="discribe-col">{{ detailInfo.internationalWarningsNumber }}</td>
                     </tr>
                     <tr class="discribe-row">
                         <td class="discribe-col title">状态</td>
@@ -79,78 +79,6 @@
                     </tr>
                 </tbody>
             </table>
-            <el-form v-show="false" :model="dataForm" ref="dataForm" label-width="150px" class="demo-ruleForm" :label-position="labelPosition">
-                <el-form-item label="营业执照：" id="avatar-uploaderImg">
-                    <el-upload class="avatar-uploader" action="" :show-file-list="false" disabled>
-                        <img v-if="seeImageUrl" :src="seeImageUrl" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
-
-                <el-form-item label="商户编号：">
-                    <el-input v-model="dataForm.businNumber" placeholder="商户编号" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="公司名称：">
-                    <el-input v-model="dataForm.companyName" placeholder="公司名称" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="公司简称：">
-                    <el-input v-model="dataForm.shortName" placeholder="公司简称" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="营业执照所在地：">
-                    <el-input v-model="dataForm.bussicAdress" placeholder="营业执照所在地" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="法人姓名：">
-                    <el-input v-model="dataForm.lawName" placeholder="法人姓名" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="营业执照号：">
-                    <el-input v-model="dataForm.businNum" placeholder="营业执照号" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="营业期限：">
-                    <span style="margin-left:15px">{{dataForm.busindate1}}</span>
-                    <span>至</span>
-                    <span>{{dataForm.busindate2}}</span>
-                    <!-- <el-input v-model="dataForm.busindate1" placeholder="营业执照号" style="width:35%;" readonly></el-input>至 -->
-                    <!-- <el-input v-model="dataForm.busindate2" placeholder="营业执照号" style="width:35%;" readonly></el-input> -->
-                </el-form-item>
-                <!-- <h3>联系人信息</h3> -->
-                <el-form-item label="联系人姓名：">
-                    <el-input v-model="dataForm.username" placeholder="联系人姓名" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="联系人手机号：">
-                    <el-input v-model="dataForm.mobile" placeholder="联系人手机号" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="联系人邮箱：">
-                    <el-input v-model="dataForm.email" placeholder="联系人邮箱" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="职务：">
-                    <el-input v-model="dataForm.work" placeholder="职务" readonly></el-input>
-                </el-form-item>
-                <!-- <h3>账号信息</h3> -->
-                <el-form-item label="登录账号：">
-                    <el-input v-model="dataForm.loginAcc" placeholder="登录账号" readonly></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="初始密码：" prop="pwd">
-                    <el-input v-model="dataForm.pwd" placeholder="初始密码" readonly></el-input>
-                </el-form-item> -->
-                <!-- <h3>代理商级别</h3> -->
-                <el-form-item label="代理级别：">
-                    <el-input v-model="dataForm.agencylevel" placeholder="代理级别" readonly></el-input>
-                    <!-- <el-select v-model="dataForm.agencylevel" placeholder="请选择代理级别">
-                        <el-option label="一级" value="1"></el-option>
-                        <el-option label="二级" value="2"></el-option>
-                    </el-select> -->
-                </el-form-item>
-                <el-form-item label="单价：">
-                    <span style="margin-left:15px">{{dataForm.price}}</span>
-                    <!-- <el-input v-model="dataForm.price" placeholder="单价" readonly></el-input> -->
-                    <span>元/条</span>
-                </el-form-item>
-                <el-form-item label="预警条数：">
-                    <span style="margin-left:15px">{{dataForm.allowCounts}}</span>
-                    <!-- <el-input v-model="" placeholder="预警条数" readonly></el-input> -->
-                    <span>条</span>
-                </el-form-item>
-            </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -194,7 +122,6 @@
             showInit(id) {
                 this.dialogVisible = true;
                 this.dataForm.id = id
-                console.log(id)
                 this.$http({
                     url: this.$http.adornUrl(`agent/agentInfo/detail?token=${this.$cookie.get('token')}&agentId=${id}`),
                     method: 'get',

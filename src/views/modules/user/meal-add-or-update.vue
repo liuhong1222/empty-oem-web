@@ -160,12 +160,13 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        // todoNew 处理默认添加产品
-                        let emptyItem = { name: '空号检测', id: 1001 }
-                        let realtimeItem = { name: '实时检测', id: 1002 }
+                        let defaultItems = [
+                            { name: '空号检测', id: 1001 },
+                            { name: '实时检测', id: 1002 },
+                            { name: '国际检测', id: 1003 },
+                        ]
                         let newList = []
-                        // 默认添加这两个产品
-                        newList.push(this.dataForm.category ? realtimeItem : emptyItem)
+                        defaultItems[this.dataForm.category] && newList.push(defaultItems[this.dataForm.category])
                         newList.push(...(data.data || []))
                         this.productList = newList
                     }
