@@ -16,9 +16,9 @@
             </el-col>
             <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <div class="cf">
+                    <div class="cf recharge-record-head">
                         <h2>代理商充值记录</h2>
-                        <el-button type="text" style="float:right" @click="showDetails()">查看详情</el-button>
+                        <el-button class="view-recharge-record-btn" type="text" @click="showDetails()">查看详情</el-button>
                     </div>
                     <el-table :header-cell-style="getRowClass" :data="tableData" height="250" style="width: 100%" :highlight-current-row="false">
                         <el-table-column prop="companyName" label="代理商名称">
@@ -173,10 +173,10 @@
                     { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
                 ],
                 internationalCheckStatic: [
-                    { title: '代理商数量', field: 'realtimeAgentNums' },
-                    { title: '充值总金额（元）', field: 'realtimeRechargeSum' },
-                    { title: '消耗总条数（条）', field: 'realtimeConsume' },
-                    { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
+                    { title: '代理商数量', field: 'internationalAgentNums' },
+                    { title: '充值总金额（元）', field: 'internationalRechargeSum' },
+                    { title: '消耗总条数（条）', field: 'internationalConsume' },
+                    { title: '充值总条数（条）', field: 'internationalRechargeNumberSum' }
                 ],
                 adminInfo: {}, // 管理员首页基本信息
                 emailAddLoading: false,
@@ -326,6 +326,16 @@
 
 </script>
 <style lang="scss">
+.recharge-record-head {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    .view-recharge-record-btn {
+        position: absolute;
+        right: 0px;
+    }
+}
     .el-row {
         margin-bottom: 20px;
         &:last-child {
