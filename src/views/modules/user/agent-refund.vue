@@ -130,14 +130,14 @@
                 }
             },
             'dataForm.category' () {
-                // todoNew 调整 category 对应
-                if (this.dataForm.category) { // 实时检测
-                    this.dataForm.remainNumberTotal = this.agentRefundInfo.realtimeBalance || 0
-                    this.dataForm.giftNumber = this.agentRefundInfo.refundableRealtime || 0
-                } else { // 空号检测
-                    this.dataForm.remainNumberTotal = this.agentRefundInfo.emptyBalance || 0
-                    this.dataForm.giftNumber = this.agentRefundInfo.refundableEmpty || 0
+                let valuesMap = {
+                    '0': [this.agentRefundInfo.emptyBalance || 0, this.agentRefundInfo.refundableEmpty || 0],
+                    '1': [this.agentRefundInfo.realtimeBalance || 0, this.agentRefundInfo.refundableRealtime || 0],
+                    '2': [this.agentRefundInfo.internationalBalance || 0, this.agentRefundInfo.refundableInternational || 0],
                 }
+                let resultValues = valuesMap[this.dataForm.category] || [0, 0]
+                this.dataForm.remainNumberTotal = resultValues[0]
+                this.dataForm.giftNumber = resultValues[1]
             }
         },
         methods: {
@@ -201,7 +201,7 @@
                             this.submitLoading = false
                             if (data && data.code === 0) {
                                 this.dialogVisible = false
-                                this.$emit('refresh')
+                                this.$emit('refreshDataList')
                                 this.$message({
                                     message: '操作成功',
                                     type: 'success',

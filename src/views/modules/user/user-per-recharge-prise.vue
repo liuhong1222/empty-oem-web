@@ -156,12 +156,16 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        const { goodsList, emptyBalance, realtimeBalance } = data.data || {}
+                        const { goodsList, emptyBalance, realtimeBalance, internationalBalance } = data.data || {}
                         this.rechargeArr = goodsList || []
-                        // todoNew 调整 category 的判断
+                        let countMap = {
+                            '0': emptyBalance,
+                            '1': realtimeBalance,
+                            '2': internationalBalance,
+                        }
                         this.rechargeDataForm = {
                             ...this.rechargeDataForm,
-                            myCounts: this.rechargeDataForm.category === 0 ? emptyBalance : realtimeBalance
+                            myCounts: countMap[this.rechargeDataForm.category] || undefined
                         }
                     } else {
                         this.$message.error(data.msg)
