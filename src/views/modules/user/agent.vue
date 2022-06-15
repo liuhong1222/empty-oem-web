@@ -185,6 +185,15 @@
     import SetAuthLevel from '@/components/set-auth-level/index.vue'
     export default {
         data() {
+            var validateMoney = (rule, value, callback) => {
+                if (!value) {
+                    callback(new Error('请输入充值金额'))
+                } else if (('' + value).includes('.')) {
+                    callback(new Error('充值金额不包含小数'))
+                } else {
+                    callback()
+                }
+            }
             return {
                 account: '',
                 cdAgentId: '',
@@ -224,7 +233,7 @@
                         { required: true, message: '请输入充值条数', trigger: 'change' },
                     ],
                     paymentAmount: [
-                        { required: true, message: '请输入充值金额', trigger: 'change' },
+                        { required: true, validator: validateMoney, trigger: 'change' },
                     ],
                     payType: [
                         { required: true, message: '请选择入账类型', trigger: 'change' }
