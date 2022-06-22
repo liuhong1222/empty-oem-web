@@ -165,7 +165,7 @@
                         }
                         this.rechargeDataForm = {
                             ...this.rechargeDataForm,
-                            myCounts: countMap[this.rechargeDataForm.category] || undefined
+                            myCounts: countMap[this.rechargeDataForm.category] || 0
                         }
                     } else {
                         this.$message.error(data.msg)
