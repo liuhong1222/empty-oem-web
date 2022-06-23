@@ -602,7 +602,7 @@
 </style>
 <style scoped>
     .table-expand-col {
-        padding: 0px 0px 0px 50px;
+        padding: 0px 0px 0px 60px;
     }
     .table-expand-item {
         display: flex;
