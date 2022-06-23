@@ -67,6 +67,26 @@
                 :header-cell-style="getRowClass"
                 :row-style="dealRowClass"
             >
+                <el-table-column fixed type="expand">
+                    <template slot-scope="props">
+                        <ul class="table-expand-col">
+                            <template v-for="item in tableExpandCols">
+                              <li class="table-expand-item" :key="item.field" v-show="item.field !== 'officialWeb' || isAdmin">
+                                <template v-if="item.field === 'officialWeb'">
+                                  <div class="table-expand-label">{{ item.label }}</div>
+                                  <div class="table-expand-value">
+                                    <span :style="{ color: props.row.officialWeb === 1 ? 'rgba(62, 142, 247, 1)' : 'rgba(113, 64, 255, 1)', fontWeight: '600' }">{{ officialWebTypeMap[props.row.officialWeb] || '' }}</span>
+                                  </div>
+                                </template>
+                                <template v-else>
+                                  <div class="table-expand-label">{{ item.label }}</div>
+                                  <div class="table-expand-value">{{ item.render ? item.render(props.row[item.field]) : props.row[item.field] }}</div>
+                                </template>
+                              </li>
+                            </template>
+                        </ul>
+                    </template>
+                </el-table-column>
                 <el-table-column
                     type="index"
                     header-align="center"
@@ -179,6 +199,14 @@ import qs from "qs";
 export default {
   data() {
     return {
+      tableExpandCols: [
+        { label: '客户类型', field: 'customerType' },
+        { label: '客户名称', field: 'name' },
+        { label: '官网类型', field: 'officialWeb' },
+        { label: '空号检测充值总条数', field: 'emptyRechargeNum', render: (val) => (val || '0') },
+        { label: '实时检测充值总条数', field: 'realtimeRechargeNum', render: (val) => (val || '0') },
+        { label: '国际检测充值总条数', field: 'internationalRechargeNum', render: (val) => (val || '0') },
+      ],
       disabled: false,
       seeVisible: false,
       updateVisible: false,
@@ -510,4 +538,22 @@ export default {
     margin-bottom: 24px;
     box-shadow: 0px 7px 9px 0px rgba(153, 153, 153, 0.05);
 }
+</style>
+<style scoped>
+    .table-expand-col {
+        padding: 0px 0px 0px 180px;
+    }
+    .table-expand-item {
+        display: flex;
+        align-items: center;
+        height: 32px;
+    }
+    .table-expand-label {
+        width: 150px;
+        text-align: right;
+        color: #99a9bf;
+    }
+    .table-expand-value {
+        margin-left: 20px;
+    }
 </style>

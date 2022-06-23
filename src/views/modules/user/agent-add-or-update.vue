@@ -254,7 +254,7 @@
                 })
                 this.priseurl = this.$http.adornUrl(`agent/agentInfo/license/upload?token=${this.$cookie.get('token')}`)
                 if (this.dataForm.id) {
-                    this.agentReadonly = true
+                    this.agentReadonly = false
                     this.getAgentDetail();
                 }
             },

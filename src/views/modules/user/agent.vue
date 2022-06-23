@@ -39,6 +39,16 @@
         </div>
         <div class="agentTable">
             <el-table :data="agentTableData" :row-style="dealRowClass" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
+                <el-table-column fixed type="expand">
+                    <template slot-scope="props">
+                        <ul class="table-expand-col">
+                            <li class="table-expand-item" :key="item.field" v-for="item in tableExpandCols">
+                                <div class="table-expand-label">{{ item.label }}</div>
+                                <div class="table-expand-value">{{ item.render ? item.render(props.row[item.field]) : props.row[item.field] }}</div>
+                            </li>
+                        </ul>
+                    </template>
+                </el-table-column>
                 <el-table-column type="index" header-align="center" align="center" width="80" fixed label="序号">
                 </el-table-column>
                 <el-table-column prop="officialWeb" label="官网类型" width="100" align="center">
@@ -195,6 +205,18 @@
                 }
             }
             return {
+                tableExpandCols: [
+                    { label: '公司简称', field: 'companyShortName' },
+                    { label: '空号检测等级', field: 'agentLevel' },
+                    { label: '空号检测充值总条数', field: 'emptyRechargeNumber', render: (val) => (val || '0') },
+                    { label: '空号检测预警条数', field: 'warningsNumber', render: (val) => (val || '0') },
+                    { label: '实时检测等级', field: 'realLevel' },
+                    { label: '实时检测充值总条数', field: 'realTimeRechargeNumber', render: (val) => (val || '0') },
+                    { label: '实时检测预警条数', field: 'realWarningsNumber', render: (val) => (val || '0') },
+                    { label: '国际检测等级', field: 'internationalLevel' },
+                    { label: '国际检测充值总条数', field: 'internationalRechargeNumber', render: (val) => (val || '0') },
+                    { label: '国际检测预警条数', field: 'internationalWarningsNumber', render: (val) => (val || '0') },
+                ],
                 account: '',
                 cdAgentId: '',
                 jinorQiId: '',
@@ -576,5 +598,23 @@
         background-color: #ffffff;
         margin-bottom: 24px;
         box-shadow: 0px 7px 9px 0px rgba(153, 153, 153, 0.05);
+    }
+</style>
+<style scoped>
+    .table-expand-col {
+        padding: 0px 0px 0px 50px;
+    }
+    .table-expand-item {
+        display: flex;
+        align-items: center;
+        height: 32px;
+    }
+    .table-expand-label {
+        width: 150px;
+        text-align: right;
+        color: #99a9bf;
+    }
+    .table-expand-value {
+        margin-left: 20px;
     }
 </style>
