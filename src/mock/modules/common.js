@@ -47,7 +47,7 @@ export function getCustomList () {
   return {
     // isOpen: false,
     url: 'agent/cust/custList',
-    type: 'get',
+    type: 'post',
     data: {
       'msg': 'success',
       'code': 0,
@@ -75,6 +75,44 @@ export function getAgentList () {
         list: [{
           mchId: 1,
           companyName: 'xxxx'
+        }],
+        total: 1
+      }
+    }
+  }
+}
+
+export function getAgentSetList () {
+  return {
+    // isOpen: false,
+    url: 'agent/set/agentSetList',
+    type: 'get',
+    data: {
+      'msg': 'success',
+      'code': 0,
+      'data': {
+        list: [{
+          agentId: 1,
+          agentName: 'xxxx'
+        }],
+        total: 1
+      }
+    }
+  }
+}
+
+export function getGoodsList () {
+  return {
+    // isOpen: false,
+    url: 'agent/goods/getPageList',
+    type: 'post',
+    data: {
+      'msg': 'success',
+      'code': 0,
+      'data': {
+        list: [{
+          id: 1,
+          agentName: 'xxxx'
         }],
         total: 1
       }
