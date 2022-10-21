@@ -92,7 +92,7 @@
                             <span>客户检测统计</span>
                             <span>当月</span>
                         </div>
-                        <el-select style="width: 150px;" v-model="testStatisticCategory" size="small" placeholder="请选择产品">
+                        <el-select @change="getAgentDeskInfo" style="width: 150px;" v-model="testStatisticCategory" size="small" placeholder="请选择产品">
                             <el-option
                             v-for="item in categoryOptions"
                             :key="item.value"
@@ -114,16 +114,8 @@
                 <div class="grid-content bg-purple">
                     <div class="test-statistic-header">
                         <div>
-                            <span>代理商消耗趋势</span>
+                            <span>客户消耗趋势</span>
                         </div>
-                        <el-select style="width: 150px;" v-model="trendCategory" size="small" placeholder="请选择产品">
-                            <el-option
-                            v-for="item in categoryOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
                     </div>
                     <div class="trend-chart">
                         <e-chart style="height:260px; width: 100%;" :chartData="trendChartConfig" />
@@ -305,7 +297,6 @@ export default {
                 { title: '充值总条数（条）', field: 'custRechargeNumberSum' }
             ],
             testStatisticCategory: 0,
-            trendCategory: 0,
             trendChartConfig: {
                 xData: [],
                 series: [],
@@ -318,22 +309,36 @@ export default {
         this.getAgentDeskInfo()
         this.myRechargeList()
         this.updatePwd()
-        this.getChartData()
     },
     methods: {
-        getChartData() {
+        dealChartData() {
+            let dayCount = this.$moment().daysInMonth()
+            let dateDataMap = (this.deskInfo.consumeTrend || []).reduce((pre, curr) => {
+                return {
+                    ...pre,
+                    [curr.dayInt]: curr.totalConsume
+                }
+            }, {})
+            let currentMonth = this.$moment().format('YYYY-MM')
+            let xData = []
+            let yData = []
+            for (let index = 0; index < dayCount; index++) {
+                let dateStr = this.$moment(currentMonth + '-' + (index + 1)).format('YYYYMMDD')
+                xData.push(dateStr)
+                yData.push(dateDataMap[dateStr] || 0)
+            }
             this.trendChartConfig = {
-                xData: ['xx', 'zz'],
+                xData,
                 series: [{
                     name: '消耗总条数',
                     type: 'line',
                     label: {
                         normal: {
-                            show: true,
+                            show: false,
                             position: 'top'
                         }
                     },
-                    data: [123,44]
+                    data: yData
                 }],
                 otherOptions: {
                     grid: {
@@ -366,7 +371,8 @@ export default {
                 this.copyinput = domain ? 'http://' + domain : ''
                 this.deskInfo = {...(data.data || {}), ...(agentInfo || {})}
                 this.agentInfo = agentInfo || {}
-                this.dealProductTableData(this.deskInfo )
+                this.dealProductTableData(this.deskInfo)
+                this.dealChartData()
             } else {
                 this.$message.error(data.msg)
             }
