@@ -79,8 +79,7 @@
 </template>
 
 <script>
-    import { categoryLabelMap } from '@/const'
-import { format } from 'util'
+    import { categoryLabelMap, categoryOptions } from '@/const'
     export default {
         data() {
             return {
@@ -96,11 +95,7 @@ import { format } from 'util'
                     agentMobile: '',
                     category: '-1',
                 },
-                categoryOptions: [
-                    { label: '空号检测', value: 0 },
-                    { label: '实时检测', value: 1 },
-                    { label: '国际检测', value: 2 },
-                ],
+                categoryOptions,
                 agentOemTableData: [],
                 pageIndex: 1,
                 pageSize: 10,

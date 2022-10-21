@@ -26,7 +26,7 @@
             <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="dayInt" label="日期" align="center">
+                <el-table-column min-width="120" prop="dayInt" label="日期" align="center">
                 </el-table-column>
                 <el-table-column v-if="isAdmin" min-width="150" prop="companyName" label="代理商名称" align="center">
                 </el-table-column>

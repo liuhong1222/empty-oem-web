@@ -133,8 +133,8 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="单价：" prop="directCommonWarningsNumber">
-                    <el-input class="small-width-input" disabled v-model="dataForm.directCommonWarningsNumber" placeholder="单价"></el-input>
+                <el-form-item label="单价：" prop="directCommonPrice">
+                    <el-input class="small-width-input" disabled v-model="dataForm.directCommonPrice" placeholder="单价"></el-input>
                     <span>元/条</span>
                 </el-form-item>
                 <el-form-item label="预警条数：" prop="directCommonWarningsNumber">

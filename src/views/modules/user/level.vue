@@ -10,7 +10,7 @@
                 </el-table-column>
                 <el-table-column type="levelType" align="center" label="产品代理类型">
                     <template slot-scope="{ row }">
-                        <span>{{ levelTypeMap[row.levelType] }}</span>
+                        <span>{{ categoryLabelMap[row.levelType] }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="level" label=" 代理商等级" align="center">
@@ -36,17 +36,14 @@
 
 <script>
     import AddGradeUpdate from './level-add-grade-update'
+    import { categoryLabelMap } from '@/const'
     export default {
         data() {
             return {
+                categoryLabelMap,
                 gradeVisible: false,
                 oemTableData: [],
                 dataListLoading: false,
-                levelTypeMap: {
-                    '0': '空号检测',
-                    '1': '实时检测',
-                    '2': '国际检测',
-                },
             }
         },
         components: {

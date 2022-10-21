@@ -12,9 +12,13 @@
                 <el-form-item label="产品名称：">
                     <el-select v-model="searchData.category" placeholder="产品名称">
                         <el-option label="全部" value="-1"></el-option>
-                        <el-option label="空号检测" value="0"></el-option>
-                        <el-option label="实时检测" value="1"></el-option>
-                        <el-option label="国际检测" value="2"></el-option>
+                        <el-option
+                          v-for="item in categoryOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        >
+                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -78,14 +82,12 @@
 <script>
 import MealDetailDialog from './meal-detail-dialog.vue'
 import MealAddOrUpdate from './meal-add-or-update.vue'
+import { categoryOptions, categoryLabelMap } from '@/const'
 export default {
   data () {
     return {
-      categoryLabelMap: {
-        '0': '空号检测',
-        '1': '实时检测',
-        '2': '国际检测',
-      },
+      categoryLabelMap,
+      categoryOptions,
       isAdmin: false,
       searchData: {
         category: '-1',

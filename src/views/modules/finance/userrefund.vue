@@ -67,14 +67,11 @@
 </template>
 
 <script>
+    import { categoryLabelMap } from '@/const'
     export default {
         data() {
             return {
-                categoryLabelMap: {
-                    '0': '空号检测',
-                    '1': '实时检测',
-                    '2': '国际检测',
-                },
+                categoryLabelMap,
                 dataListLoading: false,
                 disabled: false,
                 disableAgent: true,
