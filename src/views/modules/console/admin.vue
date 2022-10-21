@@ -37,46 +37,48 @@
                     </el-table>
                 </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <h2>
-                        代理商空号检测统计
-                        <span>当月</span>
-                    </h2>
+                    <div class="test-statistic-header">
+                        <div>
+                            <span>代理商检测统计</span>
+                            <span>当月</span>
+                        </div>
+                        <el-select style="width: 150px;" v-model="testStatisticCategory" size="small" placeholder="请选择产品">
+                            <el-option
+                            v-for="item in categoryOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
                     <ul class="cf customerList">
-                        <li v-for="(item,index) in emptyCheckStatic" :key="index">
+                        <li v-for="(item,index) in testStatisticConfig" :key="index">
                             <p>{{ item.title }}</p>
                             <p>{{ adminInfo[item.field] }}</p>
                         </li>
                     </ul>
                 </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <h2>
-                        代理商实时检测统计
-                        <span>当月</span>
-                    </h2>
-                    <ul class="cf customerList">
-                        <li v-for="(item,index) in realCheckStatic" :key="index">
-                            <p>{{ item.title }}</p>
-                            <p>{{ adminInfo[item.field] }}</p>
-                        </li>
-                    </ul>
-                </div>
-            </el-col>
-            <el-col :span="8">
-                <div class="grid-content bg-purple">
-                    <h2>
-                        代理商国际号码检测统计
-                        <span>当月</span>
-                    </h2>
-                    <ul class="cf customerList">
-                        <li v-for="(item,index) in internationalCheckStatic" :key="index">
-                            <p>{{ item.title }}</p>
-                            <p>{{ adminInfo[item.field] }}</p>
-                        </li>
-                    </ul>
+                    <div class="test-statistic-header">
+                        <div>
+                            <span>代理商消耗趋势</span>
+                        </div>
+                        <el-select style="width: 150px;" v-model="trendCategory" size="small" placeholder="请选择产品">
+                            <el-option
+                            v-for="item in categoryOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="trend-chart">
+                        <e-chart style="height:260px; width: 100%;" :chartData="trendChartConfig" />
+                    </div>
                 </div>
             </el-col>
         </el-row>
@@ -112,9 +114,11 @@
     </div>
 </template>
 <script>
+    import EChart from '@/components/chart/index.vue'
     import reBindPhone from './re-bind-phone'
     import UpdatePassword from '../../main-navbar-update-password'
     import { isEmail, isMobile } from '@/utils/validate'
+    import { categoryOptions, categoryLabelMap } from '@/const'
     export default {
         data() {
             var validateEmail = (rule, value, callback) => {
@@ -124,12 +128,8 @@
                     callback()
                 }
             }
-            const categoryLabelMap = {
-                '0': '空号检测',
-                '1': '实时检测',
-                '2': '国际检测',
-            }
             return {
+                categoryOptions,
                 categoryLabelMap,
                 addEmailVisible: false,
                 reEmailVisible: false,
@@ -181,18 +181,67 @@
                 adminInfo: {}, // 管理员首页基本信息
                 emailAddLoading: false,
                 emailEditLoading: false,
+                testStatisticData: {},
+                testStatisticConfig: [
+                    { title: '代理商数量', field: 'agentNums' },
+                    { title: '充值总金额（元）', field: 'rechargeSum' },
+                    { title: '消耗总条数（条）', field: 'consume' },
+                    { title: '充值总条数（条）', field: 'rechargeNumberSum' }
+                ],
+                testStatisticCategory: 0,
+                trendCategory: 0,
+                trendChartConfig: {
+                    xData: [],
+                    series: [],
+                    otherOptions: {}
+                },
+
             }
         },
         activated() {
             this.oemRegRecode(),
             this.getAdminDeskInfo(),
             this.updatePwd()
+            this.getChartData()
         },
         components: {
             reBindPhone,
-            UpdatePassword
+            UpdatePassword,
+            EChart
         },
         methods: {
+            getChartData() {
+                // this.$http({
+                //     url: this.$http.adornUrl(`agent/desk/getAdminDeskInfo?token=${this.$cookie.get('token')}&category=${this.testStatisticCategory}`),
+                //     method: 'post',
+                // }).then(({ data }) => {
+                //     if (data && data.code === 0) {
+                //     } else {
+                //         this.$message.error(data.msg)
+                //     }
+                // })
+                this.trendChartConfig = {
+                    xData: ['xx', 'zz'],
+                    series: [{
+                        name: '消耗总条数',
+                        type: 'line',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        data: [123,44]
+                    }],
+                    otherOptions: {
+                        grid: {
+                            bottom: 20,
+                            right: 20,
+                            top: 24,
+                        }
+                    }
+                }
+            },
             getRowClass({ row, column, rowIndex, columnIndex }) {
                 if (rowIndex == 0) {
                     return 'background-color: #f8f8f8;color:#666;'
@@ -240,7 +289,7 @@
             // 管理员基本信息
             getAdminDeskInfo() {
                 this.$http({
-                    url: this.$http.adornUrl(`agent/desk/getAdminDeskInfo?token=${this.$cookie.get('token')}`),
+                    url: this.$http.adornUrl(`agent/desk/getAdminDeskInfo?token=${this.$cookie.get('token')}&category=${this.testStatisticCategory}`),
                     method: 'post',
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
@@ -325,6 +374,36 @@
     }
 
 </script>
+<style lang="scss" scoped>
+.test-statistic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    & > div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        & > span:nth-child(1) {
+            font-size: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+        & > span:nth-child(2) {
+            display: inline-block;
+            width: 56px;
+            height: 22px;
+            line-height: 20px;
+            border-radius: 11px;
+            border: 1px solid #1890FF;
+            color: #1890FF;
+            font-size: 12px;
+            text-align: center;
+            margin-left: 8px;
+        }
+    }
+}
+</style>
 <style lang="scss">
 .recharge-record-head {
     display: flex;

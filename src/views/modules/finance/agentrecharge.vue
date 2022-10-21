@@ -53,6 +53,11 @@
                 </el-table-column>
                 <el-table-column prop="orderNo" width="150" label=" 订单编号" align="center">
                 </el-table-column>
+                <el-table-column prop="category" label="产品名称">
+                    <template slot-scope="scope">
+                        <span>{{ categoryLabelMap[scope.row.category] || '' }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="levelName" width="150" label="代理等级" align="center">
                 </el-table-column>
                 <el-table-column prop="price" width="150" label="单价（元/条）" align="center">
@@ -74,9 +79,12 @@
 </template>
 
 <script>
+    import { categoryLabelMap } from '@/const'
+import { format } from 'util'
     export default {
         data() {
             return {
+                categoryLabelMap,
                 disabled: false,
                 dataListLoading: false,
                 money: '',
@@ -117,6 +125,11 @@
             }
         },
         activated() {
+            this.OEMSearchData = {
+                ...this.OEMSearchData,
+                dateTime: [this.$moment().startOf('month').format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')]
+            }
+            console.log(this.OEMSearchData)
             this.agentRechargeList(1)
             this.getAgentList()
         },

@@ -38,47 +38,31 @@
                     <tr class="discribe-row">
                         <td class="discribe-col title">营业执照有效期结束时间</td>
                         <td class="discribe-col">{{ detailInfo.businessLicenseExpireEndTime }}</td>
-                        <td class="discribe-col title">空号检测等级名称</td>
-                        <td class="discribe-col">{{ detailInfo.agentLevel }}</td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">空号检测单价</td>
-                        <td class="discribe-col">{{ detailInfo.price }}（元/条）</td>
-                        <td class="discribe-col title">空号检测预警条数</td>
-                        <td class="discribe-col">{{ detailInfo.warningsNumber }}</td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">实时检测等级名称</td>
-                        <td class="discribe-col">{{ detailInfo.realLevel }}</td>
-                        <td class="discribe-col title">实时检测单价</td>
-                        <td class="discribe-col">{{ detailInfo.realPrice }}（元/条）</td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">实时检测预警条数</td>
-                        <td class="discribe-col">{{ detailInfo.realWarningsNumber }}</td>
-                        <td class="discribe-col title">国际检测等级名称</td>
-                        <td class="discribe-col">{{ detailInfo.internationalLevel }}</td>
-                    </tr>
-                    <tr class="discribe-row">
-                        <td class="discribe-col title">国际检测单价</td>
-                        <td class="discribe-col">{{ detailInfo.internationalPrice }}（元/条）</td>
-                        <td class="discribe-col title">国际检测预警条数</td>
-                        <td class="discribe-col">{{ detailInfo.internationalWarningsNumber }}</td>
-                    </tr>
-                    <tr class="discribe-row">
                         <td class="discribe-col title">状态</td>
                         <td class="discribe-col">{{ detailInfo.state ? '启用' : '禁用' }}</td>
+                    </tr>
+                    <tr class="discribe-row">
                         <td class="discribe-col title">备注</td>
                         <td class="discribe-col">
                             <div>{{ detailInfo.remark }}</div>
                         </td>
-                    </tr>
-                    <tr class="discribe-row">
                         <td class="discribe-col title">创建时间</td>
-                        <td class="discribe-col span-3" colspan="3">{{ detailInfo.createTime }}</td>
+                        <td class="discribe-col">{{ detailInfo.createTime }}</td>
                     </tr>
                 </tbody>
             </table>
+            <el-table
+                :data="tableData"
+                :border="true"
+                size="small"
+                style="width: 100%;margin-top: 12px;"
+                :header-cell-style="getRowClass"
+            >
+                <el-table-column min-width="120" prop="name" label="产品名称" align="center"></el-table-column>
+                <el-table-column min-width="120" prop="level" label="代理等级名称" align="center"></el-table-column>
+                <el-table-column min-width="120" prop="price" label="单价（元/条）" align="center"></el-table-column>
+                <el-table-column min-width="120" prop="warningsNumber" label="预警条数" align="center"></el-table-column>
+            </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -87,41 +71,18 @@
     </div>
 </template>
 <script>
-    import imgUrl from '@/utils/imgUrl'
     export default {
         data() {
             return {
                 dialogVisible: false,
                 labelPosition: 'right',
-                seeImageUrl: '',
                 detailInfo: {},
-                dataForm: {
-                    id: 0,
-                    // agentNumber: '',
-                    businNumber: '',
-                    companyName: '',
-                    bussicAdress: '',
-                    lawName: '',
-                    businNum: '',
-                    busindate1: '',
-                    busindate2: '',
-                    username: '',
-                    mobile: '',
-                    email: '',
-                    work: '',
-                    loginAcc: '',
-                    pwd: '',
-                    agencylevel: '',  //级别
-                    price: '',
-                    allowCounts: '',
-                    shortName: ''
-                },
+                tableData: [],
             }
         },
         methods: {
             showInit(id) {
                 this.dialogVisible = true;
-                this.dataForm.id = id
                 this.$http({
                     url: this.$http.adornUrl(`agent/agentInfo/detail?token=${this.$cookie.get('token')}&agentId=${id}`),
                     method: 'get',
@@ -129,27 +90,26 @@
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
                         this.detailInfo = data.data || {}
-                        this.seeImageUrl = imgUrl.imgUrl + data.data.licenseUrl
-                        // this.dataForm.agentNumber = data.data.agentNo
-                        this.dataForm.businNumber = data.data.mchId
-                        this.dataForm.companyName = data.data.companyName
-                        this.dataForm.shortName = data.data.shortName
-                        this.dataForm.bussicAdress = data.data.address
-                        this.dataForm.lawName = data.data.legalPerson
-                        this.dataForm.businNum = data.data.licenseNo
-                        this.dataForm.busindate1 = data.data.effectDate
-                        this.dataForm.busindate2 = data.data.expireDate
-                        this.dataForm.username = data.data.contactName
-                        this.dataForm.mobile = data.data.mobile
-                        this.dataForm.email = data.data.email
-                        this.dataForm.work = data.data.position
-                        this.dataForm.loginAcc = data.data.mobile
-                        this.dataForm.agencylevel = data.data.levelId
-                        this.dataForm.price = data.data.price
-                        this.dataForm.allowCounts = data.data.emptyWarnNumber
+                        this.dealTableData(data.data || {})
                     }
                 })
+            },
+            dealTableData(data) {
+                this.tableData = [
+                    { name: '空号检测', level: data.agentLevel, price: data.price, warningsNumber: data.warningsNumber, },
+                    { name: '实时检测', level: data.realLevel, price: data.realPrice, warningsNumber: data.realWarningsNumber, },
+                    { name: '国际检测', level: data.internationalLevel, price: data.internationalPrice, warningsNumber: data.internationalWarningsNumber, },
+                    { name: '定向通用检测', level: data.directCommonLevel, price: data.directCommonPrice, warningsNumber: data.directCommonWarningsNumber, },
+                    { name: 'line定向检测', level: data.lineDirectLevel, price: data.lineDirectPrice, warningsNumber: data.lineDirectWarningsNumber, },
+                ]
+            },
+            getRowClass({ row, column, rowIndex, columnIndex }) {
+            if (rowIndex == 0) {
+                return "background-color: #f8f8f8;color:#666;";
+            } else {
+                return "";
             }
+            },
         }
     }
 

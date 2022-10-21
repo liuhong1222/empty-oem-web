@@ -2,11 +2,14 @@
     <el-dialog :title="!dataForm.id ? '新增代理商等级' : '修改代理商等级'" width="600px" :close-on-click-modal="false" :visible.sync="levelvisible">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="产品代理类型：" prop="levelType">
-                <el-radio-group v-model="dataForm.levelType">
-                    <el-radio :label="0">空号检测</el-radio>
-                    <el-radio :label="1">实时检测</el-radio>
-                    <el-radio :label="2">国际检测</el-radio>
-                </el-radio-group>
+                <el-select v-model="dataForm.levelType" placeholder="请选择产品代理类型">
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="代理商等级：" prop="level">
                 <el-input v-model="dataForm.level" placeholder="请输入代理商等级"></el-input>
@@ -39,6 +42,7 @@
 </template>
 
 <script>
+    import { categoryOptions } from '@/const'
     export default {
         data() {
             const validateContainDot = (rule, value, callback) => {
@@ -49,6 +53,7 @@
                 }
             }
             return {
+                categoryOptions,
                 levelvisible: false,
                 labelPosition: 'right',
                 dataForm: {

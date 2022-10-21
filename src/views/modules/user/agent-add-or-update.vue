@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="!dataForm.id ? '新增代理商' : '修改代理商'" width="800px" :close-on-click-modal="false" :visible.sync="visible" :before-close="closeDialog"
+    <el-dialog :title="!dataForm.id ? '新增代理商' : '修改代理商'" width="1000px" :close-on-click-modal="false" :visible.sync="visible" :before-close="closeDialog"
         v-loading.fullscreen.lock="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.4)">
         <el-steps :active="currentStep" align-center finish-status="success" class="steps-wrapper">
             <el-step title="基本信息"></el-step>
@@ -7,6 +7,8 @@
             <el-step title="空号检测等级"></el-step>
             <el-step title="实时检测等级"></el-step>
             <el-step title="国际检测等级"></el-step>
+            <el-step title="定向通用检测等级"></el-step>
+            <el-step title="line定向检测等级"></el-step>
         </el-steps>
         <el-form class="agent-edit-form demo-ruleForm" :model="dataForm" :rules="datarules" ref="dataForm" label-width="150px" :label-position="labelPosition">
             <div v-show="currentStep === 0">
@@ -124,11 +126,59 @@
                     <span>条</span>
                 </el-form-item>
             </div>
+            <div v-show="currentStep === 5">
+                <el-form-item label="定向通用检测等级：" prop="directCommonLevel">
+                    <el-select style="width: 100%;" v-model="dataForm.directCommonLevel" placeholder="请选择定向通用检测等级" @change="changeLevel('directCommonLevelArr', 'directCommonLevel')">
+                        <el-option :value="item.level + ''" :label="item.level" v-for="(item,index) in directCommonLevelArr" :key="index">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="单价：" prop="directCommonWarningsNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.directCommonWarningsNumber" placeholder="单价"></el-input>
+                    <span>元/条</span>
+                </el-form-item>
+                <el-form-item label="预警条数：" prop="directCommonWarningsNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.directCommonWarningsNumber" placeholder="预警条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+                <el-form-item label="最小充值金额：" prop="directCommonMinPaymentAmount">
+                    <el-input class="small-width-input" disabled v-model="dataForm.directCommonMinPaymentAmount" placeholder="最小充值金额"></el-input>
+                    <span>元</span>
+                </el-form-item>
+                <el-form-item label="最小充值条数：" prop="directCommonMinRechargeNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.directCommonMinRechargeNumber" placeholder="最小充值条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+            </div>
+            <div v-show="currentStep === 6">
+                <el-form-item label="line定向检测等级：" prop="lineDirectLevel">
+                    <el-select style="width: 100%;" v-model="dataForm.lineDirectLevel" placeholder="请选择line定向检测等级" @change="changeLevel('lineDirectLevelArr', 'lineDirectLevel')">
+                        <el-option :value="item.level + ''" :label="item.level" v-for="(item,index) in lineDirectLevelArr" :key="index">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="单价：" prop="lineDirectPrice">
+                    <el-input class="small-width-input" disabled v-model="dataForm.lineDirectPrice" placeholder="单价"></el-input>
+                    <span>元/条</span>
+                </el-form-item>
+                <el-form-item label="预警条数：" prop="lineDirectWarningsNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.lineDirectWarningsNumber" placeholder="预警条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+                <el-form-item label="最小充值金额：" prop="lineDirectMinPaymentAmount">
+                    <el-input class="small-width-input" disabled v-model="dataForm.lineDirectMinPaymentAmount" placeholder="最小充值金额"></el-input>
+                    <span>元</span>
+                </el-form-item>
+                <el-form-item label="最小充值条数：" prop="lineDirectMinRechargeNumber">
+                    <el-input class="small-width-input" disabled v-model="dataForm.lineDirectMinRechargeNumber" placeholder="最小充值条数"></el-input>
+                    <span>条</span>
+                </el-form-item>
+            </div>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button v-if="currentStep === 0" @click="clearAgent()">取消</el-button>
             <el-button v-else @click="handleStepChange(false)">上一步</el-button>
-            <el-button v-if="currentStep !== 4" type="primary" @click="handleStepChange(true)">下一步</el-button>
+            <el-button v-if="currentStep !== 6" type="primary" @click="handleStepChange(true)">下一步</el-button>
             <el-button v-else type="primary" :loading="submitLoading" @click="dataFormSubmit()">确定</el-button>
         </span>
     </el-dialog>
@@ -157,6 +207,8 @@
                 spaceLevelArr: [],
                 realLevelArr: [],
                 internationalLevelArr: [],
+                directCommonLevelArr: [],
+                lineDirectLevelArr: [],
                 dataForm: {
                     id: 0,
                     companyName: '',
@@ -184,6 +236,16 @@
                     internationalWarningsNumber: '',
                     internationalMinPaymentAmount: '',
                     internationalMinRechargeNumber: '',
+                    directCommonLevel: '',
+                    directCommonPrice: '',
+                    directCommonWarningsNumber: '',
+                    directCommonMinPaymentAmount: '',
+                    directCommonMinRechargeNumber: '',
+                    lineDirectLevel: '',
+                    lineDirectPrice: '',
+                    lineDirectWarningsNumber: '',
+                    lineDirectMinPaymentAmount: '',
+                    lineDirectMinRechargeNumber: '',
                     shortName: '',
                     priseimageUrl: ''
                 },
@@ -249,6 +311,8 @@
                 this.getSpaceLevelList()
                 this.getRealLevelList()
                 this.getInternationalLevelList()
+                this.getDirectCommonLevelList()
+                this.getLineDirectLevelList()
                 this.$nextTick(() => {
                     this.$refs['dataForm'].resetFields()
                 })
@@ -296,6 +360,18 @@
                         this.dataForm.internationalWarningsNumber = data.data.internationalWarningsNumber
                         this.dataForm.internationalMinPaymentAmount = data.data.internationalMinPaymentAmount
                         this.dataForm.internationalMinRechargeNumber = data.data.internationalMinRechargeNumber
+
+                        this.dataForm.directCommonLevel = data.data.directCommonLevel ? data.data.directCommonLevel + '' : undefined
+                        this.dataForm.directCommonPrice = data.data.directCommonPrice
+                        this.dataForm.directCommonWarningsNumber = data.data.directCommonWarningsNumber
+                        this.dataForm.directCommonMinPaymentAmount = data.data.directCommonMinPaymentAmount
+                        this.dataForm.directCommonMinRechargeNumber = data.data.directCommonMinRechargeNumber
+
+                        this.dataForm.lineDirectLevel = data.data.lineDirectLevel ? data.data.lineDirectLevel + '' : undefined
+                        this.dataForm.lineDirectPrice = data.data.lineDirectPrice
+                        this.dataForm.lineDirectWarningsNumber = data.data.lineDirectWarningsNumber
+                        this.dataForm.lineDirectMinPaymentAmount = data.data.lineDirectMinPaymentAmount
+                        this.dataForm.lineDirectMinRechargeNumber = data.data.lineDirectMinRechargeNumber
                     }
                 })
             },
@@ -338,6 +414,32 @@
                     }
                 })
             },
+            getLineDirectLevelList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=5`),
+                    method: 'get',
+                    param: this.$http.adornParams({})
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.lineDirectLevelArr = data.data || []
+                    } else {
+                        this.lineDirectLevelArr = []
+                    }
+                })
+            },
+            getDirectCommonLevelList() {
+                this.$http({
+                    url: this.$http.adornUrl(`agent/level/list?token=${this.$cookie.get('token')}&levelType=4`),
+                    method: 'get',
+                    param: this.$http.adornParams({})
+                }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.directCommonLevelArr = data.data || []
+                    } else {
+                        this.directCommonLevelArr = []
+                    }
+                })
+            },
             dataFormSubmit() {
                 this.$refs['dataForm'].validate((valid) => {
                     if (valid) {
@@ -373,6 +475,16 @@
                                 'internationalWarningsNumber': this.dataForm.internationalWarningsNumber,
                                 'internationalMinPaymentAmount': this.dataForm.internationalMinPaymentAmount,
                                 'internationalMinRechargeNumber': this.dataForm.internationalMinRechargeNumber,
+                                'directCommonLevel': this.dataForm.directCommonLevel,
+                                'directCommonPrice': this.dataForm.directCommonPrice,
+                                'directCommonWarningsNumber': this.dataForm.directCommonWarningsNumber,
+                                'directCommonMinPaymentAmount': this.dataForm.directCommonMinPaymentAmount,
+                                'directCommonMinRechargeNumber': this.dataForm.directCommonMinRechargeNumber,
+                                'lineDirectLevel': this.dataForm.lineDirectLevel,
+                                'lineDirectPrice': this.dataForm.lineDirectPrice,
+                                'lineDirectWarningsNumber': this.dataForm.lineDirectWarningsNumber,
+                                'lineDirectMinPaymentAmount': this.dataForm.lineDirectMinPaymentAmount,
+                                'lineDirectMinRechargeNumber': this.dataForm.lineDirectMinRechargeNumber,
                             })
                         }).then(({ data }) => {
                             this.submitLoading = false
@@ -406,16 +518,18 @@
                 this.dataForm.busindate2 = ""
             },
             beforeAvatarUpload(file) {
-                this.loading = true
                 const isJPG = (file.type === 'image/jpeg') || (file.type == 'image/png') || (file.type == 'image/jpg');
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isJPG) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                    this.$message.error('上传头像图片只能是 JPG\PNG\JPEG 格式!');
+                    return false
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
+                    return false
                 }
-                return isJPG && isLt2M;
+                this.loading = true
+                return true;
             },
             perisehandleAvatarSuccess(res, file) {
                 if (res.code == 0) {
@@ -471,6 +585,22 @@
                             this.dataForm.internationalWarningsNumber = warningsNumber
                             this.dataForm.internationalMinPaymentAmount = minPaymentAmount
                             this.dataForm.internationalMinRechargeNumber = minRechargeNumber
+                            break;
+                        }
+                        case 'directCommonLevel': {
+                            // 定向通用检测
+                            this.dataForm.directCommonPrice = price
+                            this.dataForm.directCommonWarningsNumber = warningsNumber
+                            this.dataForm.directCommonMinPaymentAmount = minPaymentAmount
+                            this.dataForm.directCommonMinRechargeNumber = minRechargeNumber
+                            break;
+                        }
+                        case 'lineDirectLevel': {
+                            // line定向检测
+                            this.dataForm.lineDirectPrice = price
+                            this.dataForm.lineDirectWarningsNumber = warningsNumber
+                            this.dataForm.lineDirectMinPaymentAmount = minPaymentAmount
+                            this.dataForm.lineDirectMinRechargeNumber = minRechargeNumber
                             break;
                         }
                         default:

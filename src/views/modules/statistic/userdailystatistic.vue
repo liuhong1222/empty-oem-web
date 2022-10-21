@@ -23,7 +23,7 @@
             </el-form>
         </div>
         <div class="agentTable">
-            <el-table :data="tableData" style="width: 100%" :cell-style="getColumnStyle" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
+            <el-table :data="tableData" style="width: 100%" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
                 <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
                 </el-table-column>
                 <el-table-column width="150" prop="dayInt" label="日期" align="center">
@@ -34,133 +34,31 @@
                 </el-table-column>
                 <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                 </el-table-column>
-                <template v-if="isAdmin">
-                    <el-table-column label="空号检测" align="center">
-                        <el-table-column width="120" prop="emptyTotal" label="消耗条数" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.emptyTotal || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="realNumber" label="实号" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.realNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="silentNumber" label="沉默号" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.silentNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="emptyNumber" label="空号" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.emptyNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="riskNumber" label="风险号" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.riskNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table-column>
-                    <el-table-column label="实时检测" align="center">
-                        <el-table-column width="120" prop="realtimeTotal" label="消耗条数" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.realtimeTotal || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="normalNumber" label="正常号" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.normalNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="realtimeEmptyNumber" label="空号" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.realtimeEmptyNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="oncallNumber" label="通话中" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.oncallNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="notOnlineNumber" label="不在网" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.notOnlineNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="shutdownNumber" label="关机" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.shutdownNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="likeShutdownNumber" label="疑似关机" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.likeShutdownNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="tingjiNumber" label="停机" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.tingjiNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="mnpNumber" label="携号转网" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.mnpNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="moberrNumber" label="号码错误" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.moberrNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="unknownNumber" label="未知" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.unknownNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table-column>
-                    <el-table-column label="国际检测" align="center">
-                        <el-table-column width="120" prop="internationalTotal" label="消耗条数" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.internationalTotal || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="activeNumber" label="已激活" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.activeNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="120" prop="noRegisterNumber" label="未注册" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.noRegisterNumber || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table-column>
-                </template>
-                <template v-else>
-                    <el-table-column label="空号检测" align="center">
-                        <el-table-column min-width="120" prop="emptyTotal" label="消耗条数" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.emptyTotal || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table-column>
-                    <el-table-column label="实时检测" align="center">
-                        <el-table-column min-width="120" prop="realtimeTotal" label="消耗条数" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.realtimeTotal || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table-column>
-                    <el-table-column label="国际检测" align="center">
-                        <el-table-column min-width="120" prop="internationalTotal" label="消耗条数" align="center">
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.internationalTotal || 0 }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table-column>
-                </template>
-                
+                <el-table-column label="空号检测消耗条数" min-width="120" prop="emptyTotal" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.emptyTotal || 0 }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="实时检测消耗条数" min-width="120" prop="realtimeTotal" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.realtimeTotal || 0 }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="国际检测消耗条数" min-width="120" prop="internationalTotal" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.internationalTotal || 0 }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="定向通用检测消耗条数" min-width="150" prop="directCommonTotal" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.directCommonTotal || 0 }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="line定向检测消耗条数" min-width="150" prop="lineDirectTotal" align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.lineDirectTotal || 0 }}</span>
+                    </template>
+                </el-table-column>
             </el-table>
         </div>
         <div class="agentPage">
@@ -205,29 +103,6 @@
             this.isAdmin && this.getAgentList()
         },
         methods: {
-            getColumnStyle({ row, column, rowIndex, columnIndex }) {
-                let emptyColIndexArr = []
-                let realColIndexArr = []
-                let internationalColIndexArr = []
-                if (Boolean(sessionStorage.getItem("msjRoleName") === "1")) {
-                    emptyColIndexArr = [5, 6, 7, 8, 9]
-                    realColIndexArr = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-                    internationalColIndexArr = [21, 22, 23]
-                } else {
-                    emptyColIndexArr = [4]
-                    realColIndexArr = [5]
-                    internationalColIndexArr = [6]
-                }
-                if (emptyColIndexArr.includes(columnIndex)) {
-                    return 'background: rgba(62, 142, 247, 0.1);'
-                }
-                if (realColIndexArr.includes(columnIndex)) {
-                    return 'background: rgba(113, 64, 255, 0.1);'
-                }
-                if (internationalColIndexArr.includes(columnIndex)) {
-                    return 'background: #F8E6EB;'
-                }
-	   	    },
             getAgentList() {
                 this.$http({
                     url: this.$http.adornUrl(`agent/agentInfo/listAgent?token=${this.$cookie.get('token')}`),

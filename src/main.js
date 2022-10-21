@@ -12,6 +12,8 @@ import { isAuth } from '@/utils'
 // import VueRouter from 'vue-router'
 import VueClipboard from 'vue-clipboard2'
 import JSONBigNumber from 'json-bigint'
+import moment from 'moment'
+moment.locale('zh-cn')
 
 window.jquery = $
 Vue.use(VueCookie)
@@ -29,6 +31,7 @@ Vue.prototype.isAuth = isAuth     // 权限方法
 Vue.prototype.$json = JSONBigNumber     // 超精度数据 JSON 处理
 // Vue.prototype.$imgPreStr = '/map_engine_file/'     // 资源请求前缀
 Vue.prototype.$imgPreStr = window.SITE_CONFIG.imgUrl     // 资源请求前缀
+Vue.prototype.$moment = moment
 
 /* eslint-disable no-new */
 new Vue({

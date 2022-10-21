@@ -19,3 +19,18 @@
     font-size: 12px;
   }
 </style>
+<style lang="scss">
+.tow-row-col {
+  > div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    > span:first-child {
+      display: inline-block;
+      width: 70px;
+      margin-right: 8px;
+      text-align: right;
+    }
+  }
+}
+</style>

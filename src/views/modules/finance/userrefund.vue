@@ -107,6 +107,10 @@
             }
             this.isAdmin = Boolean(sessionStorage.getItem('msjRoleName') == '1')
             this.isAdmin && this.getAgentList()
+            this.refundSearchData = {
+                ...this.refundSearchData,
+                dateTime: [this.$moment().startOf('month').format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')]
+            }
             this.refundList(1)
         },
         methods: {

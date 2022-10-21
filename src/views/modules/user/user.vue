@@ -63,6 +63,7 @@
             <el-table
                 :data="userTableData"
                 style="width: 100%"
+                :border="true" 
                 v-loading="dataListLoading"
                 :header-cell-style="getRowClass"
                 :row-style="dealRowClass"
@@ -96,13 +97,6 @@
                     label="序号"
                 ></el-table-column>
                 <el-table-column prop="phone" fixed width="150" label="手机号码" align="center"></el-table-column>
-                <!-- <el-table-column prop="customerType" label="客户类型" width="80" align="center"></el-table-column> -->
-                <!-- <el-table-column prop="name" label="客户名称" width="150" align="center"></el-table-column> -->
-                <!-- <el-table-column v-if="isAdmin" prop="officialWeb" label="官网类型" width="100" align="center">
-                    <template slot-scope="{ row }">
-                        <span :style="{ color: row.officialWeb === 1 ? 'rgba(62, 142, 247, 1)' : 'rgba(113, 64, 255, 1)', fontWeight: '600' }">{{ officialWebTypeMap[row.officialWeb] || '' }}</span>
-                    </template>
-                </el-table-column> -->
                 <el-table-column
                     prop="companyName"
                     label="代理商名称"
@@ -111,23 +105,75 @@
                     v-if="disableAgentName"
                 ></el-table-column>
                 <el-table-column prop="createTime" label="注册时间" min-width="100" align="center"></el-table-column>
-                <!-- <el-table-column prop="emptyRechargeMoney" min-width="100" label="空号充值总计（元）" align="center"></el-table-column>
-                <el-table-column prop="emptyRechargeNum" min-width="100" label="空号充值总条数" align="center"></el-table-column>
-                <el-table-column prop="emptyCount" min-width="100" label="空号剩余条数" align="center"></el-table-column>
-                <el-table-column prop="realtimeRechargeMoney" min-width="100" label="实时充值总计（元）" align="center"></el-table-column>
-                <el-table-column prop="realtimeRechargeNum" min-width="100" label="实时充值总条数" align="center"></el-table-column>
-                <el-table-column prop="realtimeCount" min-width="100" label="实时剩余条数" align="center"></el-table-column> -->
-                <el-table-column label="空号检测" align="center">
-                    <el-table-column min-width="120" prop="emptyRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="emptyCount" label="剩余条数" align="center"></el-table-column>
+                <el-table-column label="空号检测" min-width="200" prop="empty" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.emptyRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.emptyCount }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column label="实时检测" align="center">
-                    <el-table-column min-width="120" prop="realtimeRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="realtimeCount" label="剩余条数" align="center"></el-table-column>
+                <el-table-column label="实时检测" min-width="200" prop="realTime" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.realTimeRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.realtimeCount }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column label="国际检测" align="center">
-                    <el-table-column min-width="120" prop="internationalRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="internationalCount" label="剩余条数" align="center"></el-table-column>
+                <el-table-column label="国际检测" min-width="200" prop="international" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.internationalRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.internationalCount }}</span>
+                            </div>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="定向通用检测" min-width="200" prop="directCommon" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.directCommonRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.directCommonCount }}</span>
+                            </div>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="line定向检测" min-width="200" prop="lineDirect" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.lineDirectRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.lineDirectCount }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" align="center" min-width="150">
                     <template slot-scope="scope">
@@ -206,6 +252,8 @@ export default {
         { label: '空号检测充值总条数', field: 'emptyRechargeNum', render: (val) => (val || '0') },
         { label: '实时检测充值总条数', field: 'realtimeRechargeNum', render: (val) => (val || '0') },
         { label: '国际检测充值总条数', field: 'internationalRechargeNum', render: (val) => (val || '0') },
+        { label: '定向通用检测充值总条数', field: 'directCommonRechargeNum', render: (val) => (val || '0') },
+        { label: 'line定向检测充值总条数', field: 'lineDirectRechargeNum', render: (val) => (val || '0') },
       ],
       disabled: false,
       seeVisible: false,

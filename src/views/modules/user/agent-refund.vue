@@ -5,11 +5,14 @@
                 <el-input v-model="dataForm.agentName" disabled placeholder="请输代理商名称"></el-input>
             </el-form-item>
             <el-form-item label="产品名称：" prop="category">
-                <el-radio-group v-model="dataForm.category">
-                    <el-radio :label="0">空号检测</el-radio>
-                    <el-radio :label="1">实时检测</el-radio>
-                    <el-radio :label="2">国际检测</el-radio>
-                </el-radio-group>
+                <el-select v-model="dataForm.category" placeholder="请选择产品名称">
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="剩余条数：" prop="remainNumberTotal">
                 <el-input style="width: 90%; margin-right: 8px;" v-model="dataForm.remainNumberTotal" disabled></el-input>
@@ -48,6 +51,7 @@
 </template>
 
 <script>
+    import { categoryOptions } from '@/const'
     export default {
         data() {
             const validateContainDot = (rule, value, callback) => {
@@ -60,6 +64,7 @@
                 }
             }
             return {
+                categoryOptions,
                 dialogVisible: false,
                 submitLoading: false,
                 labelPosition: 'right',
@@ -134,6 +139,8 @@
                     '0': [this.agentRefundInfo.emptyBalance || 0, this.agentRefundInfo.refundableEmpty || 0],
                     '1': [this.agentRefundInfo.realtimeBalance || 0, this.agentRefundInfo.refundableRealtime || 0],
                     '2': [this.agentRefundInfo.internationalBalance || 0, this.agentRefundInfo.refundableInternational || 0],
+                    '4': [this.agentRefundInfo.directCommonBalance || 0, this.agentRefundInfo.refundableDirectCommon || 0],
+                    '5': [this.agentRefundInfo.lineDirectBalance || 0, this.agentRefundInfo.refundableLineDirect || 0],
                 }
                 let resultValues = valuesMap[this.dataForm.category] || [0, 0]
                 this.dataForm.remainNumberTotal = resultValues[0]

@@ -38,7 +38,7 @@
             </el-form>
         </div>
         <div class="agentTable">
-            <el-table :data="agentTableData" :row-style="dealRowClass" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
+            <el-table :data="agentTableData" :border="true" :row-style="dealRowClass" style="width: 100%" v-loading="dataListLoading" :header-cell-style="getRowClass">
                 <el-table-column fixed type="expand">
                     <template slot-scope="props">
                         <ul class="table-expand-col">
@@ -63,43 +63,79 @@
                         <span>{{ stateMap[row.state] || '' }}</span>
                     </template>
                 </el-table-column>
-                <!-- <el-table-column prop="companyShortName" label="公司简称" width="150" align="center">
-                </el-table-column> -->
                 <el-table-column prop="createTime" label="创建时间" width="150" align="center">
                 </el-table-column>
                 <el-table-column prop="linkmanPhone" label="联系电话" width="120" align="center">
                 </el-table-column>
-                <!-- <el-table-column prop="agentLevel" label="空号检测等级" width="120" align="center">
+                <el-table-column label="空号检测" min-width="200" prop="empty" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.emptyRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.emptyBalance }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="emptyRechargeMoney" label="空号充值总计（元）" width="150" align="center">
+                <el-table-column label="实时检测" min-width="200" prop="realTime" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.realTimeRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.realTimeBalance }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="emptyRechargeNumber" label="空号充值总条数" width="120" align="center">
+                <el-table-column label="国际检测" min-width="200" prop="international" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.internationalRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.internationalBalance }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="emptyBalance" label="空号剩余条数" width="120" align="center">
+                <el-table-column label="定向通用检测" min-width="200" prop="directCommon" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.directCommonRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.directCommonBalance }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="warningsNumber" label="空号预警条数" width="120" align="center">
-                </el-table-column>
-                <el-table-column prop="realLevel" label="实时检测等级" width="120" align="center">
-                </el-table-column>
-                <el-table-column prop="realTimeRechargeMoney" label="实时充值总计（元）" width="150" align="center">
-                </el-table-column>
-                <el-table-column prop="realTimeRechargeNumber" label="实时充值总条数" width="120" align="center">
-                </el-table-column>
-                <el-table-column prop="realTimeBalance" label="实时剩余条数" width="120" align="center">
-                </el-table-column>
-                <el-table-column prop="realWarningsNumber" label="实时预警条数" width="120" align="center">
-                </el-table-column> -->
-                <el-table-column label="空号检测" align="center">
-                    <el-table-column min-width="120" prop="emptyRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="emptyBalance" label="剩余条数" align="center"></el-table-column>
-                </el-table-column>
-                <el-table-column label="实时检测" align="center">
-                    <el-table-column min-width="120" prop="realTimeRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="realTimeBalance" label="剩余条数" align="center"></el-table-column>
-                </el-table-column>
-                <el-table-column label="国际检测" align="center">
-                    <el-table-column min-width="120" prop="internationalRechargeMoney" label="充值总计（元）" align="center"></el-table-column>
-                    <el-table-column min-width="120" prop="internationalBalance" label="剩余条数" align="center"></el-table-column>
+                <el-table-column label="line定向检测" min-width="200" prop="lineDirect" align="center">
+                    <template slot-scope="{ row }">
+                        <div class="tow-row-col">
+                            <div>
+                                <span>充值总计(元)</span>
+                                <span>{{ row.lineDirectRechargeMoney }}</span>
+                            </div>
+                            <div>
+                                <span>剩余条数</span>
+                                <span>{{ row.lineDirectBalance }}</span>
+                            </div>
+                        </div>
+                    </template>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="165" align="center">
                     <template slot-scope="scope">
@@ -131,11 +167,14 @@
                     <el-input v-model="chdataForm.name" placeholder="请输入充值账号" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="产品名称：" prop="category">
-                    <el-radio-group v-model="chdataForm.category">
-                        <el-radio :label="0">空号检测</el-radio>
-                        <el-radio :label="1">实时检测</el-radio>
-                        <el-radio :label="2">国际检测</el-radio>
-                    </el-radio-group>
+                    <el-select v-model="chdataForm.category" placeholder="请选择产品名称">
+                        <el-option
+                        v-for="item in categoryOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="充值单价：" prop="price">
                     <el-input-number v-model="chdataForm.price" disabled :min="0"></el-input-number>
@@ -193,6 +232,7 @@
     import AgentRefund from './agent-refund.vue'
     import AgentUploadPackage from './agent-upload-package.vue'
     import SetAuthLevel from '@/components/set-auth-level/index.vue'
+    import { categoryOptions } from '@/const'
     export default {
         data() {
             var validateMoney = (rule, value, callback) => {
@@ -205,6 +245,7 @@
                 }
             }
             return {
+                categoryOptions,
                 tableExpandCols: [
                     { label: '公司简称', field: 'companyShortName' },
                     { label: '空号检测等级', field: 'agentLevel' },
@@ -216,6 +257,12 @@
                     { label: '国际检测等级', field: 'internationalLevel' },
                     { label: '国际检测充值总条数', field: 'internationalRechargeNumber', render: (val) => (val || '0') },
                     { label: '国际检测预警条数', field: 'internationalWarningsNumber', render: (val) => (val || '0') },
+                    { label: '定向通用检测等级', field: 'directCommonLevel' },
+                    { label: '定向通用检测充值总条数', field: 'directCommonRechargeNum', render: (val) => (val || '0') },
+                    { label: '定向通用检测预警条数', field: 'directCommonWarningsNumber', render: (val) => (val || '0') },
+                    { label: 'line定向检测等级', field: 'lineDirectLevel' },
+                    { label: 'line定向检测充值总条数', field: 'lineDirectRechargeNum', render: (val) => (val || '0') },
+                    { label: 'line定向检测预警条数', field: 'lineDirectWarningsNumber', render: (val) => (val || '0') },
                 ],
                 account: '',
                 cdAgentId: '',
@@ -303,7 +350,9 @@
                 let priceFieldMap = {
                     '0': 'emptyPrice',
                     '1': 'realPrice',
-                    '2': 'internationalPrice'
+                    '2': 'internationalPrice',
+                    '4': 'directCommonPrice',
+                    '5': 'lineDirectPrice',
                 }
                 this.chdataForm.price = this.chdataForm[priceFieldMap[category]] || 0
             },
@@ -448,7 +497,7 @@
                 })
             },
             chdataBtn(record) {
-                const { id, level, companyName, price, realPrice, linkmanPhone, internationalPrice } = record;
+                const { id, level, companyName, price, realPrice, linkmanPhone, internationalPrice, directCommonPrice, lineDirectPrice } = record;
                 this.chdataFormVisible = true
                 this.$nextTick(() => {
                     this.$refs['chdataFormref'].resetFields()
@@ -460,6 +509,8 @@
                         emptyPrice: price,
                         internationalPrice,
                         realPrice,
+                        directCommonPrice,
+                        lineDirectPrice,
                         category: 0,
                         price
                     }

@@ -31,23 +31,23 @@
         </div>
         <div class="agentTable">
             <el-table :data="tableData" style="width: 100%" :cell-style="getColumnStyle" v-loading="dataListLoading" show-summary :summary-method="getTotal" :header-cell-style="getRowClass">
-                <el-table-column type="index" header-align="center" align="center" width="70" label="序号">
+                <el-table-column type="index" header-align="center" align="center" width="50" label="序号">
                 </el-table-column>
-                <el-table-column width="150" prop="dayInt" label="日期" align="center">
+                <el-table-column width="90" prop="dayInt" label="日期" align="center">
                 </el-table-column>
                 <el-table-column v-if="isAdmin" min-width="150" prop="companyName" label="代理商名称" align="center">
                 </el-table-column>
-                <el-table-column min-width="120" prop="custNum" label="用户数" align="center">
+                <el-table-column min-width="80" prop="custNum" label="用户数" align="center">
                     <template slot-scope="scope">
                         <span>{{ scope.row.custNum || 0 }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column min-width="120" prop="dailyAddCustNum" label="新增用户数" align="center">
+                <el-table-column min-width="50" prop="dailyAddCustNum" label="新增用户数" align="center">
                     <template slot-scope="scope">
                         <span>{{ scope.row.dailyAddCustNum || 0 }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column min-width="120" prop="emptyRechargeMoney" label="充值金额" align="center">
+                <el-table-column min-width="90" prop="emptyRechargeMoney" label="充值金额" align="center">
                     <template slot-scope="scope">
                         <span>{{ scope.row.emptyRechargeMoney || 0 }}</span>
                     </template>
@@ -85,6 +85,30 @@
                     <el-table-column width="120" prop="internationalCounts" label="剩余条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.internationalCounts || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                </el-table-column>
+                <el-table-column label="定向通用检测" align="center">
+                    <el-table-column width="120" prop="directCommonConsume" label="消耗条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.directCommonConsume || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="directCommonCounts" label="剩余条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.directCommonCounts || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                </el-table-column>
+                <el-table-column label="line定向检测" align="center">
+                    <el-table-column width="120" prop="lineDirectConsume" label="消耗条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.lineDirectConsume || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="lineDirectCounts" label="剩余条数" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.lineDirectCounts || 0 }}</span>
                         </template>
                     </el-table-column>
                 </el-table-column>
@@ -134,14 +158,20 @@
                 let emptyColIndexArr = []
                 let realColIndexArr = []
                 let internationalColIndexArr = []
+                let directCommonColIndexArr = []
+                let lineDirectColIndexArr = []
                 if (Boolean(sessionStorage.getItem("msjRoleName") === "1")) {
                     emptyColIndexArr = [6, 7]
                     realColIndexArr = [8, 9]
                     internationalColIndexArr = [10, 11]
+                    directCommonColIndexArr = [12, 13]
+                    lineDirectColIndexArr = [14, 15]
                 } else {
                     emptyColIndexArr = [5, 6]
                     realColIndexArr = [7, 8]
                     internationalColIndexArr = [9, 10]
+                    directCommonColIndexArr = [11, 12]
+                    lineDirectColIndexArr = [13, 14]
                 }
                 if (emptyColIndexArr.includes(columnIndex)) {
                     return 'background: rgba(62, 142, 247, 0.1);'
@@ -151,6 +181,12 @@
                 }
                 if (internationalColIndexArr.includes(columnIndex)) {
                     return 'background: #F8E6EB;'
+                }
+                if (directCommonColIndexArr.includes(columnIndex)) {
+                    return 'background: #FEFEF1;'
+                }
+                if (lineDirectColIndexArr.includes(columnIndex)) {
+                    return 'background: #EEFFF6;'
                 }
 	   	    },
             getTableData(cur) {
@@ -171,7 +207,7 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume', 'internationalConsume'])
+                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume', 'internationalConsume', 'directCommonConsume', 'lineDirectConsume'])
                     } else {
                         this.tableData = []
                         this.totalPage = 0
