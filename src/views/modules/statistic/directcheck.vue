@@ -28,8 +28,8 @@
                 </el-form-item>
                 <el-form-item label="定向产品：">
                     <el-select v-model="searchData.productId" placeholder="定向产品">
-                        <el-option label="全部" :value="-1"></el-option>
-                        <el-option v-for="(item, index) in productList" :label="item.name" :key="index" :value="item.id + ''"></el-option>
+                        <el-option label="全部" value="ALL"></el-option>
+                        <el-option v-for="(item, index) in productList" :label="item.label" :key="index" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
@@ -55,7 +55,7 @@
                             <span>{{ computeFileSize(scope.row.fileSize) }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="150" prop="productName" label="定向产品" align="center">
+                    <el-table-column min-width="150" prop="productType" label="定向产品" align="center">
                     </el-table-column>
                     <el-table-column min-width="120" prop="totalNumber" label="检测数" align="center">
                         <template slot-scope="scope">
@@ -87,12 +87,16 @@
                     </el-table-column>
                     <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                     </el-table-column>
-                    <el-table-column min-width="120" prop="totalNumber" label="消耗条数" align="center">
+                    <el-table-column min-width="150" prop="productType" label="定向产品" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="120" prop="totalNumber" label="消耗数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.totalNumber || 0 }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column min-width="150" prop="createTime" label="检测时间" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="150" prop="updateTime" label="完成时间" align="center">
                     </el-table-column>
                 </template>
             </el-table>
@@ -117,7 +121,7 @@
                     time: undefined,
                     agentId: -1,
                     customerName: '',
-                    productId: -1,
+                    productId: 'ALL',
                     phone: ''
                 },
                 tableData: [],
@@ -125,7 +129,12 @@
                 pageSize: 10,
                 totalPage: 0,
                 agentList: [],
-                productList: [],
+                productList: [
+                    { label: 'viber', value: 'viber' },
+                    { label: 'zalo', value: 'zalo' },
+                    { label: 'botim', value: 'botim' },
+                    { label: 'line', value: 'line' },
+                ],
                 isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
@@ -144,7 +153,7 @@
             this.searchData = {
                 time: currDate,
                 agentId: -1,
-                productId: -1,
+                productId: 'ALL',
                 customerName: '',
                 phone: ''
             }
@@ -157,7 +166,7 @@
                 this.dataListLoading = true
                 let agentId = this.searchData.agentId === -1 ? undefined : this.searchData.agentId
                 this.$http({
-                    url: this.$http.adornUrl(`agent/internationalCheck/getPageList`),
+                    url: this.$http.adornUrl(`agent/intDirectCheck/getPageList`),
                     method: 'post',
                     data: {
                         'token': this.$cookie.get('token'),
@@ -167,6 +176,7 @@
                         'createTimeEnd': this.searchData.time,
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
+                        'productType': this.searchData.productId === 'ALL' ? undefined : this.searchData.productId,
                         'agentId': this.isAdmin ? agentId : undefined,
                     }
                 }).then(({ data }) => {

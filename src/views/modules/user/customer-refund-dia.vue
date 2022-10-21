@@ -5,11 +5,14 @@
                 <el-input v-model="dataForm.phone" disabled placeholder="请输入手机号码"></el-input>
             </el-form-item>
             <el-form-item label="产品名称：" prop="category">
-                <el-radio-group v-model="dataForm.category">
-                    <el-radio :label="0">空号检测</el-radio>
-                    <el-radio :label="1">实时检测</el-radio>
-                    <el-radio :label="2">国际检测</el-radio>
-                </el-radio-group>
+                <el-select v-model="dataForm.category" placeholder="请选择产品名称">
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="剩余条数：" prop="remainNumberTotal">
                 <el-input style="width: 90%; margin-right: 8px;" v-model="dataForm.remainNumberTotal" disabled></el-input>
@@ -50,6 +53,7 @@
 </template>
 
 <script>
+    import { categoryOptions } from '@/const'
     export default {
         data() {
             const validateContainDot = (rule, value, callback) => {
@@ -60,6 +64,7 @@
                 }
             }
             return {
+                categoryOptions,
                 dialogVisible: false,
                 submitLoading: false,
                 labelPosition: 'right',
@@ -115,9 +120,15 @@
                 } else if (this.dataForm.category === 1) {
                     this.dataForm.remainNumberTotal = this.customerInfo.realtimeCount
                     this.dataForm.giftNumber = this.customerInfo.refundableRealTimeNum
-                } else {
+                } else if (this.dataForm.category === 2) {
                     this.dataForm.remainNumberTotal = this.customerInfo.internationalCount
                     this.dataForm.giftNumber = this.customerInfo.refundableInternationalNum
+                } else if (this.dataForm.category === 4) {
+                    this.dataForm.remainNumberTotal = this.customerInfo.directCommonCount
+                    this.dataForm.giftNumber = this.customerInfo.refundableDirectCommonNum
+                } else { // this.dataForm.category === 5
+                    this.dataForm.remainNumberTotal = this.customerInfo.lineDirectCount
+                    this.dataForm.giftNumber = this.customerInfo.refundableLineDirectNum
                 }
             },
             'dataForm.price'() {

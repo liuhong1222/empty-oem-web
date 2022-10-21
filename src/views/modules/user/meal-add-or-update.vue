@@ -5,11 +5,14 @@
                 <el-input v-model="dataForm.name" placeholder="充值套餐名称"></el-input>
             </el-form-item>
             <el-form-item label="产品类别：" prop="category">
-                <el-radio-group v-model="dataForm.category" @change="(e) => handleFormChange('category', e)">
-                    <el-radio :label="0">空号检测</el-radio>
-                    <el-radio :label="1">实时检测</el-radio>
-                    <el-radio :label="2">国际检测</el-radio>
-                </el-radio-group>
+                <el-select v-model="dataForm.category" @change="(e) => handleFormChange('category', e)" placeholder="请选择产品类别">
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="产品名称：" prop="productId">
                 <el-select style="width: 100%;" v-model="dataForm.productId" placeholder="请选择产品">
@@ -57,9 +60,11 @@
 </template>
 
 <script>
+    import { categoryOptions } from '@/const'
     export default {
         data() {
             return {
+                categoryOptions,
                 dialogVisible: false,
                 submitLoading: false,
                 labelPosition: 'right',

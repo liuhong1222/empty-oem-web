@@ -104,11 +104,11 @@
                 ]
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {
-            if (rowIndex == 0) {
-                return "background-color: #f8f8f8;color:#666;";
-            } else {
-                return "";
-            }
+                if (rowIndex == 0) {
+                    return "background-color: #f8f8f8;color:#666;";
+                } else {
+                    return "";
+                }
             },
         }
     }

@@ -160,28 +160,9 @@
                     ],
                 },
                 tableData: [],
-                emptyCheckStatic: [
-                    { title: '代理商数量', field: 'emptyAgentNums' },
-                    { title: '充值总金额（元）', field: 'rechargeSum' },
-                    { title: '消耗总条数（条）', field: 'emptyConsume' },
-                    { title: '充值总条数（条）', field: 'rechargeNumberSum' }
-                ],
-                realCheckStatic: [
-                    { title: '代理商数量', field: 'realtimeAgentNums' },
-                    { title: '充值总金额（元）', field: 'realtimeRechargeSum' },
-                    { title: '消耗总条数（条）', field: 'realtimeConsume' },
-                    { title: '充值总条数（条）', field: 'realtimeRechargeNumberSum' }
-                ],
-                internationalCheckStatic: [
-                    { title: '代理商数量', field: 'internationalAgentNums' },
-                    { title: '充值总金额（元）', field: 'internationalRechargeSum' },
-                    { title: '消耗总条数（条）', field: 'internationalConsume' },
-                    { title: '充值总条数（条）', field: 'internationalRechargeNumberSum' }
-                ],
                 adminInfo: {}, // 管理员首页基本信息
                 emailAddLoading: false,
                 emailEditLoading: false,
-                testStatisticData: {},
                 testStatisticConfig: [
                     { title: '代理商数量', field: 'agentNums' },
                     { title: '充值总金额（元）', field: 'rechargeSum' },
@@ -211,15 +192,6 @@
         },
         methods: {
             getChartData() {
-                // this.$http({
-                //     url: this.$http.adornUrl(`agent/desk/getAdminDeskInfo?token=${this.$cookie.get('token')}&category=${this.testStatisticCategory}`),
-                //     method: 'post',
-                // }).then(({ data }) => {
-                //     if (data && data.code === 0) {
-                //     } else {
-                //         this.$message.error(data.msg)
-                //     }
-                // })
                 this.trendChartConfig = {
                     xData: ['xx', 'zz'],
                     series: [{

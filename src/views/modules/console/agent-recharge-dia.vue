@@ -2,11 +2,14 @@
     <el-dialog :destroy-on-close="true" :title="'充值'" width="600px" :close-on-click-modal="false" :visible.sync="dialogVisible">
         <el-form v-if="!showPayCode" :model="dataForm" :rules="dataRule" ref="dataForm" :label-position="labelPosition" label-width="123px" class="cf">
             <el-form-item label="产品名称：" prop="category">
-                <el-radio-group v-model="dataForm.category" disabled>
-                    <el-radio :label="0">空号检测</el-radio>
-                    <el-radio :label="1">实时检测</el-radio>
-                    <el-radio :label="2">国际检测</el-radio>
-                </el-radio-group>
+                <el-select v-model="dataForm.category" disabled>
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="充值单价：" prop="price">
                 <el-input-number v-model="dataForm.price" disabled :min="0"></el-input-number>
@@ -45,10 +48,12 @@
 </template>
 
 <script>
+    import { categoryOptions } from '@/const'
     import QRCode from 'qrcodejs2'
     export default {
         data() {
             return {
+                categoryOptions,
                 showPayCode: false,
                 payCodeUrl: '',
                 orderNo: '',
@@ -92,6 +97,8 @@
                     'empty': { category: 0, price: agentInfo.price },
                     'realtime': { category: 1, price: agentInfo.realPrice },
                     'international': { category: 2, price: agentInfo.internationalPrice },
+                    'directCommon': { category: 4, price: agentInfo.directCommonPrice },
+                    'lineDirect': { category: 5, price: agentInfo.lineDirectPrice },
                 }
                 this.dialogVisible = true
                 this.showPayCode = false

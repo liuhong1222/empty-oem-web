@@ -5,11 +5,14 @@
                 <el-input v-model="rechargeDataForm.userName" placeholder="手机号" id="mobile" readonly></el-input>
             </el-form-item>
             <el-form-item label="产品名称：" prop="category">
-                <el-radio-group v-model="rechargeDataForm.category">
-                    <el-radio :label="0">空号检测</el-radio>
-                    <el-radio :label="1">实时检测</el-radio>
-                    <el-radio :label="2">国际检测</el-radio>
-                </el-radio-group>
+                <el-select v-model="rechargeDataForm.category" placeholder="请选择产品名称">
+                    <el-option
+                    v-for="item in categoryOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="套餐选择：" prop="packageList">
                 <el-select style="width: 100%;" v-model="rechargeDataForm.packageList" placeholder="请选择套餐" @change="selectT">
@@ -53,6 +56,7 @@
     </el-dialog>
 </template>
 <script>
+    import { categoryOptions } from '@/const'
     export default {
         data() {
             const validateContainDot = (rule, value, callback) => {
@@ -65,6 +69,7 @@
                 }
             }
             return {
+                categoryOptions,
                 readPrice: true,
                 readCounts: true,
                 readMoney: true,
@@ -156,12 +161,14 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        const { goodsList, emptyBalance, realtimeBalance, internationalBalance } = data.data || {}
+                        const { goodsList, emptyBalance, realtimeBalance, internationalBalance, directCommonBalance, lineDirectBalance } = data.data || {}
                         this.rechargeArr = goodsList || []
                         let countMap = {
                             '0': emptyBalance,
                             '1': realtimeBalance,
                             '2': internationalBalance,
+                            '4': directCommonBalance,
+                            '5': lineDirectBalance,
                         }
                         this.rechargeDataForm = {
                             ...this.rechargeDataForm,

@@ -23,22 +23,45 @@
                             <button class="edit-btn copyLink" @click="copyLink">复制推广链接</button>
                         </div>
                     </div>
-                    <ul class="product-info-wrapper">
+                    <!-- <ul class="product-info-wrapper">
                         <li v-for="(item, index) in productInfoList" :key="index">
                             <span class="number-box">{{ deskInfo[item.field] || '0' }}</span>
                             <span class="title-box">{{ item.title }}</span>
                             <button v-if="item.btnText" class="edit-btn" @click="handleOneCardClick(item.field)">{{ item.btnText }}</button>
                         </li>
-                    </ul>
+                    </ul> -->
+                    <el-table
+                        :data="productTableData"
+                        :border="true"
+                        size="mini"
+                        :max-height="350"
+                        style="width: 100%;margin-top: 12px;font-size: 12px;border-bottom: 1px solid #ebeef5;"
+                        :header-cell-style="getRowClass"
+                    >
+                        <el-table-column min-width="100" prop="name" label="产品名称" align="center"></el-table-column>
+                        <el-table-column min-width="80" prop="price" label="代理单价（元/条）" align="center"></el-table-column>
+                        <el-table-column min-width="100" prop="balance" label="余额（万条）" align="center">
+                        </el-table-column>
+                        <el-table-column min-width="100" prop="warningsNumber" label="预警值（万条）" align="center">
+                        </el-table-column>
+                        <el-table-column min-width="120" prop="operate" label="操作" align="center">
+                            <template slot-scope="{ row }">
+                                <div>
+                                    <el-button type="text" size="small" @click="handleOneCardClick(row.balanceKey)">充值</el-button>
+                                    <el-button type="text" size="small" @click="handleOneCardClick(row.warningsNumberKey)">修改预警值</el-button>
+                                </div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
             </el-col>
             <el-col :span="12">
-                <div class="grid-content bg-purple" style="height: 590px;">
+                <div class="grid-content bg-purple" style="height: 390px;">
                     <div>
                         <h2>充值记录</h2>
                         <el-button type="text" style="float:right" @click="showDetails()">查看详情</el-button>
                     </div>
-                    <el-table :header-cell-style="getRowClass" :data="rechargeRecordData" style="width: 100%" :highlight-current-row="true">
+                    <el-table :max-height="300" :header-cell-style="getRowClass" :data="rechargeRecordData" style="width: 100%" :highlight-current-row="true">
                         <el-table-column prop="categary" label="充值产品">
                             <template slot-scope="{ row }">
                                 <span>{{ categoryLabelMap[row.category] || '' }}</span>
@@ -52,58 +75,7 @@
                         </el-table-column>
                     </el-table>
                 </div>
-            </el-col>
-            <el-col :span="8">
-                <div class="grid-content bg-purple">
-                <h2>空号检测统计</h2>
-                <ul class="customerList">
-                    <li v-for="(item, index) in emptyCustomList" :key="index">
-                    <p>{{ item.title }}</p>
-                    <p>{{ deskInfo[item.field] }}</p>
-                    </li>
-                </ul>
-                </div>
-            </el-col>
-            <el-col :span="8">
-                <div class="grid-content bg-purple">
-                <h2>实时检测统计</h2>
-                <ul class="customerList">
-                    <li v-for="(item, index) in realCustomList" :key="index">
-                    <p>{{ item.title }}</p>
-                    <p>{{ deskInfo[item.field] }}</p>
-                    </li>
-                </ul>
-                </div>
-            </el-col>
-            <el-col :span="8">
-                <div class="grid-content bg-purple">
-                <h2>国际号码检测统计</h2>
-                <ul class="customerList">
-                    <li v-for="(item, index) in internationalCustomList" :key="index">
-                    <p>{{ item.title }}</p>
-                    <p>{{ deskInfo[item.field] }}</p>
-                    </li>
-                </ul>
-                </div>
-            </el-col>
-            <el-col :span="12" style="position: relative;">
-                <div class="grid-content bg-purple">
-                    <div>
-                        <h2>充值套餐</h2>
-                        <el-button type="text" style="float:right" @click="viewMeals()">查看详情</el-button>
-                    </div>
-                    <div v-if="mealList.length === 0" class="meal-empty">暂无套餐</div>
-                    <ul v-else class="cf mealPackage">
-                        <li v-for="(item,index) in mealList" :key="index">
-                            <p><span>{{item.name}}</span><span class="line"></span></p>
-                            <span class="moneyMeal">{{item.price}}元</span>
-                            <span class="label">/{{item.specifications}}条</span>
-                        </li>
-                    </ul>
-                </div>
-            </el-col>
-            <el-col :span="12">
-                <div class="grid-content bg-purple">
+                <div style="height: 180px;min-height: 180px;" class="grid-content bg-purple">
                     <h2>注册赠送</h2>
                     <div class="giveCounts">
                         <span>自动赠送</span>
@@ -112,19 +84,52 @@
                     </div>
                 </div>
             </el-col>
-            <!-- <el-col :span="12" v-if="myReject">
+
+            <el-col :span="12">
                 <div class="grid-content bg-purple">
-                    <h2>我的待办</h2>
-                    <div style="margin:20px;line-height:35px;" class="cf">
-                        <span style="float:left">你的设置已被管理员驳回</span>
-                        <el-button type="primary" style="float:right;background-color:#4680ff;" @click="rejectRet()">重新设置</el-button>
+                    <div class="test-statistic-header">
+                        <div>
+                            <span>客户检测统计</span>
+                            <span>当月</span>
+                        </div>
+                        <el-select style="width: 150px;" v-model="testStatisticCategory" size="small" placeholder="请选择产品">
+                            <el-option
+                            v-for="item in categoryOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
                     </div>
-                    <div style="margin:20px">
-                        <span>驳回原因：</span>
-                        <span style="line-height:25px" id="remarkCon">{{remarksCon}}</span>
+                    <ul class="cf customerList">
+                        <li v-for="(item,index) in testStatisticConfig" :key="index">
+                            <p>{{ item.title }}</p>
+                            <p>{{ deskInfo[item.field] }}</p>
+                        </li>
+                    </ul>
+                </div>
+            </el-col>
+
+            <el-col :span="12">
+                <div class="grid-content bg-purple">
+                    <div class="test-statistic-header">
+                        <div>
+                            <span>代理商消耗趋势</span>
+                        </div>
+                        <el-select style="width: 150px;" v-model="trendCategory" size="small" placeholder="请选择产品">
+                            <el-option
+                            v-for="item in categoryOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="trend-chart">
+                        <e-chart style="height:260px; width: 100%;" :chartData="trendChartConfig" />
                     </div>
                 </div>
-            </el-col> -->
+            </el-col>
         </el-row>
 
         <!-- 添加邮箱弹窗 -->
@@ -160,34 +165,6 @@
             <el-button type="primary" id="copyBtn" v-clipboard:copy="copyinput" v-clipboard:success="onCopy"
                 v-clipboard:error="onError">复制链接</el-button>
         </el-dialog>
-
-        <!-- 修改套餐弹窗 -->
-        <el-dialog title="套餐修改" :visible.sync="editmealVisible" id="mealDialog" width="460px">
-            <div>
-                <div class="divInput" v-for="(item,i) in mealList" :key="i">
-                <span class="label" style="width:90px;display:inline-block;text-align: right;margin-right: 5px">{{item.packageName}}：</span>
-                <div class="mealinput">
-                    <input type="text" v-if="i == '3'" v-model="dat.mealMoney[i]" id="customValue" oninput="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')">
-                    <input type="text" v-else v-model="dat.mealMoney[i]" oninput="value=value.replace(/[^\d]/g,'')">
-                </div>
-                <span>元</span>
-                <div class="mealinput" style="width: 40px;">
-                    <input type="text" v-if="i == '3'" v-model="dat.count[i]" style="border:none;text-align: center;" readonly>
-                    <input type="text" v-else v-model="dat.count[i]" style="border:none;text-align: center" readonly>
-                </div>
-                <span class="label" v-if="i == '3'">条</span>
-                <span class="label" v-else>万条</span>
-                </div>
-                <p style="margin-left: 40px">
-                    注意：
-                    <p style="margin-left: 80px;margin-top: -37px">1. 充值单价不得低于<span style="color:red">0.001</span>元/条；</p>
-                    <p style="margin-left: 80px;line-height:2px">2.套餐价格必须为正整数。</p>
-                </p>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="editmealChange()">修改套餐</el-button>
-            </span>
-        </el-dialog>
         
         <!-- 驳回弹出框 -->
         <el-dialog title="提示" :visible.sync="rejectDialogVisible" width="30%">
@@ -199,14 +176,14 @@
         </el-dialog>
 
         <!-- 预警值弹窗 -->
-        <el-dialog :title="warnEditType + '预警值'" width="520px" :visible.sync="warnFormVisible">
-            <el-form :model="warinform" :rules="warnRule" ref="warinform">
+        <el-dialog :title="warnEditType + '检测预警值'" width="520px" :visible.sync="warnFormVisible">
+            <el-form :model="warnForm" :rules="warnRule" ref="warnForm">
                 <el-form-item label-width="100px" label="当前预警值">
-                    <el-input v-model="warinform.curcounts" style="width: 84%; margin-right: 8px;" id="curCount" disabled></el-input>
+                    <el-input v-model="warnForm.curcounts" style="width: 84%; margin-right: 8px;" id="curCount" disabled></el-input>
                     <span>万条</span>
                 </el-form-item>
                 <el-form-item label-width="100px" label="修改预警值" prop="counts">
-                    <el-input v-model="warinform.counts" style="width: 84%; margin-right: 8px;"></el-input>
+                    <el-input v-model="warnForm.counts" style="width: 84%; margin-right: 8px;"></el-input>
                     <span>万条</span>
                 </el-form-item>
             </el-form>
@@ -228,17 +205,20 @@
 </template>
 
 <script>
+import EChart from '@/components/chart/index.vue'
 import reBindPhone from './re-bind-phone'
 import UpdatePassword from '../../main-navbar-update-password'
 import AgentRechargeDia from './agent-recharge-dia.vue'
 import { isEmail } from '@/utils/validate'
+import { categoryOptions, categoryLabelMap } from '@/const'
 
 export default {
     name: 'AgentDesk',
     components: {
         reBindPhone,
         UpdatePassword,
-        AgentRechargeDia
+        AgentRechargeDia,
+        EChart
     },
     data() {
         const validateEmail = (rule, value, callback) => {
@@ -249,11 +229,8 @@ export default {
             }
         }
         return {
-            categoryLabelMap: {
-              '0': '空号检测',
-              '1': '实时检测',
-              '2': '国际检测',
-            },
+            categoryOptions,
+            categoryLabelMap,
             productInfoList: [
                 { title: '空号代理价（元/条）', field: 'price', btnText: '' },
                 { title: '实时代理价（元/条）', field: 'realPrice', btnText: '' },
@@ -265,45 +242,15 @@ export default {
                 { title: '实时预警值（万条）', field: 'realWarningsNumber', btnText: '修改' },
                 { title: '国际预警值（万条）', field: 'internationalWarningsNumber', btnText: '修改' },
             ],
-            emptyCustomList: [
-                { title: '客户数量', field: 'custNums' },
-                { title: '客户充值总计（元）', field: 'custRechargeSum' },
-                { title: '客户消费条数（条）', field: 'emptyConsume' },
-                { title: '充值总条数（条）', field: 'custRechargeNumberSum' }
-            ],
-            realCustomList: [
-                { title: '客户数量', field: 'custNums' },
-                { title: '客户充值总计（元）', field: 'custRealtimeRechargeSum' },
-                { title: '客户消费条数（条）', field: 'realTimeConsume' },
-                { title: '充值总条数（条）', field: 'custRealtimeRechargeNumberSum' }
-            ],
-            internationalCustomList: [
-                { title: '客户数量', field: 'custNums' },
-                { title: '客户充值总计（元）', field: 'custRealtimeRechargeSum' },
-                { title: '客户消费条数（条）', field: 'realTimeConsume' },
-                { title: '充值总条数（条）', field: 'custRealtimeRechargeNumberSum' }
-            ],
             agentInfo: {},
             deskInfo: {},
             rechargeRecordData: [],
-            mealList: [], //套餐
             giveSwitch: false,
-            myReject: false,
             remarksCon: '',
 
             // 复制链接弹窗
             copyVisible: false,
             copyinput: '',
-
-            // 修改套餐弹框
-            packageId: [],
-            editmealVisible: false,
-            dat: {
-                count: [],
-                mealMoney: [],
-                name: []
-            },
-            list: [],
 
             // 驳回弹框（我的待办）
             rejectDialogVisible: false,
@@ -342,7 +289,7 @@ export default {
             // 预警值弹窗
             warnFormVisible: false,
             warnEditType: '空号',
-            warinform: { counts: '', curcounts: '' },
+            warnForm: { counts: '', curcounts: '' },
             warnRule: {
                 counts: [
                     { required: true, message: '请输入修改的预警值', trigger: 'blur' }
@@ -351,17 +298,52 @@ export default {
             addEmailLoading: false,
             editEmailLoading: false,
             editWarnNumberLoading: false,
+            testStatisticConfig: [
+                { title: '客户数量', field: 'custNums' },
+                { title: '客户充值总计（元）', field: 'custRechargeSum' },
+                { title: '客户消费条数（条）', field: 'consume' },
+                { title: '充值总条数（条）', field: 'custRechargeNumberSum' }
+            ],
+            testStatisticCategory: 0,
+            trendCategory: 0,
+            trendChartConfig: {
+                xData: [],
+                series: [],
+                otherOptions: {}
+            },
+            productTableData: [],
         };
     },
     activated() {
         this.getAgentDeskInfo()
         this.myRechargeList()
-        this.findAgentPackage()
-        // this.rejectVisibie()
-        // this.remarkDialog()
         this.updatePwd()
+        this.getChartData()
     },
     methods: {
+        getChartData() {
+            this.trendChartConfig = {
+                xData: ['xx', 'zz'],
+                series: [{
+                    name: '消耗总条数',
+                    type: 'line',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    data: [123,44]
+                }],
+                otherOptions: {
+                    grid: {
+                        bottom: 20,
+                        right: 20,
+                        top: 24,
+                    }
+                }
+            }
+        },
         getRowClass({ row, column, rowIndex, columnIndex }) {
                 if (rowIndex == 0) {
                     return 'background-color: #f8f8f8;color:#666;'
@@ -373,7 +355,7 @@ export default {
         getAgentDeskInfo() {
             this.remarksCon = sessionStorage.getItem('remarkCon')
             this.$http({
-            url: this.$http.adornUrl(`agent/desk/getAgentDeskInfo?token=${this.$cookie.get('token')}`),
+            url: this.$http.adornUrl(`agent/desk/getAgentDeskInfo?token=${this.$cookie.get('token')}&category=${this.testStatisticCategory}`),
             method: 'post',
             }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -384,10 +366,20 @@ export default {
                 this.copyinput = domain ? 'http://' + domain : ''
                 this.deskInfo = {...(data.data || {}), ...(agentInfo || {})}
                 this.agentInfo = agentInfo || {}
+                this.dealProductTableData(this.deskInfo )
             } else {
                 this.$message.error(data.msg)
             }
             })
+        },
+        dealProductTableData(data) {
+            this.productTableData = [
+                { name: '空号检测', balance: data.emptyBalance, price: data.price, warningsNumber: data.warningsNumber, warningsNumberKey: 'warningsNumber', balanceKey: 'emptyBalance' },
+                { name: '实时检测', balance: data.realtimeBalance, price: data.realPrice, warningsNumber: data.realWarningsNumber, warningsNumberKey: 'realWarningsNumber', balanceKey: 'realtimeBalance' },
+                { name: '国际检测', balance: data.internationalBalance, price: data.internationalPrice, warningsNumber: data.internationalWarningsNumber, warningsNumberKey: 'internationalWarningsNumber', balanceKey: 'internationalBalance' },
+                { name: '定向通用检测', balance: data.directCommonBalance, price: data.directCommonPrice, warningsNumber: data.directCommonWarningsNumber, warningsNumberKey: 'directCommonWarningsNumber', balanceKey: 'directCommonBalance' },
+                { name: 'line定向检测', balance: data.lineDirectBalance, price: data.lineDirectPrice, warningsNumber: data.lineDirectWarningsNumber, warningsNumberKey: 'lineDirectWarningsNumber', balanceKey: 'lineDirectBalance' },
+            ]
         },
         // 充值记录
         myRechargeList() {
@@ -403,23 +395,6 @@ export default {
                     this.rechargeRecordData = data.data.list || []
                 } else {
                     this.rechargeRecordData = []
-                }
-            })
-        },
-        // 充值套餐
-        findAgentPackage() {
-            this.$http({
-                url: this.$http.adornUrl(`agent/goods/getPageList?token=${this.$cookie.get('token')}`),
-                method: 'post',
-                data: {
-                    currentPage: 1,
-                    pageSize: 4,
-                }
-            }).then(({ data }) => {
-                if (data && data.code === 0) {
-                    this.mealList = data.data.list || []
-                } else {
-                    this.mealList = []
                 }
             })
         },
@@ -440,16 +415,6 @@ export default {
                 }
             })
         },
-        // 弹出框
-        remarkDialog() {
-            if ((sessionStorage.getItem('remarkDialog')) && (sessionStorage.getItem('remarkDialog') == 'remarkDialogTr')) {
-                this.rejectDialogVisible = true
-                sessionStorage.setItem('remarkDialog', '')
-            } else {
-                this.rejectDialogVisible = false
-                sessionStorage.setItem('remarkDialog', '')
-            }
-        },
         // 修改密码
         updatePwd() {
             if (sessionStorage.getItem('isFirstLogin') && (sessionStorage.getItem('isFirstLogin')) == 'true') {  //没修改过
@@ -463,17 +428,12 @@ export default {
                 sessionStorage.removeItem('isFirstLogin')
             }
         },
-        rejectVisibie() {
-            if ((sessionStorage.getItem('isExamine')) && (sessionStorage.getItem('isExamine') == 'reject')) {
-                this.myReject = false
-            } else {
-                this.myReject = true
-            }
-        },
         handleOneCardClick(type) {
             switch (type) {
                 case 'emptyBalance':
                 case 'realtimeBalance':
+                case 'directCommonBalance':
+                case 'lineDirectBalance':
                 case 'internationalBalance': { // 余额充值
                     if (type === 'realtimeBalance' && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
                         this.$message.warning('暂无实时检测代理权限')
@@ -483,11 +443,21 @@ export default {
                         this.$message.warning('暂无国际检测代理权限')
                         return false
                     }
+                    if (type === 'directCommonBalance' && !this.agentInfo.directCommonPrice) {
+                        this.$message.warning('暂无定向通用检测代理权限')
+                        return false
+                    }
+                    if (type === 'lineDirectBalance' && !this.agentInfo.lineDirectPrice) {
+                        this.$message.warning('暂无line定向检测代理权限')
+                        return false
+                    }
                     this.$refs['agentRechargeDiaRef'].init(type.replace('Balance', ''), this.agentInfo)
                     break;
                 }
                 case 'warningsNumber':
                 case 'realWarningsNumber':
+                case 'directCommonWarningsNumber':
+                case 'lineDirectWarningsNumber':
                 case 'internationalWarningsNumber': { // 预警值修改
                     if (type === 'realWarningsNumber' && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
                         this.$message.warning('暂无实时检测代理权限')
@@ -501,12 +471,14 @@ export default {
                         'warningsNumber': '空号',
                         'realWarningsNumber': '实时',
                         'internationalWarningsNumber': '国际',
+                        'directCommonWarningsNumber': '定向通用',
+                        'lineDirectWarningsNumber': 'line定向',
                     }
                     this.warnEditType = editTypeMap[type]
-                    this.warinform.curcounts = this.deskInfo[type]
+                    this.warnForm.curcounts = this.deskInfo[type]
                     this.warnFormVisible = true;
                     this.$nextTick(() => {
-                        this.$refs['warinform'].resetFields();
+                        this.$refs['warnForm'].resetFields();
                     })
                     break;
                 }
@@ -549,18 +521,6 @@ export default {
         viewMeals() {
             this.$router.push({ name: 'user-meal' })
         },
-        // 修改套餐
-        editMeal() {
-            this.editmealVisible = true;
-            this.dat.count = []
-            this.dat.mealMoney = []
-            this.dat.name = []
-            for (let i = 0; i < this.mealList.length; i++) {
-                this.dat.count.push(this.mealList[i].number);
-                this.dat.mealMoney.push(this.mealList[i].money)
-                this.dat.name.push(this.mealList[i].packageName)
-            }
-        },
 
         /********** 复制推广链接弹框 **********/
         copyLink() {
@@ -576,71 +536,6 @@ export default {
         onError: function (e) {
             this.$message.error('复制失败了哦！');
         },
-
-        /********** 修改套餐弹框 **********/
-        editmealChange() {
-            //设置最小自定义充值
-            let min = 0.001;
-            let customVal = document.getElementById('customValue').value;
-            if (customVal < min) {
-                this.$message.error('自定义充值单价不得低于0.001元/条');
-                return false
-            }
-            //设置计算出的单价
-            let packListCount = this.dat.count;//条数
-            let packListMoney = this.dat.mealMoney //钱
-            for (let i = 0; i < 3; i++) {
-            if ((packListMoney[i] / packListCount[i]) < 10) {
-                if (i == 0) {
-                this.$message.error('套餐A的充值单价不得低于0.001元/条');
-                } else if (i == 1) {
-                this.$message.error('套餐B的充值单价不得低于0.001元/条');
-                } else if (i == 2) {
-                this.$message.error('套餐C的充值单价不得低于0.001元/条');
-                }
-
-                return;
-            }
-            }
-
-            for (let i = 0; i < this.dat.count.length; i++) {
-                let activeSubjectsObject = {};
-                for (let j = 0; j < this.dat.mealMoney.length; j++) {
-                    for (let m = 0; m < this.dat.name.length; m++) {
-                        for (let k = 0; k < this.packageId.length; k++) {
-                            if (i == j && j == k && i == k && i == m && j == m && k == m) {
-                                activeSubjectsObject.id = Number(this.packageId[i]);
-                                activeSubjectsObject.number = Number(this.dat.count[j]);
-                                activeSubjectsObject.money = Number(this.dat.mealMoney[k]);
-                                activeSubjectsObject.packageName = this.dat.name[k];
-                                this.list.push(activeSubjectsObject);
-                            }
-                        }
-                    }
-                }
-            }
-            this.$http({
-                url: this.$http.adornUrl(`agent/desk/updateAgentPackage?token=${this.$cookie.get('token')}`),
-                method: 'post',
-                data: this.$http.adornData({
-                    'list': this.list,
-                })
-            }).then(({ data }) => {
-                if (data && data.code === 0) {
-                    this.$message.success('套餐修改完成');
-                    this.editmealVisible = false;
-                    this.findAgentPackage();
-                    this.dat.count = [];
-                    this.dat.mealMoney = [];
-                    this.packageId = [];
-                    this.list = []
-                } else {
-                    this.list = []
-                    this.$message.error(data.msg);
-                }
-            })
-        },
-
         /********** 添加邮箱弹框 **********/
         addEmailBtn() {
             this.$refs['addemailruleForm'].validate((valid) => {
@@ -693,26 +588,27 @@ export default {
 
         /********** 预警值提交弹框 **********/
         warnFormSubmit() {
-            this.$refs['warinform'].validate((valid) => {
+            this.$refs['warnForm'].validate((valid) => {
                 if (valid) {
                     this.editWarnNumberLoading = true
-                    let field = undefined
-                    let apiPath = undefined
+                    let category = 0
                     if (this.warnEditType === '空号') {
-                        field = 'warnNumber'
-                        apiPath = 'updateWarnNumber'
+                        category = 0
                     } else if (this.warnEditType === '实时') {
-                        field = 'realtimeWarnNumber'
-                        apiPath = 'updateRealtimeWarnNumber'
+                        category = 1
+                    } else if (this.warnEditType === '国际') {
+                        category = 2
+                    } else if (this.warnEditType === '定向通用') {
+                        category = 4
                     } else {
-                        field = 'internationalWarnNumber'
-                        apiPath = 'updateInternationalWarnNumber'
+                        category = 5
                     }
                     this.$http({
-                        url: this.$http.adornUrl(`agent/desk/${apiPath}?token=${this.$cookie.get('token')}`),
+                        url: this.$http.adornUrl(`agent/desk/updateWarnNumber?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            [field]: this.warinform.counts,
+                            warnNumber: this.warnForm.counts,
+                            category
                         })
                     }).then(({ data }) => {
                         this.editWarnNumberLoading = false
@@ -732,6 +628,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.test-statistic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    & > div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        & > span:nth-child(1) {
+            font-size: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+        & > span:nth-child(2) {
+            display: inline-block;
+            width: 56px;
+            height: 22px;
+            line-height: 20px;
+            border-radius: 11px;
+            border: 1px solid #1890FF;
+            color: #1890FF;
+            font-size: 12px;
+            text-align: center;
+            margin-left: 8px;
+        }
+    }
+}
 .product-info-wrapper {
     display: flex;
     align-items: center;
@@ -845,6 +769,17 @@ export default {
     background-color: #FF5B68;
     width: 60px;
     height: 30px;
+    border: solid 1px #FF5B68;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .product-edit-btn {
+    outline: none;
+    background-color: #FF5B68;
+    width: 40px;
+    height: 24px;
     border: solid 1px #FF5B68;
     color: #fff;
     font-size: 12px;

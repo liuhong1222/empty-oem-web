@@ -604,4 +604,7 @@ export default {
     .table-expand-value {
         margin-left: 20px;
     }
+  >>> .el-table {
+    font-size: 12px;
+  }
 </style>
