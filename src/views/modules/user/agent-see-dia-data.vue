@@ -55,6 +55,7 @@
                 :data="tableData"
                 :border="true"
                 size="small"
+                class="agent-detail-info-table"
                 style="width: 100%;margin-top: 12px;"
                 :header-cell-style="getRowClass"
             >
@@ -133,4 +134,11 @@
         width: 100%;
         height: 100%;
     }
+</style>
+<style lang="scss">
+.agent-detail-info-table {
+    &.el-table .el-table__row:last-child td {
+        border-bottom: 1px solid #ebeef5;
+    }
+}
 </style>

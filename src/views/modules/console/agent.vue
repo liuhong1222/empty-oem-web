@@ -77,11 +77,11 @@
                                 <span>{{ categoryLabelMap[row.category] || '' }}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="payTime" label="充值时间">
+                        <el-table-column prop="createTime" label="充值时间">
                         </el-table-column>
-                        <el-table-column prop="money" label="充值金额">
+                        <el-table-column prop="paymentAmount" label="充值金额">
                         </el-table-column>
-                        <el-table-column prop="number" label="充值条数">
+                        <el-table-column prop="rechargeNumber" label="充值条数">
                         </el-table-column>
                     </el-table>
                 </div>
@@ -330,7 +330,7 @@ export default {
     },
     activated() {
         this.getAgentDeskInfo()
-        this.myRechargeList()
+        this.getRechargeList()
         this.updatePwd()
     },
     methods: {
@@ -410,14 +410,16 @@ export default {
                 { name: 'line定向检测', balance: data.lineDirectBalance, price: data.lineDirectPrice, warningsNumber: data.lineDirectWarningsNumber, warningsNumberKey: 'lineDirectWarningsNumber', balanceKey: 'lineDirectBalance' },
             ]
         },
-        // 充值记录
-        myRechargeList() {
+        // 充值记录 客户的
+        getRechargeList() {
             this.$http({
-                url: this.$http.adornUrl(`agent/finance/agent/recharge/list?token=${this.$cookie.get('token')}`),
+                url: this.$http.adornUrl(`agent/finance/user/recharge/list?token=${this.$cookie.get('token')}`),
                 method: 'get',
                 params: this.$http.adornParams({
                     'currentPage': 1,
                     'pageSize': 5,
+                    'startTime': this.$moment().format('yyyy-MM-DD'),
+                    'endTime': this.$moment().format('yyyy-MM-DD'),
                 })
             }).then(({ data }) => {
                 if (data && data.code === 0) {
@@ -544,7 +546,7 @@ export default {
         },
         // 查看充值记录详情
         showDetails() {
-            this.$router.push({ name: 'finance-myrecharge' })
+            this.$router.push({ name: 'finance-userrecharge' })
         },
         // 查看充值记录详情
         viewMeals() {
