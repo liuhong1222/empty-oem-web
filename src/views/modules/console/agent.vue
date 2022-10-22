@@ -38,17 +38,17 @@
                         style="width: 100%;margin-top: 12px;font-size: 12px;"
                         :header-cell-style="getRowClass"
                     >
-                        <el-table-column min-width="100" align="left" prop="name" label="产品名称"></el-table-column>
-                        <el-table-column min-width="80" prop="price" label="代理单价（元/条）" align="left"></el-table-column>
-                        <el-table-column min-width="100" prop="balance" label="余额（万条）" align="left">
+                        <el-table-column min-width="76" align="left" prop="name" label="产品名称"></el-table-column>
+                        <el-table-column min-width="70" prop="price" label="单价(元/条)" align="right"></el-table-column>
+                        <el-table-column min-width="80" prop="balance" label="余额(万条)" align="right">
                         </el-table-column>
-                        <el-table-column min-width="100" prop="warningsNumber" label="预警值（万条）" align="left">
+                        <el-table-column min-width="80" prop="warningsNumber" label="预警值(万条)" align="right">
                         </el-table-column>
                         <el-table-column min-width="120" prop="operate" label="操作" align="left">
                             <template slot-scope="{ row }">
                                 <div>
-                                    <el-button type="text" size="small" style="color: #FF5B68;" @click="handleOneCardClick(row.balanceKey)">充值</el-button>
-                                    <el-button type="text" size="small" @click="handleOneCardClick(row.warningsNumberKey)">修改预警值</el-button>
+                                    <button class="edit-btn" @click="handleOneCardClick(row.balanceKey)">充值</button>
+                                    <el-button type="text" size="small" style="color: #FF5B68;margin-left: 4px;" @click="handleOneCardClick(row.warningsNumberKey)">修改预警值</el-button>
                                 </div>
                             </template>
                         </el-table-column>
@@ -826,6 +826,9 @@ export default {
         td {
             border-bottom: 0;
         }
+    }
+    &.el-table--mini th {
+        padding: 14px 0;
     }
 }
   .el-row {

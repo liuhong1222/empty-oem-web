@@ -169,6 +169,9 @@
                             { name: '空号检测', id: 1001 },
                             { name: '实时检测', id: 1002 },
                             { name: '国际检测', id: 1003 },
+                            {},
+                            { name: '定向通用检测', id: 1004 },
+                            { name: 'line定向检测', id: 1005 },
                         ]
                         let newList = []
                         defaultItems[this.dataForm.category] && newList.push(defaultItems[this.dataForm.category])

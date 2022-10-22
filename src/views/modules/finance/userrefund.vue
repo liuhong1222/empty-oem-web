@@ -20,6 +20,12 @@
                 <el-form-item label="客户名称：">
                     <el-input v-model="refundSearchData.custName" placeholder="客户名称" clearable></el-input>
                 </el-form-item>
+                <el-form-item label="产品名称：">
+                    <el-select style="width: 220px;" v-model="refundSearchData.category" placeholder="请选择产品名称">
+                        <el-option label="全部" value="-1"></el-option>
+                        <el-option v-for="item in categoryOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="refundList(1)">查询</el-button>
                     <el-button type="primary" @click="refundExport" :disabled="disabled">导出</el-button>
@@ -67,10 +73,11 @@
 </template>
 
 <script>
-    import { categoryLabelMap } from '@/const'
+    import { categoryLabelMap, categoryOptions } from '@/const'
     export default {
         data() {
             return {
+                categoryOptions,
                 categoryLabelMap,
                 dataListLoading: false,
                 disabled: false,
@@ -81,6 +88,7 @@
                 refundSearchData: {
                     dateTime: [],
                     agentName: "-1",
+                    category: '-1',
                     custName: '',
                     mobile: ''
                 },
@@ -148,6 +156,7 @@
                         'custMobile': this.refundSearchData.mobile,
                         'companyName': this.isAdmin ? this.agentListMap[this.refundSearchData.agentName] : undefined,
                         'userName': this.refundSearchData.custName,
+                        'category': this.refundSearchData.category === '-1' ? undefined : this.refundSearchData.category,
                         'startTime': '' || this.refundSearchData.dateTime == null ? '' : this.refundSearchData.dateTime[0],
                         'endTime': '' || this.refundSearchData.dateTime == null ? '' : this.refundSearchData.dateTime[1]
                     })
