@@ -124,7 +124,7 @@
                         <div class="tow-row-col">
                             <div>
                                 <span>充值总计(元)</span>
-                                <span>{{ row.realTimeRechargeMoney }}</span>
+                                <span>{{ row.realtimeRechargeMoney }}</span>
                             </div>
                             <div>
                                 <span>剩余条数</span>
