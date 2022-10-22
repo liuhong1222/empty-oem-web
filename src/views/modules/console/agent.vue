@@ -220,6 +220,19 @@ export default {
                 callback()
             }
         }
+        const validateWarnCounts = (rule, value, callback) => {
+            let reg = /^-?[0-9]\d*$/
+            let number = +value
+            if (!value && value !== 0) {
+                callback(new Error('请输入修改的预警值'))
+            } else if (number === 0) {
+                callback(new Error('预警值不能为0'))
+            } else if (!reg.test(number)) {
+                callback(new Error('预警值为正整数'))
+            } else {
+                callback()
+            }
+        }
         return {
             categoryOptions,
             categoryLabelMap,
@@ -284,7 +297,7 @@ export default {
             warnForm: { counts: '', curcounts: '' },
             warnRule: {
                 counts: [
-                    { required: true, message: '请输入修改的预警值', trigger: 'blur' }
+                    { required: true, validator: validateWarnCounts, trigger: 'change' }
                 ],
             },
             addEmailLoading: false,
@@ -613,7 +626,7 @@ export default {
                         url: this.$http.adornUrl(`agent/desk/updateWarnNumber?token=${this.$cookie.get('token')}`),
                         method: 'post',
                         params: this.$http.adornParams({
-                            warnNumber: this.warnForm.counts,
+                            warnNumber: +this.warnForm.counts,
                             category
                         })
                     }).then(({ data }) => {
