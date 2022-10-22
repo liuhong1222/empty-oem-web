@@ -25,11 +25,14 @@
     width: 100%;
     display: flex;
     align-items: center;
+    flex-direction: column;
     > span:first-child {
       display: inline-block;
-      width: 70px;
+      // width: 70px;
       margin-right: 8px;
-      text-align: right;
+      font-size: 12px;
+      transform: scale(0.83);
+      color: rgb(161, 161, 161);
     }
   }
 }

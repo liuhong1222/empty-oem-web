@@ -72,11 +72,11 @@
                         <div class="tow-row-col">
                             <div>
                                 <span>充值总计(元)</span>
-                                <span>{{ row.emptyRechargeMoney }}</span>
+                                <span>{{ row.emptyRechargeMoney || 0 }}</span>
                             </div>
                             <div>
                                 <span>剩余条数</span>
-                                <span>{{ row.emptyBalance }}</span>
+                                <span>{{ row.emptyBalance || 0 }}</span>
                             </div>
                         </div>
                     </template>
@@ -86,11 +86,11 @@
                         <div class="tow-row-col">
                             <div>
                                 <span>充值总计(元)</span>
-                                <span>{{ row.realTimeRechargeMoney }}</span>
+                                <span>{{ row.realTimeRechargeMoney || 0 }}</span>
                             </div>
                             <div>
                                 <span>剩余条数</span>
-                                <span>{{ row.realTimeBalance }}</span>
+                                <span>{{ row.realTimeBalance || 0 }}</span>
                             </div>
                         </div>
                     </template>
@@ -100,11 +100,11 @@
                         <div class="tow-row-col">
                             <div>
                                 <span>充值总计(元)</span>
-                                <span>{{ row.internationalRechargeMoney }}</span>
+                                <span>{{ row.internationalRechargeMoney || 0 }}</span>
                             </div>
                             <div>
                                 <span>剩余条数</span>
-                                <span>{{ row.internationalBalance }}</span>
+                                <span>{{ row.internationalBalance || 0 }}</span>
                             </div>
                         </div>
                     </template>
@@ -114,11 +114,11 @@
                         <div class="tow-row-col">
                             <div>
                                 <span>充值总计(元)</span>
-                                <span>{{ row.directCommonRechargeMoney }}</span>
+                                <span>{{ row.directCommonRechargeMoney || 0 }}</span>
                             </div>
                             <div>
                                 <span>剩余条数</span>
-                                <span>{{ row.directCommonBalance }}</span>
+                                <span>{{ row.directCommonBalance || 0 }}</span>
                             </div>
                         </div>
                     </template>
@@ -128,11 +128,11 @@
                         <div class="tow-row-col">
                             <div>
                                 <span>充值总计(元)</span>
-                                <span>{{ row.lineDirectRechargeMoney }}</span>
+                                <span>{{ row.lineDirectRechargeMoney || 0 }}</span>
                             </div>
                             <div>
                                 <span>剩余条数</span>
-                                <span>{{ row.lineDirectBalance }}</span>
+                                <span>{{ row.lineDirectBalance || 0 }}</span>
                             </div>
                         </div>
                     </template>
