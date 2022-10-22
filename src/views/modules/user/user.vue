@@ -597,7 +597,7 @@ export default {
         height: 32px;
     }
     .table-expand-label {
-        width: 150px;
+        width: 160px;
         text-align: right;
         color: #99a9bf;
     }

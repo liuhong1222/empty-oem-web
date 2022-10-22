@@ -653,7 +653,7 @@
 </style>
 <style scoped>
     .table-expand-col {
-        padding: 0px 0px 0px 60px;
+        padding: 0px 0px 0px 80px;
     }
     .table-expand-item {
         display: flex;
@@ -661,7 +661,7 @@
         height: 32px;
     }
     .table-expand-label {
-        width: 150px;
+        width: 160px;
         text-align: right;
         color: #99a9bf;
     }
