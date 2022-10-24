@@ -59,9 +59,14 @@
                             <span>{{ scope.row.activeCount || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="noRegisterCount" label="未注册" align="center">
+                    <el-table-column width="120" prop="noRegisterCount" label="未激活" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.noRegisterCount || 0 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="120" prop="unknownCount" label="未注册" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ scope.row.unknownCount || 0 }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column width="120" prop="illegalNumber" label=" 无效数" align="center">
