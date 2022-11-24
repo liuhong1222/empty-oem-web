@@ -27,17 +27,6 @@ module.exports = {
           let localIp = req.socket.remoteAddress || '';
           proxyReq.setHeader('X-Real-IP', localIp)
         }
-      },
-      '/map_engine_file': {
-        // target:'http://172.18.108.175:8658/', // jzg
-        // target:'http://172.16.42.144:8658/', // test
-        target:'http://172.18.106.157:7001/proxy/7', // 代理服务
-        changeOrigin: true,
-        secure: false,
-        onProxyReq: function (proxyReq, req, res) {
-          let localIp = req.socket.remoteAddress || '';
-          proxyReq.setHeader('X-Real-IP', localIp)
-        }
       }
     },
 

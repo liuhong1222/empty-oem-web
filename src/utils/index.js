@@ -43,15 +43,6 @@ export function treeDataTranslate (data, id = 'id', pid = 'parentId') {
   }
   return res
 }
-
-// export function loadSource (path) {
-//   let imgEle = new Image()
-//   let newPath = '/map_engine_file/' + path
-//   imgEle.onload = () => {
-//     return path
-//   }
-//   return path
-// }
 /**
  * 格式化日期
  * @param {*} date
