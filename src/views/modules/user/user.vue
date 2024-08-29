@@ -194,6 +194,7 @@
                                 <el-dropdown-item command="interface">{{scope.row.apiState === 0 ? '开启接口' : '关闭接口'}}</el-dropdown-item>
                                 <el-dropdown-item :disabled="!scope.row.canRefundFlag || refundDisabled" command="refund">退款</el-dropdown-item>
                                 <el-dropdown-item :disabled="Boolean(scope.row.canPresent || regDisabled)" command="give">注册赠送</el-dropdown-item>
+                                <el-dropdown-item :disabled="balanceRemindDisabled" command="balanceRemind">设置余额提醒</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>
@@ -230,6 +231,7 @@
         <!--设置用户认证等级 对话框 -->
         <set-auth-level ref="setAuthLevelRef" @refresh="getCustomList" />
         <add-customer-dia ref="addCustomerDiaRef" @refresh="getCustomList" />
+        <balance-remind-dialog ref="balanceRemindRef" />
     </div>
 </template>
 <script>
@@ -240,6 +242,7 @@ import perRechargePrise from "./user-per-recharge-prise";
 import transferOrAgent from "./user-transfer-agent";
 import CustomerRefundDia from './customer-refund-dia.vue';
 import SetAuthLevel from '@/components/set-auth-level/index.vue'
+import BalanceRemindDialog from './balance-remind-dialog.vue';
 import axios from 'axios';
 import qs from "qs";
 export default {
@@ -267,6 +270,7 @@ export default {
       regDisabled: false,
       refundDisabled: false,
       transferDisabled: false,
+      balanceRemindDisabled: false,
       arr: [], // 保存点击的id和区分个人和企业的id
       searchData: {
         officialWeb: 0,
@@ -311,8 +315,10 @@ export default {
     CustomerRefundDia,
     SetAuthLevel,
     AddCustomerDia,
+    BalanceRemindDialog,
   },
   activated() {
+    this.balanceRemindDisabled = true
     if (sessionStorage.getItem("msjRoleName") == "1") {
       if (!this.searchData.dateTime) {
         this.searchData.dateTime = [];
@@ -329,6 +335,7 @@ export default {
       this.regDisabled = false;
       this.refundDisabled = false;
       this.transferDisabled = true;
+      this.balanceRemindDisabled = false;
       this.agentInfo = this.$json.parse(sessionStorage.getItem('agentInfo') || '{}')
     }
     if (sessionStorage.getItem("msjRoleName") == "1") {
@@ -336,6 +343,7 @@ export default {
       this.regDisabled = true;
       this.refundDisabled = true;
       this.transferDisabled = false;
+      this.balanceRemindDisabled = false;
     }
     this.isAdmin = Boolean(sessionStorage.getItem('msjRoleName') == '1')
     this.isAdmin && this.getAgentList(this.searchData.officialWeb || undefined)
@@ -566,6 +574,10 @@ export default {
         }
         case 'authLevel': {
           this.$refs.setAuthLevelRef.init(record)
+          break;
+        }
+        case 'balanceRemind': {
+          this.$refs.balanceRemindRef.init(record)
           break;
         }
         default:
