@@ -67,12 +67,13 @@
                 this.customerInfo = row
                 this.warningInfo = {}
                 this.form =  {
-                    productType: undefined,
+                    productType: 1,
                     warningCount: undefined,
                     informMobiles: undefined,
                 }
                 this.$nextTick(() => {
                     this.$refs['formRef'].resetFields();
+                    this.getWarningInfo()
                 })
             },
             handleSubmit() {
@@ -108,7 +109,7 @@
                 this.$http({
                     url: this.$http.adornUrl(`agent/warning/findOne?token=${this.$cookie.get('token')}`),
                     method: 'post',
-                    data: {
+                    params: {
                         customerId: this.customerInfo.customerId + '',
                         productType: this.form.productType
                     }
