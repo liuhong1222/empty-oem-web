@@ -6,7 +6,7 @@
                     <el-option v-for="item in categoryOptions" :label="item.label" :key="item.value" :value="item.value"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="提醒余额：" prop="warningCount" placeholder="请输入提醒余额">
+            <el-form-item label="提醒余额：" prop="warningCount">
                 <el-input-number v-model="form.warningCount" :step="1" :precision="0" :min="0"></el-input-number>
                 <span class="warning-tip">条</span>
                 <div class="warning-tip">产品余额低于该值时，系统会发送提醒信息到联系人手机号</div>
