@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="topSearch">
-            <h2>黑名单检测记录</h2>
+            <h2>黑名单API记录</h2>
             <el-form :inline="true">
                 <el-form-item label="创建时间：">
                     <el-date-picker
@@ -26,12 +26,6 @@
                 <el-form-item label="手机号码：">
                     <el-input v-model="searchData.phone" placeholder="手机号码" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="定向产品：">
-                    <el-select v-model="searchData.productId" placeholder="定向产品">
-                        <el-option label="全部" value="ALL"></el-option>
-                        <el-option v-for="(item, index) in productList" :label="item.label" :key="index" :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
                 <el-form-item style="margin-left:6px">
                     <el-button type="primary" @click="getTableData(1)">查询</el-button>
                 </el-form-item>
@@ -46,40 +40,36 @@
                     </el-table-column>
                     <el-table-column min-width="150" prop="customerName" label="客户名称" align="center">
                     </el-table-column>
-                    <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
-                    </el-table-column>
-                    <el-table-column min-width="150" prop="fileName" label="文件名称" align="center">
-                    </el-table-column>
-                    <el-table-column min-width="120" prop="fileSize" label="文件大小" align="center">
-                        <template slot-scope="scope">
-                            <span>{{ computeFileSize(scope.row.fileSize) }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column min-width="150" prop="productType" label="定向产品" align="center">
+                    <el-table-column width="150" prop="phone" label="手机号码" align="center">
                     </el-table-column>
                     <el-table-column min-width="120" prop="totalNumber" label="检测数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.totalNumber || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="120" prop="activeCount" label="已激活" align="center">
+                    <el-table-column width="120" prop="productType" label="类型" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ productTypeMap[scope.row.productType] || '' }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column min-width="120" prop="activeCount" label="正常号码" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.activeCount || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="120" prop="noRegisterCount" label="未注册" align="center">
+                    <el-table-column min-width="120" prop="noRegisterCount" label="黑名单" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.noRegisterCount || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="120" prop="illegalNumber" label=" 无效数" align="center">
+                    <el-table-column min-width="120" prop="illegalNumber" label="无效数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.illegalNumber || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="150" prop="createTime" label="检测时间" align="center">
+                    <el-table-column width="150" prop="createTime" label="创建时间" align="center">
                     </el-table-column>
-                    <el-table-column min-width="150" prop="updateTime" label="完成时间" align="center">
+                    <el-table-column width="150" prop="updateTime" label="修改时间" align="center">
                     </el-table-column>
                 </template>
                 <template v-else>
@@ -87,16 +77,12 @@
                     </el-table-column>
                     <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                     </el-table-column>
-                    <el-table-column min-width="150" prop="productType" label="定向产品" align="center">
-                    </el-table-column>
-                    <el-table-column min-width="120" prop="totalNumber" label="消耗数" align="center">
+                    <el-table-column min-width="120" prop="totalNumber" label="消耗条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.totalNumber || 0 }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column min-width="150" prop="createTime" label="检测时间" align="center">
-                    </el-table-column>
-                    <el-table-column min-width="150" prop="updateTime" label="完成时间" align="center">
                     </el-table-column>
                 </template>
             </el-table>
@@ -110,18 +96,16 @@
 </template>
 
 <script>
-    import { computeFileSize, formatDate } from '@/utils'
+    import { formatDate } from '@/utils'
     export default {
         data() {
             return {
-                computeFileSize,
                 totalCount: 0,
                 dataListLoading: false,
                 searchData: {
                     time: undefined,
                     agentId: -1,
                     customerName: '',
-                    productId: 'ALL',
                     phone: ''
                 },
                 tableData: [],
@@ -129,13 +113,12 @@
                 pageSize: 10,
                 totalPage: 0,
                 agentList: [],
-                productList: [
-                    { label: 'viber', value: 'viber' },
-                    { label: 'zalo', value: 'zalo' },
-                    { label: 'botim', value: 'botim' },
-                    { label: 'line', value: 'line' },
-                ],
-                isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
+                isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1"),
+                productTypeMap: {
+                    '1': '一般场景黑名单',
+                    '2': '敏感场景黑名单',
+                    '3': '高危场景黑名单',
+                } // 产品类型 1-一般场景黑名单，2-敏感场景黑名单，3-高危场景黑名单
             }
         },
         computed: {
@@ -153,7 +136,6 @@
             this.searchData = {
                 time: currDate,
                 agentId: -1,
-                productId: 'ALL',
                 customerName: '',
                 phone: ''
             }
@@ -166,7 +148,7 @@
                 this.dataListLoading = true
                 let agentId = this.searchData.agentId === -1 ? undefined : this.searchData.agentId
                 this.$http({
-                    url: this.$http.adornUrl(`agent/intDirectCheck/getPageList`),
+                    url: this.$http.adornUrl(`agent/intDirectCheck/getApiList`),
                     method: 'post',
                     data: {
                         'token': this.$cookie.get('token'),
@@ -176,7 +158,6 @@
                         'createTimeEnd': this.searchData.time,
                         'phone': this.searchData.phone || undefined,
                         'customerName': this.searchData.customerName || undefined,
-                        'productType': this.searchData.productId === 'ALL' ? undefined : this.searchData.productId,
                         'agentId': this.isAdmin ? agentId : undefined,
                     }
                 }).then(({ data }) => {
@@ -187,7 +168,6 @@
                     } else {
                         this.tableData = []
                         this.totalPage = 0
-                        this.totalCount = 0
                     }
                     this.dataListLoading = false
                 })
@@ -217,7 +197,7 @@
                 this.getTableData()
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {
-                if (rowIndex === 0) {
+                if (rowIndex ===0) {
                     return 'background-color: #f8f8f8;color:#666;'
                 } else {
                     return ''
@@ -239,7 +219,7 @@
                 });
 
                 return sums;
-            }
+            },
         }
     }
 
