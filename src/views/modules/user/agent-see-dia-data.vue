@@ -100,8 +100,8 @@
                     { name: '空号检测', level: data.agentLevel, price: data.price, warningsNumber: data.warningsNumber, },
                     { name: '实时检测', level: data.realLevel, price: data.realPrice, warningsNumber: data.realWarningsNumber, },
                     { name: '国际检测', level: data.internationalLevel, price: data.internationalPrice, warningsNumber: data.internationalWarningsNumber, },
-                    { name: '定向通用检测', level: data.directCommonLevel, price: data.directCommonPrice, warningsNumber: data.directCommonWarningsNumber, },
-                    { name: 'line定向检测', level: data.lineDirectLevel, price: data.lineDirectPrice, warningsNumber: data.lineDirectWarningsNumber, },
+                    // { name: '定向通用检测', level: data.directCommonLevel, price: data.directCommonPrice, warningsNumber: data.directCommonWarningsNumber, },
+                    { name: '黑名单检测', level: data.lineDirectLevel, price: data.lineDirectPrice, warningsNumber: data.lineDirectWarningsNumber, },
                 ]
             },
             getRowClass({ row, column, rowIndex, columnIndex }) {

@@ -147,7 +147,7 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column label="定向通用检测" min-width="200" prop="directCommon" align="center">
+                <!-- <el-table-column label="定向通用检测" min-width="200" prop="directCommon" align="center">
                     <template slot-scope="{ row }">
                         <div class="tow-row-col">
                             <div>
@@ -160,8 +160,8 @@
                             </div>
                         </div>
                     </template>
-                </el-table-column>
-                <el-table-column label="line定向检测" min-width="200" prop="lineDirect" align="center">
+                </el-table-column> -->
+                <el-table-column label="黑名单检测" min-width="200" prop="lineDirect" align="center">
                     <template slot-scope="{ row }">
                         <div class="tow-row-col">
                             <div>
@@ -255,8 +255,8 @@ export default {
         { label: '空号检测充值总条数', field: 'emptyRechargeNum', render: (val) => (val || '0') },
         { label: '实时检测充值总条数', field: 'realtimeRechargeNum', render: (val) => (val || '0') },
         { label: '国际检测充值总条数', field: 'internationalRechargeNum', render: (val) => (val || '0') },
-        { label: '定向通用检测充值总条数', field: 'directCommonRechargeNum', render: (val) => (val || '0') },
-        { label: 'line定向检测充值总条数', field: 'lineDirectRechargeNum', render: (val) => (val || '0') },
+        // { label: '定向通用检测充值总条数', field: 'directCommonRechargeNum', render: (val) => (val || '0') },
+        { label: '黑名单检测充值总条数', field: 'lineDirectRechargeNum', render: (val) => (val || '0') },
       ],
       disabled: false,
       seeVisible: false,

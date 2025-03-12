@@ -29,8 +29,8 @@
                     { label: '空号检测', value: 1 },
                     { label: '实时检测', value: 2 },
                     { label: '国际号码检测', value: 3 },
-                    { label: '定向通用检测', value: 4 },
-                    { label: 'line定向检测', value: 5 }
+                    // { label: '定向通用检测', value: 4 },
+                    { label: '黑名单检测', value: 5 }
                 ],
                 visible: false,
                 submitLoading: false,

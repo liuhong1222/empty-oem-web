@@ -88,7 +88,7 @@
                         </template>
                     </el-table-column>
                 </el-table-column>
-                <el-table-column label="定向通用检测" align="center">
+                <!-- <el-table-column label="定向通用检测" align="center">
                     <el-table-column width="120" prop="directCommonConsume" label="消耗条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.directCommonConsume || 0 }}</span>
@@ -99,8 +99,8 @@
                             <span>{{ scope.row.directCommonCounts || 0 }}</span>
                         </template>
                     </el-table-column>
-                </el-table-column>
-                <el-table-column label="line定向检测" align="center">
+                </el-table-column> -->
+                <el-table-column label="黑名单检测" align="center">
                     <el-table-column width="120" prop="lineDirectConsume" label="消耗条数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.lineDirectConsume || 0 }}</span>
@@ -158,20 +158,20 @@
                 let emptyColIndexArr = []
                 let realColIndexArr = []
                 let internationalColIndexArr = []
-                let directCommonColIndexArr = []
+                // let directCommonColIndexArr = []
                 let lineDirectColIndexArr = []
                 if (Boolean(sessionStorage.getItem("msjRoleName") === "1")) {
                     emptyColIndexArr = [6, 7]
                     realColIndexArr = [8, 9]
                     internationalColIndexArr = [10, 11]
-                    directCommonColIndexArr = [12, 13]
-                    lineDirectColIndexArr = [14, 15]
+                    // directCommonColIndexArr = [12, 13]
+                    lineDirectColIndexArr = [12, 13]
                 } else {
                     emptyColIndexArr = [5, 6]
                     realColIndexArr = [7, 8]
                     internationalColIndexArr = [9, 10]
-                    directCommonColIndexArr = [11, 12]
-                    lineDirectColIndexArr = [13, 14]
+                    // directCommonColIndexArr = [11, 12]
+                    lineDirectColIndexArr = [11, 12]
                 }
                 if (emptyColIndexArr.includes(columnIndex)) {
                     return 'background: rgba(62, 142, 247, 0.1);'
@@ -182,9 +182,9 @@
                 if (internationalColIndexArr.includes(columnIndex)) {
                     return 'background: #F8E6EB;'
                 }
-                if (directCommonColIndexArr.includes(columnIndex)) {
-                    return 'background: #FEFEF1;'
-                }
+                // if (directCommonColIndexArr.includes(columnIndex)) {
+                //     return 'background: #FEFEF1;'
+                // }
                 if (lineDirectColIndexArr.includes(columnIndex)) {
                     return 'background: #EEFFF6;'
                 }
@@ -207,7 +207,7 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume', 'internationalConsume', 'directCommonConsume', 'lineDirectConsume'])
+                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume', 'internationalConsume', 'lineDirectConsume'])
                     } else {
                         this.tableData = []
                         this.totalPage = 0

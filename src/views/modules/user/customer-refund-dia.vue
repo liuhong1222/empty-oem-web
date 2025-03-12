@@ -123,9 +123,9 @@
                 } else if (this.dataForm.category === 2) {
                     this.dataForm.remainNumberTotal = this.customerInfo.internationalCount
                     this.dataForm.giftNumber = this.customerInfo.refundableInternationalNum
-                } else if (this.dataForm.category === 4) {
-                    this.dataForm.remainNumberTotal = this.customerInfo.directCommonCount
-                    this.dataForm.giftNumber = this.customerInfo.refundableDirectCommonNum
+                // } else if (this.dataForm.category === 4) {
+                //     this.dataForm.remainNumberTotal = this.customerInfo.directCommonCount
+                //     this.dataForm.giftNumber = this.customerInfo.refundableDirectCommonNum
                 } else { // this.dataForm.category === 5
                     this.dataForm.remainNumberTotal = this.customerInfo.lineDirectCount
                     this.dataForm.giftNumber = this.customerInfo.refundableLineDirectNum

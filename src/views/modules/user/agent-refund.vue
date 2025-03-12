@@ -139,7 +139,7 @@
                     '0': [this.agentRefundInfo.emptyBalance || 0, this.agentRefundInfo.refundableEmpty || 0],
                     '1': [this.agentRefundInfo.realtimeBalance || 0, this.agentRefundInfo.refundableRealtime || 0],
                     '2': [this.agentRefundInfo.internationalBalance || 0, this.agentRefundInfo.refundableInternational || 0],
-                    '4': [this.agentRefundInfo.directCommonBalance || 0, this.agentRefundInfo.refundableDirectCommon || 0],
+                    // '4': [this.agentRefundInfo.directCommonBalance || 0, this.agentRefundInfo.refundableDirectCommon || 0],
                     '5': [this.agentRefundInfo.lineDirectBalance || 0, this.agentRefundInfo.refundableLineDirect || 0],
                 }
                 let resultValues = valuesMap[this.dataForm.category] || [0, 0]

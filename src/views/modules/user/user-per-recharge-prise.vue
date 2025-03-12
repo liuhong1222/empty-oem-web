@@ -162,13 +162,13 @@
                     })
                 }).then(({ data }) => {
                     if (data && data.code === 0) {
-                        const { goodsList, emptyBalance, realtimeBalance, internationalBalance, directCommonBalance, lineDirectBalance } = data.data || {}
+                        const { goodsList, emptyBalance, realtimeBalance, internationalBalance, lineDirectBalance } = data.data || {}
                         this.rechargeArr = goodsList || []
                         let countMap = {
                             '0': emptyBalance,
                             '1': realtimeBalance,
                             '2': internationalBalance,
-                            '4': directCommonBalance,
+                            // '4': directCommonBalance,
                             '5': lineDirectBalance,
                         }
                         this.rechargeDataForm = {

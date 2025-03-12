@@ -97,7 +97,7 @@
                     'empty': { category: 0, price: agentInfo.price },
                     'realtime': { category: 1, price: agentInfo.realPrice },
                     'international': { category: 2, price: agentInfo.internationalPrice },
-                    'directCommon': { category: 4, price: agentInfo.directCommonPrice },
+                    // 'directCommon': { category: 4, price: agentInfo.directCommonPrice },
                     'lineDirect': { category: 5, price: agentInfo.lineDirectPrice },
                 }
                 this.dialogVisible = true

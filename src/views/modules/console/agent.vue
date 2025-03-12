@@ -406,8 +406,8 @@ export default {
                 { name: '空号检测', balance: data.emptyBalance, price: data.price, warningsNumber: data.warningsNumber, warningsNumberKey: 'warningsNumber', balanceKey: 'emptyBalance' },
                 { name: '实时检测', balance: data.realtimeBalance, price: data.realPrice, warningsNumber: data.realWarningsNumber, warningsNumberKey: 'realWarningsNumber', balanceKey: 'realtimeBalance' },
                 { name: '国际检测', balance: data.internationalBalance, price: data.internationalPrice, warningsNumber: data.internationalWarningsNumber, warningsNumberKey: 'internationalWarningsNumber', balanceKey: 'internationalBalance' },
-                { name: '定向通用检测', balance: data.directCommonBalance, price: data.directCommonPrice, warningsNumber: data.directCommonWarningsNumber, warningsNumberKey: 'directCommonWarningsNumber', balanceKey: 'directCommonBalance' },
-                { name: 'line定向检测', balance: data.lineDirectBalance, price: data.lineDirectPrice, warningsNumber: data.lineDirectWarningsNumber, warningsNumberKey: 'lineDirectWarningsNumber', balanceKey: 'lineDirectBalance' },
+                // { name: '定向通用检测', balance: data.directCommonBalance, price: data.directCommonPrice, warningsNumber: data.directCommonWarningsNumber, warningsNumberKey: 'directCommonWarningsNumber', balanceKey: 'directCommonBalance' },
+                { name: '黑名单检测', balance: data.lineDirectBalance, price: data.lineDirectPrice, warningsNumber: data.lineDirectWarningsNumber, warningsNumberKey: 'lineDirectWarningsNumber', balanceKey: 'lineDirectBalance' },
             ]
         },
         // 充值记录 客户的
@@ -463,7 +463,7 @@ export default {
             switch (type) {
                 case 'emptyBalance':
                 case 'realtimeBalance':
-                case 'directCommonBalance':
+                // case 'directCommonBalance':
                 case 'lineDirectBalance':
                 case 'internationalBalance': { // 余额充值
                     if (type === 'realtimeBalance' && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
@@ -474,12 +474,12 @@ export default {
                         this.$message.warning('暂无国际检测代理权限')
                         return false
                     }
-                    if (type === 'directCommonBalance' && !this.agentInfo.directCommonPrice) {
-                        this.$message.warning('暂无定向通用检测代理权限')
-                        return false
-                    }
+                    // if (type === 'directCommonBalance' && !this.agentInfo.directCommonPrice) {
+                    //     this.$message.warning('暂无定向通用检测代理权限')
+                    //     return false
+                    // }
                     if (type === 'lineDirectBalance' && !this.agentInfo.lineDirectPrice) {
-                        this.$message.warning('暂无line定向检测代理权限')
+                        this.$message.warning('暂无黑名单检测代理权限')
                         return false
                     }
                     this.$refs['agentRechargeDiaRef'].init(type.replace('Balance', ''), this.agentInfo)
@@ -487,7 +487,7 @@ export default {
                 }
                 case 'warningsNumber':
                 case 'realWarningsNumber':
-                case 'directCommonWarningsNumber':
+                // case 'directCommonWarningsNumber':
                 case 'lineDirectWarningsNumber':
                 case 'internationalWarningsNumber': { // 预警值修改
                     if (type === 'realWarningsNumber' && !this.agentInfo.realPrice) { // 代理实时单价 为 0 或未获取实时产品的代理权
@@ -502,8 +502,8 @@ export default {
                         'warningsNumber': '空号',
                         'realWarningsNumber': '实时',
                         'internationalWarningsNumber': '国际',
-                        'directCommonWarningsNumber': '定向通用',
-                        'lineDirectWarningsNumber': 'line定向',
+                        // 'directCommonWarningsNumber': '定向通用',
+                        'lineDirectWarningsNumber': '黑名单',
                     }
                     this.warnEditType = editTypeMap[type]
                     this.warnForm.curcounts = this.deskInfo[type]
