@@ -26,10 +26,10 @@
                 <el-form-item label="手机号码：">
                     <el-input v-model="searchData.phone" placeholder="手机号码" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="定向产品：">
-                    <el-select v-model="searchData.productId" placeholder="定向产品">
+                <el-form-item label="类型：">
+                    <el-select v-model="searchData.productId" placeholder="类型">
                         <el-option label="全部" value="ALL"></el-option>
-                        <el-option v-for="(item, index) in productList" :label="item.label" :key="index" :value="item.value"></el-option>
+                        <el-option v-for="(item, index) in productTypeList" :label="item.label" :key="index" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-left:6px">
@@ -55,19 +55,22 @@
                             <span>{{ computeFileSize(scope.row.fileSize) }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="150" prop="productType" label="定向产品" align="center">
+                    <el-table-column min-width="150" prop="productType" label="类型" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ productTypeMap[scope.row.productType] || '' }}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column min-width="120" prop="totalNumber" label="检测数" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.totalNumber || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="120" prop="activeCount" label="已激活" align="center">
+                    <el-table-column min-width="120" prop="activeCount" label="正常号码" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.activeCount || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column min-width="120" prop="noRegisterCount" label="未注册" align="center">
+                    <el-table-column min-width="120" prop="noRegisterCount" label="黑名单" align="center">
                         <template slot-scope="scope">
                             <span>{{ scope.row.noRegisterCount || 0 }}</span>
                         </template>
@@ -87,7 +90,10 @@
                     </el-table-column>
                     <el-table-column min-width="150" prop="phone" label="手机号码" align="center">
                     </el-table-column>
-                    <el-table-column min-width="150" prop="productType" label="定向产品" align="center">
+                    <el-table-column min-width="150" prop="productType" label="类型" align="center">
+                        <template slot-scope="scope">
+                            <span>{{ productTypeMap[scope.row.productType] || '' }}</span>
+                        </template>
                     </el-table-column>
                     <el-table-column min-width="120" prop="totalNumber" label="消耗数" align="center">
                         <template slot-scope="scope">
@@ -129,12 +135,16 @@
                 pageSize: 10,
                 totalPage: 0,
                 agentList: [],
-                productList: [
-                    { label: 'viber', value: 'viber' },
-                    { label: 'zalo', value: 'zalo' },
-                    { label: 'botim', value: 'botim' },
-                    { label: 'line', value: 'line' },
+                productTypeList: [
+                    { label: '一般场景黑名单', value: '1' },
+                    { label: '敏感场景黑名单', value: '2' },
+                    { label: '高危场景黑名单', value: '3' },
                 ],
+                productTypeMap: {
+                    '1': '一般场景黑名单',
+                    '2': '敏感场景黑名单',
+                    '3': '高危场景黑名单',
+                }, // 产品类型 1-一般场景黑名单，2-敏感场景黑名单，3-高危场景黑名单
                 isAdmin: Boolean(sessionStorage.getItem("msjRoleName") === "1")
             }
         },
