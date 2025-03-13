@@ -14,8 +14,8 @@ module.exports = {
     // 代理列表, 是否开启代理通过[./dev.env.js]配置
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
-        // target:'http://172.18.108.175:8658/', // jzg
-        target:'http://172.18.106.136:8658/', // test
+        target:'http://117.131.65.246:48658/', // lh
+        // target:'http://172.18.106.136:8658/', // test
         //target:'http://oem.haifou.com/open/',
         // target:'http://172.18.106.157:7001/proxy/7', // 代理服务
         changeOrigin: true,
@@ -31,6 +31,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
+    // host: '127.0.0.1', // can be overwritten by process.env.HOST
     host: '127.0.0.1', // can be overwritten by process.env.HOST
     port: 8001, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
