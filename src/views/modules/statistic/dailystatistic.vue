@@ -101,14 +101,14 @@
                     </el-table-column>
                 </el-table-column> -->
                 <el-table-column label="黑名单检测" align="center">
-                    <el-table-column width="120" prop="lineDirectConsume" label="消耗条数" align="center">
+                    <el-table-column width="120" prop="directCommonConsume" label="消耗条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.lineDirectConsume || 0 }}</span>
+                            <span>{{ scope.row.directCommonConsume || 0 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column width="120" prop="lineDirectCounts" label="剩余条数" align="center">
+                    <el-table-column width="120" prop="directCommonCounts" label="剩余条数" align="center">
                         <template slot-scope="scope">
-                            <span>{{ scope.row.lineDirectCounts || 0 }}</span>
+                            <span>{{ scope.row.directCommonCounts || 0 }}</span>
                         </template>
                     </el-table-column>
                 </el-table-column>
@@ -207,7 +207,7 @@
                     if (data && data.code === 0) {
                         this.tableData = data.data.list
                         this.totalPage = data.data.total
-                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume', 'internationalConsume', 'lineDirectConsume'])
+                        this.totalInfo = splitObj((data.data.totalInfo || {}), ['custNum', 'dailyAddCustNum', 'emptyRechargeMoney', 'emptyConsume', 'realtimeConsume', 'internationalConsume', 'directCommonConsume'])
                     } else {
                         this.tableData = []
                         this.totalPage = 0

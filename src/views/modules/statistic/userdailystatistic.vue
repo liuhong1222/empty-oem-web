@@ -54,9 +54,9 @@
                         <span>{{ scope.row.directCommonTotal || 0 }}</span>
                     </template>
                 </el-table-column> -->
-                <el-table-column label="黑名单检测消耗条数" min-width="150" prop="lineDirectTotal" align="center">
+                <el-table-column label="黑名单检测消耗条数" min-width="150" prop="directCommonTotal" align="center">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.lineDirectTotal || 0 }}</span>
+                        <span>{{ scope.row.directCommonTotal || 0 }}</span>
                     </template>
                 </el-table-column>
             </el-table>
